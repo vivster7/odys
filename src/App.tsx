@@ -1,8 +1,8 @@
 import React from 'react';
-import Svg from './shapes/Svg';
+import DrawingBoard from './DrawingBoard';
 
 const App: React.FC = () => {
-  return <Svg></Svg>;
+  return <DrawingBoard></DrawingBoard>;
 };
 
 export default App;

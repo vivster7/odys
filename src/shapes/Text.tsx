@@ -1,8 +1,8 @@
 import React from 'react';
 
 interface TextProps extends React.SVGProps<SVGTextElement> {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   text: string;
 }
 

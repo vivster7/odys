@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import RoundRect from './RoundRect';
 import Group from './Group';
 
 import { select, event } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 
-const Svg: React.FC = () => {
+const Svg: React.FC = (props: React.SVGProps<SVGElement>) => {
   const [width, height] = [1000, 1000];
 
   const [zoomTransform, setZoomTransform] = useState('');
@@ -26,21 +25,9 @@ const Svg: React.FC = () => {
     <svg
       id="odys-svg"
       style={{ height: '100%', width: '100%' }}
-      viewBox="0 0 1000 1000"
+      viewBox={`0 0 ${width} ${height}`}
     >
-      <Group transform={zoomTransform}>
-        <RoundRect
-          text="This is a very long testing string. This is too long for a single line. WHAT TO DO!"
-          x={10}
-          y={20}
-        ></RoundRect>
-        <RoundRect text="Hello" x={0} y={120}></RoundRect>
-        <RoundRect
-          text="This is a very long testing string. This is too long for a single line. WHAT TO DO!"
-          x={10}
-          y={220}
-        ></RoundRect>
-      </Group>
+      <Group transform={zoomTransform}>{props.children}</Group>
     </svg>
   );
 };
