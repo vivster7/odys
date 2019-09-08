@@ -4,7 +4,7 @@ import Group from './Group';
 import { select, event } from 'd3-selection';
 import { zoom } from 'd3-zoom';
 
-const Svg: React.FC = (props: React.SVGProps<SVGElement>) => {
+const Svg: React.FC = props => {
   const [width, height] = [1000, 1000];
 
   const [zoomTransform, setZoomTransform] = useState('');
@@ -27,7 +27,9 @@ const Svg: React.FC = (props: React.SVGProps<SVGElement>) => {
       style={{ height: '100%', width: '100%' }}
       viewBox={`0 0 ${width} ${height}`}
     >
-      <Group transform={zoomTransform}>{props.children}</Group>
+      <Group id="odys-zoomable-group" cursor="grab" transform={zoomTransform}>
+        {props.children}
+      </Group>
     </svg>
   );
 };

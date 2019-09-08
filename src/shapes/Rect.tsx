@@ -1,56 +1,26 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Group from './Group';
 import Text from './Text';
-import { select, event, mouse } from 'd3-selection';
-import { drag } from 'd3-drag';
-import { v4 } from 'uuid';
+import useDraggable from '../hooks/useDraggable';
 
-interface RectProps extends React.SVGProps<SVGRectElement> {
+export interface RectProps extends React.SVGProps<SVGRectElement> {
+  id: string;
   x: number;
   y: number;
   text: string;
 }
 
-const Rect: React.FC<RectProps> = (props: RectProps) => {
-  const id = 'id-' + v4();
+const Rect: React.FC<RectProps> = props => {
+  const id = props.id;
   const [x, y] = [props.x, props.y];
   const [width, height] = [200, 100];
   const [textX, textY] = [width / 2, height / 2];
 
-  function dragstarted(this: any) {
-    select(this).raise();
-    select(this).attr('cursor', 'grabbing');
-    let [offsetX, offsetY] = mouse(this);
-    this.offsetX = offsetX;
-    this.offsetY = offsetY;
-  }
-
-  function dragged(this: any) {
-    select(this).attr(
-      'transform',
-      `translate(${event.x - this.offsetX}, ${event.y - this.offsetY})`
-    );
-  }
-
-  function dragended(this: any) {
-    delete this.offsetX;
-    delete this.offsetY;
-    select(this).attr('cursor', 'grab');
-  }
-
-  useEffect(() => {
-    const rect = select(`#${id}`);
-
-    rect.call((selection: any) => {
-      return drag()
-        .on('start', dragstarted)
-        .on('drag', dragged)
-        .on('end', dragended)(selection);
-    });
-  });
+  const initTransform = `translate(${x}, ${y})`;
+  const [transform, cursor] = useDraggable(id, initTransform);
 
   return (
-    <Group id={id} transform={`translate(${x} ${y})`}>
+    <Group id={id} transform={transform} cursor={cursor}>
       <rect
         width={width}
         height={height}

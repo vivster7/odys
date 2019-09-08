@@ -1,13 +1,15 @@
-import React, { SVGProps } from 'react';
-import { v4 } from 'uuid';
+import React, { ReactNode } from 'react';
 
-const Group: React.FC<SVGProps<SVGGElement>> = props => {
-  const id = props.id || `id-${v4()}`;
-  return (
-    <g id={id} transform={props.transform}>
-      {props.children}
-    </g>
-  );
+export interface GroupProps extends React.SVGProps<SVGRectElement> {
+  id: string;
+  transform: string;
+  cursor: 'grab' | 'grabbing' | string;
+  children: ReactNode;
+}
+
+const Group: React.FC<GroupProps> = props => {
+  const { children, ...rest } = props;
+  return <g {...rest}>{children}</g>;
 };
 
 export default Group;

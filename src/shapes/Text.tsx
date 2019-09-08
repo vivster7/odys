@@ -1,12 +1,12 @@
 import React from 'react';
 
-interface TextProps extends React.SVGProps<SVGTextElement> {
-  x?: number;
-  y?: number;
+export interface TextProps extends React.SVGProps<SVGTextElement> {
+  x: number;
+  y: number;
   text: string;
 }
 
-const Text: React.FC<TextProps> = (props: TextProps) => {
+const Text: React.FC<TextProps> = props => {
   return (
     <text x={props.x} y={props.y} style={{ textAnchor: 'middle' }}>
       <tspan>{props.text}</tspan>
