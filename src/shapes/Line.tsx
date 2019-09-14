@@ -1,9 +1,8 @@
 import React from 'react';
 import useDraggable from '../hooks/useDraggable';
 import Group from './Group';
-import Shape from './Shape';
 
-export interface LineProps extends React.SVGProps<SVGRectElement>, Shape {
+export interface LineProps extends React.SVGProps<SVGRectElement> {
   id: string;
   x1: number;
   y1: number;

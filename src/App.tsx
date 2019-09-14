@@ -1,23 +1,34 @@
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useReducer } from 'react';
 import DrawingBoard from './DrawingBoard';
-import Shape from './shapes/Shape';
-
-export const ShapesContext = React.createContext({
-  shapes: [] as Shape[],
-  setShapes: ((): never => {
-    throw new Error(
-      'setShapes function missing. Is a ShapesContext.Provider loaded above calling component?'
-    );
-  }) as Dispatch<SetStateAction<Shape[]>>
-});
+import RightSidebar from './RightSidebar';
+import { GlobalStateContext, globalStateReducer } from './globals';
 
 const App: React.FC = () => {
-  const [shapes, setShapes] = useState<Shape[]>([]);
+  const initialGlobalState = { shapes: [] };
+
+  const [globalState, dispatch] = useReducer(
+    globalStateReducer,
+    initialGlobalState
+  );
 
   return (
-    <ShapesContext.Provider value={{ shapes, setShapes }}>
-      <DrawingBoard></DrawingBoard>
-    </ShapesContext.Provider>
+    <GlobalStateContext.Provider value={{ globalState, dispatch }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          height: '100%',
+          width: '100%'
+        }}
+      >
+        <div style={{ flex: '75' }}>
+          <DrawingBoard></DrawingBoard>
+        </div>
+        <div style={{ flex: '25' }}>
+          <RightSidebar></RightSidebar>
+        </div>
+      </div>
+    </GlobalStateContext.Provider>
   );
 };
 

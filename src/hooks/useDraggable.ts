@@ -1,11 +1,11 @@
 import { useEffect, useState, useContext } from 'react';
 import { select, event, clientPoint } from 'd3-selection';
 import { drag } from 'd3-drag';
-import { ShapesContext } from '../App';
+import { GlobalStateContext } from '../globals';
 
 /**
  * Makes an SVG object draggable.
- * This hook depends on the `ShapesContext`
+ * This hook depends on the `GlobalStateContext`
  *
  * The `this` object is correctly injected by D3.
  *
@@ -13,43 +13,39 @@ import { ShapesContext } from '../App';
  * @param initTransform used to set initial transform value (e.g starting (x,y) pos)
  */
 export default function useDraggable(id: string, initTransform: string) {
-  // offsets of the cursor from the top-left of the container
-  let offsetX: number;
-  let offsetY: number;
-
   const [transform, setTransform] = useState(initTransform);
   const [cursor, setCursor] = useState('grab');
 
-  const { shapes, setShapes } = useContext(ShapesContext);
-
-  function raise(id: string) {
-    const idx = shapes.findIndex(d => d.id === id);
-    if (idx === -1) {
-      throw new Error(`Cannot find ${id} in shapes context`);
-    }
-
-    const item = shapes[idx];
-    setShapes([...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[item]]);
-  }
-
-  function dragstarted(this: any) {
-    raise(id);
-    setCursor('grabbing');
-
-    let [x, y] = clientPoint(this, event.sourceEvent);
-    offsetX = x;
-    offsetY = y;
-  }
-
-  function dragged() {
-    setTransform(`translate(${event.x - offsetX}, ${event.y - offsetY})`);
-  }
-
-  function dragended() {
-    setCursor('grab');
-  }
+  const { dispatch } = useContext(GlobalStateContext);
 
   useEffect(() => {
+    // offsets of the cursor from the top-left of the container
+    let offsetX: number;
+    let offsetY: number;
+
+    // Raise to top of SVG canvas (by appending as last sibling)
+    function raise(id: string) {
+      dispatch({ type: 'ODYS_RAISE_SHAPE', id: id });
+    }
+
+    function dragstarted(this: any) {
+      raise(id);
+      setCursor('grabbing');
+
+      let [x, y] = clientPoint(this, event.sourceEvent);
+      offsetX = x;
+      offsetY = y;
+    }
+
+    function dragged() {
+      setTransform(`translate(${event.x - offsetX}, ${event.y - offsetY})`);
+    }
+
+    function dragended() {
+      setCursor('grab');
+    }
+
+    // TODO(vivek): this only needs to be registered once.
     const group = select(`#${id}`);
 
     group.call((selection: any) => {
@@ -58,7 +54,7 @@ export default function useDraggable(id: string, initTransform: string) {
         .on('drag', dragged)
         .on('end', dragended)(selection);
     });
-  });
+  }, [id, dispatch]);
 
   return [transform, cursor];
 }

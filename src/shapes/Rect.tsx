@@ -2,9 +2,9 @@ import React from 'react';
 import Group from './Group';
 import Text from './Text';
 import useDraggable from '../hooks/useDraggable';
-import Shape from './Shape';
 
-export interface RectProps extends React.SVGProps<SVGRectElement>, Shape {
+export interface RectProps extends React.SVGProps<SVGRectElement> {
+  type: 'rect';
   id: string;
   x: number;
   y: number;

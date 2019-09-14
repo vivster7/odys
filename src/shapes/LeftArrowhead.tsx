@@ -1,10 +1,7 @@
 import React from 'react';
-import Shape from './Shape';
 import Group from './Group';
 
-export interface LeftArrowheadProps
-  extends React.SVGProps<SVGRectElement>,
-    Shape {
+export interface LeftArrowheadProps extends React.SVGProps<SVGRectElement> {
   id: string;
   x: number;
   y: number;

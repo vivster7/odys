@@ -1,12 +1,11 @@
 import React from 'react';
 import useDraggable from '../hooks/useDraggable';
 import Group from './Group';
-import Shape from './Shape';
 import LeftArrowhead from './LeftArrowhead';
 import RightArrowhead from './RightArrowhead';
 import { v4 } from 'uuid';
 
-export interface ArrowProps extends React.SVGProps<SVGRectElement>, Shape {
+export interface ArrowProps extends React.SVGProps<SVGRectElement> {
   id: string;
   x1: number;
   y1: number;
