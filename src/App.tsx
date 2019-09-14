@@ -1,6 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import DrawingBoard from './DrawingBoard';
-import { Shape } from './shapes/types';
+import Shape from './shapes/Shape';
 
 export const ShapesContext = React.createContext({
   shapes: [] as Shape[],

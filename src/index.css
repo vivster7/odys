@@ -1,3 +1,6 @@
+:root {
+  --odys-background-gray: rgb(248, 250, 252);
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

@@ -24,7 +24,11 @@ const Svg: React.FC = props => {
   return (
     <svg
       id="odys-svg"
-      style={{ height: '100%', width: '100%' }}
+      style={{
+        height: '100%',
+        width: '100%',
+        background: 'var(--odys-background-gray)'
+      }}
       viewBox={`0 0 ${width} ${height}`}
     >
       <Group id="odys-zoomable-group" cursor="grab" transform={zoomTransform}>

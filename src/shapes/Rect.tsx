@@ -2,8 +2,9 @@ import React from 'react';
 import Group from './Group';
 import Text from './Text';
 import useDraggable from '../hooks/useDraggable';
+import Shape from './Shape';
 
-export interface RectProps extends React.SVGProps<SVGRectElement> {
+export interface RectProps extends React.SVGProps<SVGRectElement>, Shape {
   id: string;
   x: number;
   y: number;
@@ -24,10 +25,10 @@ const Rect: React.FC<RectProps> = props => {
       <rect
         width={width}
         height={height}
-        rx="10"
-        ry="10"
+        rx="4"
+        ry="4"
         fill="white"
-        stroke="black"
+        stroke="darkgray"
       ></rect>
       <Text x={textX} y={textY} text={props.text}></Text>
     </Group>

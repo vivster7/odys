@@ -5,6 +5,7 @@ import { ShapesContext } from '../App';
 
 /**
  * Makes an SVG object draggable.
+ * This hook depends on the `ShapesContext`
  *
  * The `this` object is correctly injected by D3.
  *
@@ -23,8 +24,11 @@ export default function useDraggable(id: string, initTransform: string) {
 
   function raise(id: string) {
     const idx = shapes.findIndex(d => d.id === id);
-    const item = shapes[idx];
+    if (idx === -1) {
+      throw new Error(`Cannot find ${id} in shapes context`);
+    }
 
+    const item = shapes[idx];
     setShapes([...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[item]]);
   }
 
