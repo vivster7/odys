@@ -6,7 +6,6 @@ import { GlobalStateContext } from './globals';
 import Arrow, { ArrowProps } from './shapes/Arrow';
 import Shape from './shapes/Shape';
 import Line, { LineProps } from './shapes/Line';
-import RightArrowhead, { RightArrowheadProps } from './shapes/RightArrowhead';
 
 const id = () => `id-${v4()}`;
 
@@ -36,17 +35,13 @@ const DrawingBoard: React.FC = () => {
         y1: 200,
         x2: 300,
         y2: 300,
-        left: false,
-        right: true
+        left: true,
+        right: false
       }
     });
     dispatch({
       type: 'ODYS_ADD_SHAPE',
       shape: { type: 'line', id: id(), x1: 0, y1: 0, x2: 150, y2: 0 }
-    });
-    dispatch({
-      type: 'ODYS_ADD_SHAPE',
-      shape: { type: 'right-arrowhead', id: id(), x: 150, y: 0 }
     });
   }
 
@@ -61,14 +56,6 @@ const DrawingBoard: React.FC = () => {
 
       case 'line':
         return <Line key={rest.id} {...(rest as LineProps)}></Line>;
-
-      case 'right-arrowhead':
-        return (
-          <RightArrowhead
-            key={rest.id}
-            {...(rest as RightArrowheadProps)}
-          ></RightArrowhead>
-        );
 
       default:
         throw new Error(`unknow shape: ${type}`);

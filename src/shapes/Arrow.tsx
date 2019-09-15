@@ -6,6 +6,7 @@ import RightArrowhead from './RightArrowhead';
 import { v4 } from 'uuid';
 
 export interface ArrowProps extends React.SVGProps<SVGRectElement> {
+  type: 'arrow';
   id: string;
   x1: number;
   y1: number;

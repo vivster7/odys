@@ -3,6 +3,7 @@ import useDraggable from '../hooks/useDraggable';
 import Group from './Group';
 
 export interface LineProps extends React.SVGProps<SVGRectElement> {
+  type: 'line';
   id: string;
   x1: number;
   y1: number;

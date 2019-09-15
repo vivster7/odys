@@ -14,3 +14,38 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Flex */
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-elem {
+  flex: 1;
+}
+
+.flex-elem-1 {
+  flex: 1;
+}
+
+.flex-elem-2 {
+  flex: 2;
+}
+
+.flex-elem-4 {
+  flex: 4;
+}
+
+.flex-elem-6 {
+  flex: 6;
+}
+
+.flex-elem-8 {
+  flex: 8;
+}

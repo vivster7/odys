@@ -15,16 +15,15 @@ const App: React.FC = () => {
     <GlobalStateContext.Provider value={{ globalState, dispatch }}>
       <div
         style={{
-          display: 'flex',
-          flexDirection: 'row',
           height: '100%',
           width: '100%'
         }}
+        className="row"
       >
-        <div style={{ flex: '75' }}>
+        <div className="flex-elem-6">
           <DrawingBoard></DrawingBoard>
         </div>
-        <div style={{ flex: '25' }}>
+        <div className="col flex-elem-4">
           <RightSidebar></RightSidebar>
         </div>
       </div>
