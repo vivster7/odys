@@ -1,5 +1,6 @@
 :root {
   --odys-background-gray: rgb(248, 250, 252);
+  --odys-code-background: #1d2126;
 }
 body {
   margin: 0;
