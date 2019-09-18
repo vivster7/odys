@@ -1,58 +1,55 @@
-import React, { useRef } from 'react';
-import {
-  Editor,
-  EditorState,
-  ContentBlock,
-  ContentState,
-  DraftBlockType
-} from 'draft-js';
-import 'draft-js/dist/Draft.css';
-import './RightSidebar.css';
+import React from 'react';
+import Editor from '@monaco-editor/react';
+import { monaco as Mo } from '@monaco-editor/react';
 
-// const EditorLine: React.FC<DraftBlockType>
+type ICodeEditor = monaco.editor.ICodeEditor;
+type IModelContentChangedEvent = monaco.editor.IModelContentChangedEvent;
 
 const RightSidebar: React.FC = () => {
-  const [editorState, setEditorState] = React.useState(
-    EditorState.moveFocusToEnd(
-      EditorState.createWithContent(
-        ContentState.createFromText('## Write Code; Draw Blocks\n\n')
-      )
-    )
-  );
-
-  const editorRef = useRef<Editor>(null);
-
-  function myBlockStyleFn(contentBlock: ContentBlock): string {
-    const type = contentBlock.getType();
-    switch (type) {
-      case 'unstyled':
-        return 'unstyled-code-text';
-      default:
-        return 'unstyled-code-text';
+  let M: any;
+  async function initMonaco() {
+    try {
+      M = (await Mo.init()) as monaco.Position;
+    } catch (err) {
+      console.error('An error occurred during initialization of Monaco: ', err);
     }
   }
+  initMonaco();
 
-  function focusEditor() {
-    if (editorRef && editorRef.current) {
-      editorRef.current.focus();
-    }
+  function handleEditorDidMount(
+    valueGetter: () => string,
+    editor: ICodeEditor
+  ) {
+    editor.focus();
+    listenEditorChagnes(editor);
+    setCursor(editor, 2);
   }
 
-  React.useEffect(() => {
-    focusEditor();
-  }, []);
+  function listenEditorChagnes(editor: ICodeEditor) {
+    editor.onDidChangeModelContent((e: IModelContentChangedEvent) => {
+      console.log(editor.getValue());
+    });
+  }
+
+  function setCursor(editor: ICodeEditor, lineNumber: number) {
+    if (!M) {
+      console.warn('Monaco instance not yet initialized');
+      return;
+    }
+
+    const position = new M.Position(lineNumber, 0);
+    editor.setPosition(position as monaco.Position);
+  }
 
   return (
-    <div
-      className="flex-elem"
-      style={{ cursor: 'text', background: 'var(--odys-code-background)' }}
-      onClick={() => focusEditor()}
-    >
+    <div className="flex-elem" style={{ cursor: 'text' }}>
       <Editor
-        editorState={editorState}
-        onChange={setEditorState}
-        blockStyleFn={myBlockStyleFn}
-        ref={editorRef}
+        theme="dark"
+        height="100vh"
+        options={{ minimap: { enabled: false } }}
+        value={'// Write Code; Draw Blocks\n'}
+        editorDidMount={handleEditorDidMount}
+        language="javascript"
       />
     </div>
   );
