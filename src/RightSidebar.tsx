@@ -1,23 +1,46 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { monaco as Mo } from '@monaco-editor/react';
+import tokensProvider from './box-lang';
 
+type ITextModel = monaco.editor.ITextModel;
 type ICodeEditor = monaco.editor.ICodeEditor;
 type IModelContentChangedEvent = monaco.editor.IModelContentChangedEvent;
 
+const BOX_LANGUAGE_ID = 'box';
+
 const RightSidebar: React.FC = () => {
-  let M: any;
-  async function initMonaco() {
-    try {
-      M = (await Mo.init()) as monaco.Position;
-    } catch (err) {
-      console.error('An error occurred during initialization of Monaco: ', err);
+  let M = useRef<any>(null);
+
+  useEffect(() => {
+    function setupMonaco(monaco: any) {
+      M.current = monaco;
+
+      if (process.env.NODE_ENV === 'development') {
+        (window as any).M = monaco;
+      }
+      monaco.languages.register({ id: BOX_LANGUAGE_ID });
+      monaco.languages.setMonarchTokensProvider(
+        BOX_LANGUAGE_ID,
+        tokensProvider
+      );
+      monaco.editor.onDidCreateModel((model: ITextModel) => {
+        monaco.editor.setModelLanguage(model, BOX_LANGUAGE_ID);
+      });
     }
-  }
-  initMonaco();
+
+    Mo.init()
+      .then(m => setupMonaco(m))
+      .catch(err =>
+        console.error(
+          'An error occurred during initialization of Monaco: ',
+          err
+        )
+      );
+  }, []);
 
   function handleEditorDidMount(
-    valueGetter: () => string,
+    _valueGetter: () => string,
     editor: ICodeEditor
   ) {
     editor.focus();
@@ -32,12 +55,12 @@ const RightSidebar: React.FC = () => {
   }
 
   function setCursor(editor: ICodeEditor, lineNumber: number) {
-    if (!M) {
+    if (!M.current) {
       console.warn('Monaco instance not yet initialized');
       return;
     }
 
-    const position = new M.Position(lineNumber, 0);
+    const position = new M.current.Position(lineNumber, 0);
     editor.setPosition(position as monaco.Position);
   }
 
