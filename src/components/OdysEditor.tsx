@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import { monaco as Mo } from '@monaco-editor/react';
-import tokensProvider from './box-lang';
+import tokensProvider from '../box-lang';
 
 type ITextModel = monaco.editor.ITextModel;
 type ICodeEditor = monaco.editor.ICodeEditor;
@@ -9,7 +9,7 @@ type IModelContentChangedEvent = monaco.editor.IModelContentChangedEvent;
 
 const BOX_LANGUAGE_ID = 'box';
 
-const RightSidebar: React.FC = () => {
+const OdysEditor: React.FC = () => {
   let M = useRef<any>(null);
 
   useEffect(() => {
@@ -44,13 +44,18 @@ const RightSidebar: React.FC = () => {
     editor: ICodeEditor
   ) {
     editor.focus();
-    listenEditorChagnes(editor);
+    listenEditorChanges(editor);
     setCursor(editor, 2);
   }
 
-  function listenEditorChagnes(editor: ICodeEditor) {
+  function listenEditorChanges(editor: ICodeEditor) {
     editor.onDidChangeModelContent((e: IModelContentChangedEvent) => {
-      console.log(editor.getValue());
+      if (!M.current) {
+        return
+      }
+
+      const tokens = M.current.editor.tokenize(editor.getValue(), BOX_LANGUAGE_ID);
+      console.log(tokens);
     });
   }
 
@@ -78,4 +83,4 @@ const RightSidebar: React.FC = () => {
   );
 };
 
-export default RightSidebar;
+export default OdysEditor;

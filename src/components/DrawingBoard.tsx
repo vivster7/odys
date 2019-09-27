@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import Svg from './shapes/Svg';
-import Rect, { RectProps } from './shapes/Rect';
+import Svg from '../shapes/Svg';
+import Rect, { RectProps } from '../shapes/Rect';
 import { v4 } from 'uuid';
-import { GlobalStateContext } from './globals';
-import Arrow, { ArrowProps } from './shapes/Arrow';
-import Shape from './shapes/Shape';
-import Line, { LineProps } from './shapes/Line';
+import { GlobalStateContext } from '../globals';
+import Arrow, { ArrowProps } from '../shapes/Arrow';
+import Shape from '../shapes/Shape';
+import Line, { LineProps } from '../shapes/Line';
 
 const id = () => `id-${v4()}`;
 

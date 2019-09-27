@@ -1,7 +1,6 @@
 import React, { useReducer } from 'react';
-import DrawingBoard from './DrawingBoard';
-import RightSidebar from './RightSidebar';
 import { GlobalStateContext, globalStateReducer } from './globals';
+import DrawingPage from './pages/DrawingPage';
 
 const App: React.FC = () => {
   const initialGlobalState = { shapes: [] };
@@ -13,20 +12,7 @@ const App: React.FC = () => {
 
   return (
     <GlobalStateContext.Provider value={{ globalState, dispatch }}>
-      <div
-        style={{
-          height: '100%',
-          width: '100%'
-        }}
-        className="row"
-      >
-        <div className="flex-elem-6">
-          <DrawingBoard></DrawingBoard>
-        </div>
-        <div className="col flex-elem-4">
-          <RightSidebar></RightSidebar>
-        </div>
-      </div>
+      <DrawingPage></DrawingPage>
     </GlobalStateContext.Provider>
   );
 };
