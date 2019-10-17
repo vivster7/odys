@@ -13,6 +13,8 @@ import { v4 } from 'uuid';
 import { RECT_WIDTH, RECT_HEIGHT } from '../../shapes/Rect';
 
 const id = () => `id-${v4()}`;
+const X_PADDING = 80;
+const Y_PADDING = 50;
 
 class Drawer implements NodeVisitor<Shape[]> {
   draw(node: Node): Shape[] {
@@ -42,8 +44,8 @@ class Drawer implements NodeVisitor<Shape[]> {
         type: 'rect',
         id: id(),
         text: node.description,
-        x: RECT_WIDTH * node.column,
-        y: RECT_HEIGHT * node.row
+        x: RECT_WIDTH * node.column + X_PADDING * node.column,
+        y: RECT_HEIGHT * node.row + Y_PADDING * node.row
       }
     ];
   }
@@ -54,8 +56,8 @@ class Drawer implements NodeVisitor<Shape[]> {
         type: 'rect',
         id: id(),
         text: '',
-        x: RECT_WIDTH * node.column,
-        y: RECT_HEIGHT * node.row
+        x: RECT_WIDTH * node.column + X_PADDING * node.column,
+        y: RECT_HEIGHT * node.row + Y_PADDING * node.row
       }
     ];
   }
@@ -66,8 +68,8 @@ class Drawer implements NodeVisitor<Shape[]> {
         type: 'text',
         id: id(),
         text: node.value,
-        x: RECT_WIDTH * node.column + RECT_WIDTH / 2,
-        y: RECT_HEIGHT * node.row + RECT_HEIGHT / 2
+        x: RECT_WIDTH * node.column + RECT_WIDTH / 2 + X_PADDING * node.column,
+        y: RECT_HEIGHT * node.row + RECT_HEIGHT / 2 + Y_PADDING * node.row
       }
     ];
   }
@@ -79,7 +81,6 @@ class Drawer implements NodeVisitor<Shape[]> {
     } else {
       return this.draw(expression);
     }
-    // return [{ type: 'row', id: id(), y: 20 }];
   }
 
   visitColumnNode(node: Column): Shape[] {
