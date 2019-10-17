@@ -1,6 +1,5 @@
 import React from 'react';
 import Group from './Group';
-import Text from './Text';
 import useDraggable from '../hooks/useDraggable';
 
 export const RECT_WIDTH = 200;
@@ -32,7 +31,9 @@ const Rect: React.FC<RectProps> = props => {
         fill="white"
         stroke="darkgray"
       ></rect>
-      <Text type="text" x={textX} y={textY} text={props.text}></Text>
+      <text x={textX} y={textY} style={{ textAnchor: 'middle' }}>
+        <tspan>{props.text}</tspan>
+      </text>
     </Group>
   );
 };
