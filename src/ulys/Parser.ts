@@ -68,7 +68,7 @@ class Parser {
         console.error("Missing matching ']'. ");
       // this.consume(TokenType.LEFT_BRACKET, "Mising matching ']'. ")
     } else if (this.match(TokenType.STRING)) {
-      expr = new Text(this.peek().literal, this.rowNumber, this.colNumber);
+      expr = new Text(this.previous.literal, this.rowNumber, this.colNumber);
     } else {
       expr = new Concept(this.advance().lexeme, this.rowNumber, this.colNumber);
     }

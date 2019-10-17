@@ -65,9 +65,9 @@ class Drawer implements NodeVisitor<Shape[]> {
       {
         type: 'text',
         id: id(),
-        text: 'booga',
-        x: RECT_WIDTH * node.column,
-        y: RECT_HEIGHT * node.row
+        text: node.value,
+        x: RECT_WIDTH * node.column + RECT_WIDTH / 2,
+        y: RECT_HEIGHT * node.row + RECT_HEIGHT / 2
       }
     ];
   }

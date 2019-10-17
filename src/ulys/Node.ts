@@ -35,7 +35,7 @@ export class Concept extends Node {
 
 export class Text extends Node {
   private isLeaf = true;
-  private value: string;
+  value: string;
   row: number;
   column: number;
 
