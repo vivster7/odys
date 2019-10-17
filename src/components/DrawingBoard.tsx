@@ -6,6 +6,7 @@ import { GlobalStateContext } from '../globals';
 import Arrow, { ArrowProps } from '../shapes/Arrow';
 import Shape from '../shapes/Shape';
 import Line, { LineProps } from '../shapes/Line';
+import Text, { TextProps } from '../shapes/Text';
 
 const id = () => `id-${v4()}`;
 
@@ -56,6 +57,9 @@ const DrawingBoard: React.FC = () => {
 
       case 'line':
         return <Line key={rest.id} {...(rest as LineProps)}></Line>;
+
+      case 'text':
+        return <Text key={rest.id} {...(rest as TextProps)}></Text>;
 
       default:
         throw new Error(`unknow shape: ${type}`);

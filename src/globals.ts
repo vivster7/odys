@@ -1,5 +1,10 @@
 import React, { Dispatch } from 'react';
 import Shape from './shapes/Shape';
+import { Grid } from './ulys/Node';
+import Parser from './ulys/Parser';
+import Scanner from './ulys/Scanner';
+import Token from './ulys/Token';
+import Drawer from './ulys/interpreters/Drawer';
 
 export interface GlobalState {
   shapes: Shape[];
@@ -19,7 +24,15 @@ export interface OdysAddShapeAction extends GlobalActionType {
   shape: Shape;
 }
 
-export type GlobalAction = OdysRaiseShapeAction | OdysAddShapeAction;
+export interface OdysUpdateCode extends GlobalActionType {
+  type: 'ODYS_UPDATE_CODE';
+  code: string;
+}
+
+export type GlobalAction =
+  | OdysRaiseShapeAction
+  | OdysAddShapeAction
+  | OdysUpdateCode;
 
 export const GlobalStateContext = React.createContext({
   globalState: {} as GlobalState,
@@ -49,6 +62,28 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
       return {
         ...state,
         shapes: [...state.shapes, action.shape]
+      };
+    case 'ODYS_UPDATE_CODE':
+      const { code } = action;
+
+      // TODO(vivek): dont make new Scanner/Parser/Drawer each time.
+      const scanner = new Scanner(code);
+      const tokens: Token[] = scanner.scan();
+      console.log(tokens);
+
+      const parser = new Parser(tokens);
+      const grid: Grid = parser.parse();
+      console.log(`grid: `);
+      console.log(grid);
+
+      const drawer = new Drawer();
+      const newShapes: Shape[] = drawer.draw(grid);
+      console.log(`shapes: `);
+      console.log(newShapes);
+
+      return {
+        ...state,
+        shapes: newShapes
       };
     default:
       throw new Error(`Unknown action ${action}`);

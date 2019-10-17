@@ -1,15 +1,19 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import Editor from '@monaco-editor/react';
 import { monaco as Mo } from '@monaco-editor/react';
-import tokensProvider from '../box-lang';
+import tokensProvider from '../ulys/TokensProvider';
+import debounce from 'lodash.debounce';
+import { GlobalStateContext } from '../globals';
 
 type ITextModel = monaco.editor.ITextModel;
 type ICodeEditor = monaco.editor.ICodeEditor;
 type IModelContentChangedEvent = monaco.editor.IModelContentChangedEvent;
 
-const BOX_LANGUAGE_ID = 'box';
+const ULYS_LANGUAGE_ID = 'ulys';
+const DEBOUNCE_TIME_MS = 300;
 
 const OdysEditor: React.FC = () => {
+  const { dispatch } = useContext(GlobalStateContext);
   let M = useRef<any>(null);
 
   useEffect(() => {
@@ -19,13 +23,13 @@ const OdysEditor: React.FC = () => {
       if (process.env.NODE_ENV === 'development') {
         (window as any).M = monaco;
       }
-      monaco.languages.register({ id: BOX_LANGUAGE_ID });
+      monaco.languages.register({ id: ULYS_LANGUAGE_ID });
       monaco.languages.setMonarchTokensProvider(
-        BOX_LANGUAGE_ID,
+        ULYS_LANGUAGE_ID,
         tokensProvider
       );
       monaco.editor.onDidCreateModel((model: ITextModel) => {
-        monaco.editor.setModelLanguage(model, BOX_LANGUAGE_ID);
+        monaco.editor.setModelLanguage(model, ULYS_LANGUAGE_ID);
       });
     }
 
@@ -49,14 +53,19 @@ const OdysEditor: React.FC = () => {
   }
 
   function listenEditorChanges(editor: ICodeEditor) {
+    const debouncedSaveCode = debounce(saveCode, DEBOUNCE_TIME_MS);
+
     editor.onDidChangeModelContent((e: IModelContentChangedEvent) => {
       if (!M.current) {
-        return
+        return;
       }
 
-      const tokens = M.current.editor.tokenize(editor.getValue(), BOX_LANGUAGE_ID);
-      console.log(tokens);
+      debouncedSaveCode(editor.getValue());
     });
+  }
+
+  function saveCode(code: string) {
+    return dispatch({ type: 'ODYS_UPDATE_CODE', code: code });
   }
 
   function setCursor(editor: ICodeEditor, lineNumber: number) {
