@@ -23,7 +23,7 @@ const Arrow: React.FC<ArrowProps> = props => {
   const [transform, cursor] = useDraggable(props.id, initTransform);
 
   const leftArrowhead = () => {
-    const rotation1 = Math.atan2(props.y1, props.x1);
+    const rotation1 = Math.atan2(props.y2 - props.y1, props.x2 - props.x1);
     return (
       <LeftArrowhead
         id={idFn()}
@@ -35,12 +35,12 @@ const Arrow: React.FC<ArrowProps> = props => {
   };
 
   const rightArrowhead = () => {
-    const rotation2 = Math.atan2(props.y2, props.x2);
+    const rotation2 = Math.atan2(props.y2 - props.y1, props.x2 - props.x1);
     return (
       <RightArrowhead
         id={idFn()}
-        x={props.x2}
-        y={props.y2}
+        x={props.x2 - props.x1}
+        y={props.y2 - props.y1}
         rotationAngleFromXInRadians={rotation2}
       ></RightArrowhead>
     );
@@ -48,7 +48,13 @@ const Arrow: React.FC<ArrowProps> = props => {
 
   return (
     <Group id={props.id} transform={transform} cursor={cursor}>
-      <line x1="0" y1="0" x2={props.x2} y2={props.y2} stroke="grey"></line>
+      <line
+        x1="0"
+        y1="0"
+        x2={props.x2 - props.x1}
+        y2={props.y2 - props.y1}
+        stroke="grey"
+      ></line>
       {props.left ? leftArrowhead() : <></>}
       {props.right ? rightArrowhead() : <></>}
     </Group>

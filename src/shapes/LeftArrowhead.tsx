@@ -18,8 +18,8 @@ const LeftArrowhead: React.FC<LeftArrowheadProps> = props => {
 
   return (
     <Group id={props.id} transform={transform} cursor="pointer">
-      <line x1="0" y1="-0" x2="-20" y2="-20" stroke="grey"></line>
-      <line x1="0" y1="0" x2="-20" y2="20" stroke="grey"></line>
+      <line x1="0" y1="-0" x2="-5" y2="-5" stroke="grey"></line>
+      <line x1="0" y1="0" x2="-5" y2="5" stroke="grey"></line>
     </Group>
   );
 };

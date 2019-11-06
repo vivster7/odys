@@ -2,6 +2,7 @@ import Token from './Token';
 import TokenType from './TokenType';
 import Ulys from './Ulys';
 
+// Single char -> token
 const charTokenMap: { [key: string]: TokenType } = {
   '[': TokenType.LEFT_BRACKET,
   ']': TokenType.RIGHT_BRACKET,
@@ -63,6 +64,10 @@ class Scanner {
         this.string();
         break;
 
+      case '@':
+        this.at_reference();
+        break;
+
       case '<':
         if (this.match('-')) {
           if (this.match('>')) {
@@ -81,7 +86,7 @@ class Scanner {
         }
       case '-':
         if (this.match('>')) {
-          this.addToken(TokenType.LEFT_RIGHT_ARROW);
+          this.addToken(TokenType.RIGHT_ARROW);
           break;
         } else {
           Ulys.error(
@@ -147,6 +152,16 @@ class Scanner {
     // Remove surrounding " from value
     const value = this.source.substring(this.start + 1, this.current - 1);
     this.addToken(TokenType.STRING, value);
+  }
+
+  private at_reference(): void {
+    while (this.isDigit(this.peek())) {
+      this.advance();
+    }
+
+    // Remove the preceding '@' symbol
+    const value = this.source.substring(this.start + 1, this.current);
+    this.addToken(TokenType.AT_REFERENCE, value);
   }
 
   private addToken(type: TokenType, literal?: any): void {

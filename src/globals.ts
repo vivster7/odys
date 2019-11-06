@@ -1,9 +1,10 @@
 import React, { Dispatch } from 'react';
 import Shape from './shapes/Shape';
-import { Grid } from './ulys/Node';
+import Node from './ulys/Node';
 import Parser from './ulys/Parser';
 import Scanner from './ulys/Scanner';
 import Token from './ulys/Token';
+import Environment from './ulys/Environment';
 import Drawer from './ulys/interpreters/Drawer';
 
 export interface GlobalState {
@@ -64,6 +65,7 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
         shapes: [...state.shapes, action.shape]
       };
     case 'ODYS_UPDATE_CODE':
+      const environment = new Environment();
       const { code } = action;
 
       // TODO(vivek): dont make new Scanner/Parser/Drawer each time.
@@ -71,13 +73,17 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
       const tokens: Token[] = scanner.scan();
       console.log(tokens);
 
-      const parser = new Parser(tokens);
-      const grid: Grid = parser.parse();
-      console.log(`grid: `);
-      console.log(grid);
+      const parser = new Parser(environment, tokens);
+      const nodes: Node[] = parser.parse();
+      console.log(`nodes: `);
+      console.log(nodes);
 
-      const drawer = new Drawer();
-      const newShapes: Shape[] = drawer.draw(grid);
+      console.log();
+      console.log(`environment: `);
+      console.log(environment);
+
+      const drawer = new Drawer(environment);
+      const newShapes: Shape[] = nodes.flatMap(n => drawer.draw(n));
       console.log(`shapes: `);
       console.log(newShapes);
 

@@ -5,6 +5,7 @@ enum TokenType {
   QUOTE = 'QUOTE',
   STRING = 'STRING',
   SLASH = 'SLASH',
+  AT_REFERENCE = 'AT_REFERENCE', // @123
 
   NEWLINE = 'NEWLINE',
   BACKSLASH = 'BACKSLASH',

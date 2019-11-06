@@ -1,12 +1,16 @@
 import Token from './Token';
+import TokenType from './TokenType';
 
 /* Node objects used as nodes in AST */
 abstract class Node {
+  row: number = -1;
+  column: number = -1;
   abstract accept<R>(visitor: NodeVisitor<R>): R;
 }
 
 export interface NodeVisitor<R> {
   visitConceptNode(node: Concept): R;
+  visitAtReferenceNode(node: AtReference): R;
   visitTextNode(node: Text): R;
   visitGroupNode(node: Group): R;
   visitArrowNode(node: Arrow): R;
@@ -30,6 +34,24 @@ export class Concept extends Node {
 
   accept<R>(visitor: NodeVisitor<R>) {
     return visitor.visitConceptNode(this);
+  }
+}
+
+export class AtReference extends Node {
+  private isLeaf = true;
+  value: number;
+  row: number;
+  column: number;
+
+  constructor(value: number, row: number, column: number) {
+    super();
+    this.value = value;
+    this.row = row;
+    this.column = column;
+  }
+
+  accept<R>(visitor: NodeVisitor<R>) {
+    return visitor.visitAtReferenceNode(this);
   }
 }
 
@@ -90,6 +112,30 @@ export class Arrow extends Node {
     this.right = right;
     this.row = row;
     this.column = column;
+  }
+
+  isLeft(): boolean {
+    const type = this.arrow.type;
+    if (
+      type === TokenType.LEFT_ARROW ||
+      type === TokenType.LEFT_RIGHT_ARROW ||
+      type === TokenType.UP_ARROW
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  isRight(): boolean {
+    const type = this.arrow.type;
+    if (
+      type === TokenType.RIGHT_ARROW ||
+      type === TokenType.LEFT_RIGHT_ARROW ||
+      type === TokenType.DOWN_ARROW
+    ) {
+      return true;
+    }
+    return false;
   }
 
   accept<R>(visitor: NodeVisitor<R>) {

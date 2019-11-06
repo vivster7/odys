@@ -1,39 +1,62 @@
-import Node, { Concept, Arrow, Group, Text, Row, Column, Grid } from './Node';
+import Node, {
+  Concept,
+  Arrow,
+  Group,
+  Text,
+  Row,
+  Column,
+  Grid,
+  AtReference
+} from './Node';
 import TokenType from './TokenType';
 import Token from './Token';
+import Environment from './Environment';
 
 /*
 Parser constructs AST from Tokens
 
     Grammar:
-        expression  → arrow ;
-        arrow       → primary ( ( '->' | '<-' | '<->' | '←' | '↑' | '→' | '↓' | '↔' | '↕' | '↖' | '↗' | '↘' | '↙' ) primary )* ;
-        primary     → CONCEPT | STRING | "[" arrow "]"
+        arrow       → primary ( '->' | '<-' | '<->'... ) primary ;
+        primary     → CONCEPT | STRING | AT_REFERENCE | "[" primary "]";
 
-        row         →  expression? ( NEWLINE | EOF ) ;
-        column      →  row+ ( BACKSLASH | EOF ) ;
-        grid        →  column+ ( DOUBLE_BACKSLASH | EOF ) ;
+        row         →  primary? NEWLINE ;
+        column      →  row* BACKSLASH NEWLINE ;
+        grid        →  column* DOUBLE_BACKSLASH NEWLINE;
 
-        program     → grid EOF? ;
+        program     → grid NEWLINE (arrow? NEWLINE)* EOF ;
 */
 
 class Parser {
+  private environment: Environment;
   private tokens: Token[];
   private previous: Token = new Token(TokenType.BOF, '', null, 0);
   private current = 0;
   private rowNumber = 0;
   private colNumber = 0;
 
-  constructor(tokens: Token[]) {
+  constructor(environment: Environment, tokens: Token[]) {
+    this.environment = environment;
     this.tokens = tokens;
   }
 
-  parse(): Grid {
-    return this.grid();
-  }
+  parse(): Node[] {
+    const nodes: Node[] = [];
 
-  private expression(): Node {
-    return this.arrow();
+    nodes.push(this.grid());
+
+    while (!this.isAtEnd()) {
+      while (this.match(TokenType.NEWLINE)) {
+        continue;
+      }
+
+      if (this.isAtEnd()) {
+        break;
+      }
+
+      nodes.push(this.arrow());
+    }
+
+    return nodes;
   }
 
   private arrow(): Node {
@@ -43,36 +66,41 @@ class Parser {
       TokenType.LEFT_RIGHT_ARROW,
       TokenType.UP_ARROW,
       TokenType.DOWN_ARROW,
-      TokenType.UP_DOWN_ARROW,
-      TokenType.LEFT_UP_ARROW,
-      TokenType.LEFT_DOWN_ARROW,
-      TokenType.RIGHT_UP_ARROW,
-      TokenType.RIGHT_DOWN_ARROW
+      TokenType.UP_DOWN_ARROW
     ];
 
     const left: Node = this.primary();
-    if (!this.match(...arrows)) return left;
+    if (!this.match(...arrows)) {
+      console.error(`Expected an ARROW. Found ${this.peek()}`);
+      return left;
+    }
 
-    do {
-      const arrow = this.previous;
-      const right: Node = this.primary();
-      return new Arrow(left, arrow, right, this.rowNumber, this.colNumber);
-    } while (this.match(...arrows));
+    const arrow = this.previous;
+    const right: Node = this.primary();
+    // TODO: Remove rowNum / colNum from Arrow
+    return new Arrow(left, arrow, right, this.rowNumber, this.colNumber);
   }
 
   private primary(): Node {
     let expr: Node;
     if (this.match(TokenType.RIGHT_BRACKET)) {
-      expr = new Group(this.expression(), this.rowNumber, this.colNumber);
+      expr = new Group(this.primary(), this.rowNumber, this.colNumber);
       if (this.match(TokenType.LEFT_BRACKET))
         console.error("Missing matching ']'. ");
       // this.consume(TokenType.LEFT_BRACKET, "Mising matching ']'. ")
     } else if (this.match(TokenType.STRING)) {
       expr = new Text(this.previous.literal, this.rowNumber, this.colNumber);
+    } else if (this.match(TokenType.AT_REFERENCE)) {
+      expr = new AtReference(
+        this.previous.literal,
+        this.rowNumber,
+        this.colNumber
+      );
     } else {
       expr = new Concept(this.advance().lexeme, this.rowNumber, this.colNumber);
     }
 
+    this.environment.set(this.peek().line, expr);
     return expr;
   }
 
@@ -83,7 +111,7 @@ class Parser {
       return new Row(null);
     }
 
-    const expr = this.expression();
+    const expr = this.primary();
     if (this.match(TokenType.NEWLINE) || this.isAtEnd()) {
       return new Row(expr);
     } else {

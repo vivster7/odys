@@ -6,36 +6,83 @@ import Node, {
   Arrow,
   Row,
   Column,
-  Grid
+  Grid,
+  AtReference
 } from '../Node';
 import Shape from '../../shapes/Shape';
 import { v4 } from 'uuid';
 import { RECT_WIDTH, RECT_HEIGHT } from '../../shapes/Rect';
+import Environment from '../Environment';
 
 const id = () => `id-${v4()}`;
 const X_PADDING = 80;
 const Y_PADDING = 50;
 
+const computeBlockX = (columnNumber: number) => {
+  return RECT_WIDTH * columnNumber + X_PADDING * columnNumber;
+};
+
+const computeBlockY = (rowNumber: number) => {
+  return RECT_HEIGHT * rowNumber + Y_PADDING * rowNumber;
+};
+
+const computeTextX = (columnNumber: number) => {
+  return RECT_WIDTH * columnNumber + RECT_WIDTH / 2 + X_PADDING * columnNumber;
+};
+
+const computeTextY = (rowNumber: number) => {
+  return RECT_HEIGHT * rowNumber + RECT_HEIGHT / 2 + Y_PADDING * rowNumber;
+};
+
+const computeArrowLeftX = (columnNumber: number) => {
+  return RECT_WIDTH * columnNumber + RECT_WIDTH + X_PADDING * columnNumber;
+};
+
+const computeArrowRightX = (columnNumber: number) => {
+  return RECT_WIDTH * columnNumber + X_PADDING * columnNumber;
+};
+
+const computeArrowLeftY = (rowNumber: number) => {
+  return RECT_HEIGHT * rowNumber + RECT_HEIGHT / 2 + Y_PADDING * rowNumber;
+};
+
+const computeArrowRightY = (rowNumber: number) => {
+  return RECT_HEIGHT * rowNumber + RECT_HEIGHT / 2 + Y_PADDING * rowNumber;
+};
+
 class Drawer implements NodeVisitor<Shape[]> {
+  private environment: Environment;
+  constructor(environment: Environment) {
+    this.environment = environment;
+  }
+
   draw(node: Node): Shape[] {
     return node.accept(this);
   }
 
   visitArrowNode(node: Arrow): Shape[] {
-    const left = this.draw(node.left);
-    const right = this.draw(node.right);
+    const leftReference: AtReference = node.left as AtReference;
+    const rightReference: AtReference = node.right as AtReference;
+
+    const leftToken = this.environment.get(leftReference.value);
+    const rightToken = this.environment.get(rightReference.value);
+
     const arrow = {
       type: 'arrow',
       id: id(),
-      x1: 200,
-      y1: 200,
-      x2: 300,
-      y2: 300,
-      left: true,
-      right: false
-    };
+      x1: computeArrowLeftX(leftToken.column),
+      y1: computeArrowLeftY(leftToken.row),
+      x2: computeArrowRightX(rightToken.column),
+      y2: computeArrowRightY(rightToken.row),
+      left: node.isLeft(),
+      right: node.isRight()
+    } as Shape;
 
-    return [...left, arrow, ...right] as Shape[];
+    return [arrow];
+  }
+
+  visitAtReferenceNode(node: AtReference): Shape[] {
+    return [];
   }
 
   visitConceptNode(node: Concept): Shape[] {
@@ -44,8 +91,8 @@ class Drawer implements NodeVisitor<Shape[]> {
         type: 'rect',
         id: id(),
         text: node.description,
-        x: RECT_WIDTH * node.column + X_PADDING * node.column,
-        y: RECT_HEIGHT * node.row + Y_PADDING * node.row
+        x: computeBlockX(node.column),
+        y: computeBlockY(node.row)
       }
     ];
   }
@@ -56,8 +103,8 @@ class Drawer implements NodeVisitor<Shape[]> {
         type: 'rect',
         id: id(),
         text: '',
-        x: RECT_WIDTH * node.column + X_PADDING * node.column,
-        y: RECT_HEIGHT * node.row + Y_PADDING * node.row
+        x: computeBlockX(node.column),
+        y: computeBlockY(node.row)
       }
     ];
   }
@@ -68,8 +115,8 @@ class Drawer implements NodeVisitor<Shape[]> {
         type: 'text',
         id: id(),
         text: node.value,
-        x: RECT_WIDTH * node.column + RECT_WIDTH / 2 + X_PADDING * node.column,
-        y: RECT_HEIGHT * node.row + RECT_HEIGHT / 2 + Y_PADDING * node.row
+        x: computeTextX(node.column),
+        y: computeTextY(node.row)
       }
     ];
   }
