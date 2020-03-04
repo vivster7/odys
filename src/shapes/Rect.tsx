@@ -21,8 +21,17 @@ const Rect: React.FC<RectProps> = props => {
   const initTransform = `translate(${x}, ${y})`;
   const [transform, cursor] = useDraggable(id, initTransform);
 
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation();
+  }
+
   return (
-    <Group id={id} transform={transform} cursor={cursor}>
+    <Group
+      id={id}
+      transform={transform}
+      cursor={cursor}
+      onClick={e => handleClick(e)}
+    >
       <rect
         width={RECT_WIDTH}
         height={RECT_HEIGHT}
