@@ -1,5 +1,4 @@
 import React from 'react';
-import useDraggable from '../hooks/useDraggable';
 import Group from './Group';
 import LeftArrowhead from './LeftArrowhead';
 import RightArrowhead from './RightArrowhead';
@@ -19,8 +18,9 @@ export interface ArrowProps extends React.SVGProps<SVGRectElement> {
 const idFn = () => `id-${v4()}`;
 
 const Arrow: React.FC<ArrowProps> = props => {
-  const initTransform = `translate(${props.x1}, ${props.y1})`;
-  const [transform, cursor] = useDraggable(props.id, initTransform);
+  // TODO: drag + move edges
+  const transform = `translate(${props.x1}, ${props.y1})`;
+  const cursor = 'auto';
 
   const leftArrowhead = () => {
     const rotation1 = Math.atan2(props.y2 - props.y1, props.x2 - props.x1);

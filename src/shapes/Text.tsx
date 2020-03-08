@@ -1,6 +1,6 @@
-import React from 'react';
-import useDraggable from '../hooks/useDraggable';
+import React, { useContext } from 'react';
 import Group from './Group';
+import { GlobalStateContext } from '../globals';
 
 export interface TextProps extends React.SVGProps<SVGTextElement> {
   type: 'text';
@@ -10,13 +10,27 @@ export interface TextProps extends React.SVGProps<SVGTextElement> {
   text: string;
 }
 
-// TODO (vivek): Make draggable. Might need to separate from Rect's use of Text.
 const Text: React.FC<TextProps> = props => {
-  const initTransform = `translate(${props.x}, ${props.y})`;
-  const [transform, cursor] = useDraggable(props.id, initTransform);
+  const transform = `translate(${props.x}, ${props.y})`;
+  const { globalState, dispatch } = useContext(GlobalStateContext);
+  const cursor = globalState.dragId === props.id ? 'grabbing' : 'grab';
+
+  function startDrag(e: React.MouseEvent) {
+    dispatch({
+      type: 'ODYS_START_DRAG_ACTION',
+      id: props.id,
+      clickX: e.clientX,
+      clickY: e.clientY
+    });
+  }
 
   return (
-    <Group id={props.id} transform={transform} cursor={cursor}>
+    <Group
+      id={props.id}
+      transform={transform}
+      cursor={cursor}
+      onMouseDown={e => startDrag(e)}
+    >
       <text style={{ textAnchor: 'middle' }}>
         <tspan>{props.text}</tspan>
       </text>

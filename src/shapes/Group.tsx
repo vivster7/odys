@@ -2,9 +2,9 @@ import React, { ReactNode } from 'react';
 
 export interface GroupProps extends React.SVGProps<SVGGElement> {
   id: string;
+  children: ReactNode;
   transform: string;
   cursor: 'grab' | 'grabbing' | string;
-  children: ReactNode;
 }
 
 const Group: React.FC<GroupProps> = props => {

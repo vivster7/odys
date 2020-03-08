@@ -1,5 +1,4 @@
 import React from 'react';
-import useDraggable from '../hooks/useDraggable';
 import Group from './Group';
 
 export interface LineProps extends React.SVGProps<SVGRectElement> {
@@ -12,8 +11,8 @@ export interface LineProps extends React.SVGProps<SVGRectElement> {
 }
 
 const Line: React.FC<LineProps> = props => {
-  const initTransform = `translate(${props.x1}, ${props.y1})`;
-  const [transform, cursor] = useDraggable(props.id, initTransform);
+  const transform = `translate(${props.x1}, ${props.y1})`;
+  const cursor = 'auto';
 
   return (
     <Group id={props.id} transform={transform} cursor={cursor}>

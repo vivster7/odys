@@ -146,7 +146,9 @@ function onOdysMouseMove(
   const shape = {
     ...shapes[idx],
     x: action.clickX,
-    y: action.clickY
+    y: action.clickY,
+    x1: action.clickX,
+    y1: action.clickY
   };
 
   return {

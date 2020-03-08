@@ -32,6 +32,8 @@ const DrawingBoard: React.FC = () => {
       shape: {
         type: 'arrow',
         id: id(),
+        x: 0,
+        y: 0,
         x1: 200,
         y1: 200,
         x2: 300,
@@ -43,6 +45,10 @@ const DrawingBoard: React.FC = () => {
     dispatch({
       type: 'ODYS_ADD_SHAPE',
       shape: { type: 'line', id: id(), x1: 0, y1: 0, x2: 150, y2: 0 }
+    });
+    dispatch({
+      type: 'ODYS_ADD_SHAPE',
+      shape: { type: 'text', id: id(), text: 'Hello Face', x: 200, y: 300 }
     });
   }
 
