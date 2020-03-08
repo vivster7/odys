@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-export interface GroupProps extends React.SVGProps<SVGRectElement> {
+export interface GroupProps extends React.SVGProps<SVGGElement> {
   id: string;
   transform: string;
   cursor: 'grab' | 'grabbing' | string;

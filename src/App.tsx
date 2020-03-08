@@ -4,7 +4,7 @@ import DrawingPage from './pages/DrawingPage';
 import Scratch from './pages/Scratch';
 
 const App: React.FC = () => {
-  const initialGlobalState = { shapes: [] };
+  const initialGlobalState = { shapes: [], dragId: null };
 
   const [globalState, dispatch] = useReducer(
     globalStateReducer,

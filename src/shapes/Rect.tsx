@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Group from './Group';
-import useDraggable from '../hooks/useDraggable';
+import { GlobalStateContext } from '../globals';
 
 export const RECT_WIDTH = 200;
 export const RECT_HEIGHT = 100;
@@ -18,11 +18,17 @@ const Rect: React.FC<RectProps> = props => {
   const [x, y] = [props.x, props.y];
   const [textX, textY] = [RECT_WIDTH / 2, RECT_HEIGHT / 2];
 
-  const initTransform = `translate(${x}, ${y})`;
-  const [transform, cursor] = useDraggable(id, initTransform);
+  const transform = `translate(${x}, ${y})`;
+  const { globalState, dispatch } = useContext(GlobalStateContext);
+  const cursor = globalState.dragId === id ? 'grabbing' : 'grab';
 
-  function handleClick(e: React.MouseEvent) {
-    e.stopPropagation();
+  function startDrag(e: React.MouseEvent) {
+    dispatch({
+      type: 'ODYS_START_DRAG_ACTION',
+      id: id,
+      clickX: e.clientX,
+      clickY: e.clientY
+    });
   }
 
   return (
@@ -30,7 +36,7 @@ const Rect: React.FC<RectProps> = props => {
       id={id}
       transform={transform}
       cursor={cursor}
-      onClick={e => handleClick(e)}
+      onClick={e => e.stopPropagation()}
     >
       <rect
         width={RECT_WIDTH}
@@ -39,10 +45,12 @@ const Rect: React.FC<RectProps> = props => {
         ry="4"
         fill="white"
         stroke="darkgray"
+        onMouseDown={e => startDrag(e)}
       ></rect>
       <text x={textX} y={textY} style={{ textAnchor: 'middle' }}>
         <tspan>{props.text}</tspan>
       </text>
+      <circle r="10" cursor="nw-resize"></circle>
     </Group>
   );
 };

@@ -9,6 +9,7 @@ import Drawer from './ulys/interpreters/Drawer';
 
 export interface GlobalState {
   shapes: Shape[];
+  dragId: string | null;
 }
 
 export interface GlobalActionType {
@@ -30,10 +31,29 @@ export interface OdysUpdateCode extends GlobalActionType {
   code: string;
 }
 
+export interface OdysStartDragAction extends GlobalActionType {
+  type: 'ODYS_START_DRAG_ACTION';
+  id: string;
+  clickX: number;
+  clickY: number;
+}
+
+export interface OdysMouseUp extends GlobalActionType {
+  type: 'ODYS_MOUSE_UP';
+}
+export interface OdysMouseMove extends GlobalActionType {
+  type: 'ODYS_MOUSE_MOVE';
+  clickX: number;
+  clickY: number;
+}
+
 export type GlobalAction =
   | OdysRaiseShapeAction
   | OdysAddShapeAction
-  | OdysUpdateCode;
+  | OdysUpdateCode
+  | OdysMouseUp
+  | OdysMouseMove
+  | OdysStartDragAction;
 
 export const GlobalStateContext = React.createContext({
   globalState: {} as GlobalState,
@@ -91,7 +111,46 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
         ...state,
         shapes: newShapes
       };
+    case 'ODYS_START_DRAG_ACTION':
+      return {
+        ...state,
+        dragId: action.id
+      };
+    case 'ODYS_MOUSE_UP':
+      return {
+        ...state,
+        dragId: null
+      };
+    case 'ODYS_MOUSE_MOVE':
+      return onOdysMouseMove(state, action);
     default:
       throw new Error(`Unknown action ${action}`);
   }
+}
+
+function onOdysMouseMove(
+  state: GlobalState,
+  action: OdysMouseMove
+): GlobalState {
+  if (state.dragId === null) {
+    return state;
+  }
+
+  const id = state.dragId;
+  const { shapes } = state;
+  const idx = shapes.findIndex(d => d.id === id);
+  if (idx === -1) {
+    throw new Error(`Cannot find ${id} in shapes context`);
+  }
+
+  const shape = {
+    ...shapes[idx],
+    x: action.clickX,
+    y: action.clickY
+  };
+
+  return {
+    ...state,
+    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
+  };
 }
