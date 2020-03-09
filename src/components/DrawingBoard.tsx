@@ -72,7 +72,17 @@ const DrawingBoard: React.FC = () => {
     }
   }
 
-  return <Svg>{globalState.shapes.map(s => renderShape(s))}</Svg>;
+  return (
+    <Svg
+      topLeftX={globalState.svg.topLeftX}
+      topLeftY={globalState.svg.topLeftY}
+      translateX={globalState.svg.translateX}
+      translateY={globalState.svg.translateY}
+      scale={globalState.svg.scale}
+    >
+      {globalState.shapes.map(s => renderShape(s))}
+    </Svg>
+  );
 };
 
 export default DrawingBoard;

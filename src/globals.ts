@@ -6,10 +6,29 @@ import Scanner from './ulys/Scanner';
 import Token from './ulys/Token';
 import Environment from './ulys/Environment';
 import Drawer from './ulys/interpreters/Drawer';
+import { v4 } from 'uuid';
+import { RectProps } from './shapes/Rect';
 
+const uid = () => `id-${v4()}`;
 export interface GlobalState {
   shapes: Shape[];
   dragId: string | null;
+  mouseDown: MouseDownState | null;
+  svg: SVGState;
+}
+
+interface MouseDownState {
+  target: EventTarget;
+  clickX: number;
+  clickY: number;
+}
+
+interface SVGState {
+  topLeftX: number;
+  topLeftY: number;
+  translateX: number;
+  translateY: number;
+  scale: number;
 }
 
 export interface GlobalActionType {
@@ -38,10 +57,20 @@ export interface OdysStartDragAction extends GlobalActionType {
   clickY: number;
 }
 
-export interface OdysMouseUp extends GlobalActionType {
-  type: 'ODYS_MOUSE_UP';
+export interface OdysMouseDownAction extends GlobalActionType {
+  type: 'ODYS_MOUSE_DOWN';
+  target: EventTarget;
+  clickX: number;
+  clickY: number;
 }
-export interface OdysMouseMove extends GlobalActionType {
+
+export interface OdysMouseUpAction extends GlobalActionType {
+  type: 'ODYS_MOUSE_UP';
+  target: EventTarget;
+  clickX: number;
+  clickY: number;
+}
+export interface OdysMouseMoveAction extends GlobalActionType {
   type: 'ODYS_MOUSE_MOVE';
   clickX: number;
   clickY: number;
@@ -51,8 +80,9 @@ export type GlobalAction =
   | OdysRaiseShapeAction
   | OdysAddShapeAction
   | OdysUpdateCode
-  | OdysMouseUp
-  | OdysMouseMove
+  | OdysMouseDownAction
+  | OdysMouseUpAction
+  | OdysMouseMoveAction
   | OdysStartDragAction;
 
 export const GlobalStateContext = React.createContext({
@@ -116,10 +146,47 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
         ...state,
         dragId: action.id
       };
-    case 'ODYS_MOUSE_UP':
+    case 'ODYS_MOUSE_DOWN':
       return {
         ...state,
-        dragId: null
+        mouseDown: {
+          target: action.target,
+          clickX: action.clickX,
+          clickY: action.clickY
+        }
+      };
+    case 'ODYS_MOUSE_UP':
+      // click on SVG (-> new shape)
+      if (
+        state.mouseDown &&
+        state.mouseDown.clickX === action.clickX &&
+        state.mouseDown.clickY === action.clickY
+      ) {
+        const x = (action.clickX - state.svg.topLeftX) / state.svg.scale;
+        const y = (action.clickY - state.svg.topLeftY) / state.svg.scale;
+        return {
+          ...state,
+          dragId: null,
+          mouseDown: null,
+          shapes: [
+            ...state.shapes,
+            { type: 'rect', id: uid(), text: 'A', x: x, y: y } as RectProps
+          ]
+        };
+      }
+
+      //panning
+      return {
+        ...state,
+        dragId: null,
+        mouseDown: null,
+        svg: {
+          topLeftX: state.svg.topLeftX + state.svg.translateX,
+          topLeftY: state.svg.topLeftY + state.svg.translateY,
+          translateX: 0,
+          translateY: 0,
+          scale: 1
+        }
       };
     case 'ODYS_MOUSE_MOVE':
       return onOdysMouseMove(state, action);
@@ -130,29 +197,47 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
 
 function onOdysMouseMove(
   state: GlobalState,
-  action: OdysMouseMove
+  action: OdysMouseMoveAction
 ): GlobalState {
-  if (state.dragId === null) {
+  if (state.dragId === null && state.mouseDown === null) {
     return state;
   }
 
-  const id = state.dragId;
-  const { shapes } = state;
-  const idx = shapes.findIndex(d => d.id === id);
-  if (idx === -1) {
-    throw new Error(`Cannot find ${id} in shapes context`);
+  // dragging
+  if (state.dragId) {
+    const id = state.dragId;
+    const { shapes } = state;
+    const idx = shapes.findIndex(d => d.id === id);
+    if (idx === -1) {
+      throw new Error(`Cannot find ${id} in shapes context`);
+    }
+
+    const shape = {
+      ...shapes[idx],
+      x: action.clickX,
+      y: action.clickY
+    };
+
+    return {
+      ...state,
+      shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
+    };
   }
 
-  const shape = {
-    ...shapes[idx],
-    x: action.clickX,
-    y: action.clickY,
-    x1: action.clickX,
-    y1: action.clickY
-  };
+  // panning
+  if (state.mouseDown) {
+    console.log();
+    return {
+      ...state,
+      svg: {
+        topLeftX: state.svg.topLeftX,
+        topLeftY: state.svg.topLeftY,
+        translateX: action.clickX - state.mouseDown.clickX,
+        translateY: action.clickY - state.mouseDown.clickY,
+        scale: 1
+      }
+    };
+  }
 
-  return {
-    ...state,
-    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
-  };
+  throw new Error('Unknown MouseMove state (not dragging or panning).');
 }
