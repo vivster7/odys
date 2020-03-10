@@ -8,6 +8,8 @@ export interface TextProps extends React.SVGProps<SVGTextElement> {
   x: number;
   y: number;
   text: string;
+  translateX: number;
+  translateY: number;
 }
 
 const Text: React.FC<TextProps> = props => {

@@ -8,6 +8,8 @@ export interface LineProps extends React.SVGProps<SVGRectElement> {
   y1: number;
   x2: number;
   y2: number;
+  translateX: number;
+  translateY: number;
 }
 
 const Line: React.FC<LineProps> = props => {

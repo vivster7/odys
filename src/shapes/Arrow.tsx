@@ -13,6 +13,8 @@ export interface ArrowProps extends React.SVGProps<SVGRectElement> {
   y2: number;
   left: boolean;
   right: boolean;
+  translateX: number;
+  translateY: number;
 }
 
 const idFn = () => `id-${v4()}`;

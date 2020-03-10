@@ -156,7 +156,7 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
         }
       };
     case 'ODYS_MOUSE_UP':
-      // click on SVG (-> new shape)
+      // click SVG -> new shape
       if (
         state.mouseDown &&
         state.mouseDown.clickX === action.clickX &&
@@ -170,7 +170,43 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
           mouseDown: null,
           shapes: [
             ...state.shapes,
-            { type: 'rect', id: uid(), text: 'A', x: x, y: y } as RectProps
+            {
+              type: 'rect',
+              id: uid(),
+              text: 'A',
+              x: x,
+              y: y,
+              translateX: 0,
+              translateY: 0
+            } as RectProps
+          ]
+        };
+      }
+
+      // finish dragging
+      if (state.mouseDown && state.dragId !== null) {
+        const { shapes } = state;
+        const idx = shapes.findIndex(s => s.id === state.dragId);
+        if (idx === -1) {
+          throw new Error(`Cannot find ${id} in shapes context`);
+        }
+
+        const shape = {
+          ...shapes[idx],
+          x: (shapes[idx].x as number) + shapes[idx].translateX,
+          y: (shapes[idx].y as number) + shapes[idx].translateY,
+          translateX: 0,
+          translateY: 0
+        };
+
+        return {
+          ...state,
+          dragId: null,
+          mouseDown: null,
+          shapes: [
+            ...shapes.slice(0, idx),
+            ...shapes.slice(idx + 1),
+            ...[shape]
           ]
         };
       }
@@ -204,7 +240,7 @@ function onOdysMouseMove(
   }
 
   // dragging
-  if (state.dragId) {
+  if (state.mouseDown && state.dragId) {
     const id = state.dragId;
     const { shapes } = state;
     const idx = shapes.findIndex(d => d.id === id);
@@ -214,8 +250,8 @@ function onOdysMouseMove(
 
     const shape = {
       ...shapes[idx],
-      x: action.clickX,
-      y: action.clickY
+      translateX: action.clickX - state.mouseDown.clickX,
+      translateY: action.clickY - state.mouseDown.clickY
     };
 
     return {

@@ -10,6 +10,8 @@ export interface RectProps extends React.SVGProps<SVGRectElement> {
   id: string;
   x: number;
   y: number;
+  translateX: number;
+  translateY: number;
   text: string;
 }
 
@@ -18,7 +20,8 @@ const Rect: React.FC<RectProps> = props => {
   const [x, y] = [props.x, props.y];
   const [textX, textY] = [RECT_WIDTH / 2, RECT_HEIGHT / 2];
 
-  const transform = `translate(${x}, ${y})`;
+  const transform = `translate(${x + props.translateX}, ${y +
+    props.translateY})`;
   const { globalState, dispatch } = useContext(GlobalStateContext);
   const cursor = globalState.dragId === id ? 'grabbing' : 'grab';
 

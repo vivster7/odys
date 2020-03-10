@@ -17,15 +17,39 @@ const DrawingBoard: React.FC = () => {
   if (globalState.shapes.length === 0) {
     dispatch({
       type: 'ODYS_ADD_SHAPE',
-      shape: { type: 'rect', id: id(), text: 'A', x: 0, y: 0 }
+      shape: {
+        type: 'rect',
+        id: id(),
+        text: 'A',
+        x: 0,
+        y: 0,
+        translateX: 0,
+        translateY: 0
+      }
     });
     dispatch({
       type: 'ODYS_ADD_SHAPE',
-      shape: { type: 'rect', id: id(), text: 'C', x: 400, y: 400 }
+      shape: {
+        type: 'rect',
+        id: id(),
+        text: 'C',
+        x: 400,
+        y: 400,
+        translateX: 0,
+        translateY: 0
+      }
     });
     dispatch({
       type: 'ODYS_ADD_SHAPE',
-      shape: { type: 'rect', id: id(), text: 'B', x: 200, y: 200 }
+      shape: {
+        type: 'rect',
+        id: id(),
+        text: 'B',
+        x: 200,
+        y: 200,
+        translateX: 0,
+        translateY: 0
+      }
     });
     dispatch({
       type: 'ODYS_ADD_SHAPE',
@@ -39,16 +63,35 @@ const DrawingBoard: React.FC = () => {
         x2: 300,
         y2: 300,
         left: true,
-        right: false
+        right: false,
+        translateX: 0,
+        translateY: 0
       }
     });
     dispatch({
       type: 'ODYS_ADD_SHAPE',
-      shape: { type: 'line', id: id(), x1: 0, y1: 0, x2: 150, y2: 0 }
+      shape: {
+        type: 'line',
+        id: id(),
+        x1: 0,
+        y1: 0,
+        x2: 150,
+        y2: 0,
+        translateX: 0,
+        translateY: 0
+      }
     });
     dispatch({
       type: 'ODYS_ADD_SHAPE',
-      shape: { type: 'text', id: id(), text: 'Hello Face', x: 200, y: 300 }
+      shape: {
+        type: 'text',
+        id: id(),
+        text: 'Hello Face',
+        x: 200,
+        y: 300,
+        translateX: 0,
+        translateY: 0
+      }
     });
   }
 
