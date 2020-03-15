@@ -1,9 +1,7 @@
 import React, { useState, useContext, useRef, useLayoutEffect } from 'react';
 import Group from './Group';
 import { GlobalStateContext } from '../globals';
-import { v4 } from 'uuid';
 
-const id = () => `id-${v4()}`;
 export interface SvgProps extends React.SVGProps<SVGSVGElement> {
   // X, Y coords on top-left of SVG
   topLeftX: number;
@@ -12,6 +10,8 @@ export interface SvgProps extends React.SVGProps<SVGSVGElement> {
   // X, Y coords when translating SVG
   translateX: number;
   translateY: number;
+
+  // scale
   scale: number;
 }
 
@@ -62,6 +62,16 @@ const Svg: React.FC<SvgProps> = props => {
     });
   }
 
+  function handleOnWheel(e: React.WheelEvent) {
+    dispatch({
+      type: 'ODYS_WHEEL',
+      clickX: e.clientX,
+      clickY: e.clientY,
+      scaleFactor:
+        -e.deltaY * (e.deltaMode === 1 ? 0.05 : e.deltaMode ? 1 : 0.002)
+    });
+  }
+
   return (
     <svg
       id="odys-svg"
@@ -75,6 +85,7 @@ const Svg: React.FC<SvgProps> = props => {
       onMouseMove={e => handleMouseMove(e)}
       onMouseDown={e => handleMouseDown(e)}
       onMouseUp={e => handleMouseUp(e)}
+      onWheel={e => handleOnWheel(e)}
     >
       <Group id="odys-zoomable-group" cursor="grab" transform={transform}>
         {props.children}

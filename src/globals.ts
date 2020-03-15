@@ -76,6 +76,13 @@ export interface OdysMouseMoveAction extends GlobalActionType {
   clickY: number;
 }
 
+export interface OdysWheelAction extends GlobalActionType {
+  type: 'ODYS_WHEEL';
+  clickX: number;
+  clickY: number;
+  scaleFactor: number;
+}
+
 export type GlobalAction =
   | OdysRaiseShapeAction
   | OdysAddShapeAction
@@ -83,7 +90,8 @@ export type GlobalAction =
   | OdysMouseDownAction
   | OdysMouseUpAction
   | OdysMouseMoveAction
-  | OdysStartDragAction;
+  | OdysStartDragAction
+  | OdysWheelAction;
 
 export const GlobalStateContext = React.createContext({
   globalState: {} as GlobalState,
@@ -217,15 +225,17 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
         dragId: null,
         mouseDown: null,
         svg: {
+          ...state.svg,
           topLeftX: state.svg.topLeftX + state.svg.translateX,
           topLeftY: state.svg.topLeftY + state.svg.translateY,
           translateX: 0,
-          translateY: 0,
-          scale: 1
+          translateY: 0
         }
       };
     case 'ODYS_MOUSE_MOVE':
       return onOdysMouseMove(state, action);
+    case 'ODYS_WHEEL':
+      return onOdysWheel(state, action);
     default:
       throw new Error(`Unknown action ${action}`);
   }
@@ -266,14 +276,24 @@ function onOdysMouseMove(
     return {
       ...state,
       svg: {
+        ...state.svg,
         topLeftX: state.svg.topLeftX,
         topLeftY: state.svg.topLeftY,
         translateX: action.clickX - state.mouseDown.clickX,
-        translateY: action.clickY - state.mouseDown.clickY,
-        scale: 1
+        translateY: action.clickY - state.mouseDown.clickY
       }
     };
   }
 
   throw new Error('Unknown MouseMove state (not dragging or panning).');
+}
+
+function onOdysWheel(state: GlobalState, action: OdysWheelAction): GlobalState {
+  return {
+    ...state,
+    svg: {
+      ...state.svg,
+      scale: Math.max(0, state.svg.scale * Math.pow(2, action.scaleFactor))
+    }
+  };
 }
