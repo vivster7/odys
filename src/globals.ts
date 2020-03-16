@@ -260,8 +260,8 @@ function onOdysMouseMove(
 
     const shape = {
       ...shapes[idx],
-      translateX: action.clickX - state.mouseDown.clickX,
-      translateY: action.clickY - state.mouseDown.clickY
+      translateX: (action.clickX - state.mouseDown.clickX) / state.svg.scale,
+      translateY: (action.clickY - state.mouseDown.clickY) / state.svg.scale
     };
 
     return {
@@ -277,8 +277,6 @@ function onOdysMouseMove(
       ...state,
       svg: {
         ...state.svg,
-        topLeftX: state.svg.topLeftX,
-        topLeftY: state.svg.topLeftY,
         translateX: action.clickX - state.mouseDown.clickX,
         translateY: action.clickY - state.mouseDown.clickY
       }
