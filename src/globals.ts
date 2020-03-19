@@ -88,8 +88,14 @@ export interface OdysMouseUpAction extends GlobalActionType {
   clickX: number;
   clickY: number;
 }
-export interface OdysMouseMoveAction extends GlobalActionType {
-  type: 'ODYS_MOUSE_MOVE';
+export interface OdysDragAction extends GlobalActionType {
+  type: 'ODYS_DRAG_ACTION';
+  clickX: number;
+  clickY: number;
+}
+
+export interface OdysPanAction extends GlobalActionType {
+  type: 'ODYS_PAN_ACTION';
   clickX: number;
   clickY: number;
 }
@@ -107,7 +113,8 @@ export type GlobalAction =
   | OdysUpdateCode
   | OdysMouseDownAction
   | OdysMouseUpAction
-  | OdysMouseMoveAction
+  | OdysDragAction
+  | OdysPanAction
   | OdysStartDragAction
   | OdysStartPanAction
   | OdysSelectAction
@@ -166,8 +173,10 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
       };
     case 'ODYS_MOUSE_UP':
       return onOdysMouseUp(state, action);
-    case 'ODYS_MOUSE_MOVE':
-      return onOdysMouseMove(state, action);
+    case 'ODYS_DRAG_ACTION':
+      return onOdysDragAction(state, action);
+    case 'ODYS_PAN_ACTION':
+      return onOdysPanAction(state, action);
     case 'ODYS_WHEEL':
       return onOdysWheel(state, action);
     default:
@@ -274,15 +283,10 @@ function onOdysMouseUp(
   );
 }
 
-function onOdysMouseMove(
+function onOdysDragAction(
   state: GlobalState,
-  action: OdysMouseMoveAction
+  action: OdysDragAction
 ): GlobalState {
-  if (state.drag === null && state.pan === null) {
-    return state;
-  }
-
-  // dragging
   if (state.drag) {
     const { id } = state.drag;
     const { shapes } = state;
@@ -303,7 +307,15 @@ function onOdysMouseMove(
     };
   }
 
-  // panning
+  throw new Error(
+    'Cannot ODYS_DRAG_ACTION without `state.drag` (did ODYS_START_DRAG_ACTION fire first?)'
+  );
+}
+
+function onOdysPanAction(
+  state: GlobalState,
+  action: OdysPanAction
+): GlobalState {
   if (state.pan) {
     return {
       ...state,
@@ -315,7 +327,9 @@ function onOdysMouseMove(
     };
   }
 
-  throw new Error('Unknown MouseMove state (not dragging or panning).');
+  throw new Error(
+    'Cannot ODYS_PAN_ACTION without `state.pan` (did ODYS_START_PAN_ACTION fire first?)'
+  );
 }
 
 function onOdysWheel(state: GlobalState, action: OdysWheelAction): GlobalState {
