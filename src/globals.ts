@@ -243,7 +243,6 @@ function onOdysMouseMove(
 
   // panning
   if (state.mouseDown) {
-    console.log();
     return {
       ...state,
       svg: {
