@@ -1,11 +1,5 @@
 import React, { Dispatch } from 'react';
 import Shape from './shapes/Shape';
-import Node from './ulys/Node';
-import Parser from './ulys/Parser';
-import Scanner from './ulys/Scanner';
-import Token from './ulys/Token';
-import Environment from './ulys/Environment';
-import Drawer from './ulys/interpreters/Drawer';
 import { v4 } from 'uuid';
 import { RectProps } from './shapes/Rect';
 
@@ -122,33 +116,6 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
         ...state,
         shapes: [...state.shapes, action.shape]
       };
-    case 'ODYS_UPDATE_CODE':
-      const environment = new Environment();
-      const { code } = action;
-
-      // TODO(vivek): dont make new Scanner/Parser/Drawer each time.
-      const scanner = new Scanner(code);
-      const tokens: Token[] = scanner.scan();
-      console.log(tokens);
-
-      const parser = new Parser(environment, tokens);
-      const nodes: Node[] = parser.parse();
-      console.log(`nodes: `);
-      console.log(nodes);
-
-      console.log();
-      console.log(`environment: `);
-      console.log(environment);
-
-      const drawer = new Drawer(environment);
-      const newShapes: Shape[] = nodes.flatMap(n => drawer.draw(n));
-      console.log(`shapes: `);
-      console.log(newShapes);
-
-      return {
-        ...state,
-        shapes: newShapes
-      };
     case 'ODYS_START_DRAG_ACTION':
       return {
         ...state,
@@ -164,74 +131,7 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
         }
       };
     case 'ODYS_MOUSE_UP':
-      // click SVG -> new shape
-      if (
-        state.mouseDown &&
-        state.mouseDown.clickX === action.clickX &&
-        state.mouseDown.clickY === action.clickY
-      ) {
-        const x = (action.clickX - state.svg.topLeftX) / state.svg.scale;
-        const y = (action.clickY - state.svg.topLeftY) / state.svg.scale;
-        return {
-          ...state,
-          dragId: null,
-          mouseDown: null,
-          shapes: [
-            ...state.shapes,
-            {
-              type: 'rect',
-              id: uid(),
-              text: 'A',
-              x: x,
-              y: y,
-              translateX: 0,
-              translateY: 0
-            } as RectProps
-          ]
-        };
-      }
-
-      // finish dragging
-      if (state.mouseDown && state.dragId !== null) {
-        const { shapes } = state;
-        const idx = shapes.findIndex(s => s.id === state.dragId);
-        if (idx === -1) {
-          throw new Error(`Cannot find ${id} in shapes context`);
-        }
-
-        const shape = {
-          ...shapes[idx],
-          x: (shapes[idx].x as number) + shapes[idx].translateX,
-          y: (shapes[idx].y as number) + shapes[idx].translateY,
-          translateX: 0,
-          translateY: 0
-        };
-
-        return {
-          ...state,
-          dragId: null,
-          mouseDown: null,
-          shapes: [
-            ...shapes.slice(0, idx),
-            ...shapes.slice(idx + 1),
-            ...[shape]
-          ]
-        };
-      }
-
-      //panning
-      return {
-        ...state,
-        dragId: null,
-        mouseDown: null,
-        svg: {
-          ...state.svg,
-          topLeftX: state.svg.topLeftX + state.svg.translateX,
-          topLeftY: state.svg.topLeftY + state.svg.translateY,
-          translateX: 0,
-          translateY: 0
-        }
-      };
+      return onOdysMouseUp(state, action);
     case 'ODYS_MOUSE_MOVE':
       return onOdysMouseMove(state, action);
     case 'ODYS_WHEEL':
@@ -239,6 +139,77 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
     default:
       throw new Error(`Unknown action ${action}`);
   }
+}
+
+function onOdysMouseUp(
+  state: GlobalState,
+  action: OdysMouseUpAction
+): GlobalState {
+  // click SVG -> new shape
+  if (
+    state.mouseDown &&
+    state.mouseDown.clickX === action.clickX &&
+    state.mouseDown.clickY === action.clickY &&
+    state.dragId === null
+  ) {
+    const x = (action.clickX - state.svg.topLeftX) / state.svg.scale;
+    const y = (action.clickY - state.svg.topLeftY) / state.svg.scale;
+    return {
+      ...state,
+      dragId: null,
+      mouseDown: null,
+      shapes: [
+        ...state.shapes,
+        {
+          type: 'rect',
+          id: uid(),
+          text: 'A',
+          x: x,
+          y: y,
+          translateX: 0,
+          translateY: 0
+        } as RectProps
+      ]
+    };
+  }
+
+  // finish dragging
+  if (state.mouseDown && state.dragId !== null) {
+    const { shapes } = state;
+    const idx = shapes.findIndex(s => s.id === state.dragId);
+    if (idx === -1) {
+      throw new Error(`Cannot find ${state.dragId} in shapes context`);
+    }
+
+    const shape = {
+      ...shapes[idx],
+      x: (shapes[idx].x as number) + shapes[idx].translateX,
+      y: (shapes[idx].y as number) + shapes[idx].translateY,
+      translateX: 0,
+      translateY: 0
+    };
+
+    return {
+      ...state,
+      dragId: null,
+      mouseDown: null,
+      shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
+    };
+  }
+
+  //panning
+  return {
+    ...state,
+    dragId: null,
+    mouseDown: null,
+    svg: {
+      ...state.svg,
+      topLeftX: state.svg.topLeftX + state.svg.translateX,
+      topLeftY: state.svg.topLeftY + state.svg.translateY,
+      translateX: 0,
+      translateY: 0
+    }
+  };
 }
 
 function onOdysMouseMove(
