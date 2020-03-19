@@ -99,18 +99,7 @@ export const GlobalStateContext = React.createContext({
 export function globalStateReducer(state: GlobalState, action: GlobalAction) {
   switch (action.type) {
     case 'ODYS_RAISE_SHAPE':
-      const { id } = action;
-      const { shapes } = state;
-      const idx = shapes.findIndex(d => d.id === id);
-      if (idx === -1) {
-        throw new Error(`Cannot find ${id} in shapes context`);
-      }
-
-      const item = shapes[idx];
-      return {
-        ...state,
-        shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[item]]
-      };
+      return onOdysRaiseShape(state, action);
     case 'ODYS_ADD_SHAPE':
       return {
         ...state,
@@ -139,6 +128,24 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
     default:
       throw new Error(`Unknown action ${action}`);
   }
+}
+
+function onOdysRaiseShape(
+  state: GlobalState,
+  action: OdysRaiseShapeAction
+): GlobalState {
+  const { id } = action;
+  const { shapes } = state;
+  const idx = shapes.findIndex(d => d.id === id);
+  if (idx === -1) {
+    throw new Error(`Cannot find ${id} in shapes context`);
+  }
+
+  const item = shapes[idx];
+  return {
+    ...state,
+    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[item]]
+  };
 }
 
 function onOdysMouseUp(
