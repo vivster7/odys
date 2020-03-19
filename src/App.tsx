@@ -9,7 +9,7 @@ const App: React.FC = () => {
     drag: null,
     pan: null,
     selectedId: null,
-    mouseDown: null,
+    newRectByClick: null,
     svg: {
       topLeftX: 0,
       topLeftY: 0,

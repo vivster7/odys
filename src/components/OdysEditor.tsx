@@ -65,7 +65,7 @@ const OdysEditor: React.FC = () => {
   }
 
   function saveCode(code: string) {
-    return dispatch({ type: 'ODYS_UPDATE_CODE', code: code });
+    // return dispatch({ type: 'ODYS_UPDATE_CODE', code: code });
   }
 
   function setCursor(editor: ICodeEditor, lineNumber: number) {

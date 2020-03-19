@@ -9,7 +9,7 @@ export interface GlobalState {
   drag: DragState | null;
   pan: PanState | null;
   selectedId: string | null;
-  mouseDown: MouseDownState | null;
+  newRectByClick: NewRectByClickState | null;
   svg: SVGState;
 }
 
@@ -24,8 +24,7 @@ interface PanState {
   clickY: number;
 }
 
-interface MouseDownState {
-  target: EventTarget;
+interface NewRectByClickState {
   clickX: number;
   clickY: number;
 }
@@ -52,16 +51,21 @@ export interface OdysAddShapeAction extends GlobalActionType {
   shape: Shape;
 }
 
-export interface OdysUpdateCode extends GlobalActionType {
-  type: 'ODYS_UPDATE_CODE';
-  code: string;
-}
-
 export interface OdysStartDragAction extends GlobalActionType {
   type: 'ODYS_START_DRAG_ACTION';
   id: string;
   clickX: number;
   clickY: number;
+}
+
+export interface OdysDragAction extends GlobalActionType {
+  type: 'ODYS_DRAG_ACTION';
+  clickX: number;
+  clickY: number;
+}
+
+export interface OdysEndDragAction extends GlobalActionType {
+  type: 'ODYS_END_DRAG_ACTION';
 }
 
 export interface OdysStartPanAction extends GlobalActionType {
@@ -70,34 +74,31 @@ export interface OdysStartPanAction extends GlobalActionType {
   clickY: number;
 }
 
-export interface OdysSelectAction extends GlobalActionType {
-  type: 'ODYS_SELECT_ACTION';
-  id: string;
-}
-
-export interface OdysMouseDownAction extends GlobalActionType {
-  type: 'ODYS_MOUSE_DOWN';
-  target: EventTarget;
-  clickX: number;
-  clickY: number;
-}
-
-export interface OdysMouseUpAction extends GlobalActionType {
-  type: 'ODYS_MOUSE_UP';
-  target: EventTarget;
-  clickX: number;
-  clickY: number;
-}
-export interface OdysDragAction extends GlobalActionType {
-  type: 'ODYS_DRAG_ACTION';
-  clickX: number;
-  clickY: number;
-}
-
 export interface OdysPanAction extends GlobalActionType {
   type: 'ODYS_PAN_ACTION';
   clickX: number;
   clickY: number;
+}
+
+export interface OdysEndPanAction extends GlobalActionType {
+  type: 'ODYS_END_PAN_ACTION';
+}
+
+export interface OdysStartNewRectByClickAction extends GlobalActionType {
+  type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION';
+  clickX: number;
+  clickY: number;
+}
+
+export interface OdysEndNewRectByClickAction extends GlobalActionType {
+  type: 'ODYS_END_NEW_RECT_BY_CLICK_ACTION';
+  clickX: number;
+  clickY: number;
+}
+
+export interface OdysSelectAction extends GlobalActionType {
+  type: 'ODYS_SELECT_ACTION';
+  id: string;
 }
 
 export interface OdysWheelAction extends GlobalActionType {
@@ -110,13 +111,14 @@ export interface OdysWheelAction extends GlobalActionType {
 export type GlobalAction =
   | OdysRaiseShapeAction
   | OdysAddShapeAction
-  | OdysUpdateCode
-  | OdysMouseDownAction
-  | OdysMouseUpAction
-  | OdysDragAction
-  | OdysPanAction
+  | OdysStartNewRectByClickAction
+  | OdysEndNewRectByClickAction
   | OdysStartDragAction
+  | OdysDragAction
+  | OdysEndDragAction
   | OdysStartPanAction
+  | OdysPanAction
+  | OdysEndPanAction
   | OdysSelectAction
   | OdysWheelAction;
 
@@ -161,22 +163,25 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
         ...state,
         selectedId: action.id
       };
-    case 'ODYS_MOUSE_DOWN':
+    case 'ODYS_START_NEW_RECT_BY_CLICK_ACTION':
       return {
         ...state,
         selectedId: null,
-        mouseDown: {
-          target: action.target,
+        newRectByClick: {
           clickX: action.clickX,
           clickY: action.clickY
         }
       };
-    case 'ODYS_MOUSE_UP':
-      return onOdysMouseUp(state, action);
+    case 'ODYS_END_NEW_RECT_BY_CLICK_ACTION':
+      return onOdysEndNewRectByClickAction(state, action);
     case 'ODYS_DRAG_ACTION':
       return onOdysDragAction(state, action);
+    case 'ODYS_END_DRAG_ACTION':
+      return onOdysEndDragAction(state, action);
     case 'ODYS_PAN_ACTION':
       return onOdysPanAction(state, action);
+    case 'ODYS_END_PAN_ACTION':
+      return onOdysEndPanAction(state, action);
     case 'ODYS_WHEEL':
       return onOdysWheel(state, action);
     default:
@@ -202,41 +207,37 @@ function onOdysRaiseShape(
   };
 }
 
-function onOdysMouseUp(
+function onOdysEndNewRectByClickAction(
   state: GlobalState,
-  action: OdysMouseUpAction
+  action: OdysEndNewRectByClickAction
 ): GlobalState {
-  // click SVG -> new shape
-  if (
-    state.mouseDown &&
-    state.mouseDown.clickX === action.clickX &&
-    state.mouseDown.clickY === action.clickY &&
-    state.drag === null
-  ) {
-    const x = (action.clickX - state.svg.topLeftX) / state.svg.scale;
-    const y = (action.clickY - state.svg.topLeftY) / state.svg.scale;
-    return {
-      ...state,
-      drag: null,
-      mouseDown: null,
-      pan: null,
-      shapes: [
-        ...state.shapes,
-        {
-          type: 'rect',
-          id: uid(),
-          text: 'A',
-          x: x - RECT_WIDTH / 2,
-          y: y - RECT_HEIGHT / 2,
-          translateX: 0,
-          translateY: 0
-        } as RectProps
-      ]
-    };
-  }
+  const x = (action.clickX - state.svg.topLeftX) / state.svg.scale;
+  const y = (action.clickY - state.svg.topLeftY) / state.svg.scale;
+  return {
+    ...state,
+    drag: null,
+    newRectByClick: null,
+    pan: null,
+    shapes: [
+      ...state.shapes,
+      {
+        type: 'rect',
+        id: uid(),
+        text: 'A',
+        x: x - RECT_WIDTH / 2,
+        y: y - RECT_HEIGHT / 2,
+        translateX: 0,
+        translateY: 0
+      } as RectProps
+    ]
+  };
+}
 
-  // finish dragging
-  if (state.drag !== null) {
+function onOdysEndDragAction(
+  state: GlobalState,
+  action: OdysEndDragAction
+): GlobalState {
+  if (state.drag) {
     const { shapes } = state;
     const { id } = state.drag;
     const idx = shapes.findIndex(s => s.id === id);
@@ -255,18 +256,26 @@ function onOdysMouseUp(
     return {
       ...state,
       drag: null,
-      mouseDown: null,
+      newRectByClick: null,
       pan: null,
       shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
     };
   }
 
-  // finish panning
-  if (state.pan !== null) {
+  throw new Error(
+    'Could not end drag action. Was it started with ODYS_START_DRAG_ACTION?'
+  );
+}
+
+function onOdysEndPanAction(
+  state: GlobalState,
+  action: OdysEndPanAction
+): GlobalState {
+  if (state.pan) {
     return {
       ...state,
       drag: null,
-      mouseDown: null,
+      newRectByClick: null,
       pan: null,
       svg: {
         ...state.svg,
@@ -279,7 +288,7 @@ function onOdysMouseUp(
   }
 
   throw new Error(
-    'Unknown MouseUp state (not dragging or panning or new rect).'
+    'Could not end pan action. Was it started with ODYS_START_PAN_ACTION?'
   );
 }
 

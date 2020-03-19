@@ -68,8 +68,7 @@ const Svg: React.FC<SvgProps> = props => {
 
     function startNewRectByClick(e: React.MouseEvent) {
       dispatch({
-        type: 'ODYS_MOUSE_DOWN',
-        target: e.target,
+        type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION',
         clickX: e.clientX,
         clickY: e.clientY
       });
@@ -77,12 +76,29 @@ const Svg: React.FC<SvgProps> = props => {
   }
 
   function handleMouseUp(e: React.MouseEvent) {
-    dispatch({
-      type: 'ODYS_MOUSE_UP',
-      target: e.target,
-      clickX: e.clientX,
-      clickY: e.clientY
-    });
+    if (
+      globalState.newRectByClick &&
+      globalState.newRectByClick.clickX === e.clientX &&
+      globalState.newRectByClick.clickY === e.clientY
+    ) {
+      return dispatch({
+        type: 'ODYS_END_NEW_RECT_BY_CLICK_ACTION',
+        clickX: e.clientX,
+        clickY: e.clientY
+      });
+    }
+
+    if (globalState.drag) {
+      return dispatch({
+        type: 'ODYS_END_DRAG_ACTION'
+      });
+    }
+
+    if (globalState.pan) {
+      return dispatch({
+        type: 'ODYS_END_PAN_ACTION'
+      });
+    }
   }
 
   function handleOnWheel(e: React.WheelEvent) {
