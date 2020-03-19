@@ -63,9 +63,6 @@ const Svg: React.FC<SvgProps> = props => {
   }
 
   function handleOnWheel(e: React.WheelEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-
     dispatch({
       type: 'ODYS_WHEEL',
       clickX: e.clientX,
