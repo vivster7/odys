@@ -6,7 +6,9 @@ import Scratch from './pages/Scratch';
 const App: React.FC = () => {
   const initialGlobalState = {
     shapes: [],
-    dragId: null,
+    drag: null,
+    pan: null,
+    selectedId: null,
     mouseDown: null,
     svg: {
       topLeftX: 0,

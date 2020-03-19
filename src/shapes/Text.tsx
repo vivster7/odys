@@ -15,7 +15,8 @@ export interface TextProps extends React.SVGProps<SVGTextElement> {
 const Text: React.FC<TextProps> = props => {
   const transform = `translate(${props.x}, ${props.y})`;
   const { globalState, dispatch } = useContext(GlobalStateContext);
-  const cursor = globalState.dragId === props.id ? 'grabbing' : 'grab';
+  const cursor =
+    globalState.drag && globalState.drag.id === props.id ? 'grabbing' : 'grab';
 
   function startDrag(e: React.MouseEvent) {
     dispatch({

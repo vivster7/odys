@@ -23,7 +23,8 @@ const Rect: React.FC<RectProps> = props => {
   const transform = `translate(${x + props.translateX}, ${y +
     props.translateY})`;
   const { globalState, dispatch } = useContext(GlobalStateContext);
-  const cursor = globalState.dragId === id ? 'grabbing' : 'grab';
+  const cursor =
+    globalState.drag && globalState.drag.id === id ? 'grabbing' : 'grab';
 
   function startDrag(e: React.MouseEvent) {
     dispatch({
@@ -34,13 +35,26 @@ const Rect: React.FC<RectProps> = props => {
     });
   }
 
+  function select(e: React.MouseEvent) {
+    dispatch({
+      type: 'ODYS_SELECT_ACTION',
+      id: id
+    });
+  }
+
+  function handleMouseDown(e: React.MouseEvent) {
+    e.stopPropagation();
+    startDrag(e);
+    select(e);
+  }
+
   return (
     <Group
       id={id}
       transform={transform}
       cursor={cursor}
       onClick={e => e.stopPropagation()}
-      onMouseDown={e => startDrag(e)}
+      onMouseDown={e => handleMouseDown(e)}
     >
       <rect
         width={RECT_WIDTH}

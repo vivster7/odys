@@ -45,12 +45,25 @@ const Svg: React.FC<SvgProps> = props => {
   }
 
   function handleMouseDown(e: React.MouseEvent) {
-    dispatch({
-      type: 'ODYS_MOUSE_DOWN',
-      target: e.target,
-      clickX: e.clientX,
-      clickY: e.clientY
-    });
+    startPan(e);
+    startNewRectByClick(e);
+
+    function startPan(e: React.MouseEvent) {
+      dispatch({
+        type: 'ODYS_START_PAN_ACTION',
+        clickX: e.clientX,
+        clickY: e.clientY
+      });
+    }
+
+    function startNewRectByClick(e: React.MouseEvent) {
+      dispatch({
+        type: 'ODYS_MOUSE_DOWN',
+        target: e.target,
+        clickX: e.clientX,
+        clickY: e.clientY
+      });
+    }
   }
 
   function handleMouseUp(e: React.MouseEvent) {
