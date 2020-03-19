@@ -1,7 +1,7 @@
 import React, { Dispatch } from 'react';
 import Shape from './shapes/Shape';
 import { v4 } from 'uuid';
-import { RectProps } from './shapes/Rect';
+import { RectProps, RECT_HEIGHT, RECT_WIDTH } from './shapes/Rect';
 
 const uid = () => `id-${v4()}`;
 export interface GlobalState {
@@ -164,8 +164,8 @@ function onOdysMouseUp(
           type: 'rect',
           id: uid(),
           text: 'A',
-          x: x,
-          y: y,
+          x: x - RECT_WIDTH / 2,
+          y: y - RECT_HEIGHT / 2,
           translateX: 0,
           translateY: 0
         } as RectProps
