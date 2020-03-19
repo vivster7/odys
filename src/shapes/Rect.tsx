@@ -40,6 +40,7 @@ const Rect: React.FC<RectProps> = props => {
       transform={transform}
       cursor={cursor}
       onClick={e => e.stopPropagation()}
+      onMouseDown={e => startDrag(e)}
     >
       <rect
         width={RECT_WIDTH}
@@ -48,12 +49,10 @@ const Rect: React.FC<RectProps> = props => {
         ry="4"
         fill="white"
         stroke="darkgray"
-        onMouseDown={e => startDrag(e)}
       ></rect>
       <text x={textX} y={textY} style={{ textAnchor: 'middle' }}>
-        <tspan>{props.text}</tspan>
+        <tspan style={{ userSelect: 'none' }}>{props.text}</tspan>
       </text>
-      <circle r="10" cursor="nw-resize"></circle>
     </Group>
   );
 };
