@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Svg from '../shapes/Svg';
 import Rect, { RectProps } from '../shapes/Rect';
 import { v4 } from 'uuid';
@@ -94,6 +94,23 @@ const DrawingBoard: React.FC = () => {
       }
     });
   }
+
+  // add delete key handler
+  function onKeyDownHandler(e: KeyboardEvent) {
+    if (e.code === 'Backspace' && globalState.selectedId) {
+      dispatch({
+        type: 'ODYS_DELETE_SHAPE',
+        id: globalState.selectedId
+      });
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', onKeyDownHandler);
+    return () => {
+      window.removeEventListener('keydown', onKeyDownHandler);
+    };
+  });
 
   function renderShape(shape: Shape) {
     const { type, ...rest } = shape;

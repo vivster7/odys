@@ -51,6 +51,11 @@ export interface OdysAddShapeAction extends GlobalActionType {
   shape: Shape;
 }
 
+export interface OdysDeleteShapeAction extends GlobalActionType {
+  type: 'ODYS_DELETE_SHAPE';
+  id: string;
+}
+
 export interface OdysStartDragAction extends GlobalActionType {
   type: 'ODYS_START_DRAG_ACTION';
   id: string;
@@ -111,6 +116,7 @@ export interface OdysWheelAction extends GlobalActionType {
 export type GlobalAction =
   | OdysRaiseShapeAction
   | OdysAddShapeAction
+  | OdysDeleteShapeAction
   | OdysStartNewRectByClickAction
   | OdysEndNewRectByClickAction
   | OdysStartDragAction
@@ -140,6 +146,11 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
       return {
         ...state,
         shapes: [...state.shapes, action.shape]
+      };
+    case 'ODYS_DELETE_SHAPE':
+      return {
+        ...state,
+        shapes: state.shapes.filter(s => s.id !== action.id)
       };
     case 'ODYS_START_DRAG_ACTION':
       return {
