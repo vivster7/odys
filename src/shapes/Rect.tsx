@@ -70,6 +70,21 @@ const Rect: React.FC<RectProps> = props => {
       <text x={textX} y={textY} style={{ textAnchor: 'middle' }}>
         <tspan style={{ userSelect: 'none' }}>{props.text}</tspan>
       </text>
+      {isSelected && <circle fill="cornflowerblue" r="4"></circle>}
+      {isSelected && (
+        <circle fill="cornflowerblue" r="4" cx={RECT_WIDTH}></circle>
+      )}
+      {isSelected && (
+        <circle fill="cornflowerblue" r="4" cy={RECT_HEIGHT}></circle>
+      )}
+      {isSelected && (
+        <circle
+          fill="cornflowerblue"
+          r="4"
+          cx={RECT_WIDTH}
+          cy={RECT_HEIGHT}
+        ></circle>
+      )}
     </Group>
   );
 };
