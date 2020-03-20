@@ -26,6 +26,8 @@ const Rect: React.FC<RectProps> = props => {
   const cursor =
     globalState.drag && globalState.drag.id === id ? 'grabbing' : 'grab';
 
+  const isSelected = id === globalState.selectedId;
+
   function startDrag(e: React.MouseEvent) {
     dispatch({
       type: 'ODYS_START_DRAG_ACTION',
@@ -62,7 +64,8 @@ const Rect: React.FC<RectProps> = props => {
         rx="4"
         ry="4"
         fill="white"
-        stroke="darkgray"
+        stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
+        strokeDasharray={isSelected ? 5 : 0}
       ></rect>
       <text x={textX} y={textY} style={{ textAnchor: 'middle' }}>
         <tspan style={{ userSelect: 'none' }}>{props.text}</tspan>
