@@ -211,18 +211,21 @@ function onOdysEndNewRectByClickAction(
   state: GlobalState,
   action: OdysEndNewRectByClickAction
 ): GlobalState {
+  const id = uid();
   const x = (action.clickX - state.svg.topLeftX) / state.svg.scale;
   const y = (action.clickY - state.svg.topLeftY) / state.svg.scale;
+
   return {
     ...state,
     drag: null,
     newRectByClick: null,
     pan: null,
+    selectedId: id,
     shapes: [
       ...state.shapes,
       {
         type: 'rect',
-        id: uid(),
+        id: id,
         text: 'A',
         x: x - RECT_WIDTH / 2,
         y: y - RECT_HEIGHT / 2,
