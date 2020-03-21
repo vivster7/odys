@@ -7,6 +7,7 @@ import Arrow, { ArrowProps } from '../shapes/Arrow';
 import Shape from '../shapes/Shape';
 import Line, { LineProps } from '../shapes/Line';
 import Text, { TextProps } from '../shapes/Text';
+import Input from './Input';
 
 const id = () => `id-${v4()}`;
 
@@ -133,15 +134,18 @@ const DrawingBoard: React.FC = () => {
   }
 
   return (
-    <Svg
-      topLeftX={globalState.svg.topLeftX}
-      topLeftY={globalState.svg.topLeftY}
-      translateX={globalState.svg.translateX}
-      translateY={globalState.svg.translateY}
-      scale={globalState.svg.scale}
-    >
-      {globalState.shapes.map(s => renderShape(s))}
-    </Svg>
+    <>
+      <Input x={0} y={0} text=""></Input>
+      <Svg
+        topLeftX={globalState.svg.topLeftX}
+        topLeftY={globalState.svg.topLeftY}
+        translateX={globalState.svg.translateX}
+        translateY={globalState.svg.translateY}
+        scale={globalState.svg.scale}
+      >
+        {globalState.shapes.map(s => renderShape(s))}
+      </Svg>
+    </>
   );
 };
 
