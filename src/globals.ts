@@ -187,58 +187,19 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
     case 'ODYS_RAISE_SHAPE':
       return onOdysRaiseShape(state, action);
     case 'ODYS_ADD_SHAPE':
-      return {
-        ...state,
-        shapes: [...state.shapes, action.shape]
-      };
+      return onOdysAddShapeAction(state, action);
     case 'ODYS_DELETE_SHAPE':
-      return {
-        ...state,
-        shapes: state.shapes.filter(s => s.id !== action.id)
-      };
+      return onOdysDeleteShapeAction(state, action);
     case 'ODYS_START_DRAG_ACTION':
-      return {
-        ...state,
-        drag: {
-          id: action.id,
-          clickX: action.clickX,
-          clickY: action.clickY
-        }
-      };
+      return onOdysStartDragAction(state, action);
     case 'ODYS_START_PAN_ACTION':
-      return {
-        ...state,
-        pan: {
-          clickX: action.clickX,
-          clickY: action.clickY
-        }
-      };
+      return onOdysStartPanAction(state, action);
     case 'ODYS_START_RESIZE_SHAPE_ACTION':
-      return {
-        ...state,
-        resizeShape: {
-          id: action.id,
-          anchor: action.anchor,
-          originalX: action.originalX,
-          originalY: action.originalY,
-          clickX: 0,
-          clickY: 0
-        }
-      };
+      return onOdysStartResizeShapeAction(state, action);
     case 'ODYS_SELECT_ACTION':
-      return {
-        ...state,
-        selectedId: action.id
-      };
+      return onOdysSelectAction(state, action);
     case 'ODYS_START_NEW_RECT_BY_CLICK_ACTION':
-      return {
-        ...state,
-        selectedId: null,
-        newRectByClick: {
-          clickX: action.clickX,
-          clickY: action.clickY
-        }
-      };
+      return onOdysStartNewRectByClickAction(state, action);
     case `ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION`:
       return onOdysSelectedShapeInputChangeAction(state, action);
     case 'ODYS_END_NEW_RECT_BY_CLICK_ACTION':
@@ -256,10 +217,98 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
     case 'ODYS_END_RESIZE_SHAPE_ACTION':
       return onOdysEndResizeShapeAction(state, action);
     case 'ODYS_WHEEL':
-      return onOdysWheel(state, action);
+      return onOdysWheelAction(state, action);
     default:
       throw new Error(`Unknown action ${action}`);
   }
+}
+
+function onOdysAddShapeAction(
+  state: GlobalState,
+  action: OdysAddShapeAction
+): GlobalState {
+  return {
+    ...state,
+    shapes: [...state.shapes, action.shape]
+  };
+}
+
+function onOdysDeleteShapeAction(
+  state: GlobalState,
+  action: OdysDeleteShapeAction
+): GlobalState {
+  return {
+    ...state,
+    shapes: state.shapes.filter(s => s.id !== action.id)
+  };
+}
+
+function onOdysStartDragAction(
+  state: GlobalState,
+  action: OdysStartDragAction
+): GlobalState {
+  return {
+    ...state,
+    drag: {
+      id: action.id,
+      clickX: action.clickX,
+      clickY: action.clickY
+    }
+  };
+}
+
+function onOdysStartPanAction(
+  state: GlobalState,
+  action: OdysStartPanAction
+): GlobalState {
+  return {
+    ...state,
+    pan: {
+      clickX: action.clickX,
+      clickY: action.clickY
+    }
+  };
+}
+
+function onOdysStartResizeShapeAction(
+  state: GlobalState,
+  action: OdysStartResizeShapeAction
+): GlobalState {
+  return {
+    ...state,
+    resizeShape: {
+      id: action.id,
+      anchor: action.anchor,
+      originalX: action.originalX,
+      originalY: action.originalY,
+      clickX: 0,
+      clickY: 0
+    }
+  };
+}
+
+function onOdysSelectAction(
+  state: GlobalState,
+  action: OdysSelectAction
+): GlobalState {
+  return {
+    ...state,
+    selectedId: action.id
+  };
+}
+
+function onOdysStartNewRectByClickAction(
+  state: GlobalState,
+  action: OdysStartNewRectByClickAction
+): GlobalState {
+  return {
+    ...state,
+    selectedId: null,
+    newRectByClick: {
+      clickX: action.clickX,
+      clickY: action.clickY
+    }
+  };
 }
 
 function onOdysSelectedShapeInputChangeAction(
@@ -509,7 +558,10 @@ function onOdysPanAction(
   );
 }
 
-function onOdysWheel(state: GlobalState, action: OdysWheelAction): GlobalState {
+function onOdysWheelAction(
+  state: GlobalState,
+  action: OdysWheelAction
+): GlobalState {
   // Unsure precisely what inverting does.
   // Attempts to change coordinate plane from client to svg?
   const invertX = (action.clickX - state.svg.topLeftX) / state.svg.scale;
