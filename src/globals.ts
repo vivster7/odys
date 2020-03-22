@@ -17,6 +17,7 @@ import resizeReducerMap, {
   OdysResizeAction,
   OdysEndResizeAction
 } from './reducers/resize';
+import wheelReducerMap, { OdysWheelAction } from './reducers/wheel';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -99,8 +100,8 @@ export interface OdysEndNewRectByClickAction extends GlobalActionType {
   clickY: number;
 }
 
-export interface OdysSelectAction extends GlobalActionType {
-  type: 'ODYS_SELECT_ACTION';
+export interface OdysSelectShapeAction extends GlobalActionType {
+  type: 'ODYS_SELECT_SHAPE_ACTION';
   id: string;
 }
 
@@ -108,13 +109,6 @@ export interface OdysSelectedShapeInputChangeAction extends GlobalActionType {
   type: 'ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION';
   id: string;
   text: string;
-}
-
-export interface OdysWheelAction extends GlobalActionType {
-  type: 'ODYS_WHEEL_ACTION';
-  clickX: number;
-  clickY: number;
-  scaleFactor: number;
 }
 
 export type GlobalAction =
@@ -132,7 +126,7 @@ export type GlobalAction =
   | OdysStartResizeAction
   | OdysResizeAction
   | OdysEndResizeAction
-  | OdysSelectAction
+  | OdysSelectShapeAction
   | OdysWheelAction
   | OdysSelectedShapeInputChangeAction;
 
@@ -154,15 +148,16 @@ export function globalStateReducer(
     ODYS_RAISE_SHAPE_ACTION: onOdysRaiseShape,
     ODYS_ADD_SHAPE_ACTION: onOdysAddShapeAction,
     ODYS_DELETE_SHAPE_ACTION: onOdysDeleteShapeAction,
-    ODYS_SELECT_ACTION: onOdysSelectAction,
-    ODYS_START_NEW_RECT_BY_CLICK_ACTION: onOdysStartNewRectByClickAction,
+    ODYS_SELECT_SHAPE_ACTION: onOdysSelectShapeAction,
     ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION: onOdysSelectedShapeInputChangeAction,
+
+    ODYS_START_NEW_RECT_BY_CLICK_ACTION: onOdysStartNewRectByClickAction,
     ODYS_END_NEW_RECT_BY_CLICK_ACTION: onOdysEndNewRectByClickAction,
 
-    ODYS_WHEEL_ACTION: onOdysWheelAction,
     ...dragReducerMap,
     ...panReducerMap,
-    ...resizeReducerMap
+    ...resizeReducerMap,
+    ...wheelReducerMap
   };
   const fn = m[action.type];
   if (!fn) {
@@ -192,9 +187,9 @@ function onOdysDeleteShapeAction(
   };
 }
 
-function onOdysSelectAction(
+function onOdysSelectShapeAction(
   state: GlobalState,
-  action: OdysSelectAction
+  action: OdysSelectShapeAction
 ): GlobalState {
   return {
     ...state,
@@ -285,26 +280,5 @@ function onOdysEndNewRectByClickAction(
         deltaHeight: 0
       } as RectProps
     ]
-  };
-}
-
-function onOdysWheelAction(
-  state: GlobalState,
-  action: OdysWheelAction
-): GlobalState {
-  // Unsure precisely what inverting does.
-  // Attempts to change coordinate plane from client to svg?
-  const invertX = (action.clickX - state.svg.topLeftX) / state.svg.scale;
-  const invertY = (action.clickY - state.svg.topLeftY) / state.svg.scale;
-  const k = Math.max(0, state.svg.scale * Math.pow(2, action.scaleFactor));
-
-  return {
-    ...state,
-    svg: {
-      ...state.svg,
-      scale: k,
-      topLeftX: action.clickX - invertX * k,
-      topLeftY: action.clickY - invertY * k
-    }
   };
 }

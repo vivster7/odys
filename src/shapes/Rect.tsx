@@ -49,7 +49,7 @@ const Rect: React.FC<RectProps> = props => {
 
   function select(e: React.MouseEvent) {
     dispatch({
-      type: 'ODYS_SELECT_ACTION',
+      type: 'ODYS_SELECT_SHAPE_ACTION',
       id: id
     });
   }
