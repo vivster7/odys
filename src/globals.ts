@@ -140,6 +140,12 @@ export interface OdysSelectAction extends GlobalActionType {
   id: string;
 }
 
+export interface OdysSelectedShapeInputChangeAction extends GlobalActionType {
+  type: 'ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION';
+  id: string;
+  text: string;
+}
+
 export interface OdysWheelAction extends GlobalActionType {
   type: 'ODYS_WHEEL';
   clickX: number;
@@ -163,7 +169,8 @@ export type GlobalAction =
   | OdysResizeShapeAction
   | OdysEndResizeShapeAction
   | OdysSelectAction
-  | OdysWheelAction;
+  | OdysWheelAction
+  | OdysSelectedShapeInputChangeAction;
 
 export const GlobalStateContext = React.createContext({
   globalState: {} as GlobalState,
@@ -232,6 +239,8 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
           clickY: action.clickY
         }
       };
+    case `ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION`:
+      return onOdysSelectedShapeInputChangeAction(state, action);
     case 'ODYS_END_NEW_RECT_BY_CLICK_ACTION':
       return onOdysEndNewRectByClickAction(state, action);
     case 'ODYS_DRAG_ACTION':
@@ -251,6 +260,24 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
     default:
       throw new Error(`Unknown action ${action}`);
   }
+}
+
+function onOdysSelectedShapeInputChangeAction(
+  state: GlobalState,
+  action: OdysSelectedShapeInputChangeAction
+): GlobalState {
+  const { id, text } = action;
+  const { shapes } = state;
+  const idx = shapes.findIndex(d => d.id === id);
+  if (idx === -1) {
+    throw new Error(`Cannot find ${id} in shapes context`);
+  }
+  const item = shapes[idx] as RectProps;
+  item.text = text;
+  return {
+    ...state,
+    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[item]]
+  };
 }
 
 function onOdysRaiseShape(
