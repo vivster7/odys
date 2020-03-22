@@ -94,7 +94,11 @@ class Drawer implements NodeVisitor<Shape[]> {
         x: computeBlockX(node.column),
         y: computeBlockY(node.row),
         translateX: 0,
-        translateY: 0
+        translateY: 0,
+        width: 200,
+        height: 100,
+        deltaWidth: 0,
+        deltaHeight: 0
       }
     ];
   }
@@ -108,7 +112,11 @@ class Drawer implements NodeVisitor<Shape[]> {
         x: computeBlockX(node.column),
         y: computeBlockY(node.row),
         translateX: 0,
-        translateY: 0
+        translateY: 0,
+        width: 200,
+        height: 100,
+        deltaWidth: 0,
+        deltaHeight: 0
       }
     ];
   }

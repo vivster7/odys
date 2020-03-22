@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import Svg from '../shapes/Svg';
-import Rect, { RectProps } from '../shapes/Rect';
+import Rect, { RectProps, RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
 import { v4 } from 'uuid';
 import { GlobalStateContext } from '../globals';
 import Arrow, { ArrowProps } from '../shapes/Arrow';
@@ -25,7 +25,11 @@ const DrawingBoard: React.FC = () => {
         x: 0,
         y: 0,
         translateX: 0,
-        translateY: 0
+        translateY: 0,
+        width: RECT_WIDTH,
+        height: RECT_HEIGHT,
+        deltaWidth: 0,
+        deltaHeight: 0
       }
     });
     dispatch({
@@ -37,7 +41,11 @@ const DrawingBoard: React.FC = () => {
         x: 400,
         y: 400,
         translateX: 0,
-        translateY: 0
+        translateY: 0,
+        width: RECT_WIDTH,
+        height: RECT_HEIGHT,
+        deltaWidth: 0,
+        deltaHeight: 0
       }
     });
     dispatch({
@@ -49,7 +57,11 @@ const DrawingBoard: React.FC = () => {
         x: 200,
         y: 200,
         translateX: 0,
-        translateY: 0
+        translateY: 0,
+        width: RECT_WIDTH,
+        height: RECT_HEIGHT,
+        deltaWidth: 0,
+        deltaHeight: 0
       }
     });
     dispatch({
@@ -135,7 +147,7 @@ const DrawingBoard: React.FC = () => {
 
   return (
     <>
-      <Input x={0} y={0} text=""></Input>
+      {/* <Input x={0} y={0} text=""></Input> */}
       <Svg
         topLeftX={globalState.svg.topLeftX}
         topLeftY={globalState.svg.topLeftY}

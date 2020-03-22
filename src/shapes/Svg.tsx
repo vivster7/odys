@@ -52,6 +52,14 @@ const Svg: React.FC<SvgProps> = props => {
         clickY: e.clientY
       });
     }
+
+    if (globalState.resizeShape) {
+      dispatch({
+        type: 'ODYS_RESIZE_SHAPE_ACTION',
+        clickX: e.clientX,
+        clickY: e.clientY
+      });
+    }
   }
 
   function handleMouseDown(e: React.MouseEvent) {
@@ -97,6 +105,12 @@ const Svg: React.FC<SvgProps> = props => {
     if (globalState.pan) {
       return dispatch({
         type: 'ODYS_END_PAN_ACTION'
+      });
+    }
+
+    if (globalState.resizeShape) {
+      return dispatch({
+        type: 'ODYS_END_RESIZE_SHAPE_ACTION'
       });
     }
   }

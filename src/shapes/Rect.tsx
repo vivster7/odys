@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import Group from './Group';
-import { GlobalStateContext } from '../globals';
+import { GlobalStateContext, Anchor } from '../globals';
 
 export const RECT_WIDTH = 200;
 export const RECT_HEIGHT = 100;
@@ -8,17 +8,27 @@ export const RECT_HEIGHT = 100;
 export interface RectProps extends React.SVGProps<SVGRectElement> {
   type: 'rect';
   id: string;
+
   x: number;
   y: number;
   translateX: number;
   translateY: number;
+
+  width: number;
+  height: number;
+  deltaWidth: number;
+  deltaHeight: number;
+
   text: string;
 }
 
 const Rect: React.FC<RectProps> = props => {
   const id = props.id;
   const [x, y] = [props.x, props.y];
-  const [textX, textY] = [RECT_WIDTH / 2, RECT_HEIGHT / 2];
+  const [textX, textY] = [
+    (props.width + props.deltaWidth) / 2,
+    (props.height + props.deltaHeight) / 2
+  ];
 
   const transform = `translate(${x + props.translateX}, ${y +
     props.translateY})`;
@@ -44,11 +54,53 @@ const Rect: React.FC<RectProps> = props => {
     });
   }
 
-  function handleMouseDown(e: React.MouseEvent) {
+  function selectAndStartDrag(e: React.MouseEvent) {
     e.stopPropagation();
     startDrag(e);
     select(e);
   }
+
+  const SelectionCircles = () => {
+    function startResizeRect(e: React.MouseEvent, anchor: Anchor) {
+      e.stopPropagation();
+      dispatch({
+        type: 'ODYS_START_RESIZE_SHAPE_ACTION',
+        id: id,
+        anchor: anchor,
+        originalX: e.clientX,
+        originalY: e.clientY
+      });
+    }
+
+    return (
+      <>
+        <circle
+          fill="cornflowerblue"
+          r="4"
+          onMouseDown={e => startResizeRect(e, 'NWAnchor')}
+        ></circle>
+        <circle
+          fill="cornflowerblue"
+          r="4"
+          onMouseDown={e => startResizeRect(e, 'NEAnchor')}
+          cx={props.width + props.deltaWidth}
+        ></circle>
+        <circle
+          fill="cornflowerblue"
+          r="4"
+          onMouseDown={e => startResizeRect(e, 'SWAnchor')}
+          cy={props.height + props.deltaHeight}
+        ></circle>
+        <circle
+          fill="cornflowerblue"
+          r="4"
+          onMouseDown={e => startResizeRect(e, 'SEAnchor')}
+          cx={props.width + props.deltaWidth}
+          cy={props.height + props.deltaHeight}
+        ></circle>
+      </>
+    );
+  };
 
   return (
     <Group
@@ -56,35 +108,26 @@ const Rect: React.FC<RectProps> = props => {
       transform={transform}
       cursor={cursor}
       onClick={e => e.stopPropagation()}
-      onMouseDown={e => handleMouseDown(e)}
     >
       <rect
-        width={RECT_WIDTH}
-        height={RECT_HEIGHT}
+        width={props.width + props.deltaWidth}
+        height={props.height + props.deltaHeight}
         rx="4"
         ry="4"
         fill="white"
         stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
         strokeDasharray={isSelected ? 5 : 0}
+        onMouseDown={e => selectAndStartDrag(e)}
       ></rect>
-      <text x={textX} y={textY} style={{ textAnchor: 'middle' }}>
+      <text
+        x={textX}
+        y={textY}
+        style={{ textAnchor: 'middle' }}
+        onMouseDown={e => selectAndStartDrag(e)}
+      >
         <tspan style={{ userSelect: 'none' }}>{props.text}</tspan>
       </text>
-      {isSelected && <circle fill="cornflowerblue" r="4"></circle>}
-      {isSelected && (
-        <circle fill="cornflowerblue" r="4" cx={RECT_WIDTH}></circle>
-      )}
-      {isSelected && (
-        <circle fill="cornflowerblue" r="4" cy={RECT_HEIGHT}></circle>
-      )}
-      {isSelected && (
-        <circle
-          fill="cornflowerblue"
-          r="4"
-          cx={RECT_WIDTH}
-          cy={RECT_HEIGHT}
-        ></circle>
-      )}
+      {isSelected && <SelectionCircles></SelectionCircles>}
     </Group>
   );
 };

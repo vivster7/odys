@@ -8,6 +8,7 @@ const App: React.FC = () => {
     shapes: [],
     drag: null,
     pan: null,
+    resizeShape: null,
     selectedId: null,
     newRectByClick: null,
     svg: {
