@@ -1,7 +1,5 @@
 import React, { Dispatch } from 'react';
 import Shape from './shapes/Shape';
-import { v4 } from 'uuid';
-import { RectProps, RECT_HEIGHT, RECT_WIDTH } from './shapes/Rect';
 import dragReducerMap, {
   OdysStartDragAction,
   OdysDragAction,
@@ -18,6 +16,17 @@ import resizeReducerMap, {
   OdysEndResizeAction
 } from './reducers/resize';
 import wheelReducerMap, { OdysWheelAction } from './reducers/wheel';
+import newRectByClickReducerMap, {
+  OdysStartNewRectByClickAction,
+  OdysEndNewRectByClickAction
+} from './reducers/newRectByClick';
+import shapeReducerMap, {
+  OdysRaiseShapeAction,
+  OdysAddShapeAction,
+  OdysDeleteShapeAction,
+  OdysSelectShapeAction,
+  OdysSelectedShapeInputChangeAction
+} from './reducers/shape';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -25,7 +34,6 @@ export type SEAnchor = 'SEAnchor';
 export type SWAnchor = 'SWAnchor';
 export type Anchor = NEAnchor | NWAnchor | SEAnchor | SWAnchor;
 
-const uid = () => `id-${v4()}`;
 export interface GlobalState {
   shapes: Shape[];
   drag: DragState | null;
@@ -73,48 +81,12 @@ export interface GlobalActionType {
   type: string;
 }
 
-export interface OdysRaiseShapeAction extends GlobalActionType {
-  type: 'ODYS_RAISE_SHAPE_ACTION';
-  id: string;
-}
-
-export interface OdysAddShapeAction extends GlobalActionType {
-  type: 'ODYS_ADD_SHAPE_ACTION';
-  shape: Shape;
-}
-
-export interface OdysDeleteShapeAction extends GlobalActionType {
-  type: 'ODYS_DELETE_SHAPE_ACTION';
-  id: string;
-}
-
-export interface OdysStartNewRectByClickAction extends GlobalActionType {
-  type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION';
-  clickX: number;
-  clickY: number;
-}
-
-export interface OdysEndNewRectByClickAction extends GlobalActionType {
-  type: 'ODYS_END_NEW_RECT_BY_CLICK_ACTION';
-  clickX: number;
-  clickY: number;
-}
-
-export interface OdysSelectShapeAction extends GlobalActionType {
-  type: 'ODYS_SELECT_SHAPE_ACTION';
-  id: string;
-}
-
-export interface OdysSelectedShapeInputChangeAction extends GlobalActionType {
-  type: 'ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION';
-  id: string;
-  text: string;
-}
-
 export type GlobalAction =
   | OdysRaiseShapeAction
   | OdysAddShapeAction
   | OdysDeleteShapeAction
+  | OdysSelectShapeAction
+  | OdysSelectedShapeInputChangeAction
   | OdysStartNewRectByClickAction
   | OdysEndNewRectByClickAction
   | OdysStartDragAction
@@ -126,9 +98,7 @@ export type GlobalAction =
   | OdysStartResizeAction
   | OdysResizeAction
   | OdysEndResizeAction
-  | OdysSelectShapeAction
-  | OdysWheelAction
-  | OdysSelectedShapeInputChangeAction;
+  | OdysWheelAction;
 
 export const GlobalStateContext = React.createContext({
   globalState: {} as GlobalState,
@@ -145,15 +115,8 @@ export function globalStateReducer(
 ): GlobalState {
   console.log(action.type);
   const m = {
-    ODYS_RAISE_SHAPE_ACTION: onOdysRaiseShape,
-    ODYS_ADD_SHAPE_ACTION: onOdysAddShapeAction,
-    ODYS_DELETE_SHAPE_ACTION: onOdysDeleteShapeAction,
-    ODYS_SELECT_SHAPE_ACTION: onOdysSelectShapeAction,
-    ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION: onOdysSelectedShapeInputChangeAction,
-
-    ODYS_START_NEW_RECT_BY_CLICK_ACTION: onOdysStartNewRectByClickAction,
-    ODYS_END_NEW_RECT_BY_CLICK_ACTION: onOdysEndNewRectByClickAction,
-
+    ...shapeReducerMap,
+    ...newRectByClickReducerMap,
     ...dragReducerMap,
     ...panReducerMap,
     ...resizeReducerMap,
@@ -165,120 +128,4 @@ export function globalStateReducer(
   }
 
   return fn(state, action as any);
-}
-
-function onOdysAddShapeAction(
-  state: GlobalState,
-  action: OdysAddShapeAction
-): GlobalState {
-  return {
-    ...state,
-    shapes: [...state.shapes, action.shape]
-  };
-}
-
-function onOdysDeleteShapeAction(
-  state: GlobalState,
-  action: OdysDeleteShapeAction
-): GlobalState {
-  return {
-    ...state,
-    shapes: state.shapes.filter(s => s.id !== action.id)
-  };
-}
-
-function onOdysSelectShapeAction(
-  state: GlobalState,
-  action: OdysSelectShapeAction
-): GlobalState {
-  return {
-    ...state,
-    selectedId: action.id
-  };
-}
-
-function onOdysStartNewRectByClickAction(
-  state: GlobalState,
-  action: OdysStartNewRectByClickAction
-): GlobalState {
-  return {
-    ...state,
-    selectedId: null,
-    newRectByClick: {
-      clickX: action.clickX,
-      clickY: action.clickY
-    }
-  };
-}
-
-function onOdysSelectedShapeInputChangeAction(
-  state: GlobalState,
-  action: OdysSelectedShapeInputChangeAction
-): GlobalState {
-  const { id, text } = action;
-  const { shapes } = state;
-  const idx = shapes.findIndex(d => d.id === id);
-  if (idx === -1) {
-    throw new Error(`[edit] Cannot find ${id} in shapes context`);
-  }
-  const shape = {
-    ...shapes[idx],
-    text: text
-  };
-
-  return {
-    ...state,
-    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
-  };
-}
-
-function onOdysRaiseShape(
-  state: GlobalState,
-  action: OdysRaiseShapeAction
-): GlobalState {
-  const { id } = action;
-  const { shapes } = state;
-  const idx = shapes.findIndex(d => d.id === id);
-  if (idx === -1) {
-    throw new Error(`Cannot find ${id} in shapes context`);
-  }
-
-  const item = shapes[idx];
-  return {
-    ...state,
-    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[item]]
-  };
-}
-
-function onOdysEndNewRectByClickAction(
-  state: GlobalState,
-  action: OdysEndNewRectByClickAction
-): GlobalState {
-  const id = uid();
-  const x = (action.clickX - state.svg.topLeftX) / state.svg.scale;
-  const y = (action.clickY - state.svg.topLeftY) / state.svg.scale;
-
-  return {
-    ...state,
-    drag: null,
-    newRectByClick: null,
-    pan: null,
-    selectedId: id,
-    shapes: [
-      ...state.shapes,
-      {
-        type: 'rect',
-        id: id,
-        text: 'A',
-        x: x - RECT_WIDTH / 2,
-        y: y - RECT_HEIGHT / 2,
-        translateX: 0,
-        translateY: 0,
-        width: RECT_WIDTH,
-        height: RECT_HEIGHT,
-        deltaWidth: 0,
-        deltaHeight: 0
-      } as RectProps
-    ]
-  };
 }
