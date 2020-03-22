@@ -95,7 +95,7 @@ export interface OdysEndNewRectByClickAction extends GlobalActionType {
 }
 
 export interface OdysStartResizeShapeAction extends GlobalActionType {
-  type: 'ODYS_START_RESIZE_SHAPE_ACTION';
+  type: 'ODYS_START_RESIZE_ACTION';
   id: string;
   anchor: Anchor;
   originalX: number;
@@ -103,13 +103,13 @@ export interface OdysStartResizeShapeAction extends GlobalActionType {
 }
 
 export interface OdysResizeShapeAction extends GlobalActionType {
-  type: 'ODYS_RESIZE_SHAPE_ACTION';
+  type: 'ODYS_RESIZE_ACTION';
   clickX: number;
   clickY: number;
 }
 
 export interface OdysEndResizeShapeAction extends GlobalActionType {
-  type: 'ODYS_END_RESIZE_SHAPE_ACTION';
+  type: 'ODYS_END_RESIZE_ACTION';
 }
 
 export interface OdysSelectAction extends GlobalActionType {
@@ -172,12 +172,11 @@ export function globalStateReducer(
     ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION: onOdysSelectedShapeInputChangeAction,
     ODYS_END_NEW_RECT_BY_CLICK_ACTION: onOdysEndNewRectByClickAction,
 
-    ODYS_START_RESIZE_SHAPE_ACTION: onOdysStartResizeShapeAction,
-    ODYS_RESIZE_SHAPE_ACTION: onOdysResizeShapeAction,
-    ODYS_END_RESIZE_SHAPE_ACTION: onOdysEndResizeShapeAction,
+    ODYS_START_RESIZE_ACTION: onOdysStartResizeShapeAction,
+    ODYS_RESIZE_ACTION: onOdysResizeShapeAction,
+    ODYS_END_RESIZE_ACTION: onOdysEndResizeShapeAction,
 
-    ODYS_WHEEL_ACTION: () =>
-      onOdysWheelAction(state, action as OdysWheelAction),
+    ODYS_WHEEL_ACTION: onOdysWheelAction,
     ...dragReducerMap,
     ...panReducerMap
   };
@@ -349,7 +348,7 @@ function onOdysResizeShapeAction(
   }
 
   throw new Error(
-    'Cannot ODYS_RESIZE_SHAPE_ACTION without `state.resizeShape` (did ODYS_START_RESIZE_SHAPE_ACTION fire first?)'
+    'Cannot ODYS_RESIZE_ACTION without `state.resizeShape` (did ODYS_START_RESIZE_ACTION fire first?)'
   );
 }
 
@@ -385,7 +384,7 @@ function onOdysEndResizeShapeAction(
   }
 
   throw new Error(
-    'Could not end resize shape action. Was it started with ODYS_START_RESIZE_SHAPE_ACTION?'
+    'Could not end resize shape action. Was it started with ODYS_START_RESIZE_ACTION?'
   );
 }
 

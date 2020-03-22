@@ -64,7 +64,7 @@ const Rect: React.FC<RectProps> = props => {
     function startResizeRect(e: React.MouseEvent, anchor: Anchor) {
       e.stopPropagation();
       dispatch({
-        type: 'ODYS_START_RESIZE_SHAPE_ACTION',
+        type: 'ODYS_START_RESIZE_ACTION',
         id: id,
         anchor: anchor,
         originalX: e.clientX,
