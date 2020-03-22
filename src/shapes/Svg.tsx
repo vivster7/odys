@@ -53,7 +53,7 @@ const Svg: React.FC<SvgProps> = props => {
       });
     }
 
-    if (globalState.resizeShape) {
+    if (globalState.resize) {
       dispatch({
         type: 'ODYS_RESIZE_ACTION',
         clickX: e.clientX,
@@ -108,7 +108,7 @@ const Svg: React.FC<SvgProps> = props => {
       });
     }
 
-    if (globalState.resizeShape) {
+    if (globalState.resize) {
       return dispatch({
         type: 'ODYS_END_RESIZE_ACTION'
       });

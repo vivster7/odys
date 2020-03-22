@@ -12,6 +12,11 @@ import panReducerMap, {
   OdysPanAction,
   OdysEndPanAction
 } from './reducers/pan';
+import resizeReducerMap, {
+  OdysStartResizeAction,
+  OdysResizeAction,
+  OdysEndResizeAction
+} from './reducers/resize';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -24,7 +29,7 @@ export interface GlobalState {
   shapes: Shape[];
   drag: DragState | null;
   pan: PanState | null;
-  resizeShape: ResizeShapeState | null;
+  resize: ResizeState | null;
   selectedId: string | null;
   newRectByClick: NewRectByClickState | null;
   svg: SVGState;
@@ -41,7 +46,7 @@ interface PanState {
   clickY: number;
 }
 
-interface ResizeShapeState {
+interface ResizeState {
   id: string;
   anchor: Anchor;
   originalX: number;
@@ -94,24 +99,6 @@ export interface OdysEndNewRectByClickAction extends GlobalActionType {
   clickY: number;
 }
 
-export interface OdysStartResizeShapeAction extends GlobalActionType {
-  type: 'ODYS_START_RESIZE_ACTION';
-  id: string;
-  anchor: Anchor;
-  originalX: number;
-  originalY: number;
-}
-
-export interface OdysResizeShapeAction extends GlobalActionType {
-  type: 'ODYS_RESIZE_ACTION';
-  clickX: number;
-  clickY: number;
-}
-
-export interface OdysEndResizeShapeAction extends GlobalActionType {
-  type: 'ODYS_END_RESIZE_ACTION';
-}
-
 export interface OdysSelectAction extends GlobalActionType {
   type: 'ODYS_SELECT_ACTION';
   id: string;
@@ -142,9 +129,9 @@ export type GlobalAction =
   | OdysStartPanAction
   | OdysPanAction
   | OdysEndPanAction
-  | OdysStartResizeShapeAction
-  | OdysResizeShapeAction
-  | OdysEndResizeShapeAction
+  | OdysStartResizeAction
+  | OdysResizeAction
+  | OdysEndResizeAction
   | OdysSelectAction
   | OdysWheelAction
   | OdysSelectedShapeInputChangeAction;
@@ -172,13 +159,10 @@ export function globalStateReducer(
     ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION: onOdysSelectedShapeInputChangeAction,
     ODYS_END_NEW_RECT_BY_CLICK_ACTION: onOdysEndNewRectByClickAction,
 
-    ODYS_START_RESIZE_ACTION: onOdysStartResizeShapeAction,
-    ODYS_RESIZE_ACTION: onOdysResizeShapeAction,
-    ODYS_END_RESIZE_ACTION: onOdysEndResizeShapeAction,
-
     ODYS_WHEEL_ACTION: onOdysWheelAction,
     ...dragReducerMap,
-    ...panReducerMap
+    ...panReducerMap,
+    ...resizeReducerMap
   };
   const fn = m[action.type];
   if (!fn) {
@@ -205,23 +189,6 @@ function onOdysDeleteShapeAction(
   return {
     ...state,
     shapes: state.shapes.filter(s => s.id !== action.id)
-  };
-}
-
-function onOdysStartResizeShapeAction(
-  state: GlobalState,
-  action: OdysStartResizeShapeAction
-): GlobalState {
-  return {
-    ...state,
-    resizeShape: {
-      id: action.id,
-      anchor: action.anchor,
-      originalX: action.originalX,
-      originalY: action.originalY,
-      clickX: 0,
-      clickY: 0
-    }
   };
 }
 
@@ -319,73 +286,6 @@ function onOdysEndNewRectByClickAction(
       } as RectProps
     ]
   };
-}
-
-function onOdysResizeShapeAction(
-  state: GlobalState,
-  action: OdysResizeShapeAction
-): GlobalState {
-  if (state.resizeShape) {
-    const { id } = state.resizeShape;
-    const { shapes } = state;
-    const idx = shapes.findIndex(d => d.id === id);
-    if (idx === -1) {
-      throw new Error(`[resize] Cannot find ${id} in shapes`);
-    }
-
-    const shape = {
-      ...shapes[idx],
-      deltaWidth:
-        (action.clickX - state.resizeShape.originalX) / state.svg.scale,
-      deltaHeight:
-        (action.clickY - state.resizeShape.originalY) / state.svg.scale
-    };
-
-    return {
-      ...state,
-      shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
-    };
-  }
-
-  throw new Error(
-    'Cannot ODYS_RESIZE_ACTION without `state.resizeShape` (did ODYS_START_RESIZE_ACTION fire first?)'
-  );
-}
-
-function onOdysEndResizeShapeAction(
-  state: GlobalState,
-  action: OdysEndResizeShapeAction
-): GlobalState {
-  if (state.resizeShape) {
-    const { shapes } = state;
-    const { id } = state.resizeShape;
-    const idx = shapes.findIndex(s => s.id === id);
-    if (idx === -1) {
-      throw new Error(`[resize] Cannot find ${id} in shapes`);
-    }
-
-    const rect = shapes[idx] as RectProps;
-    const shape = {
-      ...rect,
-      width: rect.width + rect.deltaWidth,
-      height: rect.height + rect.deltaHeight,
-      deltaWidth: 0,
-      deltaHeight: 0
-    };
-
-    return {
-      ...state,
-      drag: null,
-      newRectByClick: null,
-      pan: null,
-      resizeShape: null,
-      shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
-    };
-  }
-
-  throw new Error(
-    'Could not end resize shape action. Was it started with ODYS_START_RESIZE_ACTION?'
-  );
 }
 
 function onOdysWheelAction(
