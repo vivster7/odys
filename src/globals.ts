@@ -270,13 +270,16 @@ function onOdysSelectedShapeInputChangeAction(
   const { shapes } = state;
   const idx = shapes.findIndex(d => d.id === id);
   if (idx === -1) {
-    throw new Error(`Cannot find ${id} in shapes context`);
+    throw new Error(`[edit] Cannot find ${id} in shapes context`);
   }
-  const item = shapes[idx] as RectProps;
-  item.text = text;
+  const shape = {
+    ...shapes[idx],
+    text: text
+  };
+
   return {
     ...state,
-    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[item]]
+    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
   };
 }
 
