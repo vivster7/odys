@@ -76,24 +76,28 @@ const Rect: React.FC<RectProps> = props => {
       <>
         <circle
           fill="cornflowerblue"
-          r="4"
+          r="6"
+          cursor="nw-resize"
           onMouseDown={e => startResizeRect(e, 'NWAnchor')}
         ></circle>
         <circle
           fill="cornflowerblue"
-          r="4"
+          r="6"
+          cursor="ne-resize"
           onMouseDown={e => startResizeRect(e, 'NEAnchor')}
           cx={props.width + props.deltaWidth}
         ></circle>
         <circle
           fill="cornflowerblue"
-          r="4"
+          r="6"
+          cursor="sw-resize"
           onMouseDown={e => startResizeRect(e, 'SWAnchor')}
           cy={props.height + props.deltaHeight}
         ></circle>
         <circle
           fill="cornflowerblue"
-          r="4"
+          r="6"
+          cursor="se-resize"
           onMouseDown={e => startResizeRect(e, 'SEAnchor')}
           cx={props.width + props.deltaWidth}
           cy={props.height + props.deltaHeight}
