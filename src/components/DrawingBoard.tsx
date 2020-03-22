@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Svg from '../shapes/Svg';
 import Rect, { RectProps, RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
 import { v4 } from 'uuid';
@@ -7,46 +7,9 @@ import Arrow, { ArrowProps } from '../shapes/Arrow';
 import Shape from '../shapes/Shape';
 import Line, { LineProps } from '../shapes/Line';
 import Text, { TextProps } from '../shapes/Text';
-import Input from './Input';
+import HiddenTextInput from './HiddenTextInput';
 
 const id = () => `id-${v4()}`;
-
-export interface HiddenTextInputProps {
-  name: string;
-  value: string;
-}
-
-const HiddenTextInput: React.FC<HiddenTextInputProps> = props => {
-  const { dispatch } = useContext(GlobalStateContext);
-  const { name, value } = props;
-  const inputEl = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (inputEl && inputEl.current) {
-      inputEl.current.focus();
-    }
-  });
-
-  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({
-      type: 'ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION',
-      id: name,
-      text: event.target.value
-    });
-  };
-
-  return (
-    <>
-      <input
-        ref={inputEl}
-        type="text"
-        name={name}
-        value={value}
-        onChange={onInputChange}
-      />
-    </>
-  );
-};
 
 const DrawingBoard: React.FC = () => {
   const { globalState, dispatch } = useContext(GlobalStateContext);
@@ -189,7 +152,6 @@ const DrawingBoard: React.FC = () => {
 
   return (
     <>
-      {/* <Input x={0} y={0} text=""></Input> */}
       <Svg
         topLeftX={globalState.svg.topLeftX}
         topLeftY={globalState.svg.topLeftY}
