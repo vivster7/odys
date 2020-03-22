@@ -181,67 +181,59 @@ export const GlobalStateContext = React.createContext({
   }) as Dispatch<GlobalAction>
 });
 
-export function globalStateReducer(state: GlobalState, action: GlobalAction) {
+export function globalStateReducer(
+  state: GlobalState,
+  action: GlobalAction
+): GlobalState {
   console.log(action.type);
-  // const m = {
-  //   'ODYS_RAISE_SHAPE_ACTION': onOdysRaiseShape(state, action as any),
-  //   'ODYS_ADD_SHAPE_ACTION': onOdysAddShapeAction(state, action as any),
-  //   'ODYS_DELETE_SHAPE_ACTION': onOdysDeleteShapeAction(state, action as any),
-  //   'ODYS_START_DRAG_ACTION': onOdysStartDragAction(state, action as any),
-  //   'ODYS_START_PAN_ACTION': onOdysStartPanAction(state, action as any),
-  //   'ODYS_START_RESIZE_SHAPE_ACTION': onOdysStartResizeShapeAction(state, action as any),
-  //   'ODYS_SELECT_ACTION': onOdysSelectAction(state, action as any),
-  //   'ODYS_START_NEW_RECT_BY_CLICK_ACTION': onOdysStartNewRectByClickAction(state, action as any),
-  //   'ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION': onOdysSelectedShapeInputChangeAction(state, action as any),
-  //   'ODYS_END_NEW_RECT_BY_CLICK_ACTION': onOdysEndNewRectByClickAction(state, action as any),
-  //   'ODYS_DRAG_ACTION': onOdysDragAction(state, action as any),
-  //   'ODYS_END_DRAG_ACTION': onOdysEndDragAction(state, action as any),
-  //   'ODYS_PAN_ACTION': onOdysPanAction(state, action as any),
-  //   'ODYS_END_PAN_ACTION': onOdysEndPanAction(state, action as any),
-  //   'ODYS_RESIZE_SHAPE_ACTION': onOdysResizeShapeAction(state, action as any),
-  //   'ODYS_END_RESIZE_SHAPE_ACTION': onOdysEndResizeShapeAction(state, action as any),
-  //   'ODYS_WHEEL_ACTION': onOdysWheelAction(state, action as any),
-  // }
-  // const fn = m[action.type]
-
-  switch (action.type) {
-    case 'ODYS_RAISE_SHAPE_ACTION':
-      return onOdysRaiseShape(state, action);
-    case 'ODYS_ADD_SHAPE_ACTION':
-      return onOdysAddShapeAction(state, action);
-    case 'ODYS_DELETE_SHAPE_ACTION':
-      return onOdysDeleteShapeAction(state, action);
-    case 'ODYS_START_DRAG_ACTION':
-      return onOdysStartDragAction(state, action);
-    case 'ODYS_START_PAN_ACTION':
-      return onOdysStartPanAction(state, action);
-    case 'ODYS_START_RESIZE_SHAPE_ACTION':
-      return onOdysStartResizeShapeAction(state, action);
-    case 'ODYS_SELECT_ACTION':
-      return onOdysSelectAction(state, action);
-    case 'ODYS_START_NEW_RECT_BY_CLICK_ACTION':
-      return onOdysStartNewRectByClickAction(state, action);
-    case `ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION`:
-      return onOdysSelectedShapeInputChangeAction(state, action);
-    case 'ODYS_END_NEW_RECT_BY_CLICK_ACTION':
-      return onOdysEndNewRectByClickAction(state, action);
-    case 'ODYS_DRAG_ACTION':
-      return onOdysDragAction(state, action);
-    case 'ODYS_END_DRAG_ACTION':
-      return onOdysEndDragAction(state, action);
-    case 'ODYS_PAN_ACTION':
-      return onOdysPanAction(state, action);
-    case 'ODYS_END_PAN_ACTION':
-      return onOdysEndPanAction(state, action);
-    case 'ODYS_RESIZE_SHAPE_ACTION':
-      return onOdysResizeShapeAction(state, action);
-    case 'ODYS_END_RESIZE_SHAPE_ACTION':
-      return onOdysEndResizeShapeAction(state, action);
-    case 'ODYS_WHEEL_ACTION':
-      return onOdysWheelAction(state, action);
-    default:
-      throw new Error(`Unknown action ${action}`);
+  const m = {
+    ODYS_RAISE_SHAPE_ACTION: () =>
+      onOdysRaiseShape(state, action as OdysRaiseShapeAction),
+    ODYS_ADD_SHAPE_ACTION: () =>
+      onOdysAddShapeAction(state, action as OdysAddShapeAction),
+    ODYS_DELETE_SHAPE_ACTION: () =>
+      onOdysDeleteShapeAction(state, action as OdysDeleteShapeAction),
+    ODYS_START_DRAG_ACTION: () =>
+      onOdysStartDragAction(state, action as OdysStartDragAction),
+    ODYS_START_PAN_ACTION: () =>
+      onOdysStartPanAction(state, action as OdysStartPanAction),
+    ODYS_START_RESIZE_SHAPE_ACTION: () =>
+      onOdysStartResizeShapeAction(state, action as OdysStartResizeShapeAction),
+    ODYS_SELECT_ACTION: () =>
+      onOdysSelectAction(state, action as OdysSelectAction),
+    ODYS_START_NEW_RECT_BY_CLICK_ACTION: () =>
+      onOdysStartNewRectByClickAction(
+        state,
+        action as OdysStartNewRectByClickAction
+      ),
+    ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION: () =>
+      onOdysSelectedShapeInputChangeAction(
+        state,
+        action as OdysSelectedShapeInputChangeAction
+      ),
+    ODYS_END_NEW_RECT_BY_CLICK_ACTION: () =>
+      onOdysEndNewRectByClickAction(
+        state,
+        action as OdysEndNewRectByClickAction
+      ),
+    ODYS_DRAG_ACTION: () => onOdysDragAction(state, action as OdysDragAction),
+    ODYS_END_DRAG_ACTION: () =>
+      onOdysEndDragAction(state, action as OdysEndDragAction),
+    ODYS_PAN_ACTION: () => onOdysPanAction(state, action as OdysPanAction),
+    ODYS_END_PAN_ACTION: () =>
+      onOdysEndPanAction(state, action as OdysEndPanAction),
+    ODYS_RESIZE_SHAPE_ACTION: () =>
+      onOdysResizeShapeAction(state, action as OdysResizeShapeAction),
+    ODYS_END_RESIZE_SHAPE_ACTION: () =>
+      onOdysEndResizeShapeAction(state, action as OdysEndResizeShapeAction),
+    ODYS_WHEEL_ACTION: () => onOdysWheelAction(state, action as OdysWheelAction)
+  };
+  const fn = m[action.type];
+  if (!fn) {
+    throw new Error(`Unknown action ${action}`);
   }
+
+  return fn();
 }
 
 function onOdysAddShapeAction(
