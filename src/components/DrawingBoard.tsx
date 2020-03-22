@@ -54,7 +54,7 @@ const DrawingBoard: React.FC = () => {
   // temp seed data
   if (globalState.shapes.length === 0) {
     dispatch({
-      type: 'ODYS_ADD_SHAPE',
+      type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
         type: 'rect',
         id: id(),
@@ -70,7 +70,7 @@ const DrawingBoard: React.FC = () => {
       }
     });
     dispatch({
-      type: 'ODYS_ADD_SHAPE',
+      type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
         type: 'rect',
         id: id(),
@@ -86,7 +86,7 @@ const DrawingBoard: React.FC = () => {
       }
     });
     dispatch({
-      type: 'ODYS_ADD_SHAPE',
+      type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
         type: 'rect',
         id: id(),
@@ -102,7 +102,7 @@ const DrawingBoard: React.FC = () => {
       }
     });
     dispatch({
-      type: 'ODYS_ADD_SHAPE',
+      type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
         type: 'arrow',
         id: id(),
@@ -119,7 +119,7 @@ const DrawingBoard: React.FC = () => {
       }
     });
     dispatch({
-      type: 'ODYS_ADD_SHAPE',
+      type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
         type: 'line',
         id: id(),
@@ -132,7 +132,7 @@ const DrawingBoard: React.FC = () => {
       }
     });
     dispatch({
-      type: 'ODYS_ADD_SHAPE',
+      type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
         type: 'text',
         id: id(),
@@ -149,7 +149,7 @@ const DrawingBoard: React.FC = () => {
   function onKeyDownHandler(e: KeyboardEvent) {
     if (e.code === 'Backspace' && globalState.selectedId) {
       dispatch({
-        type: 'ODYS_DELETE_SHAPE',
+        type: 'ODYS_DELETE_SHAPE_ACTION',
         id: globalState.selectedId
       });
     }

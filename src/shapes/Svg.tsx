@@ -117,7 +117,7 @@ const Svg: React.FC<SvgProps> = props => {
 
   function handleOnWheel(e: React.WheelEvent) {
     dispatch({
-      type: 'ODYS_WHEEL',
+      type: 'ODYS_WHEEL_ACTION',
       clickX: e.clientX,
       clickY: e.clientY,
       scaleFactor:

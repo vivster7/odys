@@ -58,17 +58,17 @@ export interface GlobalActionType {
 }
 
 export interface OdysRaiseShapeAction extends GlobalActionType {
-  type: 'ODYS_RAISE_SHAPE';
+  type: 'ODYS_RAISE_SHAPE_ACTION';
   id: string;
 }
 
 export interface OdysAddShapeAction extends GlobalActionType {
-  type: 'ODYS_ADD_SHAPE';
+  type: 'ODYS_ADD_SHAPE_ACTION';
   shape: Shape;
 }
 
 export interface OdysDeleteShapeAction extends GlobalActionType {
-  type: 'ODYS_DELETE_SHAPE';
+  type: 'ODYS_DELETE_SHAPE_ACTION';
   id: string;
 }
 
@@ -147,7 +147,7 @@ export interface OdysSelectedShapeInputChangeAction extends GlobalActionType {
 }
 
 export interface OdysWheelAction extends GlobalActionType {
-  type: 'ODYS_WHEEL';
+  type: 'ODYS_WHEEL_ACTION';
   clickX: number;
   clickY: number;
   scaleFactor: number;
@@ -183,12 +183,33 @@ export const GlobalStateContext = React.createContext({
 
 export function globalStateReducer(state: GlobalState, action: GlobalAction) {
   console.log(action.type);
+  // const m = {
+  //   'ODYS_RAISE_SHAPE_ACTION': onOdysRaiseShape(state, action as any),
+  //   'ODYS_ADD_SHAPE_ACTION': onOdysAddShapeAction(state, action as any),
+  //   'ODYS_DELETE_SHAPE_ACTION': onOdysDeleteShapeAction(state, action as any),
+  //   'ODYS_START_DRAG_ACTION': onOdysStartDragAction(state, action as any),
+  //   'ODYS_START_PAN_ACTION': onOdysStartPanAction(state, action as any),
+  //   'ODYS_START_RESIZE_SHAPE_ACTION': onOdysStartResizeShapeAction(state, action as any),
+  //   'ODYS_SELECT_ACTION': onOdysSelectAction(state, action as any),
+  //   'ODYS_START_NEW_RECT_BY_CLICK_ACTION': onOdysStartNewRectByClickAction(state, action as any),
+  //   'ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION': onOdysSelectedShapeInputChangeAction(state, action as any),
+  //   'ODYS_END_NEW_RECT_BY_CLICK_ACTION': onOdysEndNewRectByClickAction(state, action as any),
+  //   'ODYS_DRAG_ACTION': onOdysDragAction(state, action as any),
+  //   'ODYS_END_DRAG_ACTION': onOdysEndDragAction(state, action as any),
+  //   'ODYS_PAN_ACTION': onOdysPanAction(state, action as any),
+  //   'ODYS_END_PAN_ACTION': onOdysEndPanAction(state, action as any),
+  //   'ODYS_RESIZE_SHAPE_ACTION': onOdysResizeShapeAction(state, action as any),
+  //   'ODYS_END_RESIZE_SHAPE_ACTION': onOdysEndResizeShapeAction(state, action as any),
+  //   'ODYS_WHEEL_ACTION': onOdysWheelAction(state, action as any),
+  // }
+  // const fn = m[action.type]
+
   switch (action.type) {
-    case 'ODYS_RAISE_SHAPE':
+    case 'ODYS_RAISE_SHAPE_ACTION':
       return onOdysRaiseShape(state, action);
-    case 'ODYS_ADD_SHAPE':
+    case 'ODYS_ADD_SHAPE_ACTION':
       return onOdysAddShapeAction(state, action);
-    case 'ODYS_DELETE_SHAPE':
+    case 'ODYS_DELETE_SHAPE_ACTION':
       return onOdysDeleteShapeAction(state, action);
     case 'ODYS_START_DRAG_ACTION':
       return onOdysStartDragAction(state, action);
@@ -216,7 +237,7 @@ export function globalStateReducer(state: GlobalState, action: GlobalAction) {
       return onOdysResizeShapeAction(state, action);
     case 'ODYS_END_RESIZE_SHAPE_ACTION':
       return onOdysEndResizeShapeAction(state, action);
-    case 'ODYS_WHEEL':
+    case 'ODYS_WHEEL_ACTION':
       return onOdysWheelAction(state, action);
     default:
       throw new Error(`Unknown action ${action}`);
