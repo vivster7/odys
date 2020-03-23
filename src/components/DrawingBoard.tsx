@@ -145,13 +145,6 @@ const DrawingBoard: React.FC = () => {
     }
   }
 
-  let selectedShape;
-  if (globalState.select) {
-    const selectedId = globalState.select.id;
-    const idx = globalState.shapes.findIndex(s => s.id === selectedId);
-    selectedShape = globalState.shapes[idx] as RectProps;
-  }
-
   return (
     <>
       <Svg
@@ -164,9 +157,7 @@ const DrawingBoard: React.FC = () => {
         {globalState.shapes.map(s => renderShape(s))}
       </Svg>
       <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
-        {selectedShape && (
-          <HiddenTextInput name={selectedShape.id} value={selectedShape.text} />
-        )}
+        <HiddenTextInput></HiddenTextInput>
       </div>
     </>
   );

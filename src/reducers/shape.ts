@@ -23,7 +23,6 @@ export interface OdysSelectShapeAction extends GlobalActionType {
 
 export interface OdysSelectedShapeInputChangeAction extends GlobalActionType {
   type: 'ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION';
-  id: string;
   text: string;
 }
 
@@ -73,15 +72,20 @@ function onOdysSelectedShapeInputChangeAction(
   state: GlobalState,
   action: OdysSelectedShapeInputChangeAction
 ): GlobalState {
-  const { id, text } = action;
-  const { shapes } = state;
-  const idx = shapes.findIndex(d => d.id === id);
+  if (!state.select) {
+    throw new Error(
+      `[select/edit] Cannot edit text if a shape is not selected. ODYS_SELECT_SHAPE_ACTION should have fired first.`
+    );
+  }
+
+  const { shapes, select } = state;
+  const idx = shapes.findIndex(d => d.id === select.id);
   if (idx === -1) {
-    throw new Error(`[edit] Cannot find ${id} in shapes context`);
+    throw new Error(`[edit] Cannot find ${select.id} in shapes context`);
   }
   const shape = {
     ...shapes[idx],
-    text: text
+    text: action.text
   };
 
   return {
