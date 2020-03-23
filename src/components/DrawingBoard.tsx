@@ -110,10 +110,10 @@ const DrawingBoard: React.FC = () => {
 
   // add delete key handler
   function onKeyDownHandler(e: KeyboardEvent) {
-    if (e.code === 'Backspace' && globalState.selectedId) {
+    if (e.code === 'Backspace' && globalState.select) {
       dispatch({
         type: 'ODYS_DELETE_SHAPE_ACTION',
-        id: globalState.selectedId
+        id: globalState.select.id
       });
     }
   }
@@ -145,10 +145,12 @@ const DrawingBoard: React.FC = () => {
     }
   }
 
-  const selectedShapeInd = globalState.shapes.findIndex(
-    d => d.id === globalState.selectedId
-  );
-  const selectedShape = globalState.shapes[selectedShapeInd] as RectProps;
+  let selectedShape;
+  if (globalState.select) {
+    const selectedId = globalState.select.id;
+    const idx = globalState.shapes.findIndex(s => s.id === selectedId);
+    selectedShape = globalState.shapes[idx] as RectProps;
+  }
 
   return (
     <>

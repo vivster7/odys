@@ -62,7 +62,10 @@ function onOdysSelectShapeAction(
 ): GlobalState {
   return {
     ...state,
-    selectedId: action.id
+    select: {
+      id: action.id,
+      isEditing: false
+    }
   };
 }
 

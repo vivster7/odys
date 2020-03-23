@@ -39,7 +39,7 @@ export interface GlobalState {
   drag: DragState | null;
   pan: PanState | null;
   resize: ResizeState | null;
-  selectedId: string | null;
+  select: SelectState | null;
   newRectByClick: NewRectByClickState | null;
   svg: SVGState;
 }
@@ -62,6 +62,11 @@ interface ResizeState {
   originalY: number;
   clickX: number;
   clickY: number;
+}
+
+interface SelectState {
+  id: string;
+  isEditing: boolean;
 }
 
 interface NewRectByClickState {

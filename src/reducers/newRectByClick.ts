@@ -29,7 +29,7 @@ function onOdysStartNewRectByClickAction(
 ): GlobalState {
   return {
     ...state,
-    selectedId: null,
+    select: null,
     newRectByClick: {
       clickX: action.clickX,
       clickY: action.clickY
@@ -50,7 +50,7 @@ function onOdysEndNewRectByClickAction(
     drag: null,
     newRectByClick: null,
     pan: null,
-    selectedId: id,
+    select: null,
     shapes: [
       ...state.shapes,
       {

@@ -36,7 +36,7 @@ const Rect: React.FC<RectProps> = props => {
   const cursor =
     globalState.drag && globalState.drag.id === id ? 'grabbing' : 'grab';
 
-  const isSelected = id === globalState.selectedId;
+  const isSelected = id === (globalState.select && globalState.select.id);
 
   function startDrag(e: React.MouseEvent) {
     dispatch({

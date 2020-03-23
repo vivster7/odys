@@ -9,7 +9,7 @@ const App: React.FC = () => {
     drag: null,
     pan: null,
     resize: null,
-    selectedId: null,
+    select: null,
     newRectByClick: null,
     svg: {
       topLeftX: 0,
