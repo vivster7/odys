@@ -21,8 +21,8 @@ export interface OdysSelectShapeAction extends GlobalActionType {
   id: string;
 }
 
-export interface OdysSelectedShapeInputChangeAction extends GlobalActionType {
-  type: 'ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION';
+export interface OdysSelectedShapeEditTextAction extends GlobalActionType {
+  type: 'ODYS_SELECTED_SHAPE_EDIT_TEXT_ACTION';
   text: string;
 }
 
@@ -31,7 +31,7 @@ const shapeReducerMap = {
   ODYS_ADD_SHAPE_ACTION: onOdysAddShapeAction,
   ODYS_DELETE_SHAPE_ACTION: onOdysDeleteShapeAction,
   ODYS_SELECT_SHAPE_ACTION: onOdysSelectShapeAction,
-  ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION: onOdysSelectedShapeInputChangeAction
+  ODYS_SELECTED_SHAPE_EDIT_TEXT_ACTION: onOdysSelectedShapeEditTextAction
 };
 
 export default shapeReducerMap;
@@ -68,9 +68,9 @@ function onOdysSelectShapeAction(
   };
 }
 
-function onOdysSelectedShapeInputChangeAction(
+function onOdysSelectedShapeEditTextAction(
   state: GlobalState,
-  action: OdysSelectedShapeInputChangeAction
+  action: OdysSelectedShapeEditTextAction
 ): GlobalState {
   if (!state.select) {
     throw new Error(

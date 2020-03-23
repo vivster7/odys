@@ -22,7 +22,7 @@ const HiddenTextInput: React.FC = props => {
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch({
-      type: 'ODYS_SELECTED_SHAPE_INPUT_CHANGE_ACTION',
+      type: 'ODYS_SELECTED_SHAPE_EDIT_TEXT_ACTION',
       text: event.target.value
     });
   };
