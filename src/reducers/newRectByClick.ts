@@ -50,7 +50,10 @@ function onOdysEndNewRectByClickAction(
     drag: null,
     newRectByClick: null,
     pan: null,
-    select: null,
+    select: {
+      id: id,
+      isEditing: false
+    },
     shapes: [
       ...state.shapes,
       {
