@@ -161,7 +161,7 @@ const DrawingBoard: React.FC = () => {
       >
         {globalState.shapes.map(s => renderShape(s))}
       </Svg>
-      <div style={{ display: 'hidden' }}>
+      <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
         {selectedShape && (
           <HiddenTextInput name={selectedShape.id} value={selectedShape.text} />
         )}
