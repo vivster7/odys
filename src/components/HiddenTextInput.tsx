@@ -32,6 +32,7 @@ const HiddenTextInput: React.FC<HiddenTextInputProps> = props => {
   return (
     <>
       <input
+        style={{ height: '0px', padding: '0px', border: '0px', opacity: 0 }}
         ref={inputEl}
         type="text"
         onChange={onInputChange}

@@ -30,6 +30,7 @@ function onOdysStartPanAction(
 ): GlobalState {
   return {
     ...state,
+    select: null,
     pan: {
       clickX: action.clickX,
       clickY: action.clickY
