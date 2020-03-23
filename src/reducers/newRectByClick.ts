@@ -45,6 +45,9 @@ function onOdysEndNewRectByClickAction(
   const x = (action.clickX - state.svg.topLeftX) / state.svg.scale;
   const y = (action.clickY - state.svg.topLeftY) / state.svg.scale;
 
+  const width = RECT_WIDTH / state.svg.scale;
+  const height = RECT_HEIGHT / state.svg.scale;
+
   return {
     ...state,
     drag: null,
@@ -60,12 +63,12 @@ function onOdysEndNewRectByClickAction(
         type: 'rect',
         id: id,
         text: 'A',
-        x: x - RECT_WIDTH / 2,
-        y: y - RECT_HEIGHT / 2,
+        x: x - width / 2,
+        y: y - height / 2,
         translateX: 0,
         translateY: 0,
-        width: RECT_WIDTH,
-        height: RECT_HEIGHT,
+        width: width,
+        height: height,
         deltaWidth: 0,
         deltaHeight: 0
       } as RectProps
