@@ -55,10 +55,45 @@ function onOdysResizeAction(
       throw new Error(`[resize] Cannot find ${id} in shapes`);
     }
 
+    let translateX = 0;
+    let translateY = 0;
+    let deltaWidth = 0;
+    let deltaHeight = 0;
+    switch (state.resize.anchor) {
+      case 'SEAnchor':
+        deltaWidth = (action.clickX - state.resize.originalX) / state.svg.scale;
+        deltaHeight =
+          (action.clickY - state.resize.originalY) / state.svg.scale;
+        break;
+      case 'SWAnchor':
+        translateX = (action.clickX - state.resize.originalX) / state.svg.scale;
+        deltaWidth = (state.resize.originalX - action.clickX) / state.svg.scale;
+        deltaHeight =
+          (action.clickY - state.resize.originalY) / state.svg.scale;
+        break;
+      case 'NEAnchor':
+        translateY = (action.clickY - state.resize.originalY) / state.svg.scale;
+        deltaWidth = (action.clickX - state.resize.originalX) / state.svg.scale;
+        deltaHeight =
+          (state.resize.originalY - action.clickY) / state.svg.scale;
+        break;
+      case 'NWAnchor':
+        translateX = (action.clickX - state.resize.originalX) / state.svg.scale;
+        translateY = (action.clickY - state.resize.originalY) / state.svg.scale;
+        deltaWidth = (state.resize.originalX - action.clickX) / state.svg.scale;
+        deltaHeight =
+          (state.resize.originalY - action.clickY) / state.svg.scale;
+        break;
+      default:
+        throw new Error(`Unknown anchor point ${state.resize.anchor}`);
+    }
+
     const shape = {
       ...shapes[idx],
-      deltaWidth: (action.clickX - state.resize.originalX) / state.svg.scale,
-      deltaHeight: (action.clickY - state.resize.originalY) / state.svg.scale
+      translateX,
+      translateY,
+      deltaWidth,
+      deltaHeight
     };
 
     return {
@@ -87,6 +122,10 @@ function onOdysEndResizeAction(
     const rect = shapes[idx] as RectProps;
     const shape = {
       ...rect,
+      x: rect.x + rect.translateX,
+      y: rect.y + rect.translateY,
+      translateX: 0,
+      translateY: 0,
       width: rect.width + rect.deltaWidth,
       height: rect.height + rect.deltaHeight,
       deltaWidth: 0,
