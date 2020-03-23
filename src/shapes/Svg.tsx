@@ -75,11 +75,13 @@ const Svg: React.FC<SvgProps> = props => {
     }
 
     function startNewRectByClick(e: React.MouseEvent) {
-      dispatch({
-        type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION',
-        clickX: e.clientX,
-        clickY: e.clientY
-      });
+      if (e.altKey) {
+        dispatch({
+          type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION',
+          clickX: e.clientX,
+          clickY: e.clientY
+        });
+      }
     }
   }
 
