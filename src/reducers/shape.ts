@@ -90,6 +90,10 @@ function onOdysSelectedShapeEditTextAction(
 
   return {
     ...state,
+    select: {
+      ...state.select,
+      isEditing: true
+    },
     shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
   };
 }

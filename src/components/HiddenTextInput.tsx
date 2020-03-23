@@ -2,16 +2,18 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { GlobalStateContext } from '../globals';
 import { RectProps } from '../shapes/Rect';
 
-const HiddenTextInput: React.FC = props => {
+export interface HiddenTextInputProps {
+  selectedShape: RectProps;
+}
+
+const HiddenTextInput: React.FC<HiddenTextInputProps> = props => {
   const { globalState, dispatch } = useContext(GlobalStateContext);
 
   const inputEl = useRef<HTMLInputElement>(null);
 
-  let selectedShape;
-  if (globalState.select) {
-    const selectedId = globalState.select.id;
-    const idx = globalState.shapes.findIndex(s => s.id === selectedId);
-    selectedShape = globalState.shapes[idx] as RectProps;
+  let inputValue = '';
+  if (globalState.select && globalState.select.isEditing) {
+    inputValue = props.selectedShape.text;
   }
 
   useEffect(() => {
@@ -29,9 +31,12 @@ const HiddenTextInput: React.FC = props => {
 
   return (
     <>
-      {selectedShape && (
-        <input ref={inputEl} type="text" onChange={onInputChange} />
-      )}
+      <input
+        ref={inputEl}
+        type="text"
+        onChange={onInputChange}
+        value={inputValue}
+      />
     </>
   );
 };

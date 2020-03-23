@@ -110,7 +110,11 @@ const DrawingBoard: React.FC = () => {
 
   // add delete key handler
   function onKeyDownHandler(e: KeyboardEvent) {
-    if (e.code === 'Backspace' && globalState.select) {
+    if (
+      e.code === 'Backspace' &&
+      globalState.select &&
+      globalState.select.isEditing === false
+    ) {
       dispatch({
         type: 'ODYS_DELETE_SHAPE_ACTION',
         id: globalState.select.id
@@ -145,6 +149,13 @@ const DrawingBoard: React.FC = () => {
     }
   }
 
+  let selectedShape: RectProps | null = null;
+  if (globalState.select) {
+    const selectedId = globalState.select.id;
+    const idx = globalState.shapes.findIndex(s => s.id === selectedId);
+    selectedShape = globalState.shapes[idx] as RectProps;
+  }
+
   return (
     <>
       <Svg
@@ -157,7 +168,9 @@ const DrawingBoard: React.FC = () => {
         {globalState.shapes.map(s => renderShape(s))}
       </Svg>
       <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
-        <HiddenTextInput></HiddenTextInput>
+        {selectedShape && (
+          <HiddenTextInput selectedShape={selectedShape}></HiddenTextInput>
+        )}
       </div>
     </>
   );
