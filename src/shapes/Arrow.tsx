@@ -4,6 +4,7 @@ import LeftArrowhead from './LeftArrowhead';
 import RightArrowhead from './RightArrowhead';
 import { v4 } from 'uuid';
 import { GlobalStateContext } from '../globals';
+import { RectProps } from './Rect';
 
 export interface ArrowProps {
   type: 'arrow';
@@ -99,8 +100,8 @@ const Arrow: React.FC<ArrowProps> = props => {
     return (
       <RightArrowhead
         id={idFn()}
-        x={props.x2 - props.x1}
-        y={props.y2 - props.y1}
+        x={props.x2}
+        y={props.y2}
         rotationAngleFromXInRadians={rotation2}
       ></RightArrowhead>
     );
@@ -123,19 +124,44 @@ const Arrow: React.FC<ArrowProps> = props => {
   };
 
   const FromToArrow: React.FC<FromToArrowProps> = props => {
-    const from = globalState.shapes.find(s => s.id === props.fromId);
+    const from = globalState.shapes.find(
+      s => s.id === props.fromId
+    ) as RectProps;
     if (!from) {
       throw new Error(`[fromArrow] Could not find shape$ ${props.fromId}`);
     }
-    const to = globalState.shapes.find(s => s.id === props.toId);
+    const to = globalState.shapes.find(s => s.id === props.toId) as RectProps;
     if (!to) {
       throw new Error(`[toArrow] Could not find shape$ ${props.toId}`);
     }
 
-    const x1 = from.x as number;
-    const y1 = from.y as number;
-    const x2 = to.x as number;
-    const y2 = to.y as number;
+    const x1 =
+      (from.x +
+        from.translateX +
+        from.x +
+        from.translateX +
+        from.width +
+        from.deltaWidth) /
+      2;
+    const y1 =
+      (from.y +
+        from.translateY +
+        from.y +
+        from.translateY +
+        from.height +
+        from.deltaHeight) /
+      2;
+    const x2 =
+      (to.x + to.translateX + to.x + to.translateX + to.width + to.deltaWidth) /
+      2;
+    const y2 =
+      (to.y +
+        to.translateY +
+        to.y +
+        to.translateY +
+        to.height +
+        to.deltaHeight) /
+      2;
 
     const left = false;
     const right = true;
