@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Group from './Group';
 import LeftArrowhead from './LeftArrowhead';
 import RightArrowhead from './RightArrowhead';
 import { v4 } from 'uuid';
-import Shape from './Shape';
+import { GlobalStateContext } from '../globals';
 
 export interface ArrowProps {
   type: 'arrow';
@@ -26,8 +26,8 @@ export interface ArrowProps {
   right: boolean;
 
   // connect to shapes
-  from: Shape | null;
-  to: Shape | null;
+  fromId: string | null;
+  toId: string | null;
 }
 
 interface XYArrowProps {
@@ -44,10 +44,8 @@ interface XYArrowProps {
 
 interface FromToArrowProps {
   id: string;
-  left: boolean;
-  right: boolean;
-  from: Shape;
-  to: Shape;
+  fromId: string;
+  toId: string;
 }
 
 interface ArrowheadProps {
@@ -59,12 +57,13 @@ interface ArrowheadProps {
 
 const idFn = () => `id-${v4()}`;
 const Arrow: React.FC<ArrowProps> = props => {
+  const { globalState } = useContext(GlobalStateContext);
   // TODO: drag + move edges
   const transform = `translate(${props.x1}, ${props.y1})`;
   const cursor = 'auto';
 
   (function validate() {
-    if (props.from && props.to) {
+    if (props.fromId && props.toId) {
       return;
     }
 
@@ -124,23 +123,35 @@ const Arrow: React.FC<ArrowProps> = props => {
   };
 
   const FromToArrow: React.FC<FromToArrowProps> = props => {
-    const x1 = props.from.x as number;
-    const y1 = props.from.y as number;
-    const x2 = props.to.x as number;
-    const y2 = props.to.y as number;
+    const from = globalState.shapes.find(s => s.id === props.fromId);
+    if (!from) {
+      throw new Error(`[fromArrow] Could not find shape$ ${props.fromId}`);
+    }
+    const to = globalState.shapes.find(s => s.id === props.toId);
+    if (!to) {
+      throw new Error(`[toArrow] Could not find shape$ ${props.toId}`);
+    }
+
+    const x1 = from.x as number;
+    const y1 = from.y as number;
+    const x2 = to.x as number;
+    const y2 = to.y as number;
+
+    const left = false;
+    const right = true;
 
     return (
       <Group id={props.id} transform={transform} cursor={cursor}>
         <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="grey"></line>
-        {props.left ? leftArrowhead({ x1, x2, y1, y2 }) : <></>}
-        {props.right ? rightArrowhead({ x1, x2, y1, y2 }) : <></>}
+        {left ? leftArrowhead({ x1, x2, y1, y2 }) : <></>}
+        {right ? rightArrowhead({ x1, x2, y1, y2 }) : <></>}
       </Group>
     );
   };
 
   return (
     <>
-      {props.from && props.to
+      {props.fromId && props.toId
         ? FromToArrow(props as FromToArrowProps)
         : XYArrow(props as XYArrowProps)}
     </>

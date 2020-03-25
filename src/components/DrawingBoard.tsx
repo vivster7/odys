@@ -16,11 +16,21 @@ const DrawingBoard: React.FC = () => {
 
   // temp seed data
   if (globalState.shapes.length === 0) {
+    const rect1Id = id();
+    const rect2Id = id();
+
+    const arrow = {
+      type: 'arrow',
+      id: id(),
+      fromId: rect1Id,
+      toId: rect2Id
+    };
+
     dispatch({
       type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
         type: 'rect',
-        id: id(),
+        id: rect1Id,
         text: 'A',
         x: 0,
         y: 0,
@@ -36,10 +46,10 @@ const DrawingBoard: React.FC = () => {
       type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
         type: 'rect',
-        id: id(),
-        text: 'C',
-        x: 400,
-        y: 400,
+        id: rect2Id,
+        text: 'B',
+        x: 200,
+        y: 200,
         translateX: 0,
         translateY: 0,
         width: RECT_WIDTH,
@@ -50,12 +60,16 @@ const DrawingBoard: React.FC = () => {
     });
     dispatch({
       type: 'ODYS_ADD_SHAPE_ACTION',
+      shape: arrow as ArrowProps
+    });
+    dispatch({
+      type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
         type: 'rect',
         id: id(),
-        text: 'B',
-        x: 200,
-        y: 200,
+        text: 'C',
+        x: 400,
+        y: 400,
         translateX: 0,
         translateY: 0,
         width: RECT_WIDTH,
