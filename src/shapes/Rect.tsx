@@ -4,6 +4,7 @@ import { GlobalStateContext, Anchor } from '../globals';
 
 export const RECT_WIDTH = 200;
 export const RECT_HEIGHT = 100;
+export const FONT_SIZE = 14;
 
 export interface RectProps extends React.SVGProps<SVGRectElement> {
   type: 'rect';
@@ -126,7 +127,10 @@ const Rect: React.FC<RectProps> = props => {
       <text
         x={textX}
         y={textY}
-        style={{ textAnchor: 'middle' }}
+        style={{
+          textAnchor: 'middle',
+          fontSize: `${FONT_SIZE * (props.width + props.deltaWidth) * 0.005}px`
+        }}
         onMouseDown={e => selectAndStartDrag(e)}
       >
         <tspan style={{ userSelect: 'none' }}>{props.text}</tspan>
