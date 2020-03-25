@@ -39,26 +39,37 @@ const Rect: React.FC<RectProps> = props => {
 
   const isSelected = id === (globalState.select && globalState.select.id);
 
-  function startDrag(e: React.MouseEvent) {
-    dispatch({
-      type: 'ODYS_START_DRAG_ACTION',
-      id: id,
-      clickX: e.clientX,
-      clickY: e.clientY
-    });
-  }
-
-  function select(e: React.MouseEvent) {
-    dispatch({
-      type: 'ODYS_SELECT_SHAPE_ACTION',
-      id: id
-    });
-  }
-
-  function selectAndStartDrag(e: React.MouseEvent) {
+  function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
     startDrag(e);
-    select(e);
+    if (globalState.select && e.altKey) {
+      drawArrow(e);
+    } else {
+      select(e);
+    }
+
+    function startDrag(e: React.MouseEvent) {
+      dispatch({
+        type: 'ODYS_START_DRAG_ACTION',
+        id: id,
+        clickX: e.clientX,
+        clickY: e.clientY
+      });
+    }
+
+    function select(e: React.MouseEvent) {
+      dispatch({
+        type: 'ODYS_SELECT_SHAPE_ACTION',
+        id: id
+      });
+    }
+
+    function drawArrow(e: React.MouseEvent) {
+      dispatch({
+        type: 'ODYS_DRAW_ARROW_ACTION',
+        id: id
+      });
+    }
   }
 
   const SelectionCircles = () => {
@@ -122,7 +133,7 @@ const Rect: React.FC<RectProps> = props => {
         fill="white"
         stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
         strokeDasharray={isSelected ? 5 : 0}
-        onMouseDown={e => selectAndStartDrag(e)}
+        onMouseDown={e => handleMouseDown(e)}
       ></rect>
       <text
         x={textX}
@@ -131,7 +142,7 @@ const Rect: React.FC<RectProps> = props => {
           textAnchor: 'middle',
           fontSize: `${FONT_SIZE * (props.width + props.deltaWidth) * 0.005}px`
         }}
-        onMouseDown={e => selectAndStartDrag(e)}
+        onMouseDown={e => handleMouseDown(e)}
       >
         <tspan style={{ userSelect: 'none' }}>{props.text}</tspan>
       </text>

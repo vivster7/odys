@@ -1,5 +1,7 @@
 import { GlobalActionType, GlobalState } from '../globals';
+import { v4 } from 'uuid';
 import Shape from '../shapes/Shape';
+import { ArrowProps } from '../shapes/Arrow';
 
 export interface OdysRaiseShapeAction extends GlobalActionType {
   type: 'ODYS_RAISE_SHAPE_ACTION';
@@ -16,6 +18,11 @@ export interface OdysDeleteShapeAction extends GlobalActionType {
   id: string;
 }
 
+export interface OdysDrawArrowAction extends GlobalActionType {
+  type: 'ODYS_DRAW_ARROW_ACTION';
+  id: string;
+}
+
 export interface OdysSelectShapeAction extends GlobalActionType {
   type: 'ODYS_SELECT_SHAPE_ACTION';
   id: string;
@@ -26,10 +33,12 @@ export interface OdysSelectedShapeEditTextAction extends GlobalActionType {
   text: string;
 }
 
+const id = () => `id-${v4()}`;
 const shapeReducerMap = {
   ODYS_RAISE_SHAPE_ACTION: onOdysRaiseShape,
   ODYS_ADD_SHAPE_ACTION: onOdysAddShapeAction,
   ODYS_DELETE_SHAPE_ACTION: onOdysDeleteShapeAction,
+  ODYS_DRAW_ARROW_ACTION: onOdysDrawArrowAction,
   ODYS_SELECT_SHAPE_ACTION: onOdysSelectShapeAction,
   ODYS_SELECTED_SHAPE_EDIT_TEXT_ACTION: onOdysSelectedShapeEditTextAction
 };
@@ -52,6 +61,27 @@ function onOdysDeleteShapeAction(
   return {
     ...state,
     shapes: state.shapes.filter(s => s.id !== action.id)
+  };
+}
+
+function onOdysDrawArrowAction(
+  state: GlobalState,
+  action: OdysDeleteShapeAction
+): GlobalState {
+  if (!state.select) {
+    throw new Error('Cannot draw arrow without selected object.');
+  }
+
+  const arrow: ArrowProps = {
+    type: 'arrow',
+    id: id(),
+    fromId: state.select.id,
+    toId: action.id
+  } as ArrowProps;
+
+  return {
+    ...state,
+    shapes: [...state.shapes, arrow]
   };
 }
 

@@ -25,7 +25,8 @@ import shapeReducerMap, {
   OdysAddShapeAction,
   OdysDeleteShapeAction,
   OdysSelectShapeAction,
-  OdysSelectedShapeEditTextAction
+  OdysSelectedShapeEditTextAction,
+  OdysDrawArrowAction
 } from './reducers/shape';
 
 export type NEAnchor = 'NEAnchor';
@@ -90,6 +91,7 @@ export type GlobalAction =
   | OdysRaiseShapeAction
   | OdysAddShapeAction
   | OdysDeleteShapeAction
+  | OdysDrawArrowAction
   | OdysSelectShapeAction
   | OdysSelectedShapeEditTextAction
   | OdysStartNewRectByClickAction
