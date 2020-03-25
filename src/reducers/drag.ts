@@ -82,8 +82,8 @@ function onOdysEndDragAction(
 
     const shape = {
       ...shapes[idx],
-      x: (shapes[idx].x as number) + shapes[idx].translateX,
-      y: (shapes[idx].y as number) + shapes[idx].translateY,
+      x: (shapes[idx].x as number) + (shapes[idx].translateX as number),
+      y: (shapes[idx].y as number) + (shapes[idx].translateY as number),
       translateX: 0,
       translateY: 0
     };

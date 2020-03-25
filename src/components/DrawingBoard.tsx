@@ -67,23 +67,6 @@ const DrawingBoard: React.FC = () => {
     dispatch({
       type: 'ODYS_ADD_SHAPE_ACTION',
       shape: {
-        type: 'arrow',
-        id: id(),
-        x: 0,
-        y: 0,
-        x1: 200,
-        y1: 200,
-        x2: 300,
-        y2: 300,
-        left: true,
-        right: false,
-        translateX: 0,
-        translateY: 0
-      }
-    });
-    dispatch({
-      type: 'ODYS_ADD_SHAPE_ACTION',
-      shape: {
         type: 'line',
         id: id(),
         x1: 0,
