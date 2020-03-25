@@ -135,33 +135,20 @@ const Arrow: React.FC<ArrowProps> = props => {
       throw new Error(`[toArrow] Could not find shape$ ${props.toId}`);
     }
 
-    const x1 =
-      (from.x +
-        from.translateX +
-        from.x +
-        from.translateX +
-        from.width +
-        from.deltaWidth) /
-      2;
-    const y1 =
-      (from.y +
-        from.translateY +
-        from.y +
-        from.translateY +
-        from.height +
-        from.deltaHeight) /
-      2;
-    const x2 =
-      (to.x + to.translateX + to.x + to.translateX + to.width + to.deltaWidth) /
-      2;
-    const y2 =
-      (to.y +
-        to.translateY +
-        to.y +
-        to.translateY +
-        to.height +
-        to.deltaHeight) /
-      2;
+    const fromX = from.x + from.translateX;
+    const fromY = from.y + from.translateY;
+    const fromHeight = from.height + from.deltaHeight;
+    const fromWidth = from.width + from.deltaWidth;
+
+    const toX = to.x + to.translateX;
+    const toY = to.y + to.translateY;
+    const toHeight = to.height + to.deltaHeight;
+    const toWidth = to.width + to.deltaWidth;
+
+    const x1 = (fromX + (fromX + fromWidth)) / 2;
+    const y1 = (fromY + (fromY + fromHeight)) / 2;
+    const x2 = (toX + (toX + toWidth)) / 2;
+    const y2 = (toY + (toY + toHeight)) / 2;
 
     const left = false;
     const right = true;
