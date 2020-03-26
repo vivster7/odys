@@ -60,7 +60,7 @@ const idFn = () => `id-${v4()}`;
 const Arrow: React.FC<ArrowProps> = props => {
   const { globalState } = useContext(GlobalStateContext);
   // TODO: drag + move edges
-  const transform = `translate(${props.x1}, ${props.y1})`;
+  const transform = ``;
   const cursor = 'auto';
 
   (function validate() {
@@ -108,6 +108,7 @@ const Arrow: React.FC<ArrowProps> = props => {
   };
 
   const XYArrow: React.FC<XYArrowProps> = props => {
+    const transform = `translate(${props.x1}, ${props.y1})`;
     return (
       <Group id={props.id} transform={transform} cursor={cursor}>
         <line
