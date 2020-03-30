@@ -32,8 +32,8 @@ const DrawingBoard: React.FC = () => {
         type: 'rect',
         id: rect1Id,
         text: 'A',
-        x: 0,
-        y: 0,
+        x: 400,
+        y: 200,
         translateX: 0,
         translateY: 0,
         width: RECT_WIDTH,
@@ -48,26 +48,6 @@ const DrawingBoard: React.FC = () => {
         type: 'rect',
         id: rect2Id,
         text: 'B',
-        x: 200,
-        y: 200,
-        translateX: 0,
-        translateY: 0,
-        width: RECT_WIDTH,
-        height: RECT_HEIGHT,
-        deltaWidth: 0,
-        deltaHeight: 0
-      }
-    });
-    dispatch({
-      type: 'ODYS_ADD_SHAPE_ACTION',
-      shape: arrow as ArrowProps
-    });
-    dispatch({
-      type: 'ODYS_ADD_SHAPE_ACTION',
-      shape: {
-        type: 'rect',
-        id: id(),
-        text: 'C',
         x: 400,
         y: 400,
         translateX: 0,
@@ -80,15 +60,7 @@ const DrawingBoard: React.FC = () => {
     });
     dispatch({
       type: 'ODYS_ADD_SHAPE_ACTION',
-      shape: {
-        type: 'text',
-        id: id(),
-        text: 'Hello Face',
-        x: 200,
-        y: 300,
-        translateX: 0,
-        translateY: 0
-      }
+      shape: arrow as ArrowProps
     });
   }
 
