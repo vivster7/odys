@@ -44,7 +44,7 @@ interface XYArrowProps {
   right: boolean;
 }
 
-interface FromToArrowProps {
+interface R1R2ArrowProps {
   id: string;
   fromId: string;
   toId: string;
@@ -125,132 +125,126 @@ const Arrow: React.FC<ArrowProps> = props => {
     );
   };
 
-  const FromToArrow: React.FC<FromToArrowProps> = props => {
-    const from = globalState.shapes.find(
-      s => s.id === props.fromId
-    ) as RectProps;
-    if (!from) {
-      throw new Error(`[fromArrow] Could not find shape$ ${props.fromId}`);
+  const R1R2Arrow: React.FC<R1R2ArrowProps> = props => {
+    // arrow goes FROM rect1 (r1)  TO rect2 (r)
+
+    const { shapes } = globalState;
+    const r1 = shapes.find(s => s.id === props.fromId) as RectProps;
+    const r2 = shapes.find(s => s.id === props.toId) as RectProps;
+    if (!r1) {
+      throw new Error(`[r1Arrow] Could not find shape$ ${props.fromId}`);
     }
-    const to = globalState.shapes.find(s => s.id === props.toId) as RectProps;
-    if (!to) {
-      throw new Error(`[toArrow] Could not find shape$ ${props.toId}`);
+    if (!r2) {
+      throw new Error(`[r2Arrow] Could not find shape$ ${props.toId}`);
     }
 
-    const fromX = from.x + from.translateX;
-    const fromY = from.y + from.translateY;
-    const fromHeight = from.height + from.deltaHeight;
-    const fromWidth = from.width + from.deltaWidth;
+    const r1X = r1.x + r1.translateX;
+    const r1Y = r1.y + r1.translateY;
+    const r1Height = r1.height + r1.deltaHeight;
+    const r1Width = r1.width + r1.deltaWidth;
+    const r1XMid = (r1X + (r1X + r1Width)) / 2;
+    const r1YMid = (r1Y + (r1Y + r1Height)) / 2;
 
-    const toX = to.x + to.translateX;
-    const toY = to.y + to.translateY;
-    const toHeight = to.height + to.deltaHeight;
-    const toWidth = to.width + to.deltaWidth;
+    const r2X = r2.x + r2.translateX;
+    const r2Y = r2.y + r2.translateY;
+    const r2Height = r2.height + r2.deltaHeight;
+    const r2Width = r2.width + r2.deltaWidth;
+    const r2XMid = (r2X + (r2X + r2Width)) / 2;
+    const r2YMid = (r2Y + (r2Y + r2Height)) / 2;
 
-    const x1Mid = (fromX + (fromX + fromWidth)) / 2;
-    const y1Mid = (fromY + (fromY + fromHeight)) / 2;
-    const x2Mid = (toX + (toX + toWidth)) / 2;
-    const y2Mid = (toY + (toY + toHeight)) / 2;
+    // get angle (in radians) of line from (0, 0) r2 (x, y).
+    // will be between 0 and 2 PI
+    const angle = (y: number, x: number): number => {
+      return Math.atan2(y, x) + Math.PI;
+    };
 
-    const xOffset = fromWidth / 2 + 5;
-    const yOffset = toHeight / 2 + 5;
+    const r1NW = angle(r1Y - r1YMid, r1X - r1XMid);
+    const r1NE = angle(r1Y - r1YMid, r1X + r1Width - r1XMid);
+    const r1SW = angle(r1Y + r1Height - r1YMid, r1X - r1XMid);
+    const r1SE = angle(r1Y + r1Height - r1YMid, r1X + r1Width - r1XMid);
+    const r2NW = angle(r2Y - r2YMid, r2X - r2XMid);
+    const r2NE = angle(r2Y - r2YMid, r2X + r2Width - r2XMid);
+    const r2SW = angle(r2Y + r2Height - r2YMid, r2X - r2XMid);
+    const r2SE = angle(r2Y + r2Height - r2YMid, r2X + r2Width - r2XMid);
 
-    const x1Offset = fromWidth / 2 + 5;
-    const x2Offset = -(toWidth / 2 + 5);
-    const y1Offset = fromHeight / 2 + 5;
-    const y2Offset = -(toHeight / 2 + 5);
-
-    const line = new Line({ x: x1Mid, y: y1Mid }, { x: x2Mid, y: y2Mid });
-    const theta = Math.atan2(y2Mid - y1Mid, x2Mid - x1Mid) + Math.PI;
-
-    const fromNW = Math.atan2(fromY - y1Mid, fromX - x1Mid) + Math.PI;
-    const fromNE =
-      Math.atan2(fromY - y1Mid, fromX + fromWidth - x1Mid) + Math.PI;
-    const fromSW =
-      Math.atan2(fromY + fromHeight - y1Mid, fromX - x1Mid) + Math.PI;
-    const fromSE =
-      Math.atan2(fromY + fromHeight - y1Mid, fromX + fromWidth - x1Mid) +
-      Math.PI;
-    const toNW = Math.atan2(toY - y2Mid, toX - x2Mid) + Math.PI;
-    const toNE = Math.atan2(toY - y2Mid, toX + toWidth - x2Mid) + Math.PI;
-    const toSW = Math.atan2(toY + toHeight - y2Mid, toX - x2Mid) + Math.PI;
-    const toSE =
-      Math.atan2(toY + toHeight - y2Mid, toX + toWidth - x2Mid) + Math.PI;
-
-    const fromBelow = new Line(
-      { x: fromX, y: fromY + fromHeight + 5 },
-      { x: fromX + fromWidth, y: fromY + fromHeight + 5 }
+    const r1Below = new Line(
+      { x: r1X, y: r1Y + r1Height + 5 },
+      { x: r1X + r1Width, y: r1Y + r1Height + 5 }
     );
-    const fromAbove = new Line(
-      { x: fromX, y: fromY - 5 },
-      { x: fromX + fromWidth, y: fromY - 5 }
+    const r1Above = new Line(
+      { x: r1X, y: r1Y - 5 },
+      { x: r1X + r1Width, y: r1Y - 5 }
     );
-    const fromLeft = new Line(
-      { x: fromX - 5, y: fromY },
-      { x: fromX - 5, y: fromY + fromHeight }
+    const r1Left = new Line(
+      { x: r1X - 5, y: r1Y },
+      { x: r1X - 5, y: r1Y + r1Height }
     );
-    const fromRight = new Line(
-      { x: fromX + fromWidth + 5, y: fromY },
-      { x: fromX + fromWidth + 5, y: fromY + fromHeight }
+    const r1Right = new Line(
+      { x: r1X + r1Width + 5, y: r1Y },
+      { x: r1X + r1Width + 5, y: r1Y + r1Height }
     );
 
-    const toBelow = new Line(
-      { x: toX, y: toY + toHeight + 5 },
-      { x: toX + toWidth, y: toY + toHeight + 5 }
+    const r2Below = new Line(
+      { x: r2X, y: r2Y + r2Height + 5 },
+      { x: r2X + r2Width, y: r2Y + r2Height + 5 }
     );
-    const toAbove = new Line(
-      { x: toX, y: toY - 5 },
-      { x: toX + toWidth, y: toY - 5 }
+    const r2Above = new Line(
+      { x: r2X, y: r2Y - 5 },
+      { x: r2X + r2Width, y: r2Y - 5 }
     );
-    const toLeft = new Line(
-      { x: toX - 5, y: toY },
-      { x: toX - 5, y: toY + toHeight }
+    const r2Left = new Line(
+      { x: r2X - 5, y: r2Y },
+      { x: r2X - 5, y: r2Y + r2Height }
     );
-    const toRight = new Line(
-      { x: toX + toWidth + 5, y: toY },
-      { x: toX + toWidth + 5, y: toY + toHeight }
+    const r2Right = new Line(
+      { x: r2X + r2Width + 5, y: r2Y },
+      { x: r2X + r2Width + 5, y: r2Y + r2Height }
     );
 
-    let fromLine: Line;
-    if (theta >= fromNW && theta < fromNE) {
-      fromLine = fromAbove;
-    } else if (theta >= fromNE && theta < fromSE) {
-      fromLine = fromRight;
-    } else if (theta >= fromSE && theta < fromSW) {
-      fromLine = fromBelow;
-    } else if (theta >= fromSW || theta < fromNW) {
-      fromLine = fromLeft;
+    const slopeTheta = angle(r2YMid - r1YMid, r2XMid - r1XMid);
+    let r1Line: Line;
+    if (slopeTheta >= r1NW && slopeTheta < r1NE) {
+      r1Line = r1Above;
+    } else if (slopeTheta >= r1NE && slopeTheta < r1SE) {
+      r1Line = r1Right;
+    } else if (slopeTheta >= r1SE && slopeTheta < r1SW) {
+      r1Line = r1Below;
+    } else if (slopeTheta >= r1SW || slopeTheta < r1NW) {
+      r1Line = r1Left;
     } else {
-      throw new Error('Could not determine fromLine for arrow offset');
+      throw new Error('Could not determine r1Line for arrow offset');
     }
 
-    let toLine: Line;
-    if (theta >= toNW && theta < toNE) {
-      toLine = toBelow;
-    } else if (theta >= toNE && theta < toSE) {
-      toLine = toLeft;
-    } else if (theta >= toSE && theta < toSW) {
-      toLine = toAbove;
-    } else if (theta >= toSW || theta < toNW) {
-      toLine = toRight;
+    let r2Line: Line;
+    if (slopeTheta >= r2NW && slopeTheta < r2NE) {
+      r2Line = r2Below;
+    } else if (slopeTheta >= r2NE && slopeTheta < r2SE) {
+      r2Line = r2Left;
+    } else if (slopeTheta >= r2SE && slopeTheta < r2SW) {
+      r2Line = r2Above;
+    } else if (slopeTheta >= r2SW || slopeTheta < r2NW) {
+      r2Line = r2Right;
     } else {
-      throw new Error('Could not determine toLine for arrow offset');
+      throw new Error('Could not determine r2Line for arrow offset');
     }
 
-    const fromOffset = line.intersects(fromLine);
-    const toOffset = line.intersects(toLine);
+    const slopeLine = new Line(
+      { x: r1XMid, y: r1YMid },
+      { x: r2XMid, y: r2YMid }
+    );
+    const r1Offset = slopeLine.intersects(r1Line);
+    const r2Offset = slopeLine.intersects(r2Line);
 
-    const x1 = fromOffset.x;
-    const y1 = fromOffset.y;
-    const x2 = toOffset.x;
-    const y2 = toOffset.y;
+    const x1 = r1Offset.x;
+    const y1 = r1Offset.y;
+    const x2 = r2Offset.x;
+    const y2 = r2Offset.y;
 
     const left = false;
     const right = true;
 
     return (
       <Group id={props.id} transform={transform} cursor={cursor}>
-        {/* <line x1={x1Mid} y1={y1Mid} x2={x2Mid} y2={y2Mid} stroke="grey"></line> */}
         <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="grey"></line>
         {left ? leftArrowhead({ x1, x2, y1, y2 }) : <></>}
         {right ? rightArrowhead({ x1, x2, y1, y2 }) : <></>}
@@ -261,7 +255,7 @@ const Arrow: React.FC<ArrowProps> = props => {
   return (
     <>
       {props.fromId && props.toId
-        ? FromToArrow(props as FromToArrowProps)
+        ? R1R2Arrow(props as R1R2ArrowProps)
         : XYArrow(props as XYArrowProps)}
     </>
   );
