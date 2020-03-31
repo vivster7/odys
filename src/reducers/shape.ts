@@ -72,10 +72,25 @@ function onOdysDrawArrowAction(
     throw new Error('Cannot draw arrow without selected object.');
   }
 
+  const selectId = state.select.id;
+
+  // cannot draw arrow to self.
+  if (selectId === action.id) {
+    return state;
+  }
+
+  // cannot duplicate existing arrow.
+  const existing = state.shapes.find(s => {
+    return s.type === 'arrow' && s.fromId === selectId && s.toId === action.id;
+  });
+  if (existing) {
+    return state;
+  }
+
   const arrow: ArrowProps = {
     type: 'arrow',
     id: id(),
-    fromId: state.select.id,
+    fromId: selectId,
     toId: action.id
   } as ArrowProps;
 
