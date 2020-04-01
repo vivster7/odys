@@ -63,6 +63,7 @@ const Svg: React.FC<SvgProps> = props => {
   }
 
   function handleMouseDown(e: React.MouseEvent) {
+    dispatch({ type: 'ODYS_CANCEL_SELECT_ACTION' });
     startPan(e);
     startNewRectByClick(e);
 

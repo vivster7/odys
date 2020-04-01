@@ -28,6 +28,10 @@ export interface OdysSelectShapeAction extends GlobalActionType {
   id: string;
 }
 
+export interface OdysCancelSelectAction extends GlobalActionType {
+  type: 'ODYS_CANCEL_SELECT_ACTION';
+}
+
 export interface OdysSelectedShapeEditTextAction extends GlobalActionType {
   type: 'ODYS_SELECTED_SHAPE_EDIT_TEXT_ACTION';
   text: string;
@@ -40,6 +44,7 @@ const shapeReducerMap = {
   ODYS_DELETE_SHAPE_ACTION: onOdysDeleteShapeAction,
   ODYS_DRAW_ARROW_ACTION: onOdysDrawArrowAction,
   ODYS_SELECT_SHAPE_ACTION: onOdysSelectShapeAction,
+  ODYS_CANCEL_SELECT_ACTION: onOdysCancelSelectAction,
   ODYS_SELECTED_SHAPE_EDIT_TEXT_ACTION: onOdysSelectedShapeEditTextAction
 };
 
@@ -110,6 +115,16 @@ function onOdysSelectShapeAction(
       id: action.id,
       isEditing: false
     }
+  };
+}
+
+function onOdysCancelSelectAction(
+  state: GlobalState,
+  action: OdysSelectShapeAction
+): GlobalState {
+  return {
+    ...state,
+    select: null
   };
 }
 
