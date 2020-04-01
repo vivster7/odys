@@ -37,6 +37,14 @@ const Svg: React.FC<SvgProps> = props => {
   }, []);
 
   function handleMouseMove(e: React.MouseEvent) {
+    if (globalState.newRectByDrag) {
+      dispatch({
+        type: 'ODYS_NEW_RECT_BY_DRAG_ACTION',
+        clickX: e.clientX,
+        clickY: e.clientY
+      });
+    }
+
     if (globalState.drag) {
       dispatch({
         type: 'ODYS_DRAG_ACTION',
@@ -64,8 +72,13 @@ const Svg: React.FC<SvgProps> = props => {
 
   function handleMouseDown(e: React.MouseEvent) {
     dispatch({ type: 'ODYS_CANCEL_SELECT_ACTION' });
-    startPan(e);
-    startNewRectByClick(e);
+
+    if (e.altKey) {
+      startNewRectByClick(e);
+      startNewRectByDrag(e);
+    } else {
+      startPan(e);
+    }
 
     function startPan(e: React.MouseEvent) {
       dispatch({
@@ -76,13 +89,19 @@ const Svg: React.FC<SvgProps> = props => {
     }
 
     function startNewRectByClick(e: React.MouseEvent) {
-      if (e.altKey) {
-        dispatch({
-          type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION',
-          clickX: e.clientX,
-          clickY: e.clientY
-        });
-      }
+      dispatch({
+        type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION',
+        clickX: e.clientX,
+        clickY: e.clientY
+      });
+    }
+
+    function startNewRectByDrag(e: React.MouseEvent) {
+      dispatch({
+        type: 'ODYS_START_NEW_RECT_BY_DRAG_ACTION',
+        clickX: e.clientX,
+        clickY: e.clientY
+      });
     }
   }
 
@@ -96,6 +115,12 @@ const Svg: React.FC<SvgProps> = props => {
         type: 'ODYS_END_NEW_RECT_BY_CLICK_ACTION',
         clickX: e.clientX,
         clickY: e.clientY
+      });
+    }
+
+    if (globalState.newRectByDrag) {
+      return dispatch({
+        type: 'ODYS_END_NEW_RECT_BY_DRAG_ACTION'
       });
     }
 

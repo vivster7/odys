@@ -11,6 +11,7 @@ const App: React.FC = () => {
     resize: null,
     select: null,
     newRectByClick: null,
+    newRectByDrag: null,
     svg: {
       topLeftX: 0,
       topLeftY: 0,

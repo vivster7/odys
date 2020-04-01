@@ -26,7 +26,7 @@ const resizeReducerMap = {
 };
 
 export default resizeReducerMap;
-function onOdysStartResizeAction(
+export function onOdysStartResizeAction(
   state: GlobalState,
   action: OdysStartResizeAction
 ): GlobalState {
@@ -43,7 +43,7 @@ function onOdysStartResizeAction(
   };
 }
 
-function onOdysResizeAction(
+export function onOdysResizeAction(
   state: GlobalState,
   action: OdysResizeAction
 ): GlobalState {
@@ -107,7 +107,7 @@ function onOdysResizeAction(
   );
 }
 
-function onOdysEndResizeAction(
+export function onOdysEndResizeAction(
   state: GlobalState,
   action: OdysEndResizeAction
 ): GlobalState {

@@ -18,7 +18,10 @@ import resizeReducerMap, {
 import wheelReducerMap, { OdysWheelAction } from './reducers/wheel';
 import newRectByClickReducerMap, {
   OdysStartNewRectByClickAction,
-  OdysEndNewRectByClickAction
+  OdysEndNewRectByClickAction,
+  OdysStartNewRectByDragAction,
+  OdysNewRectByDragAction,
+  OdysEndNewRectByDragAction
 } from './reducers/newRectByClick';
 import shapeReducerMap, {
   OdysRaiseShapeAction,
@@ -26,6 +29,7 @@ import shapeReducerMap, {
   OdysDeleteShapeAction,
   OdysSelectShapeAction,
   OdysSelectedShapeEditTextAction,
+  OdysDrawArrowAction,
   OdysCancelSelectAction
 } from './reducers/shape';
 
@@ -42,6 +46,7 @@ export interface GlobalState {
   resize: ResizeState | null;
   select: SelectState | null;
   newRectByClick: NewRectByClickState | null;
+  newRectByDrag: NewRectByDragState | null;
   svg: SVGState;
 }
 
@@ -75,6 +80,12 @@ interface NewRectByClickState {
   clickY: number;
 }
 
+interface NewRectByDragState {
+  clickX: number;
+  clickY: number;
+  shape: Shape | null;
+}
+
 interface SVGState {
   topLeftX: number;
   topLeftY: number;
@@ -97,6 +108,9 @@ export type GlobalAction =
   | OdysSelectedShapeEditTextAction
   | OdysStartNewRectByClickAction
   | OdysEndNewRectByClickAction
+  | OdysStartNewRectByDragAction
+  | OdysNewRectByDragAction
+  | OdysEndNewRectByDragAction
   | OdysStartDragAction
   | OdysDragAction
   | OdysEndDragAction
