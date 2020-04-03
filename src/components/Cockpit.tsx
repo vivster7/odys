@@ -8,9 +8,10 @@ const Cockpit: React.FC = props => {
       style={{
         display: 'flex',
         flexFlow: 'row nowrap',
+        backgroundColor: 'white',
         borderRadius: '8px',
         boxShadow: '0px 4px 2px -2px grey',
-        border: '1px lightgray solid',
+        border: '1px rgba(204,204,204,0.5) solid',
         padding: '12px',
         minWidth: '100px',
         maxWidth: '200px',
