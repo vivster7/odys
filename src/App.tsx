@@ -17,7 +17,8 @@ const App: React.FC = () => {
       topLeftY: 0,
       translateX: 0,
       translateY: 0,
-      scale: 1
+      scale: 1,
+      zoomLevel: 5
     },
     mouse: {
       x: 0,

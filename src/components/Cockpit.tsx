@@ -9,7 +9,7 @@ interface PositionDisplayProps {
 }
 
 const Cockpit: React.FC = props => {
-  const { globalState } = useContext(GlobalStateContext);
+  const { globalState, dispatch } = useContext(GlobalStateContext);
 
   const PositionDisplay: React.FC<PositionDisplayProps> = props => {
     return (
@@ -57,6 +57,20 @@ const Cockpit: React.FC = props => {
   };
 
   const ZoomLevelDisplay: React.FC = () => {
+    function incrementZoomLevel() {
+      return dispatch({
+        type: 'ODYS_CHANGE_ZOOM_LEVEL_ACTION',
+        zoomLevel: globalState.svg.zoomLevel + 1
+      });
+    }
+
+    function decrementZoomLevel() {
+      return dispatch({
+        type: 'ODYS_CHANGE_ZOOM_LEVEL_ACTION',
+        zoomLevel: globalState.svg.zoomLevel - 1
+      });
+    }
+
     return (
       <div
         style={{
@@ -73,7 +87,12 @@ const Cockpit: React.FC = props => {
           marginBottom: '5px'
         }}
       >
-        <img src={plus} alt="+" style={{ height: '12px', padding: '4px' }} />
+        <img
+          src={plus}
+          alt="+"
+          style={{ height: '12px', padding: '4px' }}
+          onClick={() => incrementZoomLevel()}
+        />
         <p
           style={{
             borderTop: '1px rgba(204, 204, 204, 0.5) solid',
@@ -83,9 +102,14 @@ const Cockpit: React.FC = props => {
             fontSize: '14px'
           }}
         >
-          5
+          {globalState.svg.zoomLevel}
         </p>
-        <img src={minus} alt="-" style={{ height: '12px', padding: '4px' }} />
+        <img
+          src={minus}
+          alt="-"
+          style={{ height: '12px', padding: '4px' }}
+          onClick={() => decrementZoomLevel()}
+        />
       </div>
     );
   };

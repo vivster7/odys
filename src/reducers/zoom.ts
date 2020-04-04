@@ -1,5 +1,10 @@
 import { GlobalActionType, GlobalState } from '../globals';
 
+export interface OdysChangeZoomLevelAction extends GlobalActionType {
+  type: 'ODYS_CHANGE_ZOOM_LEVEL_ACTION';
+  zoomLevel: number;
+}
+
 export interface OdysWheelAction extends GlobalActionType {
   type: 'ODYS_WHEEL_ACTION';
   clickX: number;
@@ -7,11 +12,25 @@ export interface OdysWheelAction extends GlobalActionType {
   scaleFactor: number;
 }
 
-const wheelReducerMap = {
+const zoomReducerMap = {
+  ODYS_CHANGE_ZOOM_LEVEL_ACTION: onOdysChangeZoomLevelAction,
   ODYS_WHEEL_ACTION: onOdysWheelAction
 };
 
-export default wheelReducerMap;
+export default zoomReducerMap;
+
+function onOdysChangeZoomLevelAction(
+  state: GlobalState,
+  action: OdysChangeZoomLevelAction
+): GlobalState {
+  return {
+    ...state,
+    svg: {
+      ...state.svg,
+      zoomLevel: action.zoomLevel
+    }
+  }
+}
 
 function onOdysWheelAction(
   state: GlobalState,
