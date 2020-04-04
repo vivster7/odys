@@ -18,6 +18,10 @@ const App: React.FC = () => {
       translateX: 0,
       translateY: 0,
       scale: 1
+    },
+    mouse: {
+      x: 0,
+      y: 0
     }
   };
 

@@ -94,8 +94,8 @@ const Cockpit: React.FC = props => {
     <div style={{ display: 'flex', flexFlow: 'column nowrap' }}>
       <ZoomLevelDisplay></ZoomLevelDisplay>
       <PositionDisplay
-        x={globalState.svg.topLeftX.toFixed(2)}
-        y={globalState.svg.topLeftY.toFixed(2)}
+        x={globalState.mouse.x.toFixed(2)}
+        y={globalState.mouse.y.toFixed(2)}
       ></PositionDisplay>
     </div>
   );

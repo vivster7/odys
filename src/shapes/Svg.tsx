@@ -37,6 +37,12 @@ const Svg: React.FC<SvgProps> = props => {
   }, []);
 
   function handleMouseMove(e: React.MouseEvent) {
+    dispatch({
+      type: 'ODYS_MOUSE_MOVE_ACTION',
+      clickX: e.clientX,
+      clickY: e.clientY
+    });
+
     if (globalState.newRectByDrag) {
       dispatch({
         type: 'ODYS_NEW_RECT_BY_DRAG_ACTION',

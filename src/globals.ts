@@ -32,6 +32,7 @@ import shapeReducerMap, {
   OdysDrawArrowAction,
   OdysCancelSelectAction
 } from './reducers/shape';
+import mouseReducerMap, { OdysMouseMoveAction } from './reducers/mouse';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -48,6 +49,7 @@ export interface GlobalState {
   newRectByClick: NewRectByClickState | null;
   newRectByDrag: NewRectByDragState | null;
   svg: SVGState;
+  mouse: MouseState;
 }
 
 interface DragState {
@@ -94,6 +96,11 @@ interface SVGState {
   scale: number;
 }
 
+interface MouseState {
+  x: number;
+  y: number;
+}
+
 export interface GlobalActionType {
   type: string;
 }
@@ -120,6 +127,7 @@ export type GlobalAction =
   | OdysStartResizeAction
   | OdysResizeAction
   | OdysEndResizeAction
+  | OdysMouseMoveAction
   | OdysWheelAction;
 
 export const GlobalStateContext = React.createContext({
@@ -142,6 +150,7 @@ export function globalStateReducer(
     ...dragReducerMap,
     ...panReducerMap,
     ...resizeReducerMap,
+    ...mouseReducerMap,
     ...wheelReducerMap
   };
   const fn = m[action.type];
