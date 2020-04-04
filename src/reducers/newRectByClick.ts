@@ -78,6 +78,7 @@ function onOdysEndNewRectByClickAction(
     ...state,
     drag: null,
     newRectByClick: null,
+    newRectByDrag: null,
     pan: null,
     select: {
       id: id,
