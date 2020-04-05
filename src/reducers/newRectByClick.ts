@@ -9,6 +9,7 @@ import {
   OdysEndResizeAction,
   onOdysEndResizeAction
 } from './resize';
+import { zoomLeveltoScaleMap } from './zoom';
 
 export interface OdysStartNewRectByClickAction extends GlobalActionType {
   type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION';
@@ -71,8 +72,8 @@ function onOdysEndNewRectByClickAction(
   const x = (action.clickX - state.svg.topLeftX) / state.svg.scale;
   const y = (action.clickY - state.svg.topLeftY) / state.svg.scale;
 
-  const width = RECT_WIDTH / state.svg.scale;
-  const height = RECT_HEIGHT / state.svg.scale;
+  const width = RECT_WIDTH / zoomLeveltoScaleMap[state.svg.zoomLevel];
+  const height = RECT_HEIGHT / zoomLeveltoScaleMap[state.svg.zoomLevel];
 
   return {
     ...state,

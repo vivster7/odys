@@ -1,17 +1,17 @@
 import { GlobalActionType, GlobalState } from '../globals';
 
-const zoomLeveltoScaleMap: {
+export const zoomLeveltoScaleMap: {
   [key: number]: number;
 } = {
-  1: 1 * 3 ** -4,
-  2: 1 * 3 ** -3,
-  3: 1 * 3 ** -2,
-  4: 1 * 3 ** -1,
-  5: 1 * 3 ** 0,
-  6: 1 * 3 ** 1,
-  7: 1 * 3 ** 2,
-  8: 1 * 3 ** 3,
-  9: 1 * 3 ** 4
+  1: 1 * 4 ** -4,
+  2: 1 * 4 ** -3,
+  3: 1 * 4 ** -2,
+  4: 1 * 4 ** -1,
+  5: 1 * 4 ** 0,
+  6: 1 * 4 ** 1,
+  7: 1 * 4 ** 2,
+  8: 1 * 4 ** 3,
+  9: 1 * 4 ** 4
 };
 
 export interface OdysChangeZoomLevelAction extends GlobalActionType {
@@ -68,8 +68,8 @@ function onOdysWheelAction(
   const invertY = (action.clickY - state.svg.topLeftY) / state.svg.scale;
   const k = bound(
     state.svg.scale * Math.pow(2, action.scaleFactor),
-    1 * 3 ** -4,
-    1 * 3 ** 4
+    1 * 4 ** -4,
+    1 * 4 ** 4
   );
 
   return {

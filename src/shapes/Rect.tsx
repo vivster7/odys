@@ -2,8 +2,8 @@ import React, { useContext } from 'react';
 import Group from './Group';
 import { GlobalStateContext, Anchor } from '../globals';
 
-export const RECT_WIDTH = 200;
-export const RECT_HEIGHT = 100;
+export const RECT_WIDTH = 150;
+export const RECT_HEIGHT = 75;
 export const FONT_SIZE = 14;
 
 export interface RectProps extends React.SVGProps<SVGRectElement> {
