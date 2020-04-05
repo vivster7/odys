@@ -148,7 +148,7 @@ export function globalStateReducer(
   state: GlobalState,
   action: GlobalAction
 ): GlobalState {
-  console.log(action.type);
+  // console.log(action.type);
   const m = {
     ...shapeReducerMap,
     ...newRectByClickReducerMap,

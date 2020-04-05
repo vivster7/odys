@@ -1,30 +1,11 @@
 import React, { useReducer } from 'react';
-import { GlobalStateContext, globalStateReducer } from './globals';
+import { GlobalStateContext, globalStateReducer, GlobalState } from './globals';
 import DrawingPage from './pages/DrawingPage';
 import Scratch from './pages/Scratch';
+import { LoxDiagramAppState } from './data/LoxDiagramAppState';
 
 const App: React.FC = () => {
-  const initialGlobalState = {
-    shapes: [],
-    drag: null,
-    pan: null,
-    resize: null,
-    select: null,
-    newRectByClick: null,
-    newRectByDrag: null,
-    svg: {
-      topLeftX: 0,
-      topLeftY: 0,
-      translateX: 0,
-      translateY: 0,
-      scale: 1,
-      zoomLevel: 5
-    },
-    mouse: {
-      x: 0,
-      y: 0
-    }
-  };
+  const initialGlobalState = LoxDiagramAppState as GlobalState;
 
   const [globalState, dispatch] = useReducer(
     globalStateReducer,
