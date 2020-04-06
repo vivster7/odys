@@ -1,6 +1,7 @@
 import React, { useState, useContext, useRef, useLayoutEffect } from 'react';
 import Group from './Group';
 import { GlobalStateContext } from '../globals';
+import throttle from 'lodash.throttle';
 
 export interface SvgProps extends React.SVGProps<SVGSVGElement> {
   // X, Y coords on top-left of SVG
@@ -14,6 +15,30 @@ export interface SvgProps extends React.SVGProps<SVGSVGElement> {
   // scale
   scale: number;
 }
+
+function handleOnWheel(
+  dispatch: any,
+  clientX: number,
+  clientY: number,
+  deltaY: number,
+  deltaMode: number
+) {
+  console.log('called');
+
+  dispatch({
+    type: 'ODYS_WHEEL_ACTION',
+    clickX: clientX,
+    clickY: clientY,
+    scaleFactor: -deltaY * (deltaMode === 1 ? 0.05 : deltaMode ? 1 : 0.002)
+  });
+}
+
+const throttledOnWheel = throttle(
+  (dispatch, clientX, clientY, deltaY, deltaMode) => {
+    handleOnWheel(dispatch, clientX, clientY, deltaY, deltaMode);
+  },
+  20
+);
 
 const Svg: React.FC<SvgProps> = props => {
   const [width, setWidth] = useState(1000);
@@ -149,16 +174,6 @@ const Svg: React.FC<SvgProps> = props => {
     }
   }
 
-  function handleOnWheel(e: React.WheelEvent) {
-    dispatch({
-      type: 'ODYS_WHEEL_ACTION',
-      clickX: e.clientX,
-      clickY: e.clientY,
-      scaleFactor:
-        -e.deltaY * (e.deltaMode === 1 ? 0.05 : e.deltaMode ? 1 : 0.002)
-    });
-  }
-
   return (
     <svg
       id="odys-svg"
@@ -172,7 +187,9 @@ const Svg: React.FC<SvgProps> = props => {
       onMouseMove={e => handleMouseMove(e)}
       onMouseDown={e => handleMouseDown(e)}
       onMouseUp={e => handleMouseUp(e)}
-      onWheel={e => handleOnWheel(e)}
+      onWheel={e =>
+        throttledOnWheel(dispatch, e.clientX, e.clientY, e.deltaY, e.deltaMode)
+      }
     >
       <Group id="odys-zoomable-group" cursor="grab" transform={transform}>
         {props.children}
