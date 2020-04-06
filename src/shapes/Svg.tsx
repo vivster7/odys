@@ -2,6 +2,7 @@ import React, { useState, useContext, useRef, useLayoutEffect } from 'react';
 import Group from './Group';
 import { GlobalStateContext } from '../globals';
 import throttle from 'lodash.throttle';
+import debounce from 'lodash.debounce';
 
 export interface SvgProps extends React.SVGProps<SVGSVGElement> {
   // X, Y coords on top-left of SVG
@@ -16,6 +17,7 @@ export interface SvgProps extends React.SVGProps<SVGSVGElement> {
   scale: number;
 }
 
+// throttled and debounce functions live outside component
 function handleOnWheel(
   dispatch: any,
   clientX: number,
@@ -23,14 +25,14 @@ function handleOnWheel(
   deltaY: number,
   deltaMode: number
 ) {
-  console.log('called');
-
   dispatch({
     type: 'ODYS_WHEEL_ACTION',
     clickX: clientX,
     clickY: clientY,
     scaleFactor: -deltaY * (deltaMode === 1 ? 0.05 : deltaMode ? 1 : 0.002)
   });
+
+  debouncedOnWheelEnd(dispatch);
 }
 
 const throttledOnWheel = throttle(
@@ -38,6 +40,17 @@ const throttledOnWheel = throttle(
     handleOnWheel(dispatch, clientX, clientY, deltaY, deltaMode);
   },
   20
+);
+
+function handleOnWheelEnd(dispatch: any) {
+  dispatch({
+    type: 'ODYS_WHEEL_END_ACTION'
+  });
+}
+
+const debouncedOnWheelEnd = debounce(
+  dispatch => handleOnWheelEnd(dispatch),
+  200
 );
 
 const Svg: React.FC<SvgProps> = props => {

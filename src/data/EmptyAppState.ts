@@ -12,7 +12,8 @@ export const EmptyAppState = {
     translateX: 0,
     translateY: 0,
     scale: 1,
-    zoomLevel: 5
+    zoomLevel: 5,
+    isZooming: false
   },
   mouse: {
     x: 0,

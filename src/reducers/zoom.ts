@@ -26,9 +26,14 @@ export interface OdysWheelAction extends GlobalActionType {
   scaleFactor: number;
 }
 
+export interface OdysWheelEndAction extends GlobalActionType {
+  type: 'ODYS_WHEEL_END_ACTION';
+}
+
 const zoomReducerMap = {
   ODYS_CHANGE_ZOOM_LEVEL_ACTION: onOdysChangeZoomLevelAction,
-  ODYS_WHEEL_ACTION: onOdysWheelAction
+  ODYS_WHEEL_ACTION: onOdysWheelAction,
+  ODYS_WHEEL_END_ACTION: onOdysWheelEndAction
 };
 
 export default zoomReducerMap;
@@ -79,7 +84,8 @@ function onOdysWheelAction(
       scale: k,
       topLeftX: action.clickX - invertX * k,
       topLeftY: action.clickY - invertY * k,
-      zoomLevel: zoomLevelBucket(k)
+      zoomLevel: zoomLevelBucket(k),
+      isZooming: true
     }
   };
 }
@@ -102,4 +108,17 @@ function zoomLevelBucket(k: number): number {
 // force `n` to be between min and max (inclusive)
 function bound(n: number, min: number, max: number): number {
   return Math.min(Math.max(n, min), max);
+}
+
+function onOdysWheelEndAction(
+  state: GlobalState,
+  action: OdysWheelEndAction
+): GlobalState {
+  return {
+    ...state,
+    svg: {
+      ...state.svg,
+      isZooming: false
+    }
+  };
 }

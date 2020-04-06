@@ -699,7 +699,8 @@ export const LoxDiagramAppState = {
     translateX: 0,
     translateY: 0,
     scale: 0.5672277424679779,
-    zoomLevel: 4
+    zoomLevel: 4,
+    isZooming: false
   },
   mouse: {
     x: 656.4763694912573,

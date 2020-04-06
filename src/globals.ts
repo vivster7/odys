@@ -17,7 +17,8 @@ import resizeReducerMap, {
 } from './reducers/resize';
 import zoomReducerMap, {
   OdysWheelAction,
-  OdysChangeZoomLevelAction
+  OdysChangeZoomLevelAction,
+  OdysWheelEndAction
 } from './reducers/zoom';
 import newRectByClickReducerMap, {
   OdysStartNewRectByClickAction,
@@ -98,6 +99,7 @@ interface SVGState {
   translateY: number;
   scale: number;
   zoomLevel: number;
+  isZooming: boolean;
 }
 
 interface MouseState {
@@ -133,7 +135,8 @@ export type GlobalAction =
   | OdysEndResizeAction
   | OdysMouseMoveAction
   | OdysChangeZoomLevelAction
-  | OdysWheelAction;
+  | OdysWheelAction
+  | OdysWheelEndAction;
 
 export const GlobalStateContext = React.createContext({
   globalState: {} as GlobalState,
