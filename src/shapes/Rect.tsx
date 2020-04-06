@@ -38,6 +38,7 @@ const Rect: React.FC<RectProps> = props => {
     globalState.drag && globalState.drag.id === id ? 'grabbing' : 'grab';
 
   const isSelected = id === (globalState.select && globalState.select.id);
+  const isSvgMoving = !!globalState.svg.isZooming || !!globalState.pan;
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
@@ -135,17 +136,21 @@ const Rect: React.FC<RectProps> = props => {
         strokeDasharray={isSelected ? 5 : 0}
         onMouseDown={e => handleMouseDown(e)}
       ></rect>
-      <text
-        x={textX}
-        y={textY}
-        style={{
-          textAnchor: 'middle',
-          fontSize: `${FONT_SIZE * (props.width + props.deltaWidth) * 0.005}px`
-        }}
-        onMouseDown={e => handleMouseDown(e)}
-      >
-        <tspan style={{ userSelect: 'none' }}>{props.text}</tspan>
-      </text>
+      {!isSvgMoving && (
+        <text
+          x={textX}
+          y={textY}
+          style={{
+            textAnchor: 'middle',
+            fontSize: `${FONT_SIZE *
+              (props.width + props.deltaWidth) *
+              0.005}px`
+          }}
+          onMouseDown={e => handleMouseDown(e)}
+        >
+          <tspan style={{ userSelect: 'none' }}>{props.text}</tspan>
+        </text>
+      )}
       {isSelected && <SelectionCircles></SelectionCircles>}
     </Group>
   );
