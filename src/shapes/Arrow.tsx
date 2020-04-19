@@ -6,6 +6,8 @@ import { v4 } from 'uuid';
 import { GlobalStateContext } from '../globals';
 import { RectProps } from './Rect';
 import Line from '../math/line';
+import { RootState } from '../App';
+import { useSelector } from 'react-redux';
 
 export interface ArrowProps {
   type: 'arrow';
@@ -58,7 +60,7 @@ interface ArrowheadProps {
 }
 
 const idFn = () => `id-${v4()}`;
-const Arrow: React.FC<ArrowProps> = props => {
+const Arrow: React.FC<ArrowProps> = (props) => {
   const { globalState } = useContext(GlobalStateContext);
   // TODO: drag + move edges
   const transform = ``;
@@ -84,7 +86,7 @@ const Arrow: React.FC<ArrowProps> = props => {
     );
   })();
 
-  const leftArrowhead: React.FC<ArrowheadProps> = props => {
+  const leftArrowhead: React.FC<ArrowheadProps> = (props) => {
     const rotation1 = Math.atan2(props.y2 - props.y1, props.x2 - props.x1);
     return (
       <LeftArrowhead
@@ -96,7 +98,7 @@ const Arrow: React.FC<ArrowProps> = props => {
     );
   };
 
-  const rightArrowhead: React.FC<ArrowheadProps> = props => {
+  const rightArrowhead: React.FC<ArrowheadProps> = (props) => {
     const rotation2 = Math.atan2(props.y2 - props.y1, props.x2 - props.x1);
     return (
       <RightArrowhead
@@ -108,7 +110,7 @@ const Arrow: React.FC<ArrowProps> = props => {
     );
   };
 
-  const XYArrow: React.FC<XYArrowProps> = props => {
+  const XYArrow: React.FC<XYArrowProps> = (props) => {
     const transform = `translate(${props.x1}, ${props.y1})`;
     return (
       <Group id={props.id} transform={transform} cursor={cursor}>
@@ -125,12 +127,13 @@ const Arrow: React.FC<ArrowProps> = props => {
     );
   };
 
-  const R1R2Arrow: React.FC<R1R2ArrowProps> = props => {
+  const R1R2Arrow: React.FC<R1R2ArrowProps> = (props) => {
     // arrow goes FROM rect1 (r1)  TO rect2 (r)
 
-    const { shapes } = globalState;
-    const r1 = shapes.find(s => s.id === props.fromId) as RectProps;
-    const r2 = shapes.find(s => s.id === props.toId) as RectProps;
+    const { shapes } = useSelector((state: RootState) => state);
+
+    const r1 = shapes.data.find((s) => s.id === props.fromId) as RectProps;
+    const r2 = shapes.data.find((s) => s.id === props.toId) as RectProps;
     if (!r1) {
       throw new Error(`[r1Arrow] Could not find shape$ ${props.fromId}`);
     }

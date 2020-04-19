@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
 import Group from './Group';
-import { GlobalStateContext } from '../globals';
+import { startDrag } from '../reducers/shape';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../App';
 
 export interface TextProps extends React.SVGProps<SVGTextElement> {
   type: 'text';
@@ -12,27 +14,23 @@ export interface TextProps extends React.SVGProps<SVGTextElement> {
   translateY: number;
 }
 
-const Text: React.FC<TextProps> = props => {
+const Text: React.FC<TextProps> = (props) => {
   const transform = `translate(${props.x}, ${props.y})`;
-  const { globalState, dispatch } = useContext(GlobalStateContext);
-  const cursor =
-    globalState.drag && globalState.drag.id === props.id ? 'grabbing' : 'grab';
+  const drag = useSelector((state: RootState) => state.shapes.drag);
+  const dispatch = useDispatch();
 
-  function startDrag(e: React.MouseEvent) {
-    dispatch({
-      type: 'ODYS_START_DRAG_ACTION',
-      id: props.id,
-      clickX: e.clientX,
-      clickY: e.clientY
-    });
-  }
+  const cursor = drag && drag.id === props.id ? 'grabbing' : 'grab';
 
   return (
     <Group
       id={props.id}
       transform={transform}
       cursor={cursor}
-      onMouseDown={e => startDrag(e)}
+      onMouseDown={(e) =>
+        dispatch(
+          startDrag({ id: props.id, clickX: e.clientX, clickY: e.clientY })
+        )
+      }
     >
       <text style={{ textAnchor: 'middle' }}>
         <tspan>{props.text}</tspan>

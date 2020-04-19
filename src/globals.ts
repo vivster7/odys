@@ -1,41 +1,28 @@
 import React, { Dispatch } from 'react';
 import Shape from './shapes/Shape';
-import dragReducerMap, {
-  OdysStartDragAction,
-  OdysDragAction,
-  OdysEndDragAction
-} from './reducers/drag';
 import panReducerMap, {
   OdysStartPanAction,
   OdysPanAction,
-  OdysEndPanAction
+  OdysEndPanAction,
 } from './reducers/pan';
 import resizeReducerMap, {
   OdysStartResizeAction,
   OdysResizeAction,
-  OdysEndResizeAction
+  OdysEndResizeAction,
 } from './reducers/resize';
 import zoomReducerMap, {
   OdysWheelAction,
   OdysChangeZoomLevelAction,
-  OdysWheelEndAction
+  OdysWheelEndAction,
 } from './reducers/zoom';
 import newRectByClickReducerMap, {
   OdysStartNewRectByClickAction,
   OdysEndNewRectByClickAction,
   OdysStartNewRectByDragAction,
   OdysNewRectByDragAction,
-  OdysEndNewRectByDragAction
+  OdysEndNewRectByDragAction,
 } from './reducers/newRectByClick';
-import shapeReducerMap, {
-  OdysRaiseShapeAction,
-  OdysAddShapeAction,
-  OdysDeleteShapeAction,
-  OdysSelectShapeAction,
-  OdysSelectedShapeEditTextAction,
-  OdysDrawArrowAction,
-  OdysCancelSelectAction
-} from './reducers/shape';
+
 import mouseReducerMap, { OdysMouseMoveAction } from './reducers/mouse';
 
 export type NEAnchor = 'NEAnchor';
@@ -112,21 +99,11 @@ export interface GlobalActionType {
 }
 
 export type GlobalAction =
-  | OdysRaiseShapeAction
-  | OdysAddShapeAction
-  | OdysDeleteShapeAction
-  | OdysDrawArrowAction
-  | OdysSelectShapeAction
-  | OdysCancelSelectAction
-  | OdysSelectedShapeEditTextAction
   | OdysStartNewRectByClickAction
   | OdysEndNewRectByClickAction
   | OdysStartNewRectByDragAction
   | OdysNewRectByDragAction
   | OdysEndNewRectByDragAction
-  | OdysStartDragAction
-  | OdysDragAction
-  | OdysEndDragAction
   | OdysStartPanAction
   | OdysPanAction
   | OdysEndPanAction
@@ -144,7 +121,7 @@ export const GlobalStateContext = React.createContext({
     throw new Error(
       'dispatch function missing. Is a GlobalStateContext.Provider loaded above calling component?'
     );
-  }) as Dispatch<GlobalAction>
+  }) as Dispatch<GlobalAction>,
 });
 
 export function globalStateReducer(
@@ -153,13 +130,11 @@ export function globalStateReducer(
 ): GlobalState {
   // console.log(action.type);
   const m = {
-    ...shapeReducerMap,
     ...newRectByClickReducerMap,
-    ...dragReducerMap,
     ...panReducerMap,
     ...resizeReducerMap,
     ...mouseReducerMap,
-    ...zoomReducerMap
+    ...zoomReducerMap,
   };
   const fn = m[action.type];
   if (!fn) {

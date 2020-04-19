@@ -8,14 +8,20 @@ import Shape from '../shapes/Shape';
 import Line, { LineProps } from '../shapes/Line';
 import Text, { TextProps } from '../shapes/Text';
 import HiddenTextInput from './HiddenTextInput';
+import { useDispatch, useSelector } from 'react-redux';
+import { addShape } from '../reducers/shape';
+import { RootState } from '../App';
 
 const id = () => `id-${v4()}`;
 
 const DrawingBoard: React.FC = () => {
-  const { globalState, dispatch } = useContext(GlobalStateContext);
+  const { globalState } = useContext(GlobalStateContext);
+
+  const dispatch = useDispatch();
+  const { shapes } = useSelector((state: RootState) => state);
 
   // temp seed data
-  if (globalState.shapes.length === 0) {
+  if (shapes.data.length === 0) {
     const rect1Id = id();
     const rect2Id = id();
 
@@ -23,12 +29,11 @@ const DrawingBoard: React.FC = () => {
       type: 'arrow',
       id: id(),
       fromId: rect1Id,
-      toId: rect2Id
+      toId: rect2Id,
     };
 
-    dispatch({
-      type: 'ODYS_ADD_SHAPE_ACTION',
-      shape: {
+    dispatch(
+      addShape({
         type: 'rect',
         id: rect1Id,
         text: 'A',
@@ -39,12 +44,11 @@ const DrawingBoard: React.FC = () => {
         width: RECT_WIDTH,
         height: RECT_HEIGHT,
         deltaWidth: 0,
-        deltaHeight: 0
-      }
-    });
-    dispatch({
-      type: 'ODYS_ADD_SHAPE_ACTION',
-      shape: {
+        deltaHeight: 0,
+      })
+    );
+    dispatch(
+      addShape({
         type: 'rect',
         id: rect2Id,
         text: 'B',
@@ -55,13 +59,10 @@ const DrawingBoard: React.FC = () => {
         width: RECT_WIDTH,
         height: RECT_HEIGHT,
         deltaWidth: 0,
-        deltaHeight: 0
-      }
-    });
-    dispatch({
-      type: 'ODYS_ADD_SHAPE_ACTION',
-      shape: arrow as ArrowProps
-    });
+        deltaHeight: 0,
+      })
+    );
+    dispatch(addShape(arrow as ArrowProps));
   }
 
   // add delete key handler
@@ -73,7 +74,7 @@ const DrawingBoard: React.FC = () => {
     ) {
       dispatch({
         type: 'ODYS_DELETE_SHAPE_ACTION',
-        id: globalState.select.id
+        id: globalState.select.id,
       });
     }
   }
@@ -108,8 +109,8 @@ const DrawingBoard: React.FC = () => {
   let selectedShape: RectProps | null = null;
   if (globalState.select) {
     const selectedId = globalState.select.id;
-    const idx = globalState.shapes.findIndex(s => s.id === selectedId);
-    selectedShape = globalState.shapes[idx] as RectProps;
+    const idx = shapes.data.findIndex((s) => s.id === selectedId);
+    selectedShape = shapes.data[idx] as RectProps;
   }
 
   return (
@@ -121,7 +122,7 @@ const DrawingBoard: React.FC = () => {
         translateY={globalState.svg.translateY}
         scale={globalState.svg.scale}
       >
-        {globalState.shapes.map(s => renderShape(s))}
+        {shapes.data.map((s) => renderShape(s))}
       </Svg>
       <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
         {selectedShape && (

@@ -3,6 +3,9 @@ import Group from './Group';
 import { GlobalStateContext } from '../globals';
 import throttle from 'lodash.throttle';
 import debounce from 'lodash.debounce';
+import { cancelSelect, drag, endDrag } from '../reducers/shape';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../App';
 
 export interface SvgProps extends React.SVGProps<SVGSVGElement> {
   // X, Y coords on top-left of SVG
@@ -29,7 +32,7 @@ function handleOnWheel(
     type: 'ODYS_WHEEL_ACTION',
     clickX: clientX,
     clickY: clientY,
-    scaleFactor: -deltaY * (deltaMode === 1 ? 0.05 : deltaMode ? 1 : 0.002)
+    scaleFactor: -deltaY * (deltaMode === 1 ? 0.05 : deltaMode ? 1 : 0.002),
   });
 
   debouncedOnWheelEnd(dispatch);
@@ -44,26 +47,27 @@ const throttledOnWheel = throttle(
 
 function handleOnWheelEnd(dispatch: any) {
   dispatch({
-    type: 'ODYS_WHEEL_END_ACTION'
+    type: 'ODYS_WHEEL_END_ACTION',
   });
 }
 
 const debouncedOnWheelEnd = debounce(
-  dispatch => handleOnWheelEnd(dispatch),
+  (dispatch) => handleOnWheelEnd(dispatch),
   200
 );
 
-const Svg: React.FC<SvgProps> = props => {
+const Svg: React.FC<SvgProps> = (props) => {
   const [width, setWidth] = useState(1000);
   const [height, setHeight] = useState(1000);
 
   const svgRef = useRef<SVGSVGElement>(null);
 
-  const transform = `translate(${props.topLeftX +
-    props.translateX}, ${props.topLeftY + props.translateY}) scale(${
-    props.scale
-  })`;
+  const transform = `translate(${props.topLeftX + props.translateX}, ${
+    props.topLeftY + props.translateY
+  }) scale(${props.scale})`;
   const { globalState, dispatch } = useContext(GlobalStateContext);
+  const dragState = useSelector((state: RootState) => state.shapes.drag);
+  const newDispatch = useDispatch();
 
   // change viewbox to match screen size.
   useLayoutEffect(() => {
@@ -78,30 +82,32 @@ const Svg: React.FC<SvgProps> = props => {
     dispatch({
       type: 'ODYS_MOUSE_MOVE_ACTION',
       clickX: e.clientX,
-      clickY: e.clientY
+      clickY: e.clientY,
     });
 
     if (globalState.newRectByDrag) {
       dispatch({
         type: 'ODYS_NEW_RECT_BY_DRAG_ACTION',
         clickX: e.clientX,
-        clickY: e.clientY
+        clickY: e.clientY,
       });
     }
 
-    if (globalState.drag) {
-      dispatch({
-        type: 'ODYS_DRAG_ACTION',
-        clickX: e.clientX,
-        clickY: e.clientY
-      });
+    if (dragState) {
+      newDispatch(
+        drag({
+          clickX: e.clientX,
+          clickY: e.clientY,
+          scale: globalState.svg.scale,
+        })
+      );
     }
 
     if (globalState.pan) {
       dispatch({
         type: 'ODYS_PAN_ACTION',
         clickX: e.clientX,
-        clickY: e.clientY
+        clickY: e.clientY,
       });
     }
 
@@ -109,13 +115,13 @@ const Svg: React.FC<SvgProps> = props => {
       dispatch({
         type: 'ODYS_RESIZE_ACTION',
         clickX: e.clientX,
-        clickY: e.clientY
+        clickY: e.clientY,
       });
     }
   }
 
   function handleMouseDown(e: React.MouseEvent) {
-    dispatch({ type: 'ODYS_CANCEL_SELECT_ACTION' });
+    newDispatch(cancelSelect());
 
     if (e.altKey) {
       startNewRectByClick(e);
@@ -128,7 +134,7 @@ const Svg: React.FC<SvgProps> = props => {
       dispatch({
         type: 'ODYS_START_PAN_ACTION',
         clickX: e.clientX,
-        clickY: e.clientY
+        clickY: e.clientY,
       });
     }
 
@@ -136,7 +142,7 @@ const Svg: React.FC<SvgProps> = props => {
       dispatch({
         type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION',
         clickX: e.clientX,
-        clickY: e.clientY
+        clickY: e.clientY,
       });
     }
 
@@ -144,7 +150,7 @@ const Svg: React.FC<SvgProps> = props => {
       dispatch({
         type: 'ODYS_START_NEW_RECT_BY_DRAG_ACTION',
         clickX: e.clientX,
-        clickY: e.clientY
+        clickY: e.clientY,
       });
     }
   }
@@ -158,31 +164,29 @@ const Svg: React.FC<SvgProps> = props => {
       return dispatch({
         type: 'ODYS_END_NEW_RECT_BY_CLICK_ACTION',
         clickX: e.clientX,
-        clickY: e.clientY
+        clickY: e.clientY,
       });
     }
 
     if (globalState.newRectByDrag) {
       return dispatch({
-        type: 'ODYS_END_NEW_RECT_BY_DRAG_ACTION'
+        type: 'ODYS_END_NEW_RECT_BY_DRAG_ACTION',
       });
     }
 
-    if (globalState.drag) {
-      return dispatch({
-        type: 'ODYS_END_DRAG_ACTION'
-      });
+    if (dragState) {
+      newDispatch(endDrag());
     }
 
     if (globalState.pan) {
       return dispatch({
-        type: 'ODYS_END_PAN_ACTION'
+        type: 'ODYS_END_PAN_ACTION',
       });
     }
 
     if (globalState.resize) {
       return dispatch({
-        type: 'ODYS_END_RESIZE_ACTION'
+        type: 'ODYS_END_RESIZE_ACTION',
       });
     }
   }
@@ -193,14 +197,14 @@ const Svg: React.FC<SvgProps> = props => {
       style={{
         height: '100%',
         width: '100%',
-        background: 'var(--odys-background-gray)'
+        background: 'var(--odys-background-gray)',
       }}
       viewBox={`0 0 ${width} ${height}`}
       ref={svgRef}
-      onMouseMove={e => handleMouseMove(e)}
-      onMouseDown={e => handleMouseDown(e)}
-      onMouseUp={e => handleMouseUp(e)}
-      onWheel={e =>
+      onMouseMove={(e) => handleMouseMove(e)}
+      onMouseDown={(e) => handleMouseDown(e)}
+      onMouseUp={(e) => handleMouseUp(e)}
+      onWheel={(e) =>
         throttledOnWheel(dispatch, e.clientX, e.clientY, e.deltaY, e.deltaMode)
       }
     >

@@ -1,13 +1,16 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { GlobalStateContext } from '../globals';
 import { RectProps } from '../shapes/Rect';
+import { useDispatch } from 'react-redux';
+import { selectedShapeEditText } from '../reducers/shape';
 
 export interface HiddenTextInputProps {
   selectedShape: RectProps;
 }
 
-const HiddenTextInput: React.FC<HiddenTextInputProps> = props => {
-  const { globalState, dispatch } = useContext(GlobalStateContext);
+const HiddenTextInput: React.FC<HiddenTextInputProps> = (props) => {
+  const { globalState } = useContext(GlobalStateContext);
+  const dispatch = useDispatch();
 
   const inputEl = useRef<HTMLInputElement>(null);
 
@@ -23,10 +26,7 @@ const HiddenTextInput: React.FC<HiddenTextInputProps> = props => {
   });
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch({
-      type: 'ODYS_SELECTED_SHAPE_EDIT_TEXT_ACTION',
-      text: event.target.value
-    });
+    dispatch(selectedShapeEditText(event.target.value));
   };
 
   return (

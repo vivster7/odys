@@ -1,177 +1,166 @@
-import { GlobalActionType, GlobalState } from '../globals';
-import { v4 } from 'uuid';
 import Shape from '../shapes/Shape';
-import { ArrowProps } from '../shapes/Arrow';
 
-export interface OdysRaiseShapeAction extends GlobalActionType {
-  type: 'ODYS_RAISE_SHAPE_ACTION';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+type ShapeID = string;
+
+interface SelectedShape {
   id: string;
+  isEditing: boolean;
 }
 
-export interface OdysAddShapeAction extends GlobalActionType {
-  type: 'ODYS_ADD_SHAPE_ACTION';
-  shape: Shape;
-}
-
-export interface OdysDeleteShapeAction extends GlobalActionType {
-  type: 'ODYS_DELETE_SHAPE_ACTION';
+interface DragState {
   id: string;
+  clickX: number;
+  clickY: number;
 }
 
-export interface OdysDrawArrowAction extends GlobalActionType {
-  type: 'ODYS_DRAW_ARROW_ACTION';
+interface ShapeState {
+  data: Shape[];
+  select: SelectedShape | null;
+  drag: DragState | null;
+}
+
+interface StartDrag {
   id: string;
+  clickX: number;
+  clickY: number;
 }
 
-export interface OdysSelectShapeAction extends GlobalActionType {
-  type: 'ODYS_SELECT_SHAPE_ACTION';
-  id: string;
+interface Drag {
+  clickX: number;
+  clickY: number;
+  scale: number;
 }
 
-export interface OdysCancelSelectAction extends GlobalActionType {
-  type: 'ODYS_CANCEL_SELECT_ACTION';
-}
-
-export interface OdysSelectedShapeEditTextAction extends GlobalActionType {
-  type: 'ODYS_SELECTED_SHAPE_EDIT_TEXT_ACTION';
-  text: string;
-}
-
-const id = () => `id-${v4()}`;
-const shapeReducerMap = {
-  ODYS_RAISE_SHAPE_ACTION: onOdysRaiseShape,
-  ODYS_ADD_SHAPE_ACTION: onOdysAddShapeAction,
-  ODYS_DELETE_SHAPE_ACTION: onOdysDeleteShapeAction,
-  ODYS_DRAW_ARROW_ACTION: onOdysDrawArrowAction,
-  ODYS_SELECT_SHAPE_ACTION: onOdysSelectShapeAction,
-  ODYS_CANCEL_SELECT_ACTION: onOdysCancelSelectAction,
-  ODYS_SELECTED_SHAPE_EDIT_TEXT_ACTION: onOdysSelectedShapeEditTextAction
+const initialState: ShapeState = {
+  data: [],
+  select: null,
+  drag: null,
 };
 
-export default shapeReducerMap;
-function onOdysAddShapeAction(
-  state: GlobalState,
-  action: OdysAddShapeAction
-): GlobalState {
-  return {
-    ...state,
-    shapes: [...state.shapes, action.shape]
-  };
-}
-
-function onOdysDeleteShapeAction(
-  state: GlobalState,
-  action: OdysDeleteShapeAction
-): GlobalState {
-  return {
-    ...state,
-    shapes: state.shapes.filter(s => s.id !== action.id)
-  };
-}
-
-function onOdysDrawArrowAction(
-  state: GlobalState,
-  action: OdysDeleteShapeAction
-): GlobalState {
-  if (!state.select) {
-    throw new Error('Cannot draw arrow without selected object.');
-  }
-
-  const selectId = state.select.id;
-
-  // cannot draw arrow to self.
-  if (selectId === action.id) {
-    return state;
-  }
-
-  // cannot duplicate existing arrow.
-  const existing = state.shapes.find(s => {
-    return s.type === 'arrow' && s.fromId === selectId && s.toId === action.id;
-  });
-  if (existing) {
-    return state;
-  }
-
-  const arrow: ArrowProps = {
-    type: 'arrow',
-    id: id(),
-    fromId: selectId,
-    toId: action.id
-  } as ArrowProps;
-
-  return {
-    ...state,
-    shapes: [...state.shapes, arrow]
-  };
-}
-
-function onOdysSelectShapeAction(
-  state: GlobalState,
-  action: OdysSelectShapeAction
-): GlobalState {
-  return {
-    ...state,
-    select: {
-      id: action.id,
-      isEditing: false
-    }
-  };
-}
-
-function onOdysCancelSelectAction(
-  state: GlobalState,
-  action: OdysSelectShapeAction
-): GlobalState {
-  return {
-    ...state,
-    select: null
-  };
-}
-
-function onOdysSelectedShapeEditTextAction(
-  state: GlobalState,
-  action: OdysSelectedShapeEditTextAction
-): GlobalState {
-  if (!state.select) {
-    throw new Error(
-      `[select/edit] Cannot edit text if a shape is not selected. ODYS_SELECT_SHAPE_ACTION should have fired first.`
-    );
-  }
-
-  const { shapes, select } = state;
-  const idx = shapes.findIndex(d => d.id === select.id);
-  if (idx === -1) {
-    throw new Error(`[edit] Cannot find ${select.id} in shapes context`);
-  }
-  const shape = {
-    ...shapes[idx],
-    text: action.text
-  };
-
-  return {
-    ...state,
-    select: {
-      ...state.select,
-      isEditing: true
+const shapesSlice = createSlice({
+  name: 'shapes',
+  initialState: initialState,
+  reducers: {
+    addShape(state, action: PayloadAction<Shape>) {
+      state.data = [...state.data, action.payload as any];
     },
-    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[shape]]
-  };
-}
+    raiseShape(state, action: PayloadAction<ShapeID>) {
+      const id = action.payload;
+      const shape = state.data.find((s) => s.id === id);
+      if (!shape) {
+        throw new Error(`Cannot find ${id} in shapes context`);
+      }
 
-function onOdysRaiseShape(
-  state: GlobalState,
-  action: OdysRaiseShapeAction
-): GlobalState {
-  const { id } = action;
-  const { shapes } = state;
-  const idx = shapes.findIndex(d => d.id === id);
-  if (idx === -1) {
-    throw new Error(`Cannot find ${id} in shapes context`);
-  }
+      state.data = [...state.data.filter((s) => s.id !== id), shape as any];
+    },
+    deleteShape(state, action: PayloadAction<ShapeID>) {
+      const id = action.payload;
+      state.data = state.data.filter((s) => s.id !== id);
+    },
+    drawArrow(state, action: PayloadAction<ShapeID>) {},
+    selectShape(state, action: PayloadAction<ShapeID>) {
+      const id = action.payload;
+      state.select = {
+        id,
+        isEditing: false,
+      };
+    },
+    cancelSelect(state, action: PayloadAction) {
+      state.select = null;
+    },
+    selectedShapeEditText(state, action: PayloadAction<string>) {
+      const { select } = state;
+      if (!select) {
+        throw new Error(
+          `[shapes/editText] Cannot edit text if a shape is not selected. ODYS_SELECT_SHAPE_ACTION should have fired first.`
+        );
+      }
 
-  const item = shapes[idx];
-  return {
-    ...state,
-    shapes: [...shapes.slice(0, idx), ...shapes.slice(idx + 1), ...[item]]
-  };
-}
+      const shape = state.data.find((d) => d.id === select.id);
+      if (!shape) {
+        throw new Error(
+          `[shapes/editText] Cannot find selected shape (${select.id})`
+        );
+      }
+      if (shape.type !== 'rect') {
+        throw new Error(
+          `[shapes/editText] Cannot only edit rects. Selected shape is not a rect (${select.id})`
+        );
+      }
+
+      shape.text = action.payload;
+      select.isEditing = true;
+    },
+    startDrag(state, action: PayloadAction<StartDrag>) {
+      state.drag = {
+        id: action.payload.id,
+        clickX: action.payload.clickX,
+        clickY: action.payload.clickY,
+      };
+    },
+    drag(state, action: PayloadAction<Drag>) {
+      if (!state.drag) {
+        throw new Error(
+          'Cannot shapes/draag without `state.drag` (did shapes/startDrag fire first?)'
+        );
+      }
+
+      const { id } = state.drag;
+      const shapes = state.data;
+      const idx = shapes.findIndex((d) => d.id === id);
+      if (idx === -1) {
+        throw new Error(`[drag] Cannot find ${id} in shapes context`);
+      }
+
+      const shape = {
+        ...shapes[idx],
+        translateX:
+          (action.payload.clickX - state.drag.clickX) / action.payload.scale,
+        translateY:
+          (action.payload.clickY - state.drag.clickY) / action.payload.scale,
+      };
+
+      state.data = [...state.data.filter((s) => s.id !== id), shape as any];
+    },
+    endDrag(state, action: PayloadAction) {
+      if (!state.drag) {
+        throw new Error(
+          'Could not end drag action. Was it started with ODYS_START_DRAG_ACTION?'
+        );
+      }
+
+      const shapes = state.data;
+      const { id } = state.drag;
+      const idx = shapes.findIndex((s) => s.id === id);
+      if (idx === -1) {
+        throw new Error(`[drag] Cannot find ${id} in shapes`);
+      }
+
+      const shape = {
+        ...shapes[idx],
+        x: (shapes[idx].x as number) + (shapes[idx].translateX as number),
+        y: (shapes[idx].y as number) + (shapes[idx].translateY as number),
+        translateX: 0,
+        translateY: 0,
+      };
+
+      state.data = [...state.data.filter((s) => s.id !== id), shape as any];
+      state.drag = null;
+    },
+  },
+});
+
+export const {
+  addShape,
+  selectedShapeEditText,
+  cancelSelect,
+  selectShape,
+  drawArrow,
+  startDrag,
+  drag,
+  endDrag,
+} = shapesSlice.actions;
+const shapesReducer = shapesSlice.reducer;
+export default shapesReducer;
