@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Group from './Group';
 import LeftArrowhead from './LeftArrowhead';
 import RightArrowhead from './RightArrowhead';
 import { v4 } from 'uuid';
-import { GlobalStateContext } from '../globals';
 import { RectProps } from './Rect';
 import Line from '../math/line';
 import { RootState } from '../App';
@@ -61,7 +60,6 @@ interface ArrowheadProps {
 
 const idFn = () => `id-${v4()}`;
 const Arrow: React.FC<ArrowProps> = (props) => {
-  const { globalState } = useContext(GlobalStateContext);
   // TODO: drag + move edges
   const transform = ``;
   const cursor = 'auto';

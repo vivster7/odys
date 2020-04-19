@@ -2,7 +2,6 @@ import React, { useContext, useEffect } from 'react';
 import Svg from '../shapes/Svg';
 import Rect, { RectProps, RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
 import { v4 } from 'uuid';
-import { GlobalStateContext } from '../globals';
 import Arrow, { ArrowProps } from '../shapes/Arrow';
 import Shape from '../shapes/Shape';
 import Line, { LineProps } from '../shapes/Line';
@@ -15,10 +14,10 @@ import { RootState } from '../App';
 const id = () => `id-${v4()}`;
 
 const DrawingBoard: React.FC = () => {
-  const { globalState } = useContext(GlobalStateContext);
-
   const dispatch = useDispatch();
   const { shapes } = useSelector((state: RootState) => state);
+  const select = useSelector((state: RootState) => state.shapes.select);
+  const svg = useSelector((state: RootState) => state.shapes.svg);
 
   // temp seed data
   if (shapes.data.length === 0) {
@@ -67,14 +66,10 @@ const DrawingBoard: React.FC = () => {
 
   // add delete key handler
   function onKeyDownHandler(e: KeyboardEvent) {
-    if (
-      e.code === 'Backspace' &&
-      globalState.select &&
-      globalState.select.isEditing === false
-    ) {
+    if (e.code === 'Backspace' && select && select.isEditing === false) {
       dispatch({
         type: 'ODYS_DELETE_SHAPE_ACTION',
-        id: globalState.select.id,
+        id: select.id,
       });
     }
   }
@@ -107,8 +102,8 @@ const DrawingBoard: React.FC = () => {
   }
 
   let selectedShape: RectProps | null = null;
-  if (globalState.select) {
-    const selectedId = globalState.select.id;
+  if (shapes.select) {
+    const selectedId = shapes.select.id;
     const idx = shapes.data.findIndex((s) => s.id === selectedId);
     selectedShape = shapes.data[idx] as RectProps;
   }
@@ -116,11 +111,11 @@ const DrawingBoard: React.FC = () => {
   return (
     <>
       <Svg
-        topLeftX={globalState.svg.topLeftX}
-        topLeftY={globalState.svg.topLeftY}
-        translateX={globalState.svg.translateX}
-        translateY={globalState.svg.translateY}
-        scale={globalState.svg.scale}
+        topLeftX={svg.topLeftX}
+        topLeftY={svg.topLeftY}
+        translateX={svg.translateX}
+        translateY={svg.translateY}
+        scale={svg.scale}
       >
         {shapes.data.map((s) => renderShape(s))}
       </Svg>

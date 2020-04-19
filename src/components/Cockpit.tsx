@@ -1,17 +1,25 @@
 import React, { useContext } from 'react';
-import { GlobalStateContext } from '../globals';
 import plus from '../plus.svg';
 import minus from '../minus.svg';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../App';
+import { changeZoomLevel } from '../reducers/shape';
 
 interface PositionDisplayProps {
   x: string;
   y: string;
 }
 
-const Cockpit: React.FC = props => {
-  const { globalState, dispatch } = useContext(GlobalStateContext);
+const Cockpit: React.FC = (props) => {
+  const dispatch = useDispatch();
+  const mouseState = useSelector((state: RootState) => state.shapes.mouse);
+  const zoomLevel = useSelector(
+    (state: RootState) => state.shapes.svg.zoomLevel
+  );
+  const mouseX = mouseState === null ? 0 : mouseState.clickX;
+  const mouseY = mouseState === null ? 0 : mouseState.clickY;
 
-  const PositionDisplay: React.FC<PositionDisplayProps> = props => {
+  const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
     return (
       <div
         style={{
@@ -25,14 +33,14 @@ const Cockpit: React.FC = props => {
           minWidth: '100px',
           maxWidth: '200px',
           justifyContent: 'space-around',
-          fontSize: '12px'
+          fontSize: '12px',
         }}
       >
         <p
           style={{
             borderTopLeftRadius: '8px',
             borderBottomLeftRadius: '8px',
-            backgroundColor: 'white'
+            backgroundColor: 'white',
           }}
         >
           {props.x}
@@ -40,14 +48,14 @@ const Cockpit: React.FC = props => {
         <p
           style={{
             borderLeft: '1px rgba(204, 204, 204, 0.5) solid',
-            margin: '-3px 5px'
+            margin: '-3px 5px',
           }}
         ></p>
         <p
           style={{
             borderTopRightRadius: '8px',
             borderBottomRightRadius: '8px',
-            backgroundColor: 'white'
+            backgroundColor: 'white',
           }}
         >
           {props.y}
@@ -58,17 +66,11 @@ const Cockpit: React.FC = props => {
 
   const ZoomLevelDisplay: React.FC = () => {
     function incrementZoomLevel() {
-      return dispatch({
-        type: 'ODYS_CHANGE_ZOOM_LEVEL_ACTION',
-        zoomLevel: globalState.svg.zoomLevel + 1
-      });
+      dispatch(changeZoomLevel({ zoomLevel: zoomLevel + 1 }));
     }
 
     function decrementZoomLevel() {
-      return dispatch({
-        type: 'ODYS_CHANGE_ZOOM_LEVEL_ACTION',
-        zoomLevel: globalState.svg.zoomLevel - 1
-      });
+      dispatch(changeZoomLevel({ zoomLevel: zoomLevel - 1 }));
     }
 
     return (
@@ -84,7 +86,7 @@ const Cockpit: React.FC = props => {
           justifyContent: 'space-around',
           fontSize: '18px',
           alignSelf: 'flex-end',
-          marginBottom: '5px'
+          marginBottom: '5px',
         }}
       >
         <img
@@ -99,10 +101,10 @@ const Cockpit: React.FC = props => {
             borderBottom: '1px rgba(204, 204, 204, 0.5) solid',
             padding: '6px',
             margin: '3px -1px',
-            fontSize: '14px'
+            fontSize: '14px',
           }}
         >
-          {globalState.svg.zoomLevel}
+          {zoomLevel}
         </p>
         <img
           src={minus}
@@ -118,8 +120,8 @@ const Cockpit: React.FC = props => {
     <div style={{ display: 'flex', flexFlow: 'column nowrap' }}>
       <ZoomLevelDisplay></ZoomLevelDisplay>
       <PositionDisplay
-        x={globalState.mouse.x.toFixed(2)}
-        y={globalState.mouse.y.toFixed(2)}
+        x={mouseX.toFixed(2)}
+        y={mouseY.toFixed(2)}
       ></PositionDisplay>
     </div>
   );

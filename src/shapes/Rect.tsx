@@ -1,8 +1,13 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Group from './Group';
-import { GlobalStateContext, Anchor } from '../globals';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectShape, drawArrow, startDrag } from '../reducers/shape';
+import {
+  selectShape,
+  drawArrow,
+  startDrag,
+  Anchor,
+  startResize,
+} from '../reducers/shape';
 import { RootState } from '../App';
 
 export const RECT_WIDTH = 150;
@@ -37,7 +42,6 @@ const Rect: React.FC<RectProps> = (props) => {
   const transform = `translate(${x + props.translateX}, ${
     y + props.translateY
   })`;
-  const { dispatch } = useContext(GlobalStateContext);
   const newDispatch = useDispatch();
   const dragState = useSelector((state: RootState) => state.shapes.drag);
   const select = useSelector((state: RootState) => state.shapes.select);
@@ -59,13 +63,9 @@ const Rect: React.FC<RectProps> = (props) => {
   const SelectionCircles = () => {
     function startResizeRect(e: React.MouseEvent, anchor: Anchor) {
       e.stopPropagation();
-      dispatch({
-        type: 'ODYS_START_RESIZE_ACTION',
-        id: id,
-        anchor: anchor,
-        originalX: e.clientX,
-        originalY: e.clientY,
-      });
+      newDispatch(
+        startResize({ id, anchor, originalX: e.clientX, originalY: e.clientY })
+      );
     }
 
     return (

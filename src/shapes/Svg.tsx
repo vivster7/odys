@@ -1,9 +1,25 @@
-import React, { useState, useContext, useRef, useLayoutEffect } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import Group from './Group';
-import { GlobalStateContext } from '../globals';
 import throttle from 'lodash.throttle';
 import debounce from 'lodash.debounce';
-import { cancelSelect, drag, endDrag } from '../reducers/shape';
+import {
+  cancelSelect,
+  drag,
+  endDrag,
+  mouseMove,
+  startPan,
+  pan,
+  endPan,
+  newRectByDrag,
+  resize,
+  endResize,
+  startNewRectByClick,
+  endNewRectByClick,
+  startNewRectByDrag,
+  endNewRectByDrag,
+  wheel,
+  wheelEnd,
+} from '../reducers/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
 
@@ -28,12 +44,13 @@ function handleOnWheel(
   deltaY: number,
   deltaMode: number
 ) {
-  dispatch({
-    type: 'ODYS_WHEEL_ACTION',
-    clickX: clientX,
-    clickY: clientY,
-    scaleFactor: -deltaY * (deltaMode === 1 ? 0.05 : deltaMode ? 1 : 0.002),
-  });
+  dispatch(
+    wheel({
+      clickX: clientX,
+      clickY: clientY,
+      scaleFactor: -deltaY * (deltaMode === 1 ? 0.05 : deltaMode ? 1 : 0.002),
+    })
+  );
 
   debouncedOnWheelEnd(dispatch);
 }
@@ -46,9 +63,7 @@ const throttledOnWheel = throttle(
 );
 
 function handleOnWheelEnd(dispatch: any) {
-  dispatch({
-    type: 'ODYS_WHEEL_END_ACTION',
-  });
+  dispatch(wheelEnd());
 }
 
 const debouncedOnWheelEnd = debounce(
@@ -65,9 +80,18 @@ const Svg: React.FC<SvgProps> = (props) => {
   const transform = `translate(${props.topLeftX + props.translateX}, ${
     props.topLeftY + props.translateY
   }) scale(${props.scale})`;
-  const { globalState, dispatch } = useContext(GlobalStateContext);
+
   const dragState = useSelector((state: RootState) => state.shapes.drag);
-  const newDispatch = useDispatch();
+  const panState = useSelector((state: RootState) => state.shapes.pan);
+  const newRectByClickState = useSelector(
+    (state: RootState) => state.shapes.newRectByClick
+  );
+  const newRectByDragState = useSelector(
+    (state: RootState) => state.shapes.newRectByDrag
+  );
+  const svgScale = useSelector((state: RootState) => state.shapes.svg.scale);
+  const resizeState = useSelector((state: RootState) => state.shapes.resize);
+  const dispatch = useDispatch();
 
   // change viewbox to match screen size.
   useLayoutEffect(() => {
@@ -79,115 +103,65 @@ const Svg: React.FC<SvgProps> = (props) => {
   }, []);
 
   function handleMouseMove(e: React.MouseEvent) {
-    dispatch({
-      type: 'ODYS_MOUSE_MOVE_ACTION',
-      clickX: e.clientX,
-      clickY: e.clientY,
-    });
+    dispatch(mouseMove({ clickX: e.clientX, clickY: e.clientY }));
 
-    if (globalState.newRectByDrag) {
-      dispatch({
-        type: 'ODYS_NEW_RECT_BY_DRAG_ACTION',
-        clickX: e.clientX,
-        clickY: e.clientY,
-      });
+    if (newRectByDragState) {
+      dispatch(newRectByDrag({ clickX: e.clientX, clickY: e.clientY }));
     }
 
     if (dragState) {
-      newDispatch(
+      dispatch(
         drag({
           clickX: e.clientX,
           clickY: e.clientY,
-          scale: globalState.svg.scale,
+          scale: svgScale,
         })
       );
     }
 
-    if (globalState.pan) {
-      dispatch({
-        type: 'ODYS_PAN_ACTION',
-        clickX: e.clientX,
-        clickY: e.clientY,
-      });
+    if (panState) {
+      dispatch(pan({ clickX: e.clientX, clickY: e.clientY }));
     }
 
-    if (globalState.resize) {
-      dispatch({
-        type: 'ODYS_RESIZE_ACTION',
-        clickX: e.clientX,
-        clickY: e.clientY,
-      });
+    if (resizeState) {
+      dispatch(resize({ clickX: e.clientX, clickY: e.clientY }));
     }
   }
 
   function handleMouseDown(e: React.MouseEvent) {
-    newDispatch(cancelSelect());
+    dispatch(cancelSelect());
 
     if (e.altKey) {
-      startNewRectByClick(e);
-      startNewRectByDrag(e);
+      dispatch(startNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
+      dispatch(startNewRectByDrag({ clickX: e.clientX, clickY: e.clientY }));
     } else {
-      startPan(e);
-    }
-
-    function startPan(e: React.MouseEvent) {
-      dispatch({
-        type: 'ODYS_START_PAN_ACTION',
-        clickX: e.clientX,
-        clickY: e.clientY,
-      });
-    }
-
-    function startNewRectByClick(e: React.MouseEvent) {
-      dispatch({
-        type: 'ODYS_START_NEW_RECT_BY_CLICK_ACTION',
-        clickX: e.clientX,
-        clickY: e.clientY,
-      });
-    }
-
-    function startNewRectByDrag(e: React.MouseEvent) {
-      dispatch({
-        type: 'ODYS_START_NEW_RECT_BY_DRAG_ACTION',
-        clickX: e.clientX,
-        clickY: e.clientY,
-      });
+      dispatch(startPan({ clickX: e.clientX, clickY: e.clientY }));
     }
   }
 
   function handleMouseUp(e: React.MouseEvent) {
     if (
-      globalState.newRectByClick &&
-      globalState.newRectByClick.clickX === e.clientX &&
-      globalState.newRectByClick.clickY === e.clientY
+      newRectByClickState &&
+      newRectByClickState.clickX === e.clientX &&
+      newRectByClickState.clickY === e.clientY
     ) {
-      return dispatch({
-        type: 'ODYS_END_NEW_RECT_BY_CLICK_ACTION',
-        clickX: e.clientX,
-        clickY: e.clientY,
-      });
+      dispatch(endNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
     }
 
-    if (globalState.newRectByDrag) {
-      return dispatch({
-        type: 'ODYS_END_NEW_RECT_BY_DRAG_ACTION',
-      });
+    if (newRectByDragState) {
+      dispatch(endNewRectByDrag());
     }
 
     if (dragState) {
-      newDispatch(endDrag());
+      dispatch(endDrag());
     }
 
-    if (globalState.pan) {
-      return dispatch({
-        type: 'ODYS_END_PAN_ACTION',
-      });
+    if (panState) {
+      dispatch(endPan());
     }
 
-    if (globalState.resize) {
-      return dispatch({
-        type: 'ODYS_END_RESIZE_ACTION',
-      });
+    if (resizeState) {
+      dispatch(endResize());
     }
   }
 

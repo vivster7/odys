@@ -1,21 +1,21 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { GlobalStateContext } from '../globals';
+import React, { useEffect, useRef } from 'react';
 import { RectProps } from '../shapes/Rect';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectedShapeEditText } from '../reducers/shape';
+import { RootState } from '../App';
 
 export interface HiddenTextInputProps {
   selectedShape: RectProps;
 }
 
 const HiddenTextInput: React.FC<HiddenTextInputProps> = (props) => {
-  const { globalState } = useContext(GlobalStateContext);
   const dispatch = useDispatch();
+  const select = useSelector((state: RootState) => state.shapes.select);
 
   const inputEl = useRef<HTMLInputElement>(null);
 
   let inputValue = '';
-  if (globalState.select && globalState.select.isEditing) {
+  if (select && select.isEditing) {
     inputValue = props.selectedShape.text;
   }
 
