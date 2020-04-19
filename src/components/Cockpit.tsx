@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import plus from '../plus.svg';
 import minus from '../minus.svg';
 import { useSelector, useDispatch } from 'react-redux';

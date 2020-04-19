@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Svg from '../shapes/Svg';
 import Rect, { RectProps, RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
 import { v4 } from 'uuid';

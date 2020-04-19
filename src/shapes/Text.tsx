@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Group from './Group';
 import { startDrag } from '../reducers/shape';
 import { useDispatch, useSelector } from 'react-redux';
