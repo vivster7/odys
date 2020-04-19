@@ -745,6 +745,7 @@ const shapesSlice = createSlice({
 
 export const {
   addShape,
+  deleteShape,
   selectedShapeEditText,
   cancelSelect,
   selectShape,

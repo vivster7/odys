@@ -8,7 +8,7 @@ import Line, { LineProps } from '../shapes/Line';
 import Text, { TextProps } from '../shapes/Text';
 import HiddenTextInput from './HiddenTextInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { addShape } from '../reducers/shape';
+import { addShape, deleteShape } from '../reducers/shape';
 import { RootState } from '../App';
 
 const id = () => `id-${v4()}`;
@@ -67,10 +67,7 @@ const DrawingBoard: React.FC = () => {
   // add delete key handler
   function onKeyDownHandler(e: KeyboardEvent) {
     if (e.code === 'Backspace' && select && select.isEditing === false) {
-      dispatch({
-        type: 'ODYS_DELETE_SHAPE_ACTION',
-        id: select.id,
-      });
+      dispatch(deleteShape(select.id));
     }
   }
 
