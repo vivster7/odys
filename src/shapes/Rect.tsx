@@ -7,7 +7,7 @@ import {
   startDrag,
   Anchor,
   startResize,
-} from '../reducers/shape';
+} from '../reducers/shapes/shape';
 import { RootState } from '../App';
 
 export const RECT_WIDTH = 150;

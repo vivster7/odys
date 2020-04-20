@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import DrawingPage from './pages/DrawingPage';
 import Scratch from './pages/Scratch';
 
-import shapesReducer from './reducers/shape';
+import shapesReducer from './reducers/shapes/shape';
 
 const rootReducer = combineReducers({
   shapes: shapesReducer,

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { RectProps } from '../shapes/Rect';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectedShapeEditText } from '../reducers/shape';
+import { selectedShapeEditText } from '../reducers/shapes/shape';
 import { RootState } from '../App';
 
 export interface HiddenTextInputProps {

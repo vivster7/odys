@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react';
+import React from 'react';
 import Group from './Group';
 import throttle from 'lodash.throttle';
 import debounce from 'lodash.debounce';
@@ -19,7 +19,7 @@ import {
   endNewRectByDrag,
   wheel,
   wheelEnd,
-} from '../reducers/shape';
+} from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
 
@@ -72,14 +72,9 @@ const debouncedOnWheelEnd = debounce(
 );
 
 const Svg: React.FC<SvgProps> = (props) => {
-  const [width, setWidth] = useState(1000);
-  const [height, setHeight] = useState(1000);
-
-  const svgRef = useRef<SVGSVGElement>(null);
-
-  const transform = `translate(${props.topLeftX + props.translateX}, ${
-    props.topLeftY + props.translateY
-  }) scale(${props.scale})`;
+  const translateX = props.topLeftX + props.translateX;
+  const translateY = props.topLeftY + props.translateY;
+  const transform = `translate(${translateX}, ${translateY}) scale(${props.scale})`;
 
   const dragState = useSelector((state: RootState) => state.shapes.drag);
   const panState = useSelector((state: RootState) => state.shapes.pan);
@@ -164,7 +159,6 @@ const Svg: React.FC<SvgProps> = (props) => {
         width: '100%',
         background: 'var(--odys-background-gray)',
       }}
-      ref={svgRef}
       onMouseMove={(e) => handleMouseMove(e)}
       onMouseDown={(e) => handleMouseDown(e)}
       onMouseUp={(e) => handleMouseUp(e)}

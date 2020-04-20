@@ -1,6 +1,6 @@
 import React from 'react';
 import Group from './Group';
-import { startDrag } from '../reducers/shape';
+import { startDrag } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
 

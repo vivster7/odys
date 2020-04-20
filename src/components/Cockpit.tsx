@@ -3,7 +3,7 @@ import plus from '../plus.svg';
 import minus from '../minus.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../App';
-import { changeZoomLevel } from '../reducers/shape';
+import { changeZoomLevel } from '../reducers/shapes/shape';
 
 interface PositionDisplayProps {
   x: string;

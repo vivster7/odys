@@ -8,7 +8,7 @@ import Line, { LineProps } from '../shapes/Line';
 import Text, { TextProps } from '../shapes/Text';
 import HiddenTextInput from './HiddenTextInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { addShape, deleteShape } from '../reducers/shape';
+import { addShape, deleteShape } from '../reducers/shapes/shape';
 import { RootState } from '../App';
 
 const id = () => `id-${v4()}`;
