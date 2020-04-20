@@ -185,7 +185,6 @@ const drawArrowFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
 
   state.data[arrowID] = arrow;
   state.shapeOrder.push(arrowID);
-  // state.data = [...state.data, arrow as any];
 };
 
 const selectShapeFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
@@ -197,6 +196,10 @@ const selectShapeFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
     id,
     isEditing: false,
   };
+  state.shapeOrder = [
+    ...state.shapeOrder.filter((shapeID) => shapeID !== id),
+    id,
+  ];
 };
 
 const cancelSelectFn: CaseReducer<ShapeState, PayloadAction> = (
@@ -264,8 +267,6 @@ const dragFn: CaseReducer<ShapeState, PayloadAction<Drag>> = (
     (action.payload.clickX - state.drag.clickX) / action.payload.scale;
   shape.translateY =
     (action.payload.clickY - state.drag.clickY) / action.payload.scale;
-
-  // state.data = [...state.data.filter((s) => s.id !== id), shape as any];
 };
 
 const endDragFn: CaseReducer<ShapeState, PayloadAction> = (state, action) => {
@@ -435,7 +436,7 @@ function zoomLevelBucket(k: number): number {
   const entries = Object.entries(zoomLeveltoScaleMap);
   for (let [i, j] = [0, 1]; j < entries.length; [i, j] = [i + 1, j + 1]) {
     let [zoomLevel1, scale1] = entries[i];
-    let [_, scale2] = entries[j];
+    let scale2 = entries[j][1];
 
     if (scale1 <= k && k < scale2) {
       return parseInt(zoomLevel1);
@@ -465,8 +466,6 @@ interface Resize {
   clickX: number;
   clickY: number;
 }
-
-interface EndResize {}
 
 const startResizeFn: CaseReducer<ShapeState, PayloadAction<StartResize>> = (
   state,
@@ -543,8 +542,6 @@ const resizeFn: CaseReducer<ShapeState, PayloadAction<Resize>> = (
   shape.translateY = translateY;
   shape.deltaWidth = deltaWidth;
   shape.deltaHeight = deltaHeight;
-
-  // state.shapeOrder = [...state.shapeOrder.filter(shapeID => shapeID !== id), id]
 };
 
 const endResizeFn: CaseReducer<ShapeState, PayloadAction> = (state, action) => {
@@ -554,7 +551,6 @@ const endResizeFn: CaseReducer<ShapeState, PayloadAction> = (state, action) => {
     );
   }
 
-  const shapes = state.data;
   const { id } = state.resize;
   if (!state.data[id]) {
     throw new Error(`Cannot find shape with ${id}`);

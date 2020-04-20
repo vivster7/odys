@@ -59,7 +59,7 @@ interface ArrowheadProps {
 }
 
 const idFn = () => `id-${v4()}`;
-const Arrow: React.FC<ArrowProps> = (props) => {
+const Arrow: React.FC<ArrowProps> = React.memo((props) => {
   // TODO: drag + move edges
   const transform = ``;
   const cursor = 'auto';
@@ -260,6 +260,6 @@ const Arrow: React.FC<ArrowProps> = (props) => {
         : XYArrow(props as XYArrowProps)}
     </>
   );
-};
+});
 
 export default Arrow;

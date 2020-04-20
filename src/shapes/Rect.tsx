@@ -31,7 +31,7 @@ export interface RectProps extends React.SVGProps<SVGRectElement> {
   text: string;
 }
 
-const Rect: React.FC<RectProps> = (props) => {
+const Rect: React.FC<RectProps> = React.memo((props) => {
   const id = props.id;
   const [x, y] = [props.x, props.y];
   const [textX, textY] = [
@@ -128,11 +128,11 @@ const Rect: React.FC<RectProps> = (props) => {
         }}
         onMouseDown={(e) => handleMouseDown(e)}
       >
-        <tspan style={{ userSelect: 'none' }}>{props.text}</tspan>
+        {props.text}
       </text>
       {isSelected && <SelectionCircles></SelectionCircles>}
     </Group>
   );
-};
+});
 
 export default Rect;

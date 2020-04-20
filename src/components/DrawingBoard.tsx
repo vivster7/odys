@@ -110,7 +110,7 @@ const DrawingBoard: React.FC = () => {
         translateY={svg.translateY}
         scale={svg.scale}
       >
-        {Object.values(shapes.data).map((s) => renderShape(s))}
+        {shapes.shapeOrder.map((id) => renderShape(shapes.data[id]))}
       </Svg>
       <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
         {selectedShape && (

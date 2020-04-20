@@ -93,15 +93,6 @@ const Svg: React.FC<SvgProps> = (props) => {
   const resizeState = useSelector((state: RootState) => state.shapes.resize);
   const dispatch = useDispatch();
 
-  // change viewbox to match screen size.
-  useLayoutEffect(() => {
-    if (svgRef && svgRef.current) {
-      const { width, height } = svgRef.current.getBoundingClientRect();
-      setWidth(width);
-      setHeight(height);
-    }
-  }, []);
-
   function handleMouseMove(e: React.MouseEvent) {
     dispatch(mouseMove({ clickX: e.clientX, clickY: e.clientY }));
 
@@ -173,7 +164,6 @@ const Svg: React.FC<SvgProps> = (props) => {
         width: '100%',
         background: 'var(--odys-background-gray)',
       }}
-      viewBox={`0 0 ${width} ${height}`}
       ref={svgRef}
       onMouseMove={(e) => handleMouseMove(e)}
       onMouseDown={(e) => handleMouseDown(e)}
