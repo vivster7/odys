@@ -84,32 +84,14 @@ const Arrow: React.FC<ArrowProps> = React.memo((props) => {
     );
   })();
 
-  const leftArrowhead: React.FC<ArrowheadProps> = (props) => {
-    const rotation1 = Math.atan2(props.y2 - props.y1, props.x2 - props.x1);
-    return (
-      <LeftArrowhead
-        id={idFn()}
-        x={0}
-        y={0}
-        rotationAngleFromXInRadians={rotation1}
-      ></LeftArrowhead>
-    );
-  };
+  function arrowheadRotation(x1: number, y1: number, x2: number, y2: number) {
+    return Math.atan2(y2 - y1, x2 - x1);
+  }
 
-  const rightArrowhead: React.FC<ArrowheadProps> = (props) => {
-    const rotation2 = Math.atan2(props.y2 - props.y1, props.x2 - props.x1);
-    return (
-      <RightArrowhead
-        id={idFn()}
-        x={props.x2}
-        y={props.y2}
-        rotationAngleFromXInRadians={rotation2}
-      ></RightArrowhead>
-    );
-  };
-
-  const XYArrow: React.FC<XYArrowProps> = (props) => {
+  const XYArrow: React.FC<XYArrowProps> = React.memo((props) => {
     const transform = `translate(${props.x1}, ${props.y1})`;
+    const rotation = arrowheadRotation(props.x1, props.y1, props.x2, props.y2);
+
     return (
       <Group id={props.id} transform={transform} cursor={cursor}>
         <line
@@ -119,19 +101,39 @@ const Arrow: React.FC<ArrowProps> = React.memo((props) => {
           y2={props.y2 - props.y1}
           stroke="grey"
         ></line>
-        {props.left ? leftArrowhead(props) : <></>}
-        {props.right ? rightArrowhead(props) : <></>}
+        {props.left ? (
+          <LeftArrowhead
+            id={idFn()}
+            x={0}
+            y={0}
+            rotationAngleFromXInRadians={rotation}
+          ></LeftArrowhead>
+        ) : (
+          <></>
+        )}
+        {props.right ? (
+          <RightArrowhead
+            id={idFn()}
+            x={props.x2}
+            y={props.y2}
+            rotationAngleFromXInRadians={rotation}
+          ></RightArrowhead>
+        ) : (
+          <></>
+        )}
       </Group>
     );
-  };
+  });
 
-  const R1R2Arrow: React.FC<R1R2ArrowProps> = (props) => {
+  const R1R2Arrow: React.FC<R1R2ArrowProps> = React.memo((props) => {
     // arrow goes FROM rect1 (r1)  TO rect2 (r)
+    const r1 = useSelector(
+      (state: RootState) => state.shapes.data[props.fromId]
+    ) as RectProps;
+    const r2 = useSelector(
+      (state: RootState) => state.shapes.data[props.toId]
+    ) as RectProps;
 
-    const { shapes } = useSelector((state: RootState) => state);
-
-    const r1 = shapes.data[props.fromId] as RectProps;
-    const r2 = shapes.data[props.toId] as RectProps;
     if (!r1) {
       throw new Error(`[r1Arrow] Could not find shape$ ${props.fromId}`);
     }
@@ -240,6 +242,7 @@ const Arrow: React.FC<ArrowProps> = React.memo((props) => {
     const y1 = r1Offset.y;
     const x2 = r2Offset.x;
     const y2 = r2Offset.y;
+    const rotation = arrowheadRotation(x1, y1, x2, y2);
 
     const left = false;
     const right = true;
@@ -247,17 +250,57 @@ const Arrow: React.FC<ArrowProps> = React.memo((props) => {
     return (
       <Group id={props.id} transform={transform} cursor={cursor}>
         <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="grey"></line>
-        {left ? leftArrowhead({ x1, x2, y1, y2 }) : <></>}
-        {right ? rightArrowhead({ x1, x2, y1, y2 }) : <></>}
+        {left ? (
+          <LeftArrowhead
+            id={idFn()}
+            x={0}
+            y={0}
+            rotationAngleFromXInRadians={rotation}
+          ></LeftArrowhead>
+        ) : (
+          <></>
+        )}
+        {right ? (
+          <RightArrowhead
+            id={idFn()}
+            x={x2}
+            y={y2}
+            rotationAngleFromXInRadians={rotation}
+          ></RightArrowhead>
+        ) : (
+          <></>
+        )}{' '}
       </Group>
     );
-  };
+  });
 
   return (
     <>
-      {props.fromId && props.toId
-        ? R1R2Arrow(props as R1R2ArrowProps)
-        : XYArrow(props as XYArrowProps)}
+      {props.fromId && props.toId && (
+        <R1R2Arrow
+          id={idFn()}
+          fromId={props.fromId}
+          toId={props.toId}
+        ></R1R2Arrow>
+      )}
+      {props.x1 &&
+        props.y1 &&
+        props.x2 &&
+        props.y2 &&
+        props.translateX &&
+        props.translateY && (
+          <XYArrow
+            id={idFn()}
+            x1={props.x1}
+            y1={props.y1}
+            x2={props.x2}
+            y2={props.y2}
+            translateX={props.translateX}
+            translateY={props.translateY}
+            left={false}
+            right={true}
+          ></XYArrow>
+        )}
     </>
   );
 });

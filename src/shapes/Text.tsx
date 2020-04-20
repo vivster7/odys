@@ -14,12 +14,14 @@ export interface TextProps extends React.SVGProps<SVGTextElement> {
   translateY: number;
 }
 
-const Text: React.FC<TextProps> = (props) => {
+const Text: React.FC<TextProps> = React.memo((props) => {
   const transform = `translate(${props.x}, ${props.y})`;
-  const drag = useSelector((state: RootState) => state.shapes.drag);
+  const draggedId = useSelector(
+    (state: RootState) => state.shapes.drag && state.shapes.drag.id
+  );
   const dispatch = useDispatch();
 
-  const cursor = drag && drag.id === props.id ? 'grabbing' : 'grab';
+  const cursor = draggedId === props.id ? 'grabbing' : 'grab';
 
   return (
     <Group
@@ -37,6 +39,6 @@ const Text: React.FC<TextProps> = (props) => {
       </text>
     </Group>
   );
-};
+});
 
 export default Text;

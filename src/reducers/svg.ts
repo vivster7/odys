@@ -153,7 +153,7 @@ const initialState: SVGState = {
   topLeftY: 0,
   translateX: 0,
   translateY: 0,
-  scale: 1,
+  scale: zoomLeveltoScaleMap[5] + zoomLeveltoScaleMap[6] * 0.25,
   zoomLevel: 5,
   isZooming: false,
   pan: null,

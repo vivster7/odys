@@ -12,7 +12,7 @@ export interface LineProps extends React.SVGProps<SVGRectElement> {
   translateY: number;
 }
 
-const Line: React.FC<LineProps> = props => {
+const Line: React.FC<LineProps> = React.memo((props) => {
   const transform = `translate(${props.x1}, ${props.y1})`;
   const cursor = 'auto';
 
@@ -21,6 +21,6 @@ const Line: React.FC<LineProps> = props => {
       <line x1="0" y1="0" x2={props.x2} y2={props.y2} stroke="grey"></line>
     </Group>
   );
-};
+});
 
 export default Line;

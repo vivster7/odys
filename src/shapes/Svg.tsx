@@ -19,7 +19,7 @@ import { RootState } from '../App';
 import { mouseMove } from '../reducers/mouse';
 import { wheel, wheelEnd, pan, startPan, endPan } from '../reducers/svg';
 
-export interface SvgProps extends React.SVGProps<SVGSVGElement> {
+export interface SvgProps {
   // X, Y coords on top-left of SVG
   topLeftX: number;
   topLeftY: number;
@@ -72,17 +72,17 @@ const Svg: React.FC<SvgProps> = (props) => {
   const translateY = props.topLeftY + props.translateY;
   const transform = `translate(${translateX}, ${translateY}) scale(${props.scale})`;
 
-  const dragState = useSelector((state: RootState) => state.shapes.drag);
-  const panState = useSelector((state: RootState) => state.svg.pan);
+  const isDragging = useSelector((state: RootState) => !!state.shapes.drag);
+  const isPanning = useSelector((state: RootState) => !!state.svg.pan);
   const newRectByClickState = useSelector(
     (state: RootState) => state.shapes.newRectByClick
   );
-  const newRectByDragState = useSelector(
-    (state: RootState) => state.shapes.newRectByDrag
+  const isNewRectByDragState = useSelector(
+    (state: RootState) => !!state.shapes.newRectByDrag
   );
 
   const svgState = useSelector((state: RootState) => state.svg);
-  const resizeState = useSelector((state: RootState) => state.shapes.resize);
+  const isResizing = useSelector((state: RootState) => !!state.shapes.resize);
   const dispatch = useDispatch();
 
   function handleMouseMove(e: React.MouseEvent) {
@@ -96,7 +96,7 @@ const Svg: React.FC<SvgProps> = (props) => {
       })
     );
 
-    if (newRectByDragState) {
+    if (isNewRectByDragState) {
       dispatch(
         newRectByDrag({
           clickX: e.clientX,
@@ -108,7 +108,7 @@ const Svg: React.FC<SvgProps> = (props) => {
       );
     }
 
-    if (dragState) {
+    if (isDragging) {
       dispatch(
         drag({
           clickX: e.clientX,
@@ -118,11 +118,11 @@ const Svg: React.FC<SvgProps> = (props) => {
       );
     }
 
-    if (panState) {
+    if (isPanning) {
       dispatch(pan({ clickX: e.clientX, clickY: e.clientY }));
     }
 
-    if (resizeState) {
+    if (isResizing) {
       dispatch(
         resize({
           clickX: e.clientX,
@@ -162,19 +162,19 @@ const Svg: React.FC<SvgProps> = (props) => {
       );
     }
 
-    if (newRectByDragState) {
+    if (isNewRectByDragState) {
       dispatch(endNewRectByDrag());
     }
 
-    if (dragState) {
+    if (isDragging) {
       dispatch(endDrag());
     }
 
-    if (panState) {
+    if (isPanning) {
       dispatch(endPan());
     }
 
-    if (resizeState) {
+    if (isResizing) {
       dispatch(endResize());
     }
   }

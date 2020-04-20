@@ -13,9 +13,9 @@ import { RootState } from '../App';
 
 const id = () => `id-${v4()}`;
 
-const DrawingBoard: React.FC = () => {
+const DrawingBoard: React.FC = React.memo(() => {
   const dispatch = useDispatch();
-  const { shapes } = useSelector((state: RootState) => state);
+  const shapes = useSelector((state: RootState) => state.shapes);
   const select = useSelector((state: RootState) => state.shapes.select);
   const svg = useSelector((state: RootState) => state.svg);
 
@@ -36,8 +36,8 @@ const DrawingBoard: React.FC = () => {
         type: 'rect',
         id: rect1Id,
         text: 'A',
-        x: 400,
-        y: 200,
+        x: 100,
+        y: 150,
         translateX: 0,
         translateY: 0,
         width: RECT_WIDTH,
@@ -52,7 +52,7 @@ const DrawingBoard: React.FC = () => {
         id: rect2Id,
         text: 'B',
         x: 400,
-        y: 400,
+        y: 150,
         translateX: 0,
         translateY: 0,
         width: RECT_WIDTH,
@@ -119,6 +119,6 @@ const DrawingBoard: React.FC = () => {
       </div>
     </>
   );
-};
+});
 
 export default DrawingBoard;

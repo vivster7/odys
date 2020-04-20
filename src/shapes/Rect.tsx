@@ -12,7 +12,6 @@ import { RootState } from '../App';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
-export const FONT_SIZE = 14;
 
 export interface RectProps extends React.SVGProps<SVGRectElement> {
   type: 'rect';
@@ -43,17 +42,21 @@ const Rect: React.FC<RectProps> = React.memo((props) => {
     y + props.translateY
   })`;
   const newDispatch = useDispatch();
-  const dragState = useSelector((state: RootState) => state.shapes.drag);
-  const select = useSelector((state: RootState) => state.shapes.select);
-  const cursor = dragState && dragState.id === id ? 'grabbing' : 'grab';
+  const draggedId = useSelector(
+    (state: RootState) => state.shapes.drag && state.shapes.drag.id
+  );
+  const selectedId = useSelector(
+    (state: RootState) => state.shapes.select && state.shapes.select.id
+  );
+  const cursor = draggedId === id ? 'grabbing' : 'grab';
 
-  const isSelected = id === (select && select.id);
+  const isSelected = id === selectedId;
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
     newDispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
 
-    if (select && e.altKey) {
+    if (selectedId && e.altKey) {
       newDispatch(drawArrow(id));
     } else {
       newDispatch(selectShape(id));

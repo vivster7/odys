@@ -8,14 +8,17 @@ export interface HiddenTextInputProps {
   selectedShape: RectProps;
 }
 
-const HiddenTextInput: React.FC<HiddenTextInputProps> = (props) => {
+const HiddenTextInput: React.FC<HiddenTextInputProps> = React.memo((props) => {
   const dispatch = useDispatch();
-  const select = useSelector((state: RootState) => state.shapes.select);
+  const isEditing = useSelector(
+    (state: RootState) =>
+      (state.shapes.select && state.shapes.select.isEditing) || false
+  );
 
   const inputEl = useRef<HTMLInputElement>(null);
 
   let inputValue = '';
-  if (select && select.isEditing) {
+  if (isEditing) {
     inputValue = props.selectedShape.text;
   }
 
@@ -40,6 +43,6 @@ const HiddenTextInput: React.FC<HiddenTextInputProps> = (props) => {
       />
     </>
   );
-};
+});
 
 export default HiddenTextInput;

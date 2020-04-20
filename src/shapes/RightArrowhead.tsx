@@ -10,7 +10,7 @@ export interface RightArrowheadProps extends React.SVGProps<SVGRectElement> {
 
 const radiansToDegrees = (x: number) => x * (180 / Math.PI);
 
-const RightArrowhead: React.FC<RightArrowheadProps> = props => {
+const RightArrowhead: React.FC<RightArrowheadProps> = React.memo((props) => {
   const rotation = radiansToDegrees(props.rotationAngleFromXInRadians || 0);
 
   const transform = `translate(${props.x}, ${props.y}) rotate(${rotation})`;
@@ -21,6 +21,6 @@ const RightArrowhead: React.FC<RightArrowheadProps> = props => {
       <line x1="0" y1="0" x2="-5" y2="5" stroke="grey"></line>
     </Group>
   );
-};
+});
 
 export default RightArrowhead;

@@ -10,7 +10,7 @@ export interface LeftArrowheadProps extends React.SVGProps<SVGRectElement> {
 
 const radiansToDegrees = (x: number) => x * (180 / Math.PI);
 
-const LeftArrowhead: React.FC<LeftArrowheadProps> = props => {
+const LeftArrowhead: React.FC<LeftArrowheadProps> = React.memo((props) => {
   const rotation =
     radiansToDegrees(props.rotationAngleFromXInRadians || 0) + 180;
 
@@ -22,6 +22,6 @@ const LeftArrowhead: React.FC<LeftArrowheadProps> = props => {
       <line x1="0" y1="0" x2="-5" y2="5" stroke="grey"></line>
     </Group>
   );
-};
+});
 
 export default LeftArrowhead;
