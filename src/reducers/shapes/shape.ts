@@ -73,7 +73,7 @@ interface NewRectByDragState {
   shape: Shape | null;
 }
 
-interface SVGState {
+export interface SVGState {
   topLeftX: number;
   topLeftY: number;
   translateX: number;
@@ -92,11 +92,11 @@ export interface ShapeState {
   shapeOrder: string[];
   select: SelectedShape | null;
   drag: DragState | null;
-  mouse: MouseState | null;
-  pan: PanState | null;
   resize: ResizeState | null;
   newRectByClick: NewRectByClickState | null;
   newRectByDrag: NewRectByDragState | null;
+  mouse: MouseState | null;
+  pan: PanState | null;
   svg: SVGState;
 }
 
@@ -198,10 +198,10 @@ const cancelSelectFn: ShapeReducer<PayloadAction> = (state, action) => {
   state.select = null;
 };
 
-const selectedShapeEditTextFn: CaseReducer<
-  ShapeState,
-  PayloadAction<string>
-> = (state, action) => {
+const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
+  state,
+  action
+) => {
   const { select } = state;
   if (!select) {
     throw new Error(
@@ -225,26 +225,6 @@ const selectedShapeEditTextFn: CaseReducer<
   select.isEditing = true;
 };
 
-interface MouseMove {
-  clickX: number;
-  clickY: number;
-}
-
-const mouseMoveFn: ShapeReducer<PayloadAction<MouseMove>> = (state, action) => {
-  // // Unsure precisely what inverting does.
-  // // Attempts to change coordinate plane from client to svg?
-  const invertX =
-    (action.payload.clickX - state.svg.topLeftX) / state.svg.scale;
-  const invertY =
-    (action.payload.clickY - state.svg.topLeftY) / state.svg.scale;
-  // const k = Math.max(0, state.svg.scale * Math.pow(2, action.scaleFactor));
-
-  state.mouse = {
-    clickX: invertX,
-    clickY: invertY,
-  };
-};
-
 const shapesSlice = createSlice({
   name: 'shapes',
   initialState: initialState,
@@ -259,7 +239,6 @@ const shapesSlice = createSlice({
     startDrag: startDragFn,
     drag: dragFn,
     endDrag: endDragFn,
-    mouseMove: mouseMoveFn,
     startPan: startPanFn,
     pan: panFn,
     endPan: endPanFn,
@@ -287,7 +266,6 @@ export const {
   startDrag,
   drag,
   endDrag,
-  mouseMove,
   startPan,
   pan,
   endPan,

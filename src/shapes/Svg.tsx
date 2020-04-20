@@ -6,7 +6,6 @@ import {
   cancelSelect,
   drag,
   endDrag,
-  mouseMove,
   startPan,
   pan,
   endPan,
@@ -19,9 +18,11 @@ import {
   endNewRectByDrag,
   wheel,
   wheelEnd,
+  ShapeState,
 } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
+import { mouseMove } from '../reducers/mouse';
 
 export interface SvgProps extends React.SVGProps<SVGSVGElement> {
   // X, Y coords on top-left of SVG
@@ -84,12 +85,26 @@ const Svg: React.FC<SvgProps> = (props) => {
   const newRectByDragState = useSelector(
     (state: RootState) => state.shapes.newRectByDrag
   );
+  const svgTopLeftX = useSelector(
+    (state: RootState) => state.shapes.svg.topLeftX
+  );
+  const svgTopLeftY = useSelector(
+    (state: RootState) => state.shapes.svg.topLeftY
+  );
   const svgScale = useSelector((state: RootState) => state.shapes.svg.scale);
   const resizeState = useSelector((state: RootState) => state.shapes.resize);
   const dispatch = useDispatch();
 
   function handleMouseMove(e: React.MouseEvent) {
-    dispatch(mouseMove({ clickX: e.clientX, clickY: e.clientY }));
+    dispatch(
+      mouseMove({
+        clickX: e.clientX,
+        clickY: e.clientY,
+        svgTopLeftX,
+        svgTopLeftY,
+        svgScale,
+      })
+    );
 
     if (newRectByDragState) {
       dispatch(newRectByDrag({ clickX: e.clientX, clickY: e.clientY }));

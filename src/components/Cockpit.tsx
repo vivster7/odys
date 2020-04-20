@@ -12,12 +12,11 @@ interface PositionDisplayProps {
 
 const Cockpit: React.FC = (props) => {
   const dispatch = useDispatch();
-  const mouseState = useSelector((state: RootState) => state.shapes.mouse);
+  const mouseX = useSelector((state: RootState) => state.mouse.x);
+  const mouseY = useSelector((state: RootState) => state.mouse.y);
   const zoomLevel = useSelector(
     (state: RootState) => state.shapes.svg.zoomLevel
   );
-  const mouseX = mouseState === null ? 0 : mouseState.clickX;
-  const mouseY = mouseState === null ? 0 : mouseState.clickY;
 
   const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
     return (

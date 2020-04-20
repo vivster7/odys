@@ -6,9 +6,11 @@ import DrawingPage from './pages/DrawingPage';
 import Scratch from './pages/Scratch';
 
 import shapesReducer from './reducers/shapes/shape';
+import mouseReducer from './reducers/mouse';
 
 const rootReducer = combineReducers({
   shapes: shapesReducer,
+  mouse: mouseReducer,
 });
 export type RootState = ReturnType<typeof rootReducer>;
 
