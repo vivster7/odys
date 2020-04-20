@@ -3,7 +3,7 @@ import plus from '../plus.svg';
 import minus from '../minus.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../App';
-import { changeZoomLevel } from '../reducers/shapes/shape';
+import { changeZoomLevel } from '../reducers/svg';
 
 interface PositionDisplayProps {
   x: string;
@@ -14,9 +14,7 @@ const Cockpit: React.FC = (props) => {
   const dispatch = useDispatch();
   const mouseX = useSelector((state: RootState) => state.mouse.x);
   const mouseY = useSelector((state: RootState) => state.mouse.y);
-  const zoomLevel = useSelector(
-    (state: RootState) => state.shapes.svg.zoomLevel
-  );
+  const zoomLevel = useSelector((state: RootState) => state.svg.zoomLevel);
 
   const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
     return (

@@ -17,7 +17,7 @@ const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
   const { shapes } = useSelector((state: RootState) => state);
   const select = useSelector((state: RootState) => state.shapes.select);
-  const svg = useSelector((state: RootState) => state.shapes.svg);
+  const svg = useSelector((state: RootState) => state.svg);
 
   // temp seed data
   if (Object.entries(shapes.data).length === 0) {

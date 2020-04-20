@@ -7,10 +7,12 @@ import Scratch from './pages/Scratch';
 
 import shapesReducer from './reducers/shapes/shape';
 import mouseReducer from './reducers/mouse';
+import svgReducer from './reducers/svg';
 
 const rootReducer = combineReducers({
   shapes: shapesReducer,
   mouse: mouseReducer,
+  svg: svgReducer,
 });
 export type RootState = ReturnType<typeof rootReducer>;
 

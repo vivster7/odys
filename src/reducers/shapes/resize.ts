@@ -12,6 +12,7 @@ interface StartResize {
 interface Resize {
   clickX: number;
   clickY: number;
+  svgScale: number;
 }
 
 export const startResizeFn: ShapeReducer<PayloadAction<StartResize>> = (
@@ -43,42 +44,34 @@ export const resizeFn: ShapeReducer<PayloadAction<Resize>> = (
     throw new Error(`Cannot find shape with ${id}`);
   }
 
+  const { clickX, clickY, svgScale } = action.payload;
+
+  const { originalX, originalY } = state.resize;
+
   let translateX = 0;
   let translateY = 0;
   let deltaWidth = 0;
   let deltaHeight = 0;
   switch (state.resize.anchor) {
     case 'SEAnchor':
-      deltaWidth =
-        (action.payload.clickX - state.resize.originalX) / state.svg.scale;
-      deltaHeight =
-        (action.payload.clickY - state.resize.originalY) / state.svg.scale;
+      deltaWidth = (clickX - originalX) / svgScale;
+      deltaHeight = (clickY - originalY) / svgScale;
       break;
     case 'SWAnchor':
-      translateX =
-        (action.payload.clickX - state.resize.originalX) / state.svg.scale;
-      deltaWidth =
-        (state.resize.originalX - action.payload.clickX) / state.svg.scale;
-      deltaHeight =
-        (action.payload.clickY - state.resize.originalY) / state.svg.scale;
+      translateX = (clickX - originalX) / svgScale;
+      deltaWidth = (originalX - clickX) / svgScale;
+      deltaHeight = (clickY - originalY) / svgScale;
       break;
     case 'NEAnchor':
-      translateY =
-        (action.payload.clickY - state.resize.originalY) / state.svg.scale;
-      deltaWidth =
-        (action.payload.clickX - state.resize.originalX) / state.svg.scale;
-      deltaHeight =
-        (state.resize.originalY - action.payload.clickY) / state.svg.scale;
+      translateY = (clickY - originalY) / svgScale;
+      deltaWidth = (clickX - originalX) / svgScale;
+      deltaHeight = (originalY - clickY) / svgScale;
       break;
     case 'NWAnchor':
-      translateX =
-        (action.payload.clickX - state.resize.originalX) / state.svg.scale;
-      translateY =
-        (action.payload.clickY - state.resize.originalY) / state.svg.scale;
-      deltaWidth =
-        (state.resize.originalX - action.payload.clickX) / state.svg.scale;
-      deltaHeight =
-        (state.resize.originalY - action.payload.clickY) / state.svg.scale;
+      translateX = (clickX - originalX) / svgScale;
+      translateY = (clickY - originalY) / svgScale;
+      deltaWidth = (originalX - clickX) / svgScale;
+      deltaHeight = (originalY - clickY) / svgScale;
       break;
     default:
       throw new Error(`Unknown anchor point ${state.resize.anchor}`);
@@ -115,7 +108,6 @@ export const endResizeFn: ShapeReducer<PayloadAction> = (state, action) => {
 
   state.drag = null;
   state.newRectByClick = null;
-  state.pan = null;
   state.resize = null;
   state.shapeOrder = [
     ...state.shapeOrder.filter((shapeID) => shapeID !== id),

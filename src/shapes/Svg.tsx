@@ -6,9 +6,6 @@ import {
   cancelSelect,
   drag,
   endDrag,
-  startPan,
-  pan,
-  endPan,
   newRectByDrag,
   resize,
   endResize,
@@ -16,13 +13,11 @@ import {
   endNewRectByClick,
   startNewRectByDrag,
   endNewRectByDrag,
-  wheel,
-  wheelEnd,
-  ShapeState,
 } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
 import { mouseMove } from '../reducers/mouse';
+import { wheel, wheelEnd, pan, startPan, endPan } from '../reducers/svg';
 
 export interface SvgProps extends React.SVGProps<SVGSVGElement> {
   // X, Y coords on top-left of SVG
@@ -78,20 +73,15 @@ const Svg: React.FC<SvgProps> = (props) => {
   const transform = `translate(${translateX}, ${translateY}) scale(${props.scale})`;
 
   const dragState = useSelector((state: RootState) => state.shapes.drag);
-  const panState = useSelector((state: RootState) => state.shapes.pan);
+  const panState = useSelector((state: RootState) => state.svg.pan);
   const newRectByClickState = useSelector(
     (state: RootState) => state.shapes.newRectByClick
   );
   const newRectByDragState = useSelector(
     (state: RootState) => state.shapes.newRectByDrag
   );
-  const svgTopLeftX = useSelector(
-    (state: RootState) => state.shapes.svg.topLeftX
-  );
-  const svgTopLeftY = useSelector(
-    (state: RootState) => state.shapes.svg.topLeftY
-  );
-  const svgScale = useSelector((state: RootState) => state.shapes.svg.scale);
+
+  const svgState = useSelector((state: RootState) => state.svg);
   const resizeState = useSelector((state: RootState) => state.shapes.resize);
   const dispatch = useDispatch();
 
@@ -100,14 +90,22 @@ const Svg: React.FC<SvgProps> = (props) => {
       mouseMove({
         clickX: e.clientX,
         clickY: e.clientY,
-        svgTopLeftX,
-        svgTopLeftY,
-        svgScale,
+        svgTopLeftX: svgState.topLeftX,
+        svgTopLeftY: svgState.topLeftY,
+        svgScale: svgState.scale,
       })
     );
 
     if (newRectByDragState) {
-      dispatch(newRectByDrag({ clickX: e.clientX, clickY: e.clientY }));
+      dispatch(
+        newRectByDrag({
+          clickX: e.clientX,
+          clickY: e.clientY,
+          svgTopLeftX: svgState.topLeftX,
+          svgTopLeftY: svgState.topLeftY,
+          svgScale: svgState.scale,
+        })
+      );
     }
 
     if (dragState) {
@@ -115,7 +113,7 @@ const Svg: React.FC<SvgProps> = (props) => {
         drag({
           clickX: e.clientX,
           clickY: e.clientY,
-          scale: svgScale,
+          scale: svgState.scale,
         })
       );
     }
@@ -125,7 +123,13 @@ const Svg: React.FC<SvgProps> = (props) => {
     }
 
     if (resizeState) {
-      dispatch(resize({ clickX: e.clientX, clickY: e.clientY }));
+      dispatch(
+        resize({
+          clickX: e.clientX,
+          clickY: e.clientY,
+          svgScale: svgState.scale,
+        })
+      );
     }
   }
 
@@ -146,7 +150,16 @@ const Svg: React.FC<SvgProps> = (props) => {
       newRectByClickState.clickX === e.clientX &&
       newRectByClickState.clickY === e.clientY
     ) {
-      dispatch(endNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
+      dispatch(
+        endNewRectByClick({
+          clickX: e.clientX,
+          clickY: e.clientY,
+          svgTopLeftX: svgState.topLeftX,
+          svgTopLeftY: svgState.topLeftY,
+          svgScale: svgState.scale,
+          svgZoomLevel: svgState.zoomLevel,
+        })
+      );
     }
 
     if (newRectByDragState) {

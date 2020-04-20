@@ -1,8 +1,8 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ShapeReducer } from './shape';
 import { RectProps, RECT_WIDTH, RECT_HEIGHT } from '../../shapes/Rect';
-import { zoomLeveltoScaleMap } from './zoom';
 import { v4 } from 'uuid';
+import { zoomLeveltoScaleMap } from '../svg';
 
 interface StartNewRectByClick {
   clickX: number;
@@ -12,6 +12,10 @@ interface StartNewRectByClick {
 interface EndNewRectByClick {
   clickX: number;
   clickY: number;
+  svgTopLeftX: number;
+  svgTopLeftY: number;
+  svgScale: number;
+  svgZoomLevel: number;
 }
 
 interface StartNewRectByDrag {
@@ -22,6 +26,9 @@ interface StartNewRectByDrag {
 interface NewRectByDrag {
   clickX: number;
   clickY: number;
+  svgTopLeftX: number;
+  svgTopLeftY: number;
+  svgScale: number;
 }
 
 const uid = () => `id-${v4()}`;
@@ -38,12 +45,21 @@ export const startNewRectByClickFn: ShapeReducer<PayloadAction<
 export const endNewRectByClickFn: ShapeReducer<PayloadAction<
   EndNewRectByClick
 >> = (state, action) => {
-  const id = uid();
-  const x = (action.payload.clickX - state.svg.topLeftX) / state.svg.scale;
-  const y = (action.payload.clickY - state.svg.topLeftY) / state.svg.scale;
+  const {
+    clickX,
+    clickY,
+    svgTopLeftX,
+    svgTopLeftY,
+    svgScale,
+    svgZoomLevel,
+  } = action.payload;
 
-  const width = RECT_WIDTH / zoomLeveltoScaleMap[state.svg.zoomLevel];
-  const height = RECT_HEIGHT / zoomLeveltoScaleMap[state.svg.zoomLevel];
+  const id = uid();
+  const x = (clickX - svgTopLeftX) / svgScale;
+  const y = (clickY - svgTopLeftY) / svgScale;
+
+  const width = RECT_WIDTH / zoomLeveltoScaleMap[svgZoomLevel];
+  const height = RECT_HEIGHT / zoomLeveltoScaleMap[svgZoomLevel];
 
   const rect = {
     type: 'rect',
@@ -62,7 +78,6 @@ export const endNewRectByClickFn: ShapeReducer<PayloadAction<
   state.drag = null;
   state.newRectByClick = null;
   state.newRectByDrag = null;
-  state.pan = null;
   state.select = {
     id: id,
     isEditing: false,
@@ -92,18 +107,18 @@ export const newRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
     );
   }
 
+  const { clickX, clickY, svgTopLeftX, svgTopLeftY, svgScale } = action.payload;
+
   if (!state.newRectByDrag.shape) {
     const id = uid();
-    const x =
-      (state.newRectByDrag.clickX - state.svg.topLeftX) / state.svg.scale;
-    const y =
-      (state.newRectByDrag.clickY - state.svg.topLeftY) / state.svg.scale;
+    const x = (state.newRectByDrag.clickX - svgTopLeftX) / svgScale;
+    const y = (state.newRectByDrag.clickY - svgTopLeftY) / svgScale;
     const width =
-      (action.payload.clickX - state.svg.topLeftX) / state.svg.scale -
-      (state.newRectByDrag.clickX - state.svg.topLeftX) / state.svg.scale;
+      (clickX - svgTopLeftX) / svgScale -
+      (state.newRectByDrag.clickX - svgTopLeftX) / svgScale;
     const height =
-      (action.payload.clickY - state.svg.topLeftY) / state.svg.scale -
-      (state.newRectByDrag.clickY - state.svg.topLeftY) / state.svg.scale;
+      (clickY - svgTopLeftY) / svgScale -
+      (state.newRectByDrag.clickY - svgTopLeftY) / svgScale;
 
     const rect: RectProps = {
       type: 'rect',
@@ -123,8 +138,6 @@ export const newRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
     state.data[id] = rect as any;
     state.shapeOrder.push(id);
 
-    // same as calling: startResizeFn(newState as any, startResizeAction);
-    // TODO: cleanup into single call
     state.resize = {
       id: id,
       anchor: 'SEAnchor',

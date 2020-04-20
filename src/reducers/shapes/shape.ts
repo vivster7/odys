@@ -9,9 +9,7 @@ import {
 
 import { ArrowProps } from '../../shapes/Arrow';
 import { startDragFn, dragFn, endDragFn } from './drag';
-import { startPanFn, panFn, endPanFn } from './pan';
 import { startResizeFn, resizeFn, endResizeFn } from './resize';
-import { changeZoomLevelFn, wheelFn, wheelEndFn } from './zoom';
 import { v4 } from 'uuid';
 import {
   startNewRectByClickFn,
@@ -48,11 +46,6 @@ interface MouseState {
   clickY: number;
 }
 
-interface PanState {
-  clickX: number;
-  clickY: number;
-}
-
 interface ResizeState {
   id: string;
   anchor: Anchor;
@@ -73,16 +66,6 @@ interface NewRectByDragState {
   shape: Shape | null;
 }
 
-export interface SVGState {
-  topLeftX: number;
-  topLeftY: number;
-  translateX: number;
-  translateY: number;
-  scale: number;
-  zoomLevel: number;
-  isZooming: boolean;
-}
-
 interface ShapeData {
   [id: string]: Shape;
 }
@@ -96,8 +79,6 @@ export interface ShapeState {
   newRectByClick: NewRectByClickState | null;
   newRectByDrag: NewRectByDragState | null;
   mouse: MouseState | null;
-  pan: PanState | null;
-  svg: SVGState;
 }
 
 const initialState: ShapeState = {
@@ -106,19 +87,9 @@ const initialState: ShapeState = {
   select: null,
   drag: null,
   mouse: null,
-  pan: null,
   resize: null,
   newRectByClick: null,
   newRectByDrag: null,
-  svg: {
-    topLeftX: 0,
-    topLeftY: 0,
-    translateX: 0,
-    translateY: 0,
-    scale: 1,
-    zoomLevel: 5,
-    isZooming: false,
-  },
 };
 
 const addShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
@@ -239,12 +210,6 @@ const shapesSlice = createSlice({
     startDrag: startDragFn,
     drag: dragFn,
     endDrag: endDragFn,
-    startPan: startPanFn,
-    pan: panFn,
-    endPan: endPanFn,
-    changeZoomLevel: changeZoomLevelFn,
-    wheel: wheelFn,
-    wheelEnd: wheelEndFn,
     startResize: startResizeFn,
     resize: resizeFn,
     endResize: endResizeFn,
@@ -266,12 +231,6 @@ export const {
   startDrag,
   drag,
   endDrag,
-  startPan,
-  pan,
-  endPan,
-  changeZoomLevel,
-  wheel,
-  wheelEnd,
   startResize,
   resize,
   endResize,
