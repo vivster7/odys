@@ -156,10 +156,7 @@ const initialState: SVGState = {
   scale: 1,
   zoomLevel: 5,
   isZooming: false,
-  pan: {
-    clickX: 0,
-    clickY: 0,
-  },
+  pan: null,
 };
 
 const svgSlice = createSlice({
