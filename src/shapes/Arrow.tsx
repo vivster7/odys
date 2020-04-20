@@ -130,8 +130,8 @@ const Arrow: React.FC<ArrowProps> = (props) => {
 
     const { shapes } = useSelector((state: RootState) => state);
 
-    const r1 = shapes.data.find((s) => s.id === props.fromId) as RectProps;
-    const r2 = shapes.data.find((s) => s.id === props.toId) as RectProps;
+    const r1 = shapes.data[props.fromId] as RectProps;
+    const r2 = shapes.data[props.toId] as RectProps;
     if (!r1) {
       throw new Error(`[r1Arrow] Could not find shape$ ${props.fromId}`);
     }

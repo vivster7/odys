@@ -76,8 +76,13 @@ interface SVGState {
   isZooming: boolean;
 }
 
+interface ShapeData {
+  [id: string]: Shape;
+}
+
 interface ShapeState {
-  data: Shape[];
+  data: ShapeData;
+  shapeOrder: string[];
   select: SelectedShape | null;
   drag: DragState | null;
   mouse: MouseState | null;
@@ -89,7 +94,8 @@ interface ShapeState {
 }
 
 const initialState: ShapeState = {
-  data: [],
+  data: {},
+  shapeOrder: [],
   select: null,
   drag: null,
   mouse: null,
@@ -112,7 +118,8 @@ const addShapeFn: CaseReducer<ShapeState, PayloadAction<Shape>> = (
   state,
   action
 ) => {
-  state.data = [...state.data, action.payload as any];
+  state.data[action.payload.id] = action.payload as any;
+  state.shapeOrder.push(action.payload.id);
 };
 
 const raiseShapeFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
@@ -120,12 +127,14 @@ const raiseShapeFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
   action
 ) => {
   const id = action.payload;
-  const shape = state.data.find((s) => s.id === id);
-  if (!shape) {
-    throw new Error(`Cannot find ${id} in shapes context`);
+  if (!state.data[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
   }
 
-  state.data = [...state.data.filter((s) => s.id !== id), shape as any];
+  state.shapeOrder = [
+    ...state.shapeOrder.filter((shapeID) => shapeID !== id),
+    id,
+  ];
 };
 
 const deleteShapeFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
@@ -133,7 +142,12 @@ const deleteShapeFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
   action
 ) => {
   const id = action.payload;
-  state.data = state.data.filter((s) => s.id !== id);
+  if (!state.data[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
+  }
+
+  delete state.data[id];
+  state.shapeOrder = state.shapeOrder.filter((shapeID) => shapeID !== id);
 };
 
 const drawArrowFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
@@ -152,7 +166,7 @@ const drawArrowFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
   }
 
   // cannot duplicate existing arrow.
-  const existing = state.data.find(
+  const existing = Object.values(state.data).find(
     (s) =>
       s.type === 'arrow' && s.fromId === selectId && s.toId === action.payload
   );
@@ -161,14 +175,17 @@ const drawArrowFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
     return;
   }
 
+  const arrowID = uid();
   const arrow = {
     type: 'arrow',
-    id: uid(),
+    id: arrowID,
     fromId: selectId,
     toId: action.payload,
   } as ArrowProps;
 
-  state.data = [...state.data, arrow as any];
+  state.data[arrowID] = arrow;
+  state.shapeOrder.push(arrowID);
+  // state.data = [...state.data, arrow as any];
 };
 
 const selectShapeFn: CaseReducer<ShapeState, PayloadAction<ShapeID>> = (
@@ -191,7 +208,7 @@ const cancelSelectFn: CaseReducer<ShapeState, PayloadAction> = (
 
 const selectedShapeEditTextFn: CaseReducer<
   ShapeState,
-  PayloadAction<ShapeID>
+  PayloadAction<string>
 > = (state, action) => {
   const { select } = state;
   if (!select) {
@@ -200,12 +217,12 @@ const selectedShapeEditTextFn: CaseReducer<
     );
   }
 
-  const shape = state.data.find((d) => d.id === select.id);
-  if (!shape) {
-    throw new Error(
-      `[shapes/editText] Cannot find selected shape (${select.id})`
-    );
+  const { id } = select;
+  if (!state.data[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
   }
+
+  const shape = state.data[id];
   if (shape.type !== 'rect') {
     throw new Error(
       `[shapes/editText] Cannot only edit rects. Selected shape is not a rect (${select.id})`
@@ -238,21 +255,17 @@ const dragFn: CaseReducer<ShapeState, PayloadAction<Drag>> = (
   }
 
   const { id } = state.drag;
-  const shapes = state.data;
-  const idx = shapes.findIndex((d) => d.id === id);
-  if (idx === -1) {
-    throw new Error(`[drag] Cannot find ${id} in shapes context`);
+  if (!state.data[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = {
-    ...shapes[idx],
-    translateX:
-      (action.payload.clickX - state.drag.clickX) / action.payload.scale,
-    translateY:
-      (action.payload.clickY - state.drag.clickY) / action.payload.scale,
-  };
+  const shape = state.data[id];
+  shape.translateX =
+    (action.payload.clickX - state.drag.clickX) / action.payload.scale;
+  shape.translateY =
+    (action.payload.clickY - state.drag.clickY) / action.payload.scale;
 
-  state.data = [...state.data.filter((s) => s.id !== id), shape as any];
+  // state.data = [...state.data.filter((s) => s.id !== id), shape as any];
 };
 
 const endDragFn: CaseReducer<ShapeState, PayloadAction> = (state, action) => {
@@ -262,22 +275,21 @@ const endDragFn: CaseReducer<ShapeState, PayloadAction> = (state, action) => {
     );
   }
 
-  const shapes = state.data;
   const { id } = state.drag;
-  const idx = shapes.findIndex((s) => s.id === id);
-  if (idx === -1) {
-    throw new Error(`[drag] Cannot find ${id} in shapes`);
+  if (!state.data[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = {
-    ...shapes[idx],
-    x: (shapes[idx].x as number) + (shapes[idx].translateX as number),
-    y: (shapes[idx].y as number) + (shapes[idx].translateY as number),
-    translateX: 0,
-    translateY: 0,
-  };
+  const shape = state.data[id];
+  shape.x = (shape.x as number) + (shape.translateX as number);
+  shape.y = (shape.y as number) + (shape.translateY as number);
+  shape.translateX = 0;
+  shape.translateY = 0;
 
-  state.data = [...state.data.filter((s) => s.id !== id), shape as any];
+  state.shapeOrder = [
+    ...state.shapeOrder.filter((shapeID) => shapeID !== id),
+    id,
+  ];
   state.drag = null;
 };
 
@@ -481,10 +493,8 @@ const resizeFn: CaseReducer<ShapeState, PayloadAction<Resize>> = (
   }
 
   const { id } = state.resize;
-  const shapes = state.data;
-  const idx = shapes.findIndex((d) => d.id === id);
-  if (idx === -1) {
-    throw new Error(`[resize] Cannot find ${id} in shapes`);
+  if (!state.data[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
   }
 
   let translateX = 0;
@@ -528,15 +538,13 @@ const resizeFn: CaseReducer<ShapeState, PayloadAction<Resize>> = (
       throw new Error(`Unknown anchor point ${state.resize.anchor}`);
   }
 
-  const shape = {
-    ...shapes[idx],
-    translateX,
-    translateY,
-    deltaWidth,
-    deltaHeight,
-  };
+  const shape = state.data[id] as RectProps;
+  shape.translateX = translateX;
+  shape.translateY = translateY;
+  shape.deltaWidth = deltaWidth;
+  shape.deltaHeight = deltaHeight;
 
-  state.data = [...state.data.filter((s) => s.id !== id), shape as any];
+  // state.shapeOrder = [...state.shapeOrder.filter(shapeID => shapeID !== id), id]
 };
 
 const endResizeFn: CaseReducer<ShapeState, PayloadAction> = (state, action) => {
@@ -548,29 +556,28 @@ const endResizeFn: CaseReducer<ShapeState, PayloadAction> = (state, action) => {
 
   const shapes = state.data;
   const { id } = state.resize;
-  const idx = shapes.findIndex((s) => s.id === id);
-  if (idx === -1) {
-    throw new Error(`[resize] Cannot find ${id} in shapes`);
+  if (!state.data[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const rect = shapes[idx] as RectProps;
-  const shape = {
-    ...rect,
-    x: rect.x + rect.translateX,
-    y: rect.y + rect.translateY,
-    translateX: 0,
-    translateY: 0,
-    width: rect.width + rect.deltaWidth,
-    height: rect.height + rect.deltaHeight,
-    deltaWidth: 0,
-    deltaHeight: 0,
-  };
+  const shape = state.data[id] as RectProps;
+  shape.x = shape.x + shape.translateX;
+  shape.y = shape.y + shape.translateY;
+  shape.translateX = 0;
+  shape.translateY = 0;
+  shape.width = shape.width + shape.deltaWidth;
+  shape.height = shape.height + shape.deltaHeight;
+  shape.deltaWidth = 0;
+  shape.deltaHeight = 0;
 
   state.drag = null;
   state.newRectByClick = null;
   state.pan = null;
   state.resize = null;
-  state.data = [...state.data.filter((s) => s.id !== id), shape as any];
+  state.shapeOrder = [
+    ...state.shapeOrder.filter((shapeID) => shapeID !== id),
+    id,
+  ];
 };
 
 interface StartNewRectByClick {
@@ -636,7 +643,9 @@ const endNewRectByClickFn: CaseReducer<
     id: id,
     isEditing: false,
   };
-  state.data = [...state.data, rect as any];
+
+  state.data[id] = rect as any;
+  state.shapeOrder.push(id);
 };
 
 const startNewRectByDragFn: CaseReducer<
@@ -688,7 +697,8 @@ const newRectByDragFn: CaseReducer<ShapeState, PayloadAction<NewRectByDrag>> = (
     };
 
     state.newRectByDrag.shape = rect as any;
-    state.data = [...state.data, rect as any];
+    state.data[id] = rect as any;
+    state.shapeOrder.push(id);
 
     // same as calling: startResizeFn(newState as any, startResizeAction);
     // TODO: cleanup into single call

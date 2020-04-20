@@ -20,7 +20,7 @@ const DrawingBoard: React.FC = () => {
   const svg = useSelector((state: RootState) => state.shapes.svg);
 
   // temp seed data
-  if (shapes.data.length === 0) {
+  if (Object.entries(shapes.data).length === 0) {
     const rect1Id = id();
     const rect2Id = id();
 
@@ -98,12 +98,8 @@ const DrawingBoard: React.FC = () => {
     }
   }
 
-  let selectedShape: RectProps | null = null;
-  if (shapes.select) {
-    const selectedId = shapes.select.id;
-    const idx = shapes.data.findIndex((s) => s.id === selectedId);
-    selectedShape = shapes.data[idx] as RectProps;
-  }
+  const selectedShape =
+    shapes.select && (shapes.data[shapes.select.id] as RectProps);
 
   return (
     <>
@@ -114,7 +110,7 @@ const DrawingBoard: React.FC = () => {
         translateY={svg.translateY}
         scale={svg.scale}
       >
-        {shapes.data.map((s) => renderShape(s))}
+        {Object.values(shapes.data).map((s) => renderShape(s))}
       </Svg>
       <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
         {selectedShape && (
