@@ -15,11 +15,10 @@ const XYArrow: React.FC<XYArrowProps> = React.memo((props) => {
     return Math.atan2(y2 - y1, x2 - x1);
   }
   const transform = `translate(${props.x}, ${props.y})`;
-  const cursor = 'auto';
   const rotation = arrowheadRotation(props.x, props.y, props.x2, props.y2);
 
   return (
-    <g id={props.id} transform={transform} cursor={cursor}>
+    <g id={props.id} transform={transform}>
       <line
         x1="0"
         y1="0"

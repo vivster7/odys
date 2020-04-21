@@ -17,7 +17,6 @@ export type ArrowProps = {
 const Arrow: React.FC<ArrowProps> = React.memo((props) => {
   // TODO: drag + move edges
   const transform = ``;
-  const cursor = 'auto';
 
   function arrowheadRotation(x1: number, y1: number, x2: number, y2: number) {
     return Math.atan2(y2 - y1, x2 - x1);
@@ -145,7 +144,7 @@ const Arrow: React.FC<ArrowProps> = React.memo((props) => {
   const right = true;
 
   return (
-    <g id={props.id} transform={transform} cursor={cursor}>
+    <g id={props.id} transform={transform}>
       <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="grey"></line>
       {left ? (
         <Arrowhead
