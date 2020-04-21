@@ -9,14 +9,15 @@ import {
   startResize,
 } from '../reducers/shapes/shape';
 import { RootState } from '../App';
-import { Selectable, Draggable, TextEditable, Resizable } from './Shape';
+import Shape, { Selectable, Draggable, TextEditable, Resizable } from './Shape';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
 
 export type RectProps = {
   type: 'rect';
-} & Selectable &
+} & Shape &
+  Selectable &
   Draggable &
   TextEditable &
   Resizable;

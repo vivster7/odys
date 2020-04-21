@@ -1,26 +1,29 @@
 import React from 'react';
-import Group from './Group';
 
-export interface RightArrowheadProps extends React.SVGProps<SVGRectElement> {
+type ArrowheadProps = {
   id: string;
   x: number;
   y: number;
   rotationAngleFromXInRadians?: number;
+  direction: 'left' | 'right'
 }
 
 const radiansToDegrees = (x: number) => x * (180 / Math.PI);
 
-const RightArrowhead: React.FC<RightArrowheadProps> = React.memo((props) => {
-  const rotation = radiansToDegrees(props.rotationAngleFromXInRadians || 0);
+const Arrowhead: React.FC<ArrowheadProps> = React.memo((props) => {
+  let rotation = radiansToDegrees(props.rotationAngleFromXInRadians || 0);
+  if (props.direction === 'left') {
+    rotation += 180
+  }
 
   const transform = `translate(${props.x}, ${props.y}) rotate(${rotation})`;
 
   return (
-    <Group id={props.id} transform={transform} cursor="pointer">
+    <g transform={transform}>
       <line x1="0" y1="-0" x2="-5" y2="-5" stroke="grey"></line>
       <line x1="0" y1="0" x2="-5" y2="5" stroke="grey"></line>
-    </Group>
+    </g>
   );
 });
 
-export default RightArrowhead;
+export default Arrowhead;

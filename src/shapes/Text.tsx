@@ -3,11 +3,12 @@ import Group from './Group';
 import { startDrag } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
-import { Selectable, Draggable, TextEditable } from './Shape';
+import Shape, { Selectable, Draggable, TextEditable } from './Shape';
 
 export type TextProps = {
   type: 'text';
-} & Selectable &
+} & Shape &
+  Selectable &
   Draggable &
   TextEditable;
 

@@ -4,7 +4,6 @@ import Rect, { RectProps, RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
 import { v4 } from 'uuid';
 import Arrow, { ArrowProps } from '../shapes/Arrow';
 import Shape from '../shapes/Shape';
-import Line, { LineProps } from '../shapes/Line';
 import Text, { TextProps } from '../shapes/Text';
 import HiddenTextInput from './HiddenTextInput';
 import { useDispatch, useSelector } from 'react-redux';
