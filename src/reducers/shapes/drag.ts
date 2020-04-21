@@ -1,5 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ShapeReducer } from './shape';
+import { RectProps } from '../../shapes/Rect';
 
 interface StartDrag {
   id: string;
@@ -36,7 +37,7 @@ export const dragFn: ShapeReducer<PayloadAction<Drag>> = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.data[id];
+  const shape = state.data[id] as RectProps;
   shape.translateX =
     (action.payload.clickX - state.drag.clickX) / action.payload.scale;
   shape.translateY =
@@ -55,7 +56,7 @@ export const endDragFn: ShapeReducer<PayloadAction> = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.data[id];
+  const shape = state.data[id] as RectProps;
   shape.x = (shape.x as number) + (shape.translateX as number);
   shape.y = (shape.y as number) + (shape.translateY as number);
   shape.translateX = 0;

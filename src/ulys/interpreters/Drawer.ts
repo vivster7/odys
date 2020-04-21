@@ -7,7 +7,7 @@ import Node, {
   Row,
   Column,
   Grid,
-  AtReference
+  AtReference,
 } from '../Node';
 import Shape from '../../shapes/Shape';
 import { v4 } from 'uuid';
@@ -75,7 +75,7 @@ class Drawer implements NodeVisitor<Shape[]> {
       x2: computeArrowRightX(rightToken.column),
       y2: computeArrowRightY(rightToken.row),
       left: node.isLeft(),
-      right: node.isRight()
+      right: node.isRight(),
     } as Shape;
 
     return [arrow];
@@ -98,8 +98,8 @@ class Drawer implements NodeVisitor<Shape[]> {
         width: 200,
         height: 100,
         deltaWidth: 0,
-        deltaHeight: 0
-      }
+        deltaHeight: 0,
+      } as any,
     ];
   }
 
@@ -116,8 +116,8 @@ class Drawer implements NodeVisitor<Shape[]> {
         width: 200,
         height: 100,
         deltaWidth: 0,
-        deltaHeight: 0
-      }
+        deltaHeight: 0,
+      } as any,
     ];
   }
 
@@ -130,8 +130,8 @@ class Drawer implements NodeVisitor<Shape[]> {
         x: computeTextX(node.column),
         y: computeTextY(node.row),
         translateX: 0,
-        translateY: 0
-      }
+        translateY: 0,
+      } as any,
     ];
   }
 
@@ -145,11 +145,11 @@ class Drawer implements NodeVisitor<Shape[]> {
   }
 
   visitColumnNode(node: Column): Shape[] {
-    return node.rows.flatMap(r => this.draw(r));
+    return node.rows.flatMap((r) => this.draw(r));
   }
 
   visitGridNode(node: Grid): Shape[] {
-    return node.columns.flatMap(c => this.draw(c));
+    return node.columns.flatMap((c) => this.draw(c));
   }
 }
 

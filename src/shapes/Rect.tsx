@@ -9,26 +9,17 @@ import {
   startResize,
 } from '../reducers/shapes/shape';
 import { RootState } from '../App';
+import { Selectable, Draggable, TextEditable, Resizable } from './Shape';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
 
-export interface RectProps extends React.SVGProps<SVGRectElement> {
+export type RectProps = {
   type: 'rect';
-  id: string;
-
-  x: number;
-  y: number;
-  translateX: number;
-  translateY: number;
-
-  width: number;
-  height: number;
-  deltaWidth: number;
-  deltaHeight: number;
-
-  text: string;
-}
+} & Selectable &
+  Draggable &
+  TextEditable &
+  Resizable;
 
 const Rect: React.FC<RectProps> = React.memo((props) => {
   const id = props.id;

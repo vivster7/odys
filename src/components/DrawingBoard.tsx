@@ -31,36 +31,36 @@ const DrawingBoard: React.FC = React.memo(() => {
       toId: rect2Id,
     };
 
-    dispatch(
-      addShape({
-        type: 'rect',
-        id: rect1Id,
-        text: 'A',
-        x: 100,
-        y: 150,
-        translateX: 0,
-        translateY: 0,
-        width: RECT_WIDTH,
-        height: RECT_HEIGHT,
-        deltaWidth: 0,
-        deltaHeight: 0,
-      })
-    );
-    dispatch(
-      addShape({
-        type: 'rect',
-        id: rect2Id,
-        text: 'B',
-        x: 400,
-        y: 150,
-        translateX: 0,
-        translateY: 0,
-        width: RECT_WIDTH,
-        height: RECT_HEIGHT,
-        deltaWidth: 0,
-        deltaHeight: 0,
-      })
-    );
+    const rect1 = {
+      type: 'rect',
+      id: rect1Id,
+      text: 'A',
+      x: 100,
+      y: 150,
+      translateX: 0,
+      translateY: 0,
+      width: RECT_WIDTH,
+      height: RECT_HEIGHT,
+      deltaWidth: 0,
+      deltaHeight: 0,
+    } as RectProps;
+
+    const rect2 = {
+      type: 'rect',
+      id: rect2Id,
+      text: 'B',
+      x: 400,
+      y: 150,
+      translateX: 0,
+      translateY: 0,
+      width: RECT_WIDTH,
+      height: RECT_HEIGHT,
+      deltaWidth: 0,
+      deltaHeight: 0,
+    } as RectProps;
+
+    dispatch(addShape(rect1));
+    dispatch(addShape(rect2));
     dispatch(addShape(arrow as ArrowProps));
   }
 
@@ -86,9 +86,6 @@ const DrawingBoard: React.FC = React.memo(() => {
 
       case 'arrow':
         return <Arrow key={rest.id} {...(rest as ArrowProps)}></Arrow>;
-
-      case 'line':
-        return <Line key={rest.id} {...(rest as LineProps)}></Line>;
 
       case 'text':
         return <Text key={rest.id} {...(rest as TextProps)}></Text>;

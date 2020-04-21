@@ -18,6 +18,7 @@ import {
   newRectByDragFn,
   endNewRectByDragFn,
 } from './newRect';
+import { RectProps } from '../../shapes/Rect';
 
 type ShapeID = string;
 export type NEAnchor = 'NEAnchor';
@@ -132,10 +133,12 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   }
 
   // cannot duplicate existing arrow.
-  const existing = Object.values(state.data).find(
-    (s) =>
-      s.type === 'arrow' && s.fromId === selectId && s.toId === action.payload
-  );
+  const existing = Object.values(state.data).find((s) => {
+    if (s.type === 'arrow') {
+      const arrow = s as ArrowProps;
+      return arrow.fromId === selectId && arrow.toId === action.payload;
+    }
+  });
 
   if (existing) {
     return;
@@ -185,7 +188,7 @@ const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.data[id];
+  const shape = state.data[id] as RectProps;
   if (shape.type !== 'rect') {
     throw new Error(
       `[shapes/editText] Cannot only edit rects. Selected shape is not a rect (${select.id})`

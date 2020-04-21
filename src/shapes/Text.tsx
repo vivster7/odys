@@ -3,16 +3,13 @@ import Group from './Group';
 import { startDrag } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
+import { Selectable, Draggable, TextEditable } from './Shape';
 
-export interface TextProps extends React.SVGProps<SVGTextElement> {
+export type TextProps = {
   type: 'text';
-  id: string;
-  x: number;
-  y: number;
-  text: string;
-  translateX: number;
-  translateY: number;
-}
+} & Selectable &
+  Draggable &
+  TextEditable;
 
 const Text: React.FC<TextProps> = React.memo((props) => {
   const transform = `translate(${props.x}, ${props.y})`;
