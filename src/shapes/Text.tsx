@@ -1,5 +1,4 @@
 import React from 'react';
-import Group from './Group';
 import { startDrag } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
@@ -22,7 +21,7 @@ const Text: React.FC<TextProps> = React.memo((props) => {
   const cursor = draggedId === props.id ? 'grabbing' : 'grab';
 
   return (
-    <Group
+    <g
       id={props.id}
       transform={transform}
       cursor={cursor}
@@ -35,7 +34,7 @@ const Text: React.FC<TextProps> = React.memo((props) => {
       <text style={{ textAnchor: 'middle' }}>
         <tspan>{props.text}</tspan>
       </text>
-    </Group>
+    </g>
   );
 });
 

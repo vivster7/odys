@@ -1,5 +1,4 @@
 import React from 'react';
-import Group from './Group';
 import throttle from 'lodash.throttle';
 import debounce from 'lodash.debounce';
 import {
@@ -194,9 +193,9 @@ const Svg: React.FC<SvgProps> = (props) => {
         throttledOnWheel(dispatch, e.clientX, e.clientY, e.deltaY, e.deltaMode)
       }
     >
-      <Group id="odys-zoomable-group" cursor="grab" transform={transform}>
+      <g id="odys-zoomable-group" cursor="grab" transform={transform}>
         {props.children}
-      </Group>
+      </g>
     </svg>
   );
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Draggable, idFn } from './Shape';
-import Group from './Group';
 import Arrowhead from './Arrowhead';
 
 export type XYArrowProps = {
@@ -20,7 +19,7 @@ const XYArrow: React.FC<XYArrowProps> = React.memo((props) => {
   const rotation = arrowheadRotation(props.x, props.y, props.x2, props.y2);
 
   return (
-    <Group id={props.id} transform={transform} cursor={cursor}>
+    <g id={props.id} transform={transform} cursor={cursor}>
       <line
         x1="0"
         y1="0"
@@ -50,7 +49,7 @@ const XYArrow: React.FC<XYArrowProps> = React.memo((props) => {
       ) : (
         <></>
       )}
-    </Group>
+    </g>
   );
 });
 

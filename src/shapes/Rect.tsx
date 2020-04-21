@@ -1,5 +1,4 @@
 import React from 'react';
-import Group from './Group';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectShape,
@@ -98,7 +97,7 @@ const Rect: React.FC<RectProps> = React.memo((props) => {
   };
 
   return (
-    <Group
+    <g
       id={id}
       transform={transform}
       cursor={cursor}
@@ -126,7 +125,7 @@ const Rect: React.FC<RectProps> = React.memo((props) => {
         {props.text}
       </text>
       {isSelected && <SelectionCircles></SelectionCircles>}
-    </Group>
+    </g>
   );
 });
 

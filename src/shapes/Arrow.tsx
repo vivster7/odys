@@ -1,5 +1,4 @@
 import React from 'react';
-import Group from './Group';
 import Arrowhead from './Arrowhead';
 import { RectProps } from './Rect';
 import Line from '../math/line';
@@ -146,7 +145,7 @@ const Arrow: React.FC<ArrowProps> = React.memo((props) => {
   const right = true;
 
   return (
-    <Group id={props.id} transform={transform} cursor={cursor}>
+    <g id={props.id} transform={transform} cursor={cursor}>
       <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="grey"></line>
       {left ? (
         <Arrowhead
@@ -170,7 +169,7 @@ const Arrow: React.FC<ArrowProps> = React.memo((props) => {
       ) : (
         <></>
       )}{' '}
-    </Group>
+    </g>
   );
 });
 
