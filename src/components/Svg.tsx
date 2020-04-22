@@ -14,7 +14,6 @@ import {
 } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
-import { mouseMove } from '../reducers/mouse';
 import {
   wheelEnd,
   endPan,
@@ -97,16 +96,6 @@ const Svg: React.FC = () => {
   }) scale(${scale})`;
 
   function handleMouseMove(e: React.MouseEvent) {
-    // dispatch(
-    //   mouseMove({
-    //     clickX: e.clientX,
-    //     clickY: e.clientY,
-    //     svgTopLeftX: svgState.topLeftX,
-    //     svgTopLeftY: svgState.topLeftY,
-    //     svgScale: svgState.scale,
-    //   })
-    // );
-
     if (isNewRectByDragState) {
       dispatch(
         newRectByDrag({
@@ -219,7 +208,7 @@ const Svg: React.FC = () => {
         width: '100%',
         background: 'var(--odys-background-gray)',
       }}
-      onMouseMove={(e) => handleMouseMove(e)}
+      // onMouseMove={(e) => handleMouseMove(e)}
       onMouseDown={(e) => handleMouseDown(e)}
       onMouseUp={(e) => handleMouseUp(e)}
       onWheel={(e) => handleWheel(e)}

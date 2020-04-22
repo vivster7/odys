@@ -1,69 +1,93 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import plus from '../plus.svg';
 import minus from '../minus.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../App';
 import { changeZoomLevel, dirtySvg } from '../reducers/svg';
 
-interface PositionDisplayProps {
-  x: string;
-  y: string;
+interface Cursor {
+  x: number;
+  y: number;
 }
 
-const Cockpit: React.FC = React.memo((props) => {
-  const dispatch = useDispatch();
-  const mouseX = useSelector((state: RootState) => state.mouse.x);
-  const mouseY = useSelector((state: RootState) => state.mouse.y);
-  const zoomLevel = useSelector((state: RootState) => state.svg.zoomLevel);
+interface PositionDisplayProps {
+  topLeftX: number;
+  topLeftY: number;
+  scale: number;
+}
 
-  const PositionDisplay: React.FC<PositionDisplayProps> = React.memo(
-    (props) => {
-      return (
-        <div
+interface ZoomLevelDisplayProps {
+  zoomLevel: number;
+}
+
+const Cockpit: React.FC = () => {
+  const svgState = useSelector((state: RootState) => state.svg);
+  const { topLeftX, topLeftY, scale, zoomLevel } = svgState;
+
+  const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
+    const [cursor, setCursor] = useState({ x: 0, y: 0 });
+
+    const { topLeftX, topLeftY, scale } = props;
+
+    function onMouseMove(e: MouseEvent) {
+      const x = (e.clientX - topLeftX) / scale;
+      const y = (e.clientY - topLeftY) / scale;
+      setCursor({ x, y });
+    }
+
+    useEffect(() => {
+      window.addEventListener('mousemove', onMouseMove);
+      return () => window.removeEventListener('mousemove', onMouseMove);
+    });
+
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexFlow: 'row nowrap',
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0px 4px 2px -2px grey',
+          border: '1px rgba(204,204,204,0.5) solid',
+          padding: '12px',
+          minWidth: '100px',
+          maxWidth: '200px',
+          justifyContent: 'space-around',
+          fontSize: '12px',
+        }}
+      >
+        <p
           style={{
-            display: 'flex',
-            flexFlow: 'row nowrap',
+            borderTopLeftRadius: '8px',
+            borderBottomLeftRadius: '8px',
             backgroundColor: 'white',
-            borderRadius: '8px',
-            boxShadow: '0px 4px 2px -2px grey',
-            border: '1px rgba(204,204,204,0.5) solid',
-            padding: '12px',
-            minWidth: '100px',
-            maxWidth: '200px',
-            justifyContent: 'space-around',
-            fontSize: '12px',
           }}
         >
-          <p
-            style={{
-              borderTopLeftRadius: '8px',
-              borderBottomLeftRadius: '8px',
-              backgroundColor: 'white',
-            }}
-          >
-            {props.x}
-          </p>
-          <p
-            style={{
-              borderLeft: '1px rgba(204, 204, 204, 0.5) solid',
-              margin: '-3px 5px',
-            }}
-          ></p>
-          <p
-            style={{
-              borderTopRightRadius: '8px',
-              borderBottomRightRadius: '8px',
-              backgroundColor: 'white',
-            }}
-          >
-            {props.y}
-          </p>
-        </div>
-      );
-    }
-  );
+          {cursor.x.toFixed(2)}
+        </p>
+        <p
+          style={{
+            borderLeft: '1px rgba(204, 204, 204, 0.5) solid',
+            margin: '-3px 5px',
+          }}
+        ></p>
+        <p
+          style={{
+            borderTopRightRadius: '8px',
+            borderBottomRightRadius: '8px',
+            backgroundColor: 'white',
+          }}
+        >
+          {cursor.y.toFixed(2)}
+        </p>
+      </div>
+    );
+  };
 
-  const ZoomLevelDisplay: React.FC = React.memo(() => {
+  const ZoomLevelDisplay: React.FC<ZoomLevelDisplayProps> = (props) => {
+    const dispatch = useDispatch();
+    const { zoomLevel } = props;
+
     function incrementZoomLevel() {
       dispatch(changeZoomLevel({ zoomLevel: zoomLevel + 1 }));
       dispatch(dirtySvg());
@@ -115,17 +139,18 @@ const Cockpit: React.FC = React.memo((props) => {
         />
       </div>
     );
-  });
+  };
 
   return (
     <div style={{ display: 'flex', flexFlow: 'column nowrap' }}>
-      <ZoomLevelDisplay></ZoomLevelDisplay>
+      <ZoomLevelDisplay zoomLevel={zoomLevel}></ZoomLevelDisplay>
       <PositionDisplay
-        x={mouseX.toFixed(2)}
-        y={mouseY.toFixed(2)}
+        topLeftX={topLeftX}
+        topLeftY={topLeftY}
+        scale={scale}
       ></PositionDisplay>
     </div>
   );
-});
+};
 
 export default Cockpit;
