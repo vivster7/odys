@@ -1,26 +1,39 @@
 import React, { useEffect, useRef } from 'react';
 import { RectProps } from '../shapes/Rect';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectedShapeEditText } from '../reducers/shapes/shape';
+import { selectedShapeEditText, deleteShape } from '../reducers/shapes/shape';
 import { RootState } from '../App';
 
-export interface HiddenTextInputProps {
-  selectedShape: RectProps;
-}
-
-const HiddenTextInput: React.FC<HiddenTextInputProps> = React.memo((props) => {
+const HiddenTextInput: React.FC = React.memo(() => {
   const dispatch = useDispatch();
-  const isEditing = useSelector(
+
+  const selectedId = useSelector(
+    (state: RootState) => state.shapes.select?.id || ''
+  );
+  const selectedIsEditing = useSelector(
+    (state: RootState) => state.shapes.select?.isEditing
+  );
+  const selectedShapeText = useSelector(
     (state: RootState) =>
-      (state.shapes.select && state.shapes.select.isEditing) || false
+      (state.shapes.data[selectedId] as RectProps | null)?.text
   );
 
-  const inputEl = useRef<HTMLInputElement>(null);
-
-  let inputValue = '';
-  if (isEditing) {
-    inputValue = props.selectedShape.text;
+  // add delete key handler
+  function onKeyDownHandler(e: KeyboardEvent) {
+    if (e.code === 'Backspace' && selectedIsEditing === false) {
+      dispatch(deleteShape(selectedId));
+    }
   }
+
+  useEffect(() => {
+    window.addEventListener('keydown', onKeyDownHandler);
+    return () => {
+      window.removeEventListener('keydown', onKeyDownHandler);
+    };
+  });
+
+  const inputEl = useRef<HTMLInputElement>(null);
+  const inputValue = selectedShapeText || '';
 
   useEffect(() => {
     if (inputEl && inputEl.current) {
@@ -32,6 +45,7 @@ const HiddenTextInput: React.FC<HiddenTextInputProps> = React.memo((props) => {
     dispatch(selectedShapeEditText(event.target.value));
   };
 
+  if (!selectedId) return <></>;
   return (
     <>
       <input

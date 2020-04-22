@@ -21,8 +21,8 @@ export interface SVGState {
   translateY: number;
   scale: number;
   zoomLevel: number;
-  isZooming: boolean;
   pan: PanState | null;
+  dirty: boolean;
 }
 
 interface PanState {
@@ -40,14 +40,20 @@ interface Pan {
   clickY: number;
 }
 
+interface PanEnd {
+  topLeftX: number;
+  topLeftY: number;
+}
+
 interface ChangeZoomLevel {
   zoomLevel: number;
 }
 
-interface Wheel {
-  clickX: number;
-  clickY: number;
-  scaleFactor: number;
+interface WheelEnd {
+  topLeftX: number;
+  topLeftY: number;
+  scale: number;
+  zoomLevel: number;
 }
 
 const changeZoomLevelFn: CaseReducer<
@@ -69,83 +75,37 @@ const changeZoomLevelFn: CaseReducer<
   state.topLeftY = y - invertY * k;
 };
 
-const wheelFn: CaseReducer<SVGState, PayloadAction<Wheel>> = (
-  state,
-  action
-) => {
-  // Unsure precisely what inverting does.
-  // Attempts to change coordinate plane from client to svg?
-  const invertX = (action.payload.clickX - state.topLeftX) / state.scale;
-  const invertY = (action.payload.clickY - state.topLeftY) / state.scale;
-  const k = bound(
-    state.scale * Math.pow(2, action.payload.scaleFactor),
-    1 * 4 ** -4,
-    1 * 4 ** 4
-  );
-
-  state.scale = k;
-  state.topLeftX = action.payload.clickX - invertX * k;
-  state.topLeftY = action.payload.clickY - invertY * k;
-  state.zoomLevel = zoomLevelBucket(k);
-  state.isZooming = true;
-};
-
-// find nearest zoomLevel for a scale `k`. (round down)
-function zoomLevelBucket(k: number): number {
-  const entries = Object.entries(zoomLeveltoScaleMap);
-  for (let [i, j] = [0, 1]; j < entries.length; [i, j] = [i + 1, j + 1]) {
-    let [zoomLevel1, scale1] = entries[i];
-    let scale2 = entries[j][1];
-
-    if (scale1 <= k && k < scale2) {
-      return parseInt(zoomLevel1);
-    }
-  }
-
-  return Math.max(...Object.keys(zoomLeveltoScaleMap).map((s) => parseInt(s)));
-}
-
 // force `n` to be between min and max (inclusive)
 function bound(n: number, min: number, max: number): number {
   return Math.min(Math.max(n, min), max);
 }
 
-const wheelEndFn: CaseReducer<SVGState, PayloadAction> = (state, action) => {
-  state.isZooming = false;
-};
-
-const startPanFn: CaseReducer<SVGState, PayloadAction<StartPan>> = (
+const wheelEndFn: CaseReducer<SVGState, PayloadAction<WheelEnd>> = (
   state,
   action
 ) => {
-  state.pan = {
-    clickX: action.payload.clickX,
-    clickY: action.payload.clickY,
-  };
+  const { topLeftX, topLeftY, scale, zoomLevel } = action.payload;
+
+  state.topLeftX = topLeftX;
+  state.topLeftY = topLeftY;
+  state.scale = scale;
+  state.zoomLevel = zoomLevel;
 };
 
-const panFn: CaseReducer<SVGState, PayloadAction<Pan>> = (state, action) => {
-  if (!state.pan) {
-    throw new Error(
-      'Cannot ODYS_PAN_ACTION without `state.pan` (did ODYS_START_PAN_ACTION fire first?)'
-    );
-  }
-
-  state.translateX = action.payload.clickX - state.pan.clickX;
-  state.translateY = action.payload.clickY - state.pan.clickY;
+const endPanFn: CaseReducer<SVGState, PayloadAction<PanEnd>> = (
+  state,
+  action
+) => {
+  state.topLeftX = action.payload.topLeftX;
+  state.topLeftY = action.payload.topLeftY;
 };
 
-const endPanFn: CaseReducer<SVGState, PayloadAction> = (state, action) => {
-  if (!state.pan) {
-    throw new Error(
-      'Could not end pan action. Was it started with ODYS_START_PAN_ACTION?'
-    );
-  }
-  state.pan = null;
-  state.topLeftX = state.topLeftX + state.translateX;
-  state.topLeftY = state.topLeftY + state.translateY;
-  state.translateX = 0;
-  state.translateY = 0;
+const dirtySvgFn: CaseReducer<SVGState, PayloadAction> = (state, action) => {
+  state.dirty = true;
+};
+
+const cleanSvgFn: CaseReducer<SVGState, PayloadAction> = (state, action) => {
+  state.dirty = false;
 };
 
 const initialState: SVGState = {
@@ -155,8 +115,8 @@ const initialState: SVGState = {
   translateY: 0,
   scale: zoomLeveltoScaleMap[5] + zoomLeveltoScaleMap[6] * 0.25,
   zoomLevel: 5,
-  isZooming: false,
   pan: null,
+  dirty: false,
 };
 
 const svgSlice = createSlice({
@@ -164,21 +124,21 @@ const svgSlice = createSlice({
   initialState: initialState,
   reducers: {
     changeZoomLevel: changeZoomLevelFn,
-    wheel: wheelFn,
+    // wheel: wheelFn,
     wheelEnd: wheelEndFn,
-    startPan: startPanFn,
-    pan: panFn,
     endPan: endPanFn,
+    dirtySvg: dirtySvgFn,
+    cleanSvg: cleanSvgFn,
   },
 });
 
 export const {
   changeZoomLevel,
-  wheel,
+  // wheel,
   wheelEnd,
-  startPan,
-  pan,
   endPan,
+  dirtySvg,
+  cleanSvg,
 } = svgSlice.actions;
 const svgReducer = svgSlice.reducer;
 export default svgReducer;

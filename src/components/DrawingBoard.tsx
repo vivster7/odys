@@ -1,13 +1,10 @@
-import React, { useEffect } from 'react';
-import Svg from '../shapes/Svg';
-import Rect, { RectProps, RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
+import React from 'react';
+import Svg from './Svg';
+import { RectProps, RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
 import { v4 } from 'uuid';
-import Arrow, { ArrowProps } from '../shapes/Arrow';
-import Shape from '../shapes/Shape';
-import Text, { TextProps } from '../shapes/Text';
 import HiddenTextInput from './HiddenTextInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { addShape, deleteShape } from '../reducers/shapes/shape';
+import { addShape } from '../reducers/shapes/shape';
 import { RootState } from '../App';
 
 const id = () => `id-${v4()}`;
@@ -15,8 +12,6 @@ const id = () => `id-${v4()}`;
 const DrawingBoard: React.FC = React.memo(() => {
   const dispatch = useDispatch();
   const shapes = useSelector((state: RootState) => state.shapes);
-  const select = useSelector((state: RootState) => state.shapes.select);
-  const svg = useSelector((state: RootState) => state.svg);
 
   // temp seed data
   if (Object.entries(shapes.data).length === 0) {
@@ -60,58 +55,33 @@ const DrawingBoard: React.FC = React.memo(() => {
 
     dispatch(addShape(rect1));
     dispatch(addShape(rect2));
-    dispatch(addShape(arrow as ArrowProps));
-  }
+    // dispatch(addShape(arrow as ArrowProps));
 
-  // add delete key handler
-  function onKeyDownHandler(e: KeyboardEvent) {
-    if (e.code === 'Backspace' && select && select.isEditing === false) {
-      dispatch(deleteShape(select.id));
+    for (let i = 0; i < 100; i++) {
+      const x = Math.random() * 1000;
+      const y = Math.random() * 1000;
+      const rect3 = {
+        type: 'rect',
+        id: id(),
+        text: 'C',
+        x: x,
+        y: y,
+        translateX: 0,
+        translateY: 0,
+        width: RECT_WIDTH,
+        height: RECT_HEIGHT,
+        deltaWidth: 0,
+        deltaHeight: 0,
+      } as RectProps;
+      dispatch(addShape(rect3));
     }
   }
-
-  useEffect(() => {
-    window.addEventListener('keydown', onKeyDownHandler);
-    return () => {
-      window.removeEventListener('keydown', onKeyDownHandler);
-    };
-  });
-
-  function renderShape(shape: Shape) {
-    const { type, ...rest } = shape;
-    switch (type) {
-      case 'rect':
-        return <Rect key={rest.id} {...(rest as RectProps)}></Rect>;
-
-      case 'arrow':
-        return <Arrow key={rest.id} {...(rest as ArrowProps)}></Arrow>;
-
-      case 'text':
-        return <Text key={rest.id} {...(rest as TextProps)}></Text>;
-
-      default:
-        throw new Error(`unknow shape: ${type}`);
-    }
-  }
-
-  const selectedShape =
-    shapes.select && (shapes.data[shapes.select.id] as RectProps);
 
   return (
     <>
-      <Svg
-        topLeftX={svg.topLeftX}
-        topLeftY={svg.topLeftY}
-        translateX={svg.translateX}
-        translateY={svg.translateY}
-        scale={svg.scale}
-      >
-        {shapes.shapeOrder.map((id) => renderShape(shapes.data[id]))}
-      </Svg>
+      <Svg></Svg>
       <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
-        {selectedShape && (
-          <HiddenTextInput selectedShape={selectedShape}></HiddenTextInput>
-        )}
+        <HiddenTextInput></HiddenTextInput>
       </div>
     </>
   );

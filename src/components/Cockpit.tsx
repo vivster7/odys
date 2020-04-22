@@ -3,7 +3,7 @@ import plus from '../plus.svg';
 import minus from '../minus.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../App';
-import { changeZoomLevel } from '../reducers/svg';
+import { changeZoomLevel, dirtySvg } from '../reducers/svg';
 
 interface PositionDisplayProps {
   x: string;
@@ -66,10 +66,12 @@ const Cockpit: React.FC = React.memo((props) => {
   const ZoomLevelDisplay: React.FC = React.memo(() => {
     function incrementZoomLevel() {
       dispatch(changeZoomLevel({ zoomLevel: zoomLevel + 1 }));
+      dispatch(dirtySvg());
     }
 
     function decrementZoomLevel() {
       dispatch(changeZoomLevel({ zoomLevel: zoomLevel - 1 }));
+      dispatch(dirtySvg());
     }
 
     return (

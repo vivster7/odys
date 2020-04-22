@@ -8,7 +8,13 @@ import {
   startResize,
 } from '../reducers/shapes/shape';
 import { RootState } from '../App';
-import Shape, { Selectable, Draggable, TextEditable, Resizable } from './Shape';
+import Shape, {
+  ShapeId,
+  Selectable,
+  Draggable,
+  TextEditable,
+  Resizable,
+} from './Shape';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
@@ -21,26 +27,28 @@ export type RectProps = {
   TextEditable &
   Resizable;
 
-const Rect: React.FC<RectProps> = React.memo((props) => {
-  const id = props.id;
-  const [x, y] = [props.x, props.y];
+const Rect: React.FC<ShapeId> = React.memo((props) => {
+  const { id } = props;
+
+  const newDispatch = useDispatch();
+
+  const shape = useSelector(
+    (state: RootState) => state.shapes.data[id] as RectProps
+  );
+
+  const draggedId = useSelector((state: RootState) => state.shapes.drag?.id);
+  const selectedId = useSelector((state: RootState) => state.shapes.select?.id);
+
+  const [x, y] = [shape.x, shape.y];
   const [textX, textY] = [
-    (props.width + props.deltaWidth) / 2,
-    (props.height + props.deltaHeight) / 2,
+    (shape.width + shape.deltaWidth) / 2,
+    (shape.height + shape.deltaHeight) / 2,
   ];
 
-  const transform = `translate(${x + props.translateX}, ${
-    y + props.translateY
+  const transform = `translate(${x + shape.translateX}, ${
+    y + shape.translateY
   })`;
-  const newDispatch = useDispatch();
-  const draggedId = useSelector(
-    (state: RootState) => state.shapes.drag && state.shapes.drag.id
-  );
-  const selectedId = useSelector(
-    (state: RootState) => state.shapes.select && state.shapes.select.id
-  );
   const cursor = draggedId === id ? 'grabbing' : 'grab';
-
   const isSelected = id === selectedId;
 
   function handleMouseDown(e: React.MouseEvent) {
@@ -75,27 +83,28 @@ const Rect: React.FC<RectProps> = React.memo((props) => {
           r="6"
           cursor="ne-resize"
           onMouseDown={(e) => startResizeRect(e, 'NEAnchor')}
-          cx={props.width + props.deltaWidth}
+          cx={shape.width + shape.deltaWidth}
         ></circle>
         <circle
           fill="cornflowerblue"
           r="6"
           cursor="sw-resize"
           onMouseDown={(e) => startResizeRect(e, 'SWAnchor')}
-          cy={props.height + props.deltaHeight}
+          cy={shape.height + shape.deltaHeight}
         ></circle>
         <circle
           fill="cornflowerblue"
           r="6"
           cursor="se-resize"
           onMouseDown={(e) => startResizeRect(e, 'SEAnchor')}
-          cx={props.width + props.deltaWidth}
-          cy={props.height + props.deltaHeight}
+          cx={shape.width + shape.deltaWidth}
+          cy={shape.height + shape.deltaHeight}
         ></circle>
       </>
     );
   };
 
+  if (!shape) return <></>;
   return (
     <g
       id={id}
@@ -104,14 +113,17 @@ const Rect: React.FC<RectProps> = React.memo((props) => {
       onClick={(e) => e.stopPropagation()}
     >
       <rect
-        width={props.width + props.deltaWidth}
-        height={props.height + props.deltaHeight}
+        width={shape.width + shape.deltaWidth}
+        height={shape.height + shape.deltaHeight}
         rx="4"
         ry="4"
         fill="white"
         stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
         strokeDasharray={isSelected ? 5 : 0}
         onMouseDown={(e) => handleMouseDown(e)}
+        onDrag={(e) => console.log('dragging rect')}
+        onDragStart={() => console.log('start drag')}
+        onClick={() => console.log('clicked')}
       ></rect>
       <text
         x={textX}
@@ -122,7 +134,7 @@ const Rect: React.FC<RectProps> = React.memo((props) => {
         }}
         onMouseDown={(e) => handleMouseDown(e)}
       >
-        {props.text}
+        {shape.text}
       </text>
       {isSelected && <SelectionCircles></SelectionCircles>}
     </g>
