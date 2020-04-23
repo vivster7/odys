@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactSVG } from 'react';
 import plus from '../plus.svg';
 import minus from '../minus.svg';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,25 +20,32 @@ interface ZoomLevelDisplayProps {
   zoomLevel: number;
 }
 
+function onMouseMove(
+  topLeftX: number,
+  topLeftY: number,
+  scale: number,
+  setCursor: React.Dispatch<React.SetStateAction<Cursor>>
+) {
+  return (e: MouseEvent) => {
+    const x = (e.clientX - topLeftX) / scale;
+    const y = (e.clientY - topLeftY) / scale;
+    setCursor({ x, y });
+  };
+}
+
 const Cockpit: React.FC = () => {
   const svgState = useSelector((state: RootState) => state.svg);
   const { topLeftX, topLeftY, scale, zoomLevel } = svgState;
 
   const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
-    const [cursor, setCursor] = useState({ x: 0, y: 0 });
-
+    const [cursor, setCursor] = useState<Cursor>({ x: 0, y: 0 });
     const { topLeftX, topLeftY, scale } = props;
 
-    function onMouseMove(e: MouseEvent) {
-      const x = (e.clientX - topLeftX) / scale;
-      const y = (e.clientY - topLeftY) / scale;
-      setCursor({ x, y });
-    }
-
     useEffect(() => {
-      window.addEventListener('mousemove', onMouseMove);
-      return () => window.removeEventListener('mousemove', onMouseMove);
-    });
+      const mouseMoveFn = onMouseMove(topLeftX, topLeftY, scale, setCursor);
+      window.addEventListener('mousemove', mouseMoveFn);
+      return () => window.removeEventListener('mousemove', mouseMoveFn);
+    }, [topLeftX, topLeftY, scale, setCursor]);
 
     return (
       <div
