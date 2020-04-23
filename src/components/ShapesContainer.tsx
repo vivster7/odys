@@ -9,7 +9,7 @@ const ShapesContainer: React.FC = React.memo(() => {
   return (
     <>
       {shapeOrder.map((shapeId) => {
-        return <NewShape id={shapeId}></NewShape>;
+        return <NewShape key={shapeId} id={shapeId}></NewShape>;
       })}
     </>
   );
