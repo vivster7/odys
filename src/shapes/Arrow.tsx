@@ -4,7 +4,7 @@ import { RectProps } from './Rect';
 import Line from '../math/line';
 import { RootState } from '../App';
 import { useSelector } from 'react-redux';
-import Shape, { idFn } from './Shape';
+import Shape, { idFn, ShapeId } from './Shape';
 
 export type ArrowProps = {
   type: 'arrow';
@@ -14,27 +14,30 @@ export type ArrowProps = {
   toId: string;
 } & Shape;
 
-const Arrow: React.FC<ArrowProps> = React.memo((props) => {
-  // TODO: drag + move edges
-  const transform = ``;
+const Arrow: React.FC<ShapeId> = React.memo((props) => {
+  const { id } = props;
 
   function arrowheadRotation(x1: number, y1: number, x2: number, y2: number) {
     return Math.atan2(y2 - y1, x2 - x1);
   }
 
+  const arrow = useSelector(
+    (state: RootState) => state.shapes.data[id]
+  ) as ArrowProps;
+
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = useSelector(
-    (state: RootState) => state.shapes.data[props.fromId]
+    (state: RootState) => state.shapes.data[arrow.fromId]
   ) as RectProps;
   const r2 = useSelector(
-    (state: RootState) => state.shapes.data[props.toId]
+    (state: RootState) => state.shapes.data[arrow.toId]
   ) as RectProps;
 
   if (!r1) {
-    throw new Error(`[r1Arrow] Could not find shape$ ${props.fromId}`);
+    throw new Error(`[r1Arrow] Could not find shape$ ${arrow.fromId}`);
   }
   if (!r2) {
-    throw new Error(`[r2Arrow] Could not find shape$ ${props.toId}`);
+    throw new Error(`[r2Arrow] Could not find shape$ ${arrow.toId}`);
   }
 
   const r1X = r1.x + r1.translateX;
@@ -144,7 +147,7 @@ const Arrow: React.FC<ArrowProps> = React.memo((props) => {
   const right = true;
 
   return (
-    <g id={props.id} transform={transform}>
+    <g id={props.id}>
       <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="grey"></line>
       {left ? (
         <Arrowhead

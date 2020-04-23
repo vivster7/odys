@@ -6,10 +6,11 @@ import HiddenTextInput from './HiddenTextInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { addShape } from '../reducers/shapes/shape';
 import { RootState } from '../App';
+import { ArrowProps } from '../shapes/Arrow';
 
 const id = () => `id-${v4()}`;
 
-const DrawingBoard: React.FC = React.memo(() => {
+const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
   const shapes = useSelector((state: RootState) => state.shapes);
 
@@ -55,26 +56,7 @@ const DrawingBoard: React.FC = React.memo(() => {
 
     dispatch(addShape(rect1));
     dispatch(addShape(rect2));
-    // dispatch(addShape(arrow as ArrowProps));
-
-    for (let i = 0; i < 100; i++) {
-      const x = Math.random() * 1000;
-      const y = Math.random() * 1000;
-      const rect3 = {
-        type: 'rect',
-        id: id(),
-        text: 'C',
-        x: x,
-        y: y,
-        translateX: 0,
-        translateY: 0,
-        width: RECT_WIDTH,
-        height: RECT_HEIGHT,
-        deltaWidth: 0,
-        deltaHeight: 0,
-      } as RectProps;
-      dispatch(addShape(rect3));
-    }
+    dispatch(addShape(arrow as ArrowProps));
   }
 
   return (
@@ -85,6 +67,6 @@ const DrawingBoard: React.FC = React.memo(() => {
       </div>
     </>
   );
-});
+};
 
 export default DrawingBoard;

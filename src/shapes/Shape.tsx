@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../App';
 import Rect from './Rect';
 import Arrow from './Arrow';
+import Text from './Text';
 
 export type ShapeType = 'rect' | 'text' | 'arrow';
 
@@ -44,8 +45,8 @@ export const NewShape: React.FC<ShapeId> = (props) => {
 
   if (!shape) return <></>;
   if (shape.type === 'rect') return <Rect id={id}></Rect>;
-  // if (shape.type === 'arrow') return <Arrow id={id}></Arrow>
-  // if (shape.type === 'text') return <Text id={id}></Text>
+  if (shape.type === 'arrow') return <Arrow id={id}></Arrow>;
+  if (shape.type === 'text') return <Text id={id}></Text>;
   throw new Error(`unknow shape: ${shape.type}`);
 };
 

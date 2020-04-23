@@ -2,7 +2,7 @@ import React from 'react';
 import { startDrag } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
-import Shape, { Selectable, Draggable, TextEditable } from './Shape';
+import Shape, { ShapeId, Selectable, Draggable, TextEditable } from './Shape';
 
 export type TextProps = {
   type: 'text';
@@ -11,12 +11,17 @@ export type TextProps = {
   Draggable &
   TextEditable;
 
-const Text: React.FC<TextProps> = React.memo((props) => {
-  const transform = `translate(${props.x}, ${props.y})`;
+const Text: React.FC<ShapeId> = React.memo((props) => {
+  const { id } = props;
+  const dispatch = useDispatch();
+
+  const text = useSelector(
+    (state: RootState) => state.shapes.data[id]
+  ) as TextProps;
+  const transform = `translate(${text.x}, ${text.y})`;
   const draggedId = useSelector(
     (state: RootState) => state.shapes.drag && state.shapes.drag.id
   );
-  const dispatch = useDispatch();
 
   const cursor = draggedId === props.id ? 'grabbing' : 'grab';
 
@@ -32,7 +37,7 @@ const Text: React.FC<TextProps> = React.memo((props) => {
       }
     >
       <text style={{ textAnchor: 'middle' }}>
-        <tspan>{props.text}</tspan>
+        <tspan>{text.text}</tspan>
       </text>
     </g>
   );
