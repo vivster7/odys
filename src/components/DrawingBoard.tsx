@@ -1,12 +1,12 @@
 import React from 'react';
 import Svg from './Svg';
-import { RectProps, RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
+import { RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
 import { v4 } from 'uuid';
 import HiddenTextInput from './HiddenTextInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { addShape } from '../reducers/shapes/shape';
 import { RootState } from '../App';
-import { ArrowProps } from '../shapes/Arrow';
+import Shape from '../shapes/Shape';
 
 const id = () => `id-${v4()}`;
 
@@ -24,6 +24,7 @@ const DrawingBoard: React.FC = () => {
       id: id(),
       fromId: rect1Id,
       toId: rect2Id,
+      text: '',
     };
 
     const rect1 = {
@@ -38,7 +39,7 @@ const DrawingBoard: React.FC = () => {
       height: RECT_HEIGHT,
       deltaWidth: 0,
       deltaHeight: 0,
-    } as RectProps;
+    };
 
     const rect2 = {
       type: 'rect',
@@ -52,11 +53,11 @@ const DrawingBoard: React.FC = () => {
       height: RECT_HEIGHT,
       deltaWidth: 0,
       deltaHeight: 0,
-    } as RectProps;
+    };
 
-    dispatch(addShape(rect1));
-    dispatch(addShape(rect2));
-    dispatch(addShape(arrow as ArrowProps));
+    dispatch(addShape(rect1 as Shape));
+    dispatch(addShape(rect2 as Shape));
+    dispatch(addShape(arrow as Shape));
   }
 
   return (

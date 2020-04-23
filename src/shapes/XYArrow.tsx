@@ -32,6 +32,7 @@ const XYArrow: React.FC<XYArrowProps> = React.memo((props) => {
           x={0}
           y={0}
           direction="left"
+          isSelected={false}
           rotationAngleFromXInRadians={rotation}
         ></Arrowhead>
       ) : (
@@ -43,6 +44,7 @@ const XYArrow: React.FC<XYArrowProps> = React.memo((props) => {
           x={props.x2}
           y={props.y2}
           direction="right"
+          isSelected={false}
           rotationAngleFromXInRadians={rotation}
         ></Arrowhead>
       ) : (

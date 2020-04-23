@@ -30,7 +30,7 @@ export type RectProps = {
 const Rect: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;
 
-  const newDispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const shape = useSelector(
     (state: RootState) => state.shapes.data[id] as RectProps
@@ -53,19 +53,19 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
-    newDispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
+    dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
 
     if (selectedId && e.altKey) {
-      newDispatch(drawArrow(id));
+      dispatch(drawArrow(id));
     } else {
-      newDispatch(selectShape(id));
+      dispatch(selectShape(id));
     }
   }
 
   const SelectionCircles = () => {
     function startResizeRect(e: React.MouseEvent, anchor: Anchor) {
       e.stopPropagation();
-      newDispatch(
+      dispatch(
         startResize({ id, anchor, originalX: e.clientX, originalY: e.clientY })
       );
     }

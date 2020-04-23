@@ -1,4 +1,4 @@
-import Shape from '../../shapes/Shape';
+import Shape, { TextEditable } from '../../shapes/Shape';
 
 import {
   createSlice,
@@ -150,6 +150,7 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
     id: arrowID,
     fromId: selectId,
     toId: action.payload,
+    text: '',
   } as ArrowProps;
 
   state.data[arrowID] = arrow;
@@ -188,10 +189,10 @@ const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.data[id] as RectProps;
-  if (shape.type !== 'rect') {
+  const shape = state.data[id] as Shape & TextEditable;
+  if (!shape.hasOwnProperty('text')) {
     throw new Error(
-      `[shapes/editText] Cannot only edit rects. Selected shape is not a rect (${select.id})`
+      `[shapes/editText] Shape is missing 'text' property (${select.id})`
     );
   }
 

@@ -3,8 +3,9 @@ import Arrowhead from './Arrowhead';
 import { RectProps } from './Rect';
 import Line from '../math/line';
 import { RootState } from '../App';
-import { useSelector } from 'react-redux';
-import Shape, { idFn, ShapeId } from './Shape';
+import { useSelector, useDispatch } from 'react-redux';
+import Shape, { idFn, ShapeId, TextEditable } from './Shape';
+import { selectShape } from '../reducers/shapes/shape';
 
 export type ArrowProps = {
   type: 'arrow';
@@ -12,10 +13,12 @@ export type ArrowProps = {
   // connect to shapes
   fromId: string;
   toId: string;
-} & Shape;
+} & Shape &
+  TextEditable;
 
 const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;
+  const dispatch = useDispatch();
 
   function arrowheadRotation(x1: number, y1: number, x2: number, y2: number) {
     return Math.atan2(y2 - y1, x2 - x1);
@@ -32,6 +35,11 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const r2 = useSelector(
     (state: RootState) => state.shapes.data[arrow.toId]
   ) as RectProps;
+
+  const isSelected = useSelector(
+    (state: RootState) => state.shapes.select?.id === id
+  );
+  const color = isSelected ? 'cornflowerblue' : 'gray';
 
   if (!r1) {
     throw new Error(`[r1Arrow] Could not find shape$ ${arrow.fromId}`);
@@ -146,15 +154,21 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const left = false;
   const right = true;
 
+  function handleMouseDown(e: React.MouseEvent) {
+    e.stopPropagation();
+    dispatch(selectShape(id));
+  }
+
   return (
-    <g id={props.id}>
-      <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="grey"></line>
+    <g id={props.id} onMouseDown={(e) => handleMouseDown(e)}>
+      <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={color}></line>
       {left ? (
         <Arrowhead
           id={idFn()}
           x={0}
           y={0}
           direction="left"
+          isSelected={isSelected}
           rotationAngleFromXInRadians={rotation}
         ></Arrowhead>
       ) : (
@@ -166,11 +180,23 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
           x={x2}
           y={y2}
           direction="right"
+          isSelected={isSelected}
           rotationAngleFromXInRadians={rotation}
         ></Arrowhead>
       ) : (
         <></>
-      )}{' '}
+      )}
+      <text
+        x={(x1 + x2) / 2}
+        y={(y1 + y2) / 2}
+        style={{
+          textAnchor: 'middle',
+          textRendering: 'optimizeSpeed',
+        }}
+        onMouseDown={(e) => handleMouseDown(e)}
+      >
+        {arrow.text}
+      </text>
     </g>
   );
 });
