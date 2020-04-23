@@ -121,9 +121,6 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
         stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
         strokeDasharray={isSelected ? 5 : 0}
         onMouseDown={(e) => handleMouseDown(e)}
-        onDrag={(e) => console.log('dragging rect')}
-        onDragStart={() => console.log('start drag')}
-        onClick={() => console.log('clicked')}
       ></rect>
       <text
         x={textX}

@@ -191,13 +191,25 @@ const Svg: React.FC = () => {
     const scaleFactor =
       -e.deltaY * (e.deltaMode === 1 ? 0.05 : e.deltaMode ? 1 : 0.002);
 
-    const k = bound(scale * Math.pow(2, scaleFactor), 1 * 4 ** -4, 1 * 4 ** 4);
+    const updatedScale = bound(
+      scale * Math.pow(2, scaleFactor),
+      1 * 4 ** -4,
+      1 * 4 ** 4
+    );
+    const updatedTopLeftX = e.clientX - invertX * updatedScale;
+    const updatedTopLeftY = e.clientY - invertY * updatedScale;
 
-    setScale(k);
-    setTopLeftX(e.clientX - invertX * k);
-    setTopLeftY(e.clientY - invertY * k);
-    setZoomLevel(zoomLevelBucket(k));
-    debouncedOnWheelEnd(dispatch, topLeftX, topLeftY, scale, zoomLevel);
+    setScale(updatedScale);
+    setTopLeftX(updatedTopLeftX);
+    setTopLeftY(updatedTopLeftY);
+    setZoomLevel(zoomLevelBucket(updatedScale));
+    debouncedOnWheelEnd(
+      dispatch,
+      updatedTopLeftX,
+      updatedTopLeftY,
+      updatedScale,
+      zoomLevel
+    );
   }
 
   return (
@@ -208,7 +220,7 @@ const Svg: React.FC = () => {
         width: '100%',
         background: 'var(--odys-background-gray)',
       }}
-      // onMouseMove={(e) => handleMouseMove(e)}
+      onMouseMove={(e) => handleMouseMove(e)}
       onMouseDown={(e) => handleMouseDown(e)}
       onMouseUp={(e) => handleMouseUp(e)}
       onWheel={(e) => handleWheel(e)}
