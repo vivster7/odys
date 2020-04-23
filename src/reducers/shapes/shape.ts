@@ -1,4 +1,4 @@
-import Shape, { TextEditable } from '../../shapes/Shape';
+import Shape, { TextEditable, ShapeId } from '../../shapes/Shape';
 
 import {
   createSlice,
@@ -93,9 +93,42 @@ const initialState: ShapeState = {
   newRectByDrag: null,
 };
 
+export function reorder(shapes: ShapeData, order: string[], shape: Shape) {
+  // remove from `order` array if present
+  const idx = order.findIndex((id) => id === shape.id);
+  if (idx !== -1) {
+    order.splice(idx, 1);
+  }
+
+  // grouping rects must come first. they are ordered against each other by `x` position.
+  if (shape.type === 'rect') {
+    const rect = shape as RectProps;
+
+    if (rect.isGroupingRect) {
+      let insertIdx = 0;
+      for (let i = 0; i < order.length; i++) {
+        const id = order[i];
+        const s = shapes[id];
+
+        if (s.type === 'rect') {
+          const t = s as RectProps;
+          if (t.isGroupingRect && t.x < rect.x) continue;
+        }
+        insertIdx = i;
+        break;
+      }
+      order.splice(insertIdx, 0, shape.id);
+      return;
+    }
+  }
+
+  // by default, add to top
+  order.push(shape.id);
+}
+
 const addShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
   state.data[action.payload.id] = action.payload as any;
-  state.shapeOrder.push(action.payload.id);
+  reorder(state.data, state.shapeOrder, action.payload);
 };
 
 const raiseShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
@@ -104,10 +137,7 @@ const raiseShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  state.shapeOrder = [
-    ...state.shapeOrder.filter((shapeID) => shapeID !== id),
-    id,
-  ];
+  reorder(state.data, state.shapeOrder, state.data[id]);
 };
 
 const deleteShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
@@ -138,6 +168,7 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
       const arrow = s as ArrowProps;
       return arrow.fromId === selectId && arrow.toId === action.payload;
     }
+    return false;
   });
 
   if (existing) {
@@ -154,19 +185,20 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   } as ArrowProps;
 
   state.data[arrowID] = arrow;
-  state.shapeOrder.push(arrowID);
+  reorder(state.data, state.shapeOrder, arrow);
 };
 
 const selectShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   const id = action.payload;
+  if (!state.data[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
+  }
+
   state.select = {
     id,
     isEditing: false,
   };
-  state.shapeOrder = [
-    ...state.shapeOrder.filter((shapeID) => shapeID !== id),
-    id,
-  ];
+  reorder(state.data, state.shapeOrder, state.data[id]);
 };
 
 const cancelSelectFn: ShapeReducer<PayloadAction> = (state, action) => {

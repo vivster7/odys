@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { ShapeReducer } from './shape';
+import { ShapeReducer, reorder } from './shape';
 import { RectProps } from '../../shapes/Rect';
 
 interface StartDrag {
@@ -62,9 +62,6 @@ export const endDragFn: ShapeReducer<PayloadAction> = (state, action) => {
   shape.translateX = 0;
   shape.translateY = 0;
 
-  state.shapeOrder = [
-    ...state.shapeOrder.filter((shapeID) => shapeID !== id),
-    id,
-  ];
+  reorder(state.data, state.shapeOrder, shape);
   state.drag = null;
 };

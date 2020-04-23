@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactSVG } from 'react';
+import React, { useState, useEffect } from 'react';
 import plus from '../plus.svg';
 import minus from '../minus.svg';
 import { useSelector, useDispatch } from 'react-redux';

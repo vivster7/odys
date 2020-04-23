@@ -1,5 +1,5 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { ShapeReducer } from './shape';
+import { ShapeReducer, reorder } from './shape';
 import { RectProps, RECT_WIDTH, RECT_HEIGHT } from '../../shapes/Rect';
 import { v4 } from 'uuid';
 import { zoomLeveltoScaleMap } from '../svg';
@@ -64,7 +64,7 @@ export const endNewRectByClickFn: ShapeReducer<PayloadAction<
   const rect = {
     type: 'rect',
     id: id,
-    text: 'A',
+    text: 'Concept',
     x: x - width / 2,
     y: y - height / 2,
     translateX: 0,
@@ -84,7 +84,7 @@ export const endNewRectByClickFn: ShapeReducer<PayloadAction<
   };
 
   state.data[id] = rect as any;
-  state.shapeOrder.push(id);
+  reorder(state.data, state.shapeOrder, rect);
 };
 
 export const startNewRectByDragFn: ShapeReducer<PayloadAction<
@@ -123,7 +123,7 @@ export const newRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
     const rect: RectProps = {
       type: 'rect',
       id: id,
-      text: 'A',
+      text: 'Group',
       x: x,
       y: y,
       translateX: 0,
@@ -132,11 +132,12 @@ export const newRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
       height: height,
       deltaWidth: 0,
       deltaHeight: 0,
+      isGroupingRect: true,
     };
 
     state.newRectByDrag.shape = rect as any;
     state.data[id] = rect as any;
-    state.shapeOrder.push(id);
+    reorder(state.data, state.shapeOrder, rect);
 
     state.resize = {
       id: id,

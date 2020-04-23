@@ -21,6 +21,7 @@ export const RECT_HEIGHT = 75;
 
 export type RectProps = {
   type: 'rect';
+  isGroupingRect: boolean;
 } & Shape &
   Selectable &
   Draggable &
@@ -105,6 +106,35 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   };
 
   if (!shape) return <></>;
+  if (shape.isGroupingRect) {
+    return (
+      <g id={id} transform={transform} cursor={cursor}>
+        <rect
+          width={shape.width + shape.deltaWidth}
+          height={shape.height + shape.deltaHeight}
+          rx="4"
+          ry="4"
+          fill="darkgray"
+          fillOpacity={0.6}
+          stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
+          strokeDasharray={isSelected ? 5 : 0}
+          onMouseDown={(e) => handleMouseDown(e)}
+        ></rect>
+        <text
+          x={textX}
+          y={20}
+          style={{
+            textAnchor: 'middle',
+            textRendering: 'optimizeSpeed',
+          }}
+          onMouseDown={(e) => handleMouseDown(e)}
+        >
+          {shape.text}
+        </text>
+        {isSelected && <SelectionCircles></SelectionCircles>}
+      </g>
+    );
+  }
   return (
     <g
       id={id}

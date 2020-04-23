@@ -1,12 +1,13 @@
 import React from 'react';
 import Svg from './Svg';
-import { RECT_HEIGHT, RECT_WIDTH } from '../shapes/Rect';
+import { RECT_HEIGHT, RECT_WIDTH, RectProps } from '../shapes/Rect';
 import { v4 } from 'uuid';
 import HiddenTextInput from './HiddenTextInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { addShape } from '../reducers/shapes/shape';
 import { RootState } from '../App';
 import Shape from '../shapes/Shape';
+import { ArrowProps } from '../shapes/Arrow';
 
 const id = () => `id-${v4()}`;
 
@@ -19,7 +20,7 @@ const DrawingBoard: React.FC = () => {
     const rect1Id = id();
     const rect2Id = id();
 
-    const arrow = {
+    const arrow: ArrowProps = {
       type: 'arrow',
       id: id(),
       fromId: rect1Id,
@@ -27,7 +28,7 @@ const DrawingBoard: React.FC = () => {
       text: '',
     };
 
-    const rect1 = {
+    const rect1: RectProps = {
       type: 'rect',
       id: rect1Id,
       text: 'A',
@@ -39,9 +40,10 @@ const DrawingBoard: React.FC = () => {
       height: RECT_HEIGHT,
       deltaWidth: 0,
       deltaHeight: 0,
+      isGroupingRect: false,
     };
 
-    const rect2 = {
+    const rect2: RectProps = {
       type: 'rect',
       id: rect2Id,
       text: 'B',
@@ -53,6 +55,7 @@ const DrawingBoard: React.FC = () => {
       height: RECT_HEIGHT,
       deltaWidth: 0,
       deltaHeight: 0,
+      isGroupingRect: false,
     };
 
     dispatch(addShape(rect1 as Shape));
