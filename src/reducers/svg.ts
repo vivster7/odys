@@ -3,15 +3,15 @@ import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 export const zoomLeveltoScaleMap: {
   [key: number]: number;
 } = {
-  1: 1 * 4 ** -4,
-  2: 1 * 4 ** -3,
-  3: 1 * 4 ** -2,
-  4: 1 * 4 ** -1,
-  5: 1 * 4 ** 0,
-  6: 1 * 4 ** 1,
-  7: 1 * 4 ** 2,
-  8: 1 * 4 ** 3,
-  9: 1 * 4 ** 4,
+  1: 1 * 8 ** -4,
+  2: 1 * 8 ** -3,
+  3: 1 * 8 ** -2,
+  4: 1 * 8 ** -1,
+  5: 1 * 8 ** 0,
+  6: 1 * 8 ** 1,
+  7: 1 * 8 ** 2,
+  8: 1 * 8 ** 3,
+  9: 1 * 8 ** 4,
 };
 
 export interface SVGState {
@@ -113,7 +113,7 @@ const initialState: SVGState = {
   topLeftY: 0,
   translateX: 0,
   translateY: 0,
-  scale: zoomLeveltoScaleMap[5] + zoomLeveltoScaleMap[6] * 0.25,
+  scale: zoomLeveltoScaleMap[5],
   zoomLevel: 5,
   pan: null,
   dirty: false,

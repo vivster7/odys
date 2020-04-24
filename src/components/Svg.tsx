@@ -41,18 +41,46 @@ function bound(n: number, min: number, max: number): number {
 }
 
 // find nearest zoomLevel for a scale `k`. (round down)
-function zoomLevelBucket(k: number): number {
-  const entries = Object.entries(zoomLeveltoScaleMap);
-  for (let [i, j] = [0, 1]; j < entries.length; [i, j] = [i + 1, j + 1]) {
-    let [zoomLevel1, scale1] = entries[i];
-    let scale2 = entries[j][1];
+function zoomLevelBucket(existingZoomLevel: number, k: number): number {
+  const modifiedMap: { [key: number]: number } = {
+    ...zoomLeveltoScaleMap,
+    0: -Infinity,
+    10: Infinity,
+  };
 
-    if (scale1 <= k && k < scale2) {
-      return parseInt(zoomLevel1);
-    }
+  const [lower, upper] = [
+    modifiedMap[existingZoomLevel - 1],
+    modifiedMap[existingZoomLevel + 1],
+  ];
+  if (k > lower && k < upper) {
+    return existingZoomLevel;
   }
 
-  return Math.max(...Object.keys(zoomLeveltoScaleMap).map((s) => parseInt(s)));
+  if (k <= lower) {
+    for (let n = 1; n < existingZoomLevel; n++) {
+      if (k <= modifiedMap[n]) {
+        return n;
+      }
+    }
+  } else if (k >= upper) {
+    for (let n = 9; n > existingZoomLevel; n--) {
+      if (k >= modifiedMap[n]) {
+        return n;
+      }
+    }
+  }
+  throw new Error(`Couldn't figure out a zoomLevel for scale ${k}`);
+  // const entries = Object.entries(zoomLeveltoScaleMap);
+  // for (let [i, j] = [0, 1]; j < entries.length; [i, j] = [i + 1, j + 1]) {
+  //   let [zoomLevel1, scale1] = entries[i];
+  //   let scale2 = entries[j][1];
+
+  //   if (scale1 <= k && k < scale2) {
+  //     return parseInt(zoomLevel1);
+  //   }
+  // }
+
+  // return Math.max(...Object.keys(zoomLeveltoScaleMap).map((s) => parseInt(s)));
 }
 
 interface PanState {
@@ -193,8 +221,8 @@ const Svg: React.FC = () => {
 
     const updatedScale = bound(
       scale * Math.pow(2, scaleFactor),
-      1 * 4 ** -4,
-      1 * 4 ** 4
+      1 * 8 ** -4,
+      1 * 8 ** 4
     );
     const updatedTopLeftX = e.clientX - invertX * updatedScale;
     const updatedTopLeftY = e.clientY - invertY * updatedScale;
@@ -202,7 +230,7 @@ const Svg: React.FC = () => {
     setScale(updatedScale);
     setTopLeftX(updatedTopLeftX);
     setTopLeftY(updatedTopLeftY);
-    setZoomLevel(zoomLevelBucket(updatedScale));
+    setZoomLevel(zoomLevelBucket(zoomLevel, updatedScale));
     debouncedOnWheelEnd(
       dispatch,
       updatedTopLeftX,
