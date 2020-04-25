@@ -29,6 +29,7 @@ interface NewRectByDrag {
   svgTopLeftX: number;
   svgTopLeftY: number;
   svgScale: number;
+  svgZoomLevel: number;
 }
 
 const uid = () => `id-${v4()}`;
@@ -61,7 +62,7 @@ export const endNewRectByClickFn: ShapeReducer<PayloadAction<
   const width = RECT_WIDTH / zoomLeveltoScaleMap[svgZoomLevel];
   const height = RECT_HEIGHT / zoomLeveltoScaleMap[svgZoomLevel];
 
-  const rect = {
+  const rect: RectProps = {
     type: 'rect',
     id: id,
     text: 'Concept',
@@ -73,7 +74,9 @@ export const endNewRectByClickFn: ShapeReducer<PayloadAction<
     height: height,
     deltaWidth: 0,
     deltaHeight: 0,
-  } as RectProps;
+    isGroupingRect: false,
+    createdAtZoomLevel: svgZoomLevel,
+  };
 
   state.drag = null;
   state.newRectByClick = null;
@@ -107,7 +110,14 @@ export const newRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
     );
   }
 
-  const { clickX, clickY, svgTopLeftX, svgTopLeftY, svgScale } = action.payload;
+  const {
+    clickX,
+    clickY,
+    svgTopLeftX,
+    svgTopLeftY,
+    svgScale,
+    svgZoomLevel,
+  } = action.payload;
 
   if (!state.newRectByDrag.shape) {
     const id = uid();
@@ -133,6 +143,7 @@ export const newRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
       deltaWidth: 0,
       deltaHeight: 0,
       isGroupingRect: true,
+      createdAtZoomLevel: svgZoomLevel,
     };
 
     state.newRectByDrag.shape = rect as any;

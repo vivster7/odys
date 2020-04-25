@@ -15,6 +15,7 @@ import Shape, {
   TextEditable,
   Resizable,
 } from './Shape';
+import { zoomLeveltoScaleMap } from '../reducers/svg';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
@@ -22,6 +23,7 @@ export const RECT_HEIGHT = 75;
 export type RectProps = {
   type: 'rect';
   isGroupingRect: boolean;
+  createdAtZoomLevel: number;
 } & Shape &
   Selectable &
   Draggable &
@@ -45,6 +47,10 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
     (shape.width + shape.deltaWidth) / 2,
     (shape.height + shape.deltaHeight) / 2,
   ];
+  const fontSize = 14 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const radiusSize = 4 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const strokeWidth = 1 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const strokeDasharray = 5 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
 
   const transform = `translate(${x + shape.translateX}, ${
     y + shape.translateY
@@ -64,6 +70,7 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   }
 
   const SelectionCircles = () => {
+    const radiusSize = 6 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
     function startResizeRect(e: React.MouseEvent, anchor: Anchor) {
       e.stopPropagation();
       dispatch(
@@ -75,27 +82,27 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
       <>
         <circle
           fill="cornflowerblue"
-          r="6"
+          r={radiusSize + 'px'}
           cursor="nw-resize"
           onMouseDown={(e) => startResizeRect(e, 'NWAnchor')}
         ></circle>
         <circle
           fill="cornflowerblue"
-          r="6"
+          r={radiusSize + 'px'}
           cursor="ne-resize"
           onMouseDown={(e) => startResizeRect(e, 'NEAnchor')}
           cx={shape.width + shape.deltaWidth}
         ></circle>
         <circle
           fill="cornflowerblue"
-          r="6"
+          r={radiusSize + 'px'}
           cursor="sw-resize"
           onMouseDown={(e) => startResizeRect(e, 'SWAnchor')}
           cy={shape.height + shape.deltaHeight}
         ></circle>
         <circle
           fill="cornflowerblue"
-          r="6"
+          r={radiusSize + 'px'}
           cursor="se-resize"
           onMouseDown={(e) => startResizeRect(e, 'SEAnchor')}
           cx={shape.width + shape.deltaWidth}
@@ -123,10 +130,9 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
         <text
           x={textX}
           y={20}
-          style={{
-            textAnchor: 'middle',
-            textRendering: 'optimizeSpeed',
-          }}
+          textAnchor="middle"
+          textRendering="optimizeSpeed"
+          fontSize="10em"
           onMouseDown={(e) => handleMouseDown(e)}
         >
           {shape.text}
@@ -145,20 +151,20 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
       <rect
         width={shape.width + shape.deltaWidth}
         height={shape.height + shape.deltaHeight}
-        rx="4"
-        ry="4"
+        rx={radiusSize + 'px'}
+        ry={radiusSize + 'px'}
         fill="white"
         stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
-        strokeDasharray={isSelected ? 5 : 0}
+        strokeWidth={strokeWidth + 'px'}
+        strokeDasharray={isSelected ? strokeDasharray + 'px' : 0 + 'px'}
         onMouseDown={(e) => handleMouseDown(e)}
       ></rect>
       <text
         x={textX}
         y={textY}
-        style={{
-          textAnchor: 'middle',
-          textRendering: 'optimizeSpeed',
-        }}
+        textAnchor="middle"
+        textRendering="optimizeSpeed"
+        fontSize={fontSize + 'px'}
         onMouseDown={(e) => handleMouseDown(e)}
       >
         {shape.text}

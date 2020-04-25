@@ -175,6 +175,17 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
     return;
   }
 
+  // cannot draw arrow across zoomLevels
+  const fromShape = state.data[selectId] as RectProps;
+  const toShape = state.data[action.payload] as RectProps;
+  if (!fromShape) throw new Error(`Cannot find shape (${selectId})`);
+  if (!toShape) throw new Error(`Cannot find shape (${action.payload})`);
+  if (fromShape.createdAtZoomLevel !== toShape.createdAtZoomLevel) {
+    throw new Error(
+      `Cannot draw arrow across zoomLevel (createdAtZoomLevels dont match)`
+    );
+  }
+
   const arrowID = uid();
   const arrow = {
     type: 'arrow',
@@ -182,6 +193,7 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
     fromId: selectId,
     toId: action.payload,
     text: '',
+    createdAtZoomLevel: fromShape.createdAtZoomLevel,
   } as ArrowProps;
 
   state.data[arrowID] = arrow;

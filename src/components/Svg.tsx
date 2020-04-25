@@ -132,6 +132,7 @@ const Svg: React.FC = () => {
           svgTopLeftX: svgState.topLeftX,
           svgTopLeftY: svgState.topLeftY,
           svgScale: svgState.scale,
+          svgZoomLevel: svgState.zoomLevel,
         })
       );
     }

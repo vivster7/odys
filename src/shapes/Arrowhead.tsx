@@ -1,4 +1,5 @@
 import React from 'react';
+import { zoomLeveltoScaleMap } from '../reducers/svg';
 
 type ArrowheadProps = {
   id: string;
@@ -7,12 +8,16 @@ type ArrowheadProps = {
   isSelected: boolean;
   rotationAngleFromXInRadians?: number;
   direction: 'left' | 'right';
+  createdAtZoomLevel: number;
 };
 
 const radiansToDegrees = (x: number) => x * (180 / Math.PI);
 
 const Arrowhead: React.FC<ArrowheadProps> = React.memo((props) => {
   const color = props.isSelected ? 'cornflowerblue' : 'grey';
+  const strokeWidth = 1 / zoomLeveltoScaleMap[props.createdAtZoomLevel];
+  const length = 5 / zoomLeveltoScaleMap[props.createdAtZoomLevel];
+
   let rotation = radiansToDegrees(props.rotationAngleFromXInRadians || 0);
   if (props.direction === 'left') {
     rotation += 180;
@@ -22,8 +27,22 @@ const Arrowhead: React.FC<ArrowheadProps> = React.memo((props) => {
 
   return (
     <g transform={transform}>
-      <line x1="0" y1="-0" x2="-5" y2="-5" stroke={color}></line>
-      <line x1="0" y1="0" x2="-5" y2="5" stroke={color}></line>
+      <line
+        x1="0"
+        y1="-0"
+        x2={-length}
+        y2={-length}
+        stroke={color}
+        strokeWidth={strokeWidth + 'px'}
+      ></line>
+      <line
+        x1="0"
+        y1="0"
+        x2={-length}
+        y2={length}
+        stroke={color}
+        strokeWidth={strokeWidth + 'px'}
+      ></line>
     </g>
   );
 });

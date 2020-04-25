@@ -6,6 +6,7 @@ import { RootState } from '../App';
 import { useSelector, useDispatch } from 'react-redux';
 import Shape, { idFn, ShapeId, TextEditable } from './Shape';
 import { selectShape } from '../reducers/shapes/shape';
+import { zoomLeveltoScaleMap } from '../reducers/svg';
 
 export type ArrowProps = {
   type: 'arrow';
@@ -13,6 +14,7 @@ export type ArrowProps = {
   // connect to shapes
   fromId: string;
   toId: string;
+  createdAtZoomLevel: number;
 } & Shape &
   TextEditable;
 
@@ -40,6 +42,10 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
     (state: RootState) => state.shapes.select?.id === id
   );
   const color = isSelected ? 'cornflowerblue' : 'gray';
+
+  const fontSize = 14 / zoomLeveltoScaleMap[arrow.createdAtZoomLevel];
+  const strokeWidth = 1 / zoomLeveltoScaleMap[arrow.createdAtZoomLevel];
+  const offset = 5 / zoomLeveltoScaleMap[arrow.createdAtZoomLevel];
 
   if (!r1) {
     throw new Error(`[r1Arrow] Could not find shape$ ${arrow.fromId}`);
@@ -78,37 +84,37 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const r2SE = angle(r2Y + r2Height - r2YMid, r2X + r2Width - r2XMid);
 
   const r1Below = new Line(
-    { x: r1X, y: r1Y + r1Height + 5 },
-    { x: r1X + r1Width, y: r1Y + r1Height + 5 }
+    { x: r1X, y: r1Y + r1Height + offset },
+    { x: r1X + r1Width, y: r1Y + r1Height + offset }
   );
   const r1Above = new Line(
-    { x: r1X, y: r1Y - 5 },
-    { x: r1X + r1Width, y: r1Y - 5 }
+    { x: r1X, y: r1Y - offset },
+    { x: r1X + r1Width, y: r1Y - offset }
   );
   const r1Left = new Line(
-    { x: r1X - 5, y: r1Y },
-    { x: r1X - 5, y: r1Y + r1Height }
+    { x: r1X - offset, y: r1Y },
+    { x: r1X - offset, y: r1Y + r1Height }
   );
   const r1Right = new Line(
-    { x: r1X + r1Width + 5, y: r1Y },
-    { x: r1X + r1Width + 5, y: r1Y + r1Height }
+    { x: r1X + r1Width + offset, y: r1Y },
+    { x: r1X + r1Width + offset, y: r1Y + r1Height }
   );
 
   const r2Below = new Line(
-    { x: r2X, y: r2Y + r2Height + 5 },
-    { x: r2X + r2Width, y: r2Y + r2Height + 5 }
+    { x: r2X, y: r2Y + r2Height + offset },
+    { x: r2X + r2Width, y: r2Y + r2Height + offset }
   );
   const r2Above = new Line(
-    { x: r2X, y: r2Y - 5 },
-    { x: r2X + r2Width, y: r2Y - 5 }
+    { x: r2X, y: r2Y - offset },
+    { x: r2X + r2Width, y: r2Y - offset }
   );
   const r2Left = new Line(
-    { x: r2X - 5, y: r2Y },
-    { x: r2X - 5, y: r2Y + r2Height }
+    { x: r2X - offset, y: r2Y },
+    { x: r2X - offset, y: r2Y + r2Height }
   );
   const r2Right = new Line(
-    { x: r2X + r2Width + 5, y: r2Y },
-    { x: r2X + r2Width + 5, y: r2Y + r2Height }
+    { x: r2X + r2Width + offset, y: r2Y },
+    { x: r2X + r2Width + offset, y: r2Y + r2Height }
   );
 
   const slopeTheta = angle(r2YMid - r1YMid, r2XMid - r1XMid);
@@ -161,7 +167,14 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
 
   return (
     <g id={props.id} onMouseDown={(e) => handleMouseDown(e)}>
-      <line x1={x1} y1={y1} x2={x2} y2={y2} stroke={color}></line>
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke={color}
+        strokeWidth={strokeWidth + 'px'}
+      ></line>
       {left ? (
         <Arrowhead
           id={idFn()}
@@ -170,6 +183,7 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
           direction="left"
           isSelected={isSelected}
           rotationAngleFromXInRadians={rotation}
+          createdAtZoomLevel={arrow.createdAtZoomLevel}
         ></Arrowhead>
       ) : (
         <></>
@@ -182,6 +196,7 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
           direction="right"
           isSelected={isSelected}
           rotationAngleFromXInRadians={rotation}
+          createdAtZoomLevel={arrow.createdAtZoomLevel}
         ></Arrowhead>
       ) : (
         <></>
@@ -189,10 +204,9 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
       <text
         x={(x1 + x2) / 2}
         y={(y1 + y2) / 2}
-        style={{
-          textAnchor: 'middle',
-          textRendering: 'optimizeSpeed',
-        }}
+        textAnchor="middle"
+        textRendering="optimizeSpeed"
+        fontSize={fontSize + 'px'}
         onMouseDown={(e) => handleMouseDown(e)}
       >
         {arrow.text}

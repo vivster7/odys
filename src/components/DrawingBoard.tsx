@@ -26,6 +26,7 @@ const DrawingBoard: React.FC = () => {
       fromId: rect1Id,
       toId: rect2Id,
       text: '',
+      createdAtZoomLevel: 5,
     };
 
     const rect1: RectProps = {
@@ -41,6 +42,7 @@ const DrawingBoard: React.FC = () => {
       deltaWidth: 0,
       deltaHeight: 0,
       isGroupingRect: false,
+      createdAtZoomLevel: 5,
     };
 
     const rect2: RectProps = {
@@ -56,6 +58,7 @@ const DrawingBoard: React.FC = () => {
       deltaWidth: 0,
       deltaHeight: 0,
       isGroupingRect: false,
+      createdAtZoomLevel: 5,
     };
 
     dispatch(addShape(rect1 as Shape));
