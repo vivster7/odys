@@ -122,17 +122,17 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
           rx="4"
           ry="4"
           fill="darkgray"
-          fillOpacity={0.6}
+          fillOpacity={0.2}
           stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
-          strokeDasharray={isSelected ? 5 : 0}
+          strokeDasharray={isSelected ? strokeDasharray + 'px' : 0 + 'px'}
           onMouseDown={(e) => handleMouseDown(e)}
         ></rect>
         <text
           x={textX}
-          y={20}
+          y={20 / zoomLeveltoScaleMap[shape.createdAtZoomLevel]}
           textAnchor="middle"
           textRendering="optimizeSpeed"
-          fontSize="10em"
+          fontSize={fontSize + 'px'}
           onMouseDown={(e) => handleMouseDown(e)}
         >
           {shape.text}
