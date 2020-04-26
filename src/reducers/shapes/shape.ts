@@ -147,7 +147,19 @@ const deleteShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   }
 
   delete state.data[id];
-  state.shapeOrder = state.shapeOrder.filter((shapeID) => shapeID !== id);
+  state.shapeOrder = state.shapeOrder.filter((shapeId) => {
+    if (shapeId === id) {
+      return false;
+    }
+
+    const shape = state.data[shapeId];
+    if (shape.type === 'arrow') {
+      const arrow = shape as ArrowProps;
+      if (arrow.fromId === id || arrow.toId === id) return false;
+    }
+
+    return true;
+  });
 };
 
 const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
