@@ -4,12 +4,11 @@ import {
   cancelSelect,
   drag,
   endDrag,
-  newRectByDrag,
+  endNewRectByDrag,
   resize,
   endResize,
   startNewRectByClick,
   startNewRectByDrag,
-  endNewRectByDrag,
 } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
@@ -95,7 +94,7 @@ const Svg: React.FC = () => {
     (state: RootState) => state.shapes.newRectByClick
   );
   const isNewRectByDragState = useSelector(
-    (state: RootState) => !!state.shapes.newRectByDrag
+    (state: RootState) => !!state.shapes.endNewRectByDrag
   );
 
   const svgState = useSelector((state: RootState) => state.svg);
@@ -126,7 +125,7 @@ const Svg: React.FC = () => {
   function handleMouseMove(e: React.MouseEvent) {
     if (isNewRectByDragState) {
       dispatch(
-        newRectByDrag({
+        endNewRectByDrag({
           clickX: e.clientX,
           clickY: e.clientY,
           svgTopLeftX: svgState.topLeftX,
@@ -186,10 +185,6 @@ const Svg: React.FC = () => {
           clickY: e.clientY,
         })
       );
-    }
-
-    if (isNewRectByDragState) {
-      dispatch(endNewRectByDrag());
     }
 
     if (isDragging) {

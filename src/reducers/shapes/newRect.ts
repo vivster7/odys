@@ -84,20 +84,20 @@ export const endNewRectByClick = createAsyncThunk(
 export const startNewRectByDragFn: ShapeReducer<PayloadAction<
   StartNewRectByDrag
 >> = (state, action) => {
-  state.newRectByDrag = {
+  state.endNewRectByDrag = {
     clickX: action.payload.clickX,
     clickY: action.payload.clickY,
     shape: null,
   };
 };
 
-export const newRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
+export const endNewRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
   state,
   action
 ) => {
-  if (!state.newRectByDrag) {
+  if (!state.endNewRectByDrag) {
     throw new Error(
-      'Cannot create rect on drag. Missing newRectByDrag state. Was ODYS_START_NEW_RECT_BY_DRAG_ACTION called first?'
+      'Cannot create rect on drag. Missing endNewRectByDrag state. Was ODYS_START_NEW_RECT_BY_DRAG_ACTION called first?'
     );
   }
 
@@ -110,16 +110,18 @@ export const newRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
     svgZoomLevel,
   } = action.payload;
 
-  if (!state.newRectByDrag.shape) {
+  if (state.endNewRectByDrag.shape) {
+    state.endNewRectByDrag = null;
+  } else if (state.endNewRectByDrag && !state.endNewRectByDrag.shape) {
     const id = uid();
-    const x = (state.newRectByDrag.clickX - svgTopLeftX) / svgScale;
-    const y = (state.newRectByDrag.clickY - svgTopLeftY) / svgScale;
+    const x = (state.endNewRectByDrag.clickX - svgTopLeftX) / svgScale;
+    const y = (state.endNewRectByDrag.clickY - svgTopLeftY) / svgScale;
     const width =
       (clickX - svgTopLeftX) / svgScale -
-      (state.newRectByDrag.clickX - svgTopLeftX) / svgScale;
+      (state.endNewRectByDrag.clickX - svgTopLeftX) / svgScale;
     const height =
       (clickY - svgTopLeftY) / svgScale -
-      (state.newRectByDrag.clickY - svgTopLeftY) / svgScale;
+      (state.endNewRectByDrag.clickY - svgTopLeftY) / svgScale;
 
     const rect: RectProps = {
       type: 'rect',
@@ -137,24 +139,17 @@ export const newRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
       createdAtZoomLevel: svgZoomLevel,
     };
 
-    state.newRectByDrag.shape = rect as any;
+    state.endNewRectByDrag.shape = rect as any;
     state.data[id] = rect as any;
     reorder(state.data, state.shapeOrder, rect);
 
     state.resize = {
       id: id,
       anchor: 'SEAnchor',
-      originalX: state.newRectByDrag.clickX,
-      originalY: state.newRectByDrag.clickY,
+      originalX: state.endNewRectByDrag.clickX,
+      originalY: state.endNewRectByDrag.clickY,
       clickX: 0,
       clickY: 0,
     };
   }
-};
-
-export const endNewRectByDragFn: ShapeReducer<PayloadAction> = (
-  state,
-  action
-) => {
-  state.newRectByDrag = null;
 };

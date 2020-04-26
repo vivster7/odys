@@ -15,7 +15,6 @@ import {
   startNewRectByClickFn,
   endNewRectByClick,
   startNewRectByDragFn,
-  newRectByDragFn,
   endNewRectByDragFn,
 } from './newRect';
 import { RectProps } from '../../shapes/Rect';
@@ -78,7 +77,7 @@ export interface ShapeState {
   drag: DragState | null;
   resize: ResizeState | null;
   newRectByClick: NewRectByClickState | null;
-  newRectByDrag: NewRectByDragState | null;
+  endNewRectByDrag: NewRectByDragState | null;
   mouse: MouseState | null;
 }
 
@@ -90,7 +89,7 @@ const initialState: ShapeState = {
   mouse: null,
   resize: null,
   newRectByClick: null,
-  newRectByDrag: null,
+  endNewRectByDrag: null,
 };
 
 export function reorder(shapes: ShapeData, order: string[], shape: Shape) {
@@ -275,7 +274,6 @@ const shapesSlice = createSlice({
     endResize: endResizeFn,
     startNewRectByClick: startNewRectByClickFn,
     startNewRectByDrag: startNewRectByDragFn,
-    newRectByDrag: newRectByDragFn,
     endNewRectByDrag: endNewRectByDragFn,
   },
   extraReducers: {
@@ -285,7 +283,7 @@ const shapesSlice = createSlice({
 
       state.drag = null;
       state.newRectByClick = null;
-      state.newRectByDrag = null;
+      state.endNewRectByDrag = null;
       state.select = {
         id: rect.id,
         isEditing: false,
@@ -313,7 +311,6 @@ export const {
   endResize,
   startNewRectByClick,
   startNewRectByDrag,
-  newRectByDrag,
   endNewRectByDrag,
 } = shapesSlice.actions;
 const shapesReducer = shapesSlice.reducer;
