@@ -8,7 +8,6 @@ import {
   resize,
   endResize,
   startNewRectByClick,
-  endNewRectByClick,
   startNewRectByDrag,
   endNewRectByDrag,
 } from '../reducers/shapes/shape';
@@ -21,6 +20,7 @@ import {
   cleanSvg,
 } from '../reducers/svg';
 import ShapesContainer from './ShapesContainer';
+import { endNewRectByClick } from '../reducers/shapes/newRect';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -184,10 +184,6 @@ const Svg: React.FC = () => {
         endNewRectByClick({
           clickX: e.clientX,
           clickY: e.clientY,
-          svgTopLeftX: svgState.topLeftX,
-          svgTopLeftY: svgState.topLeftY,
-          svgScale: svgState.scale,
-          svgZoomLevel: svgState.zoomLevel,
         })
       );
     }

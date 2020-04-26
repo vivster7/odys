@@ -1,8 +1,9 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { ShapeReducer, reorder } from './shape';
 import { RectProps, RECT_WIDTH, RECT_HEIGHT } from '../../shapes/Rect';
 import { v4 } from 'uuid';
 import { zoomLeveltoScaleMap } from '../svg';
+import { RootState } from '../../App';
 
 interface StartNewRectByClick {
   clickX: number;
@@ -12,10 +13,6 @@ interface StartNewRectByClick {
 interface EndNewRectByClick {
   clickX: number;
   clickY: number;
-  svgTopLeftX: number;
-  svgTopLeftY: number;
-  svgScale: number;
-  svgZoomLevel: number;
 }
 
 interface StartNewRectByDrag {
@@ -43,52 +40,46 @@ export const startNewRectByClickFn: ShapeReducer<PayloadAction<
   };
 };
 
-export const endNewRectByClickFn: ShapeReducer<PayloadAction<
-  EndNewRectByClick
->> = (state, action) => {
-  const {
-    clickX,
-    clickY,
-    svgTopLeftX,
-    svgTopLeftY,
-    svgScale,
-    svgZoomLevel,
-  } = action.payload;
+export const endNewRectByClick = createAsyncThunk(
+  'shapes/endNewRectByClick',
+  async (args: EndNewRectByClick, thunkAPI) => {
+    const { clickX, clickY } = args;
 
-  const id = uid();
-  const x = (clickX - svgTopLeftX) / svgScale;
-  const y = (clickY - svgTopLeftY) / svgScale;
+    const state = thunkAPI.getState() as RootState;
+    const { svg } = state;
 
-  const width = RECT_WIDTH / zoomLeveltoScaleMap[svgZoomLevel];
-  const height = RECT_HEIGHT / zoomLeveltoScaleMap[svgZoomLevel];
+    if (
+      state.shapes.newRectByClick?.clickX !== clickX ||
+      state.shapes.newRectByClick?.clickY !== clickY
+    )
+      return;
 
-  const rect: RectProps = {
-    type: 'rect',
-    id: id,
-    text: 'Concept',
-    x: x - width / 2,
-    y: y - height / 2,
-    translateX: 0,
-    translateY: 0,
-    width: width,
-    height: height,
-    deltaWidth: 0,
-    deltaHeight: 0,
-    isGroupingRect: false,
-    createdAtZoomLevel: svgZoomLevel,
-  };
+    const id = uid();
+    const x = (clickX - svg.topLeftX) / svg.scale;
+    const y = (clickY - svg.topLeftY) / svg.scale;
 
-  state.drag = null;
-  state.newRectByClick = null;
-  state.newRectByDrag = null;
-  state.select = {
-    id: id,
-    isEditing: false,
-  };
+    const width = RECT_WIDTH / zoomLeveltoScaleMap[svg.zoomLevel];
+    const height = RECT_HEIGHT / zoomLeveltoScaleMap[svg.zoomLevel];
 
-  state.data[id] = rect as any;
-  reorder(state.data, state.shapeOrder, rect);
-};
+    const rect: RectProps = {
+      type: 'rect',
+      id: id,
+      text: 'Concept',
+      x: x - width / 2,
+      y: y - height / 2,
+      translateX: 0,
+      translateY: 0,
+      width: width,
+      height: height,
+      deltaWidth: 0,
+      deltaHeight: 0,
+      isGroupingRect: false,
+      createdAtZoomLevel: svg.zoomLevel,
+    };
+
+    return rect;
+  }
+);
 
 export const startNewRectByDragFn: ShapeReducer<PayloadAction<
   StartNewRectByDrag

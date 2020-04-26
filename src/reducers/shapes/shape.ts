@@ -13,7 +13,7 @@ import { startResizeFn, resizeFn, endResizeFn } from './resize';
 import { v4 } from 'uuid';
 import {
   startNewRectByClickFn,
-  endNewRectByClickFn,
+  endNewRectByClick,
   startNewRectByDragFn,
   newRectByDragFn,
   endNewRectByDragFn,
@@ -262,10 +262,27 @@ const shapesSlice = createSlice({
     resize: resizeFn,
     endResize: endResizeFn,
     startNewRectByClick: startNewRectByClickFn,
-    endNewRectByClick: endNewRectByClickFn,
     startNewRectByDrag: startNewRectByDragFn,
     newRectByDrag: newRectByDragFn,
     endNewRectByDrag: endNewRectByDragFn,
+  },
+  extraReducers: {
+    [endNewRectByClick.fulfilled as any]: (state, action) => {
+      const rect = action.payload as RectProps;
+      if (!rect) return;
+
+      state.drag = null;
+      state.newRectByClick = null;
+      state.newRectByDrag = null;
+      state.select = {
+        id: rect.id,
+        isEditing: false,
+      };
+
+      state.data[rect.id] = rect as any;
+      reorder(state.data, state.shapeOrder, rect);
+    },
+    [endNewRectByClick.rejected as any]: (state, action) => {},
   },
 });
 
@@ -283,7 +300,6 @@ export const {
   resize,
   endResize,
   startNewRectByClick,
-  endNewRectByClick,
   startNewRectByDrag,
   newRectByDrag,
   endNewRectByDrag,

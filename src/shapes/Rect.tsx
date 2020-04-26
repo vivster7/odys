@@ -1,11 +1,13 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   selectShape,
   drawArrow,
   startDrag,
   Anchor,
   startResize,
+  startNewRectByClick,
+  startNewRectByDrag,
 } from '../reducers/shapes/shape';
 import { RootState } from '../App';
 import Shape, {
@@ -40,31 +42,73 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   );
 
   const draggedId = useSelector((state: RootState) => state.shapes.drag?.id);
-  const selectedId = useSelector((state: RootState) => state.shapes.select?.id);
+  const selected = useSelector(
+    (state: RootState) =>
+      !!state.shapes.select?.id && state.shapes.data[state.shapes.select?.id]
+  );
 
   const [x, y] = [shape.x, shape.y];
   const [textX, textY] = [
     (shape.width + shape.deltaWidth) / 2,
     (shape.height + shape.deltaHeight) / 2,
   ];
-  const fontSize = 14 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
-  const radiusSize = 4 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
-  const strokeWidth = 1 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
-  const strokeDasharray = 5 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
 
   const transform = `translate(${x + shape.translateX}, ${
     y + shape.translateY
   })`;
   const cursor = draggedId === id ? 'grabbing' : 'grab';
-  const isSelected = id === selectedId;
+  const isSelected = id === (selected && selected.id);
+
+  const fontSize = 14 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const radiusSize = 4 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const strokeWidth = 1 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const selectedStrokeDashArray =
+    5 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const groupStrokeDashArray =
+    3 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const groupCursor = isSelected
+    ? draggedId === id
+      ? 'grabbing'
+      : 'grab'
+    : 'auto';
+
+  function overlaps(s: Shape): boolean {
+    const shape2 = s as RectProps;
+    return (
+      ((shape.x < shape2.x && shape.x + shape.width >= shape2.x) ||
+        (shape2.x < shape.x && shape2.x + shape2.width >= shape.x)) &&
+      ((shape.y < shape2.y && shape.y + shape.height >= shape2.y) ||
+        (shape2.y < shape.y && shape2.y + shape2.height >= shape.y))
+    );
+  }
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
-    dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
+    if (!e.altKey) {
+      dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
+    }
 
-    if (selectedId && e.altKey) {
+    if (!!selected && e.altKey && !overlaps(selected)) {
       dispatch(drawArrow(id));
-    } else {
+    } else if (!e.altKey) {
+      dispatch(selectShape(id));
+    }
+  }
+
+  function handleGroupMouseDown(e: React.MouseEvent) {
+    e.stopPropagation();
+
+    if (!e.altKey) {
+      dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
+    }
+
+    if (e.altKey && !!selected && !overlaps(selected) && !isSelected) {
+      dispatch(drawArrow(id));
+    } else if (e.altKey) {
+      // endNewRect handled on MouseUp.
+      dispatch(startNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
+      dispatch(startNewRectByDrag({ clickX: e.clientX, clickY: e.clientY }));
+    } else if (!e.altKey) {
       dispatch(selectShape(id));
     }
   }
@@ -115,7 +159,12 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   if (!shape) return <></>;
   if (shape.isGroupingRect) {
     return (
-      <g id={id} transform={transform} cursor={cursor}>
+      <g
+        id={id}
+        transform={transform}
+        cursor={groupCursor}
+        onMouseDown={(e) => handleGroupMouseDown(e)}
+      >
         <rect
           width={shape.width + shape.deltaWidth}
           height={shape.height + shape.deltaHeight}
@@ -124,8 +173,11 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
           fill="darkgray"
           fillOpacity={0.2}
           stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
-          strokeDasharray={isSelected ? strokeDasharray + 'px' : 0 + 'px'}
-          onMouseDown={(e) => handleMouseDown(e)}
+          strokeDasharray={
+            isSelected
+              ? selectedStrokeDashArray + 'px'
+              : groupStrokeDashArray + 'px'
+          }
         ></rect>
         <text
           x={textX}
@@ -133,7 +185,6 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
           textAnchor="middle"
           textRendering="optimizeSpeed"
           fontSize={fontSize + 'px'}
-          onMouseDown={(e) => handleMouseDown(e)}
         >
           {shape.text}
         </text>
@@ -146,7 +197,7 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
       id={id}
       transform={transform}
       cursor={cursor}
-      onClick={(e) => e.stopPropagation()}
+      onMouseDown={(e) => handleMouseDown(e)}
     >
       <rect
         width={shape.width + shape.deltaWidth}
@@ -156,8 +207,7 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
         fill="white"
         stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
         strokeWidth={strokeWidth + 'px'}
-        strokeDasharray={isSelected ? strokeDasharray + 'px' : 0 + 'px'}
-        onMouseDown={(e) => handleMouseDown(e)}
+        strokeDasharray={isSelected ? selectedStrokeDashArray + 'px' : 0 + 'px'}
       ></rect>
       <text
         x={textX}
@@ -165,7 +215,6 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
         textAnchor="middle"
         textRendering="optimizeSpeed"
         fontSize={fontSize + 'px'}
-        onMouseDown={(e) => handleMouseDown(e)}
       >
         {shape.text}
       </text>
