@@ -33,7 +33,7 @@ const HiddenTextInput: React.FC = React.memo(() => {
   });
 
   const inputEl = useRef<HTMLInputElement>(null);
-  const inputValue = selectedShapeText || '';
+  const inputValue = !!selectedIsEditing ? selectedShapeText : '';
 
   useEffect(() => {
     if (inputEl && inputEl.current) {
