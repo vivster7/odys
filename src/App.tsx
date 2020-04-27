@@ -7,10 +7,12 @@ import Scratch from './pages/Scratch';
 
 import shapesReducer from './reducers/shapes/shape';
 import svgReducer from './reducers/svg';
+import errorReducer from './reducers/errors';
 
 const rootReducer = combineReducers({
   shapes: shapesReducer,
   svg: svgReducer,
+  errors: errorReducer,
 });
 export type RootState = ReturnType<typeof rootReducer>;
 

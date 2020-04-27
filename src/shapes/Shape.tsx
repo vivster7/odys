@@ -1,10 +1,11 @@
 import React from 'react';
 import { v4 } from 'uuid';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../App';
 import Rect from './Rect';
 import Arrow from './Arrow';
 import Text from './Text';
+import { addError } from '../reducers/errors';
 
 export type ShapeType = 'rect' | 'text' | 'arrow';
 
@@ -42,12 +43,14 @@ export interface ShapeId {
 export const NewShape: React.FC<ShapeId> = (props) => {
   const { id } = props;
   const shape = useSelector((state: RootState) => state.shapes.data[id]);
+  const dispatch = useDispatch();
 
   if (!shape) return <></>;
   if (shape.type === 'rect') return <Rect id={id}></Rect>;
   if (shape.type === 'arrow') return <Arrow id={id}></Arrow>;
   if (shape.type === 'text') return <Text id={id}></Text>;
-  throw new Error(`unknow shape: ${shape.type}`);
+  dispatch(addError(`unknown shape: ${shape.type}`));
+  return <></>;
 };
 
 // Shape can be drawn inside an SVG.

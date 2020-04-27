@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Shape, { idFn, ShapeId, TextEditable } from './Shape';
 import { selectShape } from '../reducers/shapes/shape';
 import { zoomLeveltoScaleMap } from '../reducers/svg';
+import { addError } from '../reducers/errors';
 
 export type ArrowProps = {
   type: 'arrow';
@@ -48,10 +49,12 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const offset = 5 / zoomLeveltoScaleMap[arrow.createdAtZoomLevel];
 
   if (!r1) {
-    throw new Error(`[r1Arrow] Could not find shape$ ${arrow.fromId}`);
+    dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromId}`));
+    return <></>;
   }
   if (!r2) {
-    throw new Error(`[r2Arrow] Could not find shape$ ${arrow.toId}`);
+    dispatch(addError(`[r2Arrow] Could not find shape$ ${arrow.toId}`));
+    return <></>;
   }
 
   const r1X = r1.x + r1.translateX;
@@ -128,7 +131,8 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   } else if (slopeTheta >= r1SW || slopeTheta < r1NW) {
     r1Line = r1Left;
   } else {
-    throw new Error('Could not determine r1Line for arrow offset');
+    dispatch(addError('Could not determine r1Line for arrow offset'));
+    return <></>;
   }
 
   let r2Line: Line;
@@ -141,7 +145,8 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   } else if (slopeTheta >= r2SW || slopeTheta < r2NW) {
     r2Line = r2Right;
   } else {
-    throw new Error('Could not determine r2Line for arrow offset');
+    dispatch(addError('Could not determine r2Line for arrow offset'));
+    return <></>;
   }
 
   const slopeLine = new Line(
