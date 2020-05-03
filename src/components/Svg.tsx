@@ -1,4 +1,4 @@
-import React, { useState, Dispatch } from 'react';
+import React, { useState, Dispatch, useEffect } from 'react';
 import debounce from 'lodash.debounce';
 import {
   cancelSelect,
@@ -9,6 +9,9 @@ import {
   endResize,
   startNewRectByClick,
   startNewRectByDrag,
+  startDragSelection,
+  resizeDragSelection,
+  endDragSelection,
 } from '../reducers/shapes/shape';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../App';
@@ -20,6 +23,7 @@ import {
 } from '../reducers/svg';
 import ShapesContainer from './ShapesContainer';
 import { endNewRectByClick } from '../reducers/shapes/newRect';
+import GroupSelect from './GroupSelect';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -69,17 +73,6 @@ function zoomLevelBucket(existingZoomLevel: number, k: number): number {
     }
   }
   throw new Error(`Couldn't figure out a zoomLevel for scale ${k}`);
-  // const entries = Object.entries(zoomLeveltoScaleMap);
-  // for (let [i, j] = [0, 1]; j < entries.length; [i, j] = [i + 1, j + 1]) {
-  //   let [zoomLevel1, scale1] = entries[i];
-  //   let scale2 = entries[j][1];
-
-  //   if (scale1 <= k && k < scale2) {
-  //     return parseInt(zoomLevel1);
-  //   }
-  // }
-
-  // return Math.max(...Object.keys(zoomLeveltoScaleMap).map((s) => parseInt(s)));
 }
 
 interface PanState {
@@ -90,6 +83,9 @@ interface PanState {
 const Svg: React.FC = () => {
   const dispatch = useDispatch();
   const isDragging = useSelector((state: RootState) => !!state.shapes.drag);
+  const isGroupSelecting = useSelector(
+    (state: RootState) => !!state.shapes.groupSelect
+  );
   const newRectByClickState = useSelector(
     (state: RootState) => state.shapes.newRectByClick
   );
@@ -109,6 +105,30 @@ const Svg: React.FC = () => {
   const [zoomLevel, setZoomLevel] = useState(svgState.zoomLevel);
 
   const [pan, setPan] = useState<PanState | null>(null);
+
+  const [selectMode, setSelectMode] = useState(false);
+  const cursor = selectMode ? 'crosshair' : 'auto';
+
+  function onKeyDownHandler(e: KeyboardEvent) {
+    if (e.key === 'Shift') {
+      setSelectMode(true);
+    }
+  }
+
+  function onKeyUpHandler(e: KeyboardEvent) {
+    if (e.key === 'Shift') {
+      setSelectMode(false);
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', onKeyDownHandler);
+    window.addEventListener('keyup', onKeyUpHandler);
+    return () => {
+      window.removeEventListener('keydown', onKeyDownHandler);
+      window.addEventListener('keyup', onKeyUpHandler);
+    };
+  });
 
   if (svgState.dirty) {
     setTopLeftX(svgState.topLeftX);
@@ -146,6 +166,18 @@ const Svg: React.FC = () => {
       );
     }
 
+    if (isGroupSelecting) {
+      dispatch(
+        resizeDragSelection({
+          clickX: e.clientX,
+          clickY: e.clientY,
+          svgTopLeftX: svgState.topLeftX,
+          svgTopLeftY: svgState.topLeftY,
+          svgScale: svgState.scale,
+        })
+      );
+    }
+
     if (pan !== null) {
       setTranslateX(e.clientX - pan.startX);
       setTranslateY(e.clientY - pan.startY);
@@ -168,6 +200,16 @@ const Svg: React.FC = () => {
     if (e.altKey) {
       dispatch(startNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
       dispatch(startNewRectByDrag({ clickX: e.clientX, clickY: e.clientY }));
+    } else if (selectMode) {
+      dispatch(
+        startDragSelection({
+          x: e.clientX,
+          y: e.clientY,
+          svgTopLeftX: topLeftX,
+          svgTopLeftY: topLeftY,
+          svgScale: scale,
+        })
+      );
     } else {
       setPan({ startX: e.clientX, startY: e.clientY });
     }
@@ -189,6 +231,9 @@ const Svg: React.FC = () => {
 
     if (isDragging) {
       dispatch(endDrag());
+    }
+    if (isGroupSelecting) {
+      dispatch(endDragSelection());
     }
 
     if (pan !== null) {
@@ -244,9 +289,11 @@ const Svg: React.FC = () => {
       onMouseDown={(e) => handleMouseDown(e)}
       onMouseUp={(e) => handleMouseUp(e)}
       onWheel={(e) => handleWheel(e)}
+      cursor={cursor}
     >
-      <g id="odys-zoomable-group" cursor="grab" transform={transform}>
+      <g id="odys-zoomable-group" transform={transform}>
         <ShapesContainer></ShapesContainer>
+        <GroupSelect></GroupSelect>
       </g>
     </svg>
   );

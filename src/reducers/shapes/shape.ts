@@ -35,6 +35,13 @@ interface SelectedShape {
   isEditing: boolean;
 }
 
+interface SelectedGroupState {
+  topLeftX: number;
+  topLeftY: number;
+  deltaWidth: number;
+  deltaHeight: number;
+}
+
 interface DragState {
   id: string;
   clickX: number;
@@ -74,6 +81,7 @@ export interface ShapeState {
   data: ShapeData;
   shapeOrder: string[];
   select: SelectedShape | null;
+  groupSelect: SelectedGroupState | null;
   drag: DragState | null;
   resize: ResizeState | null;
   newRectByClick: NewRectByClickState | null;
@@ -85,6 +93,7 @@ const initialState: ShapeState = {
   data: {},
   shapeOrder: [],
   select: null,
+  groupSelect: null,
   drag: null,
   mouse: null,
   resize: null,
@@ -183,6 +192,10 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   });
 
   if (existing) {
+    state.select = {
+      id: existing.id,
+      isEditing: false,
+    };
     return;
   }
 
@@ -191,24 +204,32 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   const toShape = state.data[action.payload] as RectProps;
   if (!fromShape) throw new Error(`Cannot find shape (${selectId})`);
   if (!toShape) throw new Error(`Cannot find shape (${action.payload})`);
+  if (fromShape.type !== 'rect')
+    throw new Error('Can only draw arrows from Rects.');
+  if (toShape.type !== 'rect')
+    throw new Error('Can only draw arrows to Rects.');
   if (fromShape.createdAtZoomLevel !== toShape.createdAtZoomLevel) {
     throw new Error(
       `Cannot draw arrow across zoomLevel (createdAtZoomLevels dont match)`
     );
   }
 
-  const arrowID = uid();
+  const arrowId = uid();
   const arrow = {
     type: 'arrow',
-    id: arrowID,
+    id: arrowId,
     fromId: selectId,
     toId: action.payload,
     text: '',
     createdAtZoomLevel: fromShape.createdAtZoomLevel,
   } as ArrowProps;
 
-  state.data[arrowID] = arrow;
+  state.data[arrowId] = arrow;
   reorder(state.data, state.shapeOrder, arrow);
+  state.select = {
+    id: arrowId,
+    isEditing: false,
+  };
 };
 
 const selectShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
@@ -255,6 +276,56 @@ const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
   select.isEditing = true;
 };
 
+interface startDragSelection {
+  x: number;
+  y: number;
+  svgTopLeftX: number;
+  svgTopLeftY: number;
+  svgScale: number;
+}
+
+const startDragSelectionFn: ShapeReducer<PayloadAction<startDragSelection>> = (
+  state,
+  action
+) => {
+  const { x, y, svgTopLeftX, svgTopLeftY, svgScale } = action.payload;
+  state.groupSelect = {
+    topLeftX: (x - svgTopLeftX) / svgScale,
+    topLeftY: (y - svgTopLeftY) / svgScale,
+    deltaWidth: 0,
+    deltaHeight: 0,
+  };
+};
+
+interface resizeDragSelection {
+  clickX: number;
+  clickY: number;
+  svgTopLeftX: number;
+  svgTopLeftY: number;
+  svgScale: number;
+}
+
+const resizeDragSelectionFn: ShapeReducer<PayloadAction<
+  resizeDragSelection
+>> = (state, action) => {
+  if (!state.groupSelect)
+    throw new Error(
+      `shapes/startDragSelection must be called before shapes/resizeDragSelection`
+    );
+
+  const { clickX, clickY, svgTopLeftX, svgTopLeftY, svgScale } = action.payload;
+  const { topLeftX, topLeftY } = state.groupSelect;
+  const deltaWidth = (clickX - svgTopLeftX) / svgScale - topLeftX;
+  const deltaHeight = (clickY - svgTopLeftY) / svgScale - topLeftY;
+
+  state.groupSelect.deltaWidth = deltaWidth;
+  state.groupSelect.deltaHeight = deltaHeight;
+};
+
+const endDragSelectionFn: ShapeReducer<PayloadAction> = (state, action) => {
+  state.groupSelect = null;
+};
+
 const shapesSlice = createSlice({
   name: 'shapes',
   initialState: initialState,
@@ -275,6 +346,9 @@ const shapesSlice = createSlice({
     startNewRectByClick: startNewRectByClickFn,
     startNewRectByDrag: startNewRectByDragFn,
     endNewRectByDrag: endNewRectByDragFn,
+    startDragSelection: startDragSelectionFn,
+    resizeDragSelection: resizeDragSelectionFn,
+    endDragSelection: endDragSelectionFn,
   },
   extraReducers: {
     [endNewRectByClick.fulfilled as any]: (state, action) => {
@@ -312,6 +386,9 @@ export const {
   startNewRectByClick,
   startNewRectByDrag,
   endNewRectByDrag,
+  startDragSelection,
+  resizeDragSelection,
+  endDragSelection,
 } = shapesSlice.actions;
 const shapesReducer = shapesSlice.reducer;
 export default shapesReducer;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Svg from './Svg';
 import { RECT_HEIGHT, RECT_WIDTH, RectProps } from '../shapes/Rect';
 import { v4 } from 'uuid';
@@ -29,41 +29,25 @@ const DrawingBoard: React.FC = () => {
       createdAtZoomLevel: 5,
     };
 
-    const rect1: RectProps = {
-      type: 'rect',
-      id: rect1Id,
-      text: 'A',
-      x: 100,
-      y: 150,
-      translateX: 0,
-      translateY: 0,
-      width: RECT_WIDTH,
-      height: RECT_HEIGHT,
-      deltaWidth: 0,
-      deltaHeight: 0,
-      isGroupingRect: false,
-      createdAtZoomLevel: 5,
+    const rect = (text: string, x: number, y: number): RectProps => {
+      return {
+        type: 'rect',
+        id: id(),
+        text: text,
+        x: x,
+        y: y,
+        translateX: 0,
+        translateY: 0,
+        width: RECT_WIDTH,
+        height: RECT_HEIGHT,
+        deltaWidth: 0,
+        deltaHeight: 0,
+        isGroupingRect: false,
+        createdAtZoomLevel: 5,
+      };
     };
-
-    const rect2: RectProps = {
-      type: 'rect',
-      id: rect2Id,
-      text: 'B',
-      x: 400,
-      y: 150,
-      translateX: 0,
-      translateY: 0,
-      width: RECT_WIDTH,
-      height: RECT_HEIGHT,
-      deltaWidth: 0,
-      deltaHeight: 0,
-      isGroupingRect: false,
-      createdAtZoomLevel: 5,
-    };
-
-    dispatch(addShape(rect1 as Shape));
-    dispatch(addShape(rect2 as Shape));
-    dispatch(addShape(arrow as Shape));
+    dispatch(addShape(rect('A', 150, 100)));
+    dispatch(addShape(rect('B', 400, 100)));
   }
 
   return (

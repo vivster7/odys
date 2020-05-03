@@ -45,7 +45,6 @@ export const resizeFn: ShapeReducer<PayloadAction<Resize>> = (
   }
 
   const { clickX, clickY, svgScale } = action.payload;
-
   const { originalX, originalY } = state.resize;
 
   let translateX = 0;

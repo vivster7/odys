@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   selectShape,
   drawArrow,
@@ -84,13 +84,10 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
-    if (!e.altKey) {
-      dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
-    }
-
-    if (!!selected && e.altKey && !overlaps(selected)) {
+    if (e.altKey && !!selected && !overlaps(selected) && !isSelected) {
       dispatch(drawArrow(id));
-    } else if (!e.altKey) {
+    } else {
+      dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
       dispatch(selectShape(id));
     }
   }
