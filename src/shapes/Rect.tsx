@@ -59,13 +59,12 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   const cursor = draggedId === id ? 'grabbing' : 'grab';
   const isSelected = id === (selected && selected.id);
 
-  const fontSize = 14 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
-  const radiusSize = 4 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
-  const strokeWidth = 1 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
-  const selectedStrokeDashArray =
-    5 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
-  const groupStrokeDashArray =
-    3 / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const rectScale = zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const fontSize = 14 / rectScale;
+  const radiusSize = 4 / rectScale;
+  const strokeWidth = 1 / rectScale;
+  const selectedStrokeDashArray = 5 / rectScale;
+  const groupStrokeDashArray = 3 / rectScale;
   const groupCursor = isSelected
     ? draggedId === id
       ? 'grabbing'
