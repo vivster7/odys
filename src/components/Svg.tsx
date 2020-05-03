@@ -35,7 +35,7 @@ const debouncedOnWheelEnd = debounce(
   ) => {
     dispatch(wheelEnd({ topLeftX, topLeftY, scale, zoomLevel }));
   },
-  200
+  150
 );
 
 // force `n` to be between min and max (inclusive)
