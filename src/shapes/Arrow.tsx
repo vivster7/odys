@@ -1,7 +1,7 @@
 import React from 'react';
 import Arrowhead from './Arrowhead';
 import { RectProps } from './Rect';
-import Line from '../math/line';
+import Line, { intersects } from '../math/line';
 import { RootState } from '../App';
 import { useSelector, useDispatch } from 'react-redux';
 import Shape, { idFn, ShapeId, TextEditable } from './Shape';
@@ -86,39 +86,39 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const r2SW = angle(r2Y + r2Height - r2YMid, r2X - r2XMid);
   const r2SE = angle(r2Y + r2Height - r2YMid, r2X + r2Width - r2XMid);
 
-  const r1Below = new Line(
-    { x: r1X, y: r1Y + r1Height + offset },
-    { x: r1X + r1Width, y: r1Y + r1Height + offset }
-  );
-  const r1Above = new Line(
-    { x: r1X, y: r1Y - offset },
-    { x: r1X + r1Width, y: r1Y - offset }
-  );
-  const r1Left = new Line(
-    { x: r1X - offset, y: r1Y },
-    { x: r1X - offset, y: r1Y + r1Height }
-  );
-  const r1Right = new Line(
-    { x: r1X + r1Width + offset, y: r1Y },
-    { x: r1X + r1Width + offset, y: r1Y + r1Height }
-  );
+  const r1Below = {
+    p: { x: r1X, y: r1Y + r1Height + offset },
+    q: { x: r1X + r1Width, y: r1Y + r1Height + offset },
+  };
+  const r1Above = {
+    p: { x: r1X, y: r1Y - offset },
+    q: { x: r1X + r1Width, y: r1Y - offset },
+  };
+  const r1Left = {
+    p: { x: r1X - offset, y: r1Y },
+    q: { x: r1X - offset, y: r1Y + r1Height },
+  };
+  const r1Right = {
+    p: { x: r1X + r1Width + offset, y: r1Y },
+    q: { x: r1X + r1Width + offset, y: r1Y + r1Height },
+  };
 
-  const r2Below = new Line(
-    { x: r2X, y: r2Y + r2Height + offset },
-    { x: r2X + r2Width, y: r2Y + r2Height + offset }
-  );
-  const r2Above = new Line(
-    { x: r2X, y: r2Y - offset },
-    { x: r2X + r2Width, y: r2Y - offset }
-  );
-  const r2Left = new Line(
-    { x: r2X - offset, y: r2Y },
-    { x: r2X - offset, y: r2Y + r2Height }
-  );
-  const r2Right = new Line(
-    { x: r2X + r2Width + offset, y: r2Y },
-    { x: r2X + r2Width + offset, y: r2Y + r2Height }
-  );
+  const r2Below = {
+    p: { x: r2X, y: r2Y + r2Height + offset },
+    q: { x: r2X + r2Width, y: r2Y + r2Height + offset },
+  };
+  const r2Above = {
+    p: { x: r2X, y: r2Y - offset },
+    q: { x: r2X + r2Width, y: r2Y - offset },
+  };
+  const r2Left = {
+    p: { x: r2X - offset, y: r2Y },
+    q: { x: r2X - offset, y: r2Y + r2Height },
+  };
+  const r2Right = {
+    p: { x: r2X + r2Width + offset, y: r2Y },
+    q: { x: r2X + r2Width + offset, y: r2Y + r2Height },
+  };
 
   const slopeTheta = angle(r2YMid - r1YMid, r2XMid - r1XMid);
   let r1Line: Line;
@@ -149,12 +149,12 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
     return <></>;
   }
 
-  const slopeLine = new Line(
-    { x: r1XMid, y: r1YMid },
-    { x: r2XMid, y: r2YMid }
-  );
-  const r1Offset = slopeLine.intersects(r1Line);
-  const r2Offset = slopeLine.intersects(r2Line);
+  const slopeLine = {
+    p: { x: r1XMid, y: r1YMid },
+    q: { x: r2XMid, y: r2YMid },
+  };
+  const r1Offset = intersects(slopeLine, r1Line);
+  const r2Offset = intersects(slopeLine, r2Line);
 
   const x1 = r1Offset.x;
   const y1 = r1Offset.y;
