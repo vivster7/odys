@@ -18,6 +18,7 @@ import Shape, {
   Resizable,
 } from './Shape';
 import { zoomLeveltoScaleMap } from '../reducers/svg';
+import { isOverlapping } from '../math/rect';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
@@ -46,6 +47,10 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
     (state: RootState) =>
       !!state.shapes.select?.id && state.shapes.data[state.shapes.select?.id]
   );
+  const isGroupSelected = useSelector(
+    (state: RootState) => !!state.shapes.groupSelect?.selectedShapeIds[id]
+  );
+  const isSelected = id === (selected && selected.id);
 
   const [x, y] = [shape.x, shape.y];
   const [textX, textY] = [
@@ -57,7 +62,6 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
     y + shape.translateY
   })`;
   const cursor = draggedId === id ? 'grabbing' : 'grab';
-  const isSelected = id === (selected && selected.id);
 
   const rectScale = zoomLeveltoScaleMap[shape.createdAtZoomLevel];
   const fontSize = 14 / rectScale;
@@ -71,19 +75,14 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
       : 'grab'
     : 'auto';
 
-  function overlaps(s: Shape): boolean {
-    const shape2 = s as RectProps;
-    return (
-      ((shape.x < shape2.x && shape.x + shape.width >= shape2.x) ||
-        (shape2.x < shape.x && shape2.x + shape2.width >= shape.x)) &&
-      ((shape.y < shape2.y && shape.y + shape.height >= shape2.y) ||
-        (shape2.y < shape.y && shape2.y + shape2.height >= shape.y))
-    );
-  }
-
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
-    if (e.altKey && !!selected && !overlaps(selected) && !isSelected) {
+    if (
+      e.altKey &&
+      !!selected &&
+      !isOverlapping(shape, selected as RectProps) &&
+      !isSelected
+    ) {
       dispatch(drawArrow(id));
     } else {
       dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
@@ -94,18 +93,20 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   function handleGroupMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
 
-    if (!e.altKey) {
-      dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
-    }
-
-    if (e.altKey && !!selected && !overlaps(selected) && !isSelected) {
+    if (
+      e.altKey &&
+      !!selected &&
+      !isOverlapping(shape, selected as RectProps) &&
+      !isSelected
+    ) {
       dispatch(drawArrow(id));
     } else if (e.altKey) {
       // endNewRect handled on MouseUp.
       dispatch(startNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
       dispatch(startNewRectByDrag({ clickX: e.clientX, clickY: e.clientY }));
-    } else if (!e.altKey) {
+    } else {
       dispatch(selectShape(id));
+      dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
     }
   }
 
@@ -168,9 +169,9 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
           ry="4"
           fill="darkgray"
           fillOpacity={0.2}
-          stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
+          stroke={isSelected || isGroupSelected ? 'cornflowerblue' : 'darkgray'}
           strokeDasharray={
-            isSelected
+            isSelected || isGroupSelected
               ? selectedStrokeDashArray + 'px'
               : groupStrokeDashArray + 'px'
           }
@@ -201,9 +202,13 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
         rx={radiusSize + 'px'}
         ry={radiusSize + 'px'}
         fill="white"
-        stroke={isSelected ? 'cornflowerblue' : 'darkgray'}
+        stroke={isSelected || isGroupSelected ? 'cornflowerblue' : 'darkgray'}
         strokeWidth={strokeWidth + 'px'}
-        strokeDasharray={isSelected ? selectedStrokeDashArray + 'px' : 0 + 'px'}
+        strokeDasharray={
+          isSelected || isGroupSelected
+            ? selectedStrokeDashArray + 'px'
+            : 0 + 'px'
+        }
       ></rect>
       <text
         x={textX}

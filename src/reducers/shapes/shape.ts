@@ -10,6 +10,7 @@ import {
 import { ArrowProps } from '../../shapes/Arrow';
 import { startDragFn, dragFn, endDragFn } from './drag';
 import { startResizeFn, resizeFn, endResizeFn } from './resize';
+import { selectShapeFn, cancelSelectFn } from './select';
 import { v4 } from 'uuid';
 import {
   startNewRectByClickFn,
@@ -18,8 +19,15 @@ import {
   endNewRectByDragFn,
 } from './newRect';
 import { RectProps } from '../../shapes/Rect';
+import Rect from '../../math/rect';
+import {
+  startDragSelectionFn,
+  resizeDragSelectionFn,
+  endDragSelectionFn,
+  endGroupDragFn,
+} from './groupSelect';
 
-type ShapeID = string;
+export type ShapeID = string;
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
 export type SEAnchor = 'SEAnchor';
@@ -35,17 +43,21 @@ interface SelectedShape {
   isEditing: boolean;
 }
 
-interface SelectedGroupState {
-  topLeftX: number;
-  topLeftY: number;
-  deltaWidth: number;
-  deltaHeight: number;
-}
-
 interface DragState {
   id: string;
   clickX: number;
   clickY: number;
+}
+
+interface GroupSelectState {
+  selectionRect: Rect | null;
+  selectedShapeIds: { [key: string]: boolean };
+  outline: Rect;
+}
+
+interface GroupDragState {
+  startX: number;
+  startY: number;
 }
 
 interface MouseState {
@@ -81,8 +93,9 @@ export interface ShapeState {
   data: ShapeData;
   shapeOrder: string[];
   select: SelectedShape | null;
-  groupSelect: SelectedGroupState | null;
   drag: DragState | null;
+  groupSelect: GroupSelectState | null;
+  groupDrag: GroupDragState | null;
   resize: ResizeState | null;
   newRectByClick: NewRectByClickState | null;
   endNewRectByDrag: NewRectByDragState | null;
@@ -94,6 +107,7 @@ const initialState: ShapeState = {
   shapeOrder: [],
   select: null,
   groupSelect: null,
+  groupDrag: null,
   drag: null,
   mouse: null,
   resize: null,
@@ -232,23 +246,6 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   };
 };
 
-const selectShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
-  const id = action.payload;
-  if (!state.data[id]) {
-    throw new Error(`Cannot find shape with ${id}`);
-  }
-
-  state.select = {
-    id,
-    isEditing: false,
-  };
-  reorder(state.data, state.shapeOrder, state.data[id]);
-};
-
-const cancelSelectFn: ShapeReducer<PayloadAction> = (state, action) => {
-  state.select = null;
-};
-
 const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
   state,
   action
@@ -276,56 +273,6 @@ const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
   select.isEditing = true;
 };
 
-interface startDragSelection {
-  x: number;
-  y: number;
-  svgTopLeftX: number;
-  svgTopLeftY: number;
-  svgScale: number;
-}
-
-const startDragSelectionFn: ShapeReducer<PayloadAction<startDragSelection>> = (
-  state,
-  action
-) => {
-  const { x, y, svgTopLeftX, svgTopLeftY, svgScale } = action.payload;
-  state.groupSelect = {
-    topLeftX: (x - svgTopLeftX) / svgScale,
-    topLeftY: (y - svgTopLeftY) / svgScale,
-    deltaWidth: 0,
-    deltaHeight: 0,
-  };
-};
-
-interface resizeDragSelection {
-  clickX: number;
-  clickY: number;
-  svgTopLeftX: number;
-  svgTopLeftY: number;
-  svgScale: number;
-}
-
-const resizeDragSelectionFn: ShapeReducer<PayloadAction<
-  resizeDragSelection
->> = (state, action) => {
-  if (!state.groupSelect)
-    throw new Error(
-      `shapes/startDragSelection must be called before shapes/resizeDragSelection`
-    );
-
-  const { clickX, clickY, svgTopLeftX, svgTopLeftY, svgScale } = action.payload;
-  const { topLeftX, topLeftY } = state.groupSelect;
-  const deltaWidth = (clickX - svgTopLeftX) / svgScale - topLeftX;
-  const deltaHeight = (clickY - svgTopLeftY) / svgScale - topLeftY;
-
-  state.groupSelect.deltaWidth = deltaWidth;
-  state.groupSelect.deltaHeight = deltaHeight;
-};
-
-const endDragSelectionFn: ShapeReducer<PayloadAction> = (state, action) => {
-  state.groupSelect = null;
-};
-
 const shapesSlice = createSlice({
   name: 'shapes',
   initialState: initialState,
@@ -334,21 +281,27 @@ const shapesSlice = createSlice({
     raiseShape: raiseShapeFn,
     deleteShape: deleteShapeFn,
     drawArrow: drawArrowFn,
+    selectedShapeEditText: selectedShapeEditTextFn,
+    // select
     selectShape: selectShapeFn,
     cancelSelect: cancelSelectFn,
-    selectedShapeEditText: selectedShapeEditTextFn,
+    //drag
     startDrag: startDragFn,
     drag: dragFn,
     endDrag: endDragFn,
+    //resize
     startResize: startResizeFn,
     resize: resizeFn,
     endResize: endResizeFn,
+    //newRect
     startNewRectByClick: startNewRectByClickFn,
     startNewRectByDrag: startNewRectByDragFn,
     endNewRectByDrag: endNewRectByDragFn,
+    // groupSelect
     startDragSelection: startDragSelectionFn,
     resizeDragSelection: resizeDragSelectionFn,
     endDragSelection: endDragSelectionFn,
+    endGroupDrag: endGroupDragFn,
   },
   extraReducers: {
     [endNewRectByClick.fulfilled as any]: (state, action) => {
@@ -389,6 +342,7 @@ export const {
   startDragSelection,
   resizeDragSelection,
   endDragSelection,
+  endGroupDrag,
 } = shapesSlice.actions;
 const shapesReducer = shapesSlice.reducer;
 export default shapesReducer;

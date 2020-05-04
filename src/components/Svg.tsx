@@ -84,8 +84,9 @@ const Svg: React.FC = () => {
   const dispatch = useDispatch();
   const isDragging = useSelector((state: RootState) => !!state.shapes.drag);
   const isGroupSelecting = useSelector(
-    (state: RootState) => !!state.shapes.groupSelect
+    (state: RootState) => !!state.shapes.groupSelect?.selectionRect
   );
+
   const newRectByClickState = useSelector(
     (state: RootState) => state.shapes.newRectByClick
   );
