@@ -1,0 +1,22 @@
+{
+  "name": "odys",
+  "version": "1.0.0",
+  "description": "diagrams, diagrams, diagrams",
+  "dependencies": {},
+  "devDependencies": {
+    "husky": "^4.2.5"
+  },
+  "scripts": {},
+  "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "client/src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
+  }
+}
