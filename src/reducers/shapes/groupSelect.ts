@@ -75,7 +75,9 @@ export const endDragSelectionFn: ShapeReducer<PayloadAction> = (
   const { selectedShapeIds } = state.groupSelect;
 
   const keys = Object.keys(selectedShapeIds);
-  if (keys.length === 1) {
+  if (keys.length === 0) {
+    return;
+  } else if (keys.length === 1) {
     state.select = {
       id: keys[0],
       isEditing: false,
