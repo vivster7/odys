@@ -16,6 +16,7 @@
     "@types/react-redux": "^7.1.7",
     "@types/redux": "^3.6.0",
     "@types/uuid": "^3.4.5",
+    "apollo-boost": "^0.4.7",
     "apollo-cache-inmemory": "^1.6.5",
     "apollo-client": "^2.6.8",
     "apollo-link-http": "^1.5.17",

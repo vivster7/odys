@@ -20,14 +20,14 @@ const Users: React.FC = () => {
   }, [data, error, loading]);
 
   return (
-    <>
+    <div>
       <h2>Hello users,</h2>
       {/*users &&
         users.length > 0 &&
         users.map((user: User, index: number) => (
           <p key={`user_${index}`}>{user.name}</p>
         ))*/}
-    </>
+    </div>
   );
 };
 
