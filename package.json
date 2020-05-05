@@ -5,14 +5,15 @@
   "description": "diagrams, diagrams, diagrams",
   "dependencies": {},
   "devDependencies": {
+    "concurrently": "^5.2.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.2",
     "prettier": "^2.0.5"
   },
   "scripts": {
-    "start": "cd client && npm start",
-    "build": "cd client && npm build",
-    "test": "cd client && npm test"
+    "start": "concurrently --kill-others \"yarn start-client\" \"yarn start-server\"",
+    "start-client": "cd client && yarn start",
+    "start-server": "cd server && yarn start"
   },
   "license": "MIT",
   "husky": {
