@@ -5,9 +5,9 @@
   "description": "postgraphile graphql api server",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
-    "watch": "nodemon src/index.js"
+    "watch": "nodemon src/index.js",
+    "migrate": "npx knex migrate:latest"
   },
   "repository": {
     "type": "git",
