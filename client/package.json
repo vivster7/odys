@@ -4,31 +4,25 @@
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.3.4",
-    "@types/jest": "24.0.18",
-    "@types/lodash.debounce": "^4.0.6",
-    "@types/lodash.throttle": "^4.1.6",
-    "@types/node": "12.7.2",
-    "@types/react": "^16.9.34",
-    "@types/react-dom": "^16.9.6",
-    "@types/react-redux": "^7.1.7",
-    "@types/redux": "^3.6.0",
-    "@types/uuid": "^3.4.5",
+    "babel-plugin-relay": "^9.1.0",
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
-    "react": "^16.13",
-    "react-dom": "^16.13",
+    "react": "^0.0.0-experimental-e5d06e34b",
+    "react-dom": "^0.0.0-experimental-e5d06e34b",
     "react-redux": "^7.2.0",
-    "react-scripts": "3.4.1",
+    "react-relay": "^0.0.0-experimental-895a6fe0",
     "redux": "^4.0.5",
-    "typescript": "^3.8",
+    "relay-runtime": "^9.1.0",
     "uuid": "^3.3.3"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "concurrently \"yarn run relay-watch\" \"react-scripts start\"",
+    "build": "yarn run relay && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "relay": "yarn run relay-compiler --schema ../shared/schema.graphql --src ./src/ --language typescript",
+    "relay-watch": "yarn run relay-compiler --schema ../shared/schema.graphql --src ./src/ --language typescript --watch"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -45,7 +39,25 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/jest": "24.0.18",
+    "@types/lodash.debounce": "^4.0.6",
+    "@types/lodash.throttle": "^4.1.6",
+    "@types/node": "12.7.2",
+    "@types/react": "^16.9.34",
+    "@types/react-dom": "^16.9.6",
+    "@types/react-redux": "^7.1.7",
+    "@types/react-relay": "^7.0.6",
+    "@types/redux": "^3.6.0",
+    "@types/relay-runtime": "^8.0.9",
+    "@types/uuid": "^3.4.5",
+    "concurrently": "^5.2.0",
+    "graphql": "^15.0.0",
+    "react-scripts": "3.4.1",
+    "relay-compiler": "^9.1.0",
+    "relay-compiler-language-typescript": "^12.0.1",
+    "typescript": "^3.8.3"
+  },
   "proxy": "http://localhost:8080",
   "homepage": "http://vivster7.github.io/posts/boxes-and-arrows/"
 }

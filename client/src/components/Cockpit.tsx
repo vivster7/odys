@@ -4,6 +4,12 @@ import minus from '../minus.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../App';
 import { changeZoomLevel, dirtySvg } from '../reducers/svg';
+import graphql from 'babel-plugin-relay/macro';
+import { useMutation } from 'react-relay/hooks';
+import {
+  CockpitMouseMutation,
+  CockpitMouseMutationVariables,
+} from './__generated__/CockpitMouseMutation.graphql';
 
 interface Cursor {
   x: number;
@@ -24,12 +30,22 @@ function onMouseMove(
   topLeftX: number,
   topLeftY: number,
   scale: number,
-  setCursor: React.Dispatch<React.SetStateAction<Cursor>>
+  setCursor: React.Dispatch<React.SetStateAction<Cursor>>,
+  commit: any
 ) {
   return (e: MouseEvent) => {
     const x = (e.clientX - topLeftX) / scale;
     const y = (e.clientY - topLeftY) / scale;
     setCursor({ x, y });
+    commit({
+      variables: {
+        patch: {
+          x: x,
+          y: y,
+        },
+        rowId: 1,
+      },
+    });
   };
 }
 
@@ -38,11 +54,32 @@ const Cockpit: React.FC = () => {
   const { topLeftX, topLeftY, scale, zoomLevel } = svgState;
 
   const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
+    const [commit, isInFlight] = useMutation<CockpitMouseMutation>(graphql`
+      mutation CockpitMouseMutation(
+        $patch: MouseCoordinatePatch!
+        $rowId: Int!
+      ) {
+        updateMouseCoordinate(input: { patch: $patch, rowId: $rowId }) {
+          mouseCoordinate {
+            id
+            x
+            y
+          }
+        }
+      }
+    `);
+
     const [cursor, setCursor] = useState<Cursor>({ x: 0, y: 0 });
     const { topLeftX, topLeftY, scale } = props;
 
     useEffect(() => {
-      const mouseMoveFn = onMouseMove(topLeftX, topLeftY, scale, setCursor);
+      const mouseMoveFn = onMouseMove(
+        topLeftX,
+        topLeftY,
+        scale,
+        setCursor,
+        commit
+      );
       window.addEventListener('mousemove', mouseMoveFn);
       return () => window.removeEventListener('mousemove', mouseMoveFn);
     }, [topLeftX, topLeftY, scale, setCursor]);

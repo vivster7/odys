@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 
@@ -9,6 +9,14 @@ import shapesReducer from './reducers/shapes/shape';
 import svgReducer from './reducers/svg';
 
 import errorReducer from './reducers/errors';
+import {
+  RelayEnvironmentProvider,
+  preloadQuery,
+  usePreloadedQuery,
+} from 'react-relay/hooks';
+import RelayEnvironment from './RelayEnvironment';
+import Users, { RepositoryNameQuery } from './components/Users';
+import { UsersQuery } from './components/__generated__/UsersQuery.graphql';
 
 const rootReducer = combineReducers({
   shapes: shapesReducer,
@@ -23,12 +31,24 @@ const store = configureStore({
 
 export type OdysDispatch = typeof store.dispatch;
 
+const users = preloadQuery<UsersQuery>(
+  RelayEnvironment,
+  RepositoryNameQuery,
+  null as any
+);
+
 const App: React.FC = () => {
   return (
-    <Provider store={store}>
-      <DrawingPage></DrawingPage>
-      {/* <Scratch></Scratch> */}
-    </Provider>
+
+    <RelayEnvironmentProvider environment={RelayEnvironment}>
+      <Provider store={store}>
+        <Suspense fallback={'Loading...'}>
+          <Users users={users}></Users>
+        </Suspense>
+        <DrawingPage></DrawingPage>
+        {/* <Scratch></Scratch> */}
+      </Provider>
+    </RelayEnvironmentProvider>
   );
 };
 
