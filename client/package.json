@@ -60,5 +60,6 @@
     "@graphql-codegen/typescript-operations": "1.13.5",
     "@graphql-codegen/typescript-react-apollo": "1.13.5"
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080",
+  "homepage": "http://vivster7.github.io/posts/boxes-and-arrows/"
 }
