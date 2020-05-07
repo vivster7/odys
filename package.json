@@ -22,7 +22,7 @@
     }
   },
   "lint-staged": {
-    "client/src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+    "{client,server}/src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --single-quote --write"
     ]
   }
