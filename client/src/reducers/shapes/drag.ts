@@ -2,6 +2,8 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { ShapeReducer, reorder } from './shape';
 import { RectProps } from '../../shapes/Rect';
 
+import io from 'socket.io-client';
+
 interface StartDrag {
   id: string;
   clickX: number;
@@ -42,6 +44,10 @@ export const dragFn: ShapeReducer<PayloadAction<Drag>> = (state, action) => {
     (action.payload.clickX - state.drag.clickX) / action.payload.scale;
   shape.translateY =
     (action.payload.clickY - state.drag.clickY) / action.payload.scale;
+
+  // not the way to do it. this creates a new connection everytime i think
+  const socket = io();
+  socket.emit('move', { x: shape.translateX, y: shape.translateY });
 };
 
 export const endDragFn: ShapeReducer<PayloadAction> = (state, action) => {
