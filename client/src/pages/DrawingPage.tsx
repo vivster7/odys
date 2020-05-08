@@ -1,6 +1,6 @@
 import React from 'react';
 import DrawingBoard from '../components/DrawingBoard';
-import Cockpit from '../components/Cockpit';
+import Cockpit from '../components/cockpit/Cockpit';
 import ToastContainer from '../components/ToastContainer';
 
 const DrawingPage: React.FC = () => {
