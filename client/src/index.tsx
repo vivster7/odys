@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-// import ApolloClient from 'apollo-client';
+import * as socket from './socket'; // eslint-disable-line
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

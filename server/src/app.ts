@@ -21,7 +21,10 @@ const io = socket(server);
 io.on('connection', (socket: socket.Socket) => {
   console.log('new client connected');
 
-  socket.emit('message', new Date());
+  socket.on('client connected', () => {
+    console.log(`client ${socket.client.id} emitted a connect event`);
+    socket.broadcast.emit('other client connect', { id: socket.client.id });
+  });
 
   socket.on('disconnect', () => {
     console.log('client disconnected');
