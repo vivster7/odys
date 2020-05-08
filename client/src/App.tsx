@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import io from 'socket.io-client';
+
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 
@@ -23,7 +25,22 @@ const store = configureStore({
 
 export type OdysDispatch = typeof store.dispatch;
 
+const ENDPOINT = 'http://localhost:3000';
+
 const App: React.FC = () => {
+  useEffect(() => {
+    const socket = io.connect(ENDPOINT);
+    // const socket = io({
+    //   transports: ['websocket'],
+    // });
+    socket.on('connect', () => {
+      console.log('connected to server');
+    });
+    socket.on('message', (data: any) => {
+      console.log('from api', data);
+    });
+  }, []);
+
   return (
     <Provider store={store}>
       <DrawingPage></DrawingPage>
