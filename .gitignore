@@ -10,3 +10,9 @@ node_modules/
 
 # builds
 server/build/
+
+# postgrest configuration
+postgrest.conf
+postgrest.dev.conf
+postgrest.staging.conf
+postgrest.production.conf
