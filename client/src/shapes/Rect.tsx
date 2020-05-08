@@ -42,7 +42,9 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
     (state: RootState) => state.shapes.data[id] as RectProps
   );
 
-  const draggedId = useSelector((state: RootState) => state.shapes.drag?.id);
+  const isDragging = useSelector(
+    (state: RootState) => state.shapes.drag?.id === id
+  );
   const selected = useSelector(
     (state: RootState) =>
       !!state.shapes.select?.id && state.shapes.data[state.shapes.select?.id]
@@ -61,7 +63,7 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   const transform = `translate(${x + shape.translateX}, ${
     y + shape.translateY
   })`;
-  const cursor = draggedId === id ? 'grabbing' : 'grab';
+  const cursor = isDragging ? 'grabbing' : 'grab';
 
   const rectScale = zoomLeveltoScaleMap[shape.createdAtZoomLevel];
   const fontSize = 14 / rectScale;
@@ -69,11 +71,7 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   const strokeWidth = 1 / rectScale;
   const selectedStrokeDashArray = 5 / rectScale;
   const groupStrokeDashArray = 3 / rectScale;
-  const groupCursor = isSelected
-    ? draggedId === id
-      ? 'grabbing'
-      : 'grab'
-    : 'auto';
+  const groupCursor = isSelected ? (isDragging ? 'grabbing' : 'grab') : 'auto';
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
