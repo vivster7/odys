@@ -1,6 +1,8 @@
-import { PayloadAction } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { ShapeReducer, reorder } from './shape';
 import { RectProps } from '../../shapes/Rect';
+import socket from '../../socket';
+import { RootState } from '../../App';
 
 interface StartDrag {
   id: string;
@@ -13,6 +15,23 @@ interface Drag {
   clickY: number;
   scale: number;
 }
+
+export const asyncDrag = createAsyncThunk(
+  'shapes/asyncDrag',
+  async (args: Drag, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    if (!state.shapes.drag)
+      throw new Error('drag must have started before shapes/asyncDrag');
+
+    const { id } = state.shapes.drag;
+    const shape = state.shapes.data[id] as RectProps;
+
+    const x = (args.clickX - state.shapes.drag.clickX) / args.scale;
+    const y = (args.clickY - state.shapes.drag.clickY) / args.scale;
+
+    socket.emit('drag', { id: id, x: shape.x + x, y: shape.y + y });
+  }
+);
 
 export const startDragFn: ShapeReducer<PayloadAction<StartDrag>> = (
   state,

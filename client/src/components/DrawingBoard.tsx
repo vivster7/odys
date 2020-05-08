@@ -17,8 +17,8 @@ const DrawingBoard: React.FC = () => {
 
   // temp seed data
   if (Object.entries(shapes.data).length === 0) {
-    const rect1Id = id();
-    const rect2Id = id();
+    const rect1Id = '1';
+    const rect2Id = '2';
 
     const arrow: ArrowProps = {
       type: 'arrow',
@@ -29,10 +29,15 @@ const DrawingBoard: React.FC = () => {
       createdAtZoomLevel: 5,
     };
 
-    const rect = (text: string, x: number, y: number): RectProps => {
+    const rect = (
+      id: string,
+      text: string,
+      x: number,
+      y: number
+    ): RectProps => {
       return {
         type: 'rect',
-        id: id(),
+        id: id,
         text: text,
         x: x,
         y: y,
@@ -46,8 +51,8 @@ const DrawingBoard: React.FC = () => {
         createdAtZoomLevel: 5,
       };
     };
-    dispatch(addShape(rect('A', 150, 100)));
-    dispatch(addShape(rect('B', 400, 100)));
+    dispatch(addShape(rect('1', 'A', 150, 100)));
+    dispatch(addShape(rect('2', 'B', 400, 100)));
   }
 
   return (

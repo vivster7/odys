@@ -153,6 +153,19 @@ const addShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
   reorder(state.data, state.shapeOrder, action.payload);
 };
 
+const editShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
+  const { id } = action.payload;
+  if (!state.data[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
+  }
+  const shape = state.data[id];
+  state.data[id] = {
+    ...shape,
+    ...action.payload,
+  };
+  reorder(state.data, state.shapeOrder, action.payload);
+};
+
 const raiseShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   const id = action.payload;
   if (!state.data[id]) {
@@ -278,6 +291,7 @@ const shapesSlice = createSlice({
   initialState: initialState,
   reducers: {
     addShape: addShapeFn,
+    editShape: editShapeFn,
     raiseShape: raiseShapeFn,
     deleteShape: deleteShapeFn,
     drawArrow: drawArrowFn,
@@ -325,6 +339,7 @@ const shapesSlice = createSlice({
 
 export const {
   addShape,
+  editShape,
   deleteShape,
   selectedShapeEditText,
   cancelSelect,
