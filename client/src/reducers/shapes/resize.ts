@@ -81,6 +81,7 @@ export const resizeFn: ShapeReducer<PayloadAction<Resize>> = (
   shape.translateY = translateY;
   shape.deltaWidth = deltaWidth;
   shape.deltaHeight = deltaHeight;
+  shape.isLastUpdatedBySync = false;
 };
 
 export const endResizeFn: ShapeReducer<PayloadAction> = (state, action) => {
@@ -104,6 +105,7 @@ export const endResizeFn: ShapeReducer<PayloadAction> = (state, action) => {
   shape.height = shape.height + shape.deltaHeight;
   shape.deltaWidth = 0;
   shape.deltaHeight = 0;
+  shape.isLastUpdatedBySync = false;
 
   state.drag = null;
   state.newRectByClick = null;

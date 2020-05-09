@@ -75,6 +75,7 @@ export const endNewRectByClick = createAsyncThunk(
       deltaHeight: 0,
       isGroupingRect: false,
       createdAtZoomLevel: svg.zoomLevel,
+      isLastUpdatedBySync: false,
     };
 
     return rect;
@@ -137,6 +138,7 @@ export const endNewRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
       deltaHeight: 0,
       isGroupingRect: true,
       createdAtZoomLevel: svgZoomLevel,
+      isLastUpdatedBySync: false,
     };
 
     state.endNewRectByDrag.shape = rect as any;

@@ -57,4 +57,5 @@ export const NewShape: React.FC<ShapeId> = (props) => {
 export default interface Shape {
   id: string;
   type: ShapeType;
+  isLastUpdatedBySync: boolean;
 }

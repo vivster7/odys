@@ -24,7 +24,6 @@ import {
 import ShapesContainer from './ShapesContainer';
 import { endNewRectByClick } from '../reducers/shapes/newRect';
 import GroupSelect from './GroupSelect';
-import { asyncDrag } from '../reducers/shapes/drag';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -161,13 +160,6 @@ const Svg: React.FC = () => {
     if (isDragging) {
       dispatch(
         drag({
-          clickX: e.clientX,
-          clickY: e.clientY,
-          scale: svgState.scale,
-        })
-      );
-      dispatch(
-        asyncDrag({
           clickX: e.clientX,
           clickY: e.clientY,
           scale: svgState.scale,

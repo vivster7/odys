@@ -27,6 +27,7 @@ const DrawingBoard: React.FC = () => {
       toId: rect2Id,
       text: '',
       createdAtZoomLevel: 5,
+      isLastUpdatedBySync: false,
     };
 
     const rect = (
@@ -49,6 +50,7 @@ const DrawingBoard: React.FC = () => {
         deltaHeight: 0,
         isGroupingRect: false,
         createdAtZoomLevel: 5,
+        isLastUpdatedBySync: false,
       };
     };
     dispatch(addShape(rect('1', 'A', 150, 100)));

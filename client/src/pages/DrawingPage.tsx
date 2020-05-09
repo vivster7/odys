@@ -3,14 +3,14 @@ import DrawingBoard from '../components/DrawingBoard';
 import Cockpit from '../components/cockpit/Cockpit';
 import ToastContainer from '../components/ToastContainer';
 import { useDispatch } from 'react-redux';
-import { drag, editShape } from '../reducers/shapes/shape';
+import { syncShape } from '../reducers/shapes/shape';
 import socket from '../socket';
 
 const DrawingPage: React.FC = () => {
   const dispatch = useDispatch();
 
-  socket.on('ondrag', (data: any) => {
-    dispatch(editShape(data));
+  socket.on('shapeChange', (data: any) => {
+    dispatch(syncShape(data));
   });
   return (
     <div

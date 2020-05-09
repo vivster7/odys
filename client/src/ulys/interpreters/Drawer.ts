@@ -76,6 +76,7 @@ class Drawer implements NodeVisitor<Shape[]> {
       y2: computeArrowRightY(rightToken.row),
       left: node.isLeft(),
       right: node.isRight(),
+      isLastUpdatedBySync: false,
     } as Shape;
 
     return [arrow];

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectShape,
@@ -19,6 +19,7 @@ import Shape, {
 } from './Shape';
 import { zoomLeveltoScaleMap } from '../reducers/svg';
 import { isOverlapping } from '../math/rect';
+import socket from '../socket';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
@@ -52,6 +53,13 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   const isGroupSelected = useSelector(
     (state: RootState) => !!state.shapes.groupSelect?.selectedShapeIds[id]
   );
+
+  useEffect(() => {
+    if (shape.isLastUpdatedBySync) return;
+
+    socket.emit('shapeChange', { ...shape });
+  }, [shape]);
+
   const isSelected = id === (selected && selected.id);
 
   const [x, y] = [shape.x, shape.y];

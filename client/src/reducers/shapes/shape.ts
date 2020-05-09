@@ -166,6 +166,20 @@ const editShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
   reorder(state.data, state.shapeOrder, action.payload);
 };
 
+const syncShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
+  const { id } = action.payload;
+  if (!state.data[id]) {
+    return addShapeFn(state, {
+      ...action,
+      payload: { ...action.payload, isLastUpdatedBySync: true },
+    });
+  }
+  return editShapeFn(state, {
+    ...action,
+    payload: { ...action.payload, isLastUpdatedBySync: true },
+  });
+};
+
 const raiseShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   const id = action.payload;
   if (!state.data[id]) {
@@ -283,6 +297,7 @@ const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
   }
 
   shape.text = action.payload;
+  shape.isLastUpdatedBySync = false;
   select.isEditing = true;
 };
 
@@ -292,6 +307,7 @@ const shapesSlice = createSlice({
   reducers: {
     addShape: addShapeFn,
     editShape: editShapeFn,
+    syncShape: syncShapeFn,
     raiseShape: raiseShapeFn,
     deleteShape: deleteShapeFn,
     drawArrow: drawArrowFn,
@@ -340,6 +356,7 @@ const shapesSlice = createSlice({
 export const {
   addShape,
   editShape,
+  syncShape,
   deleteShape,
   selectedShapeEditText,
   cancelSelect,
