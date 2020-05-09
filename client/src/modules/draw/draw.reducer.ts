@@ -1,4 +1,4 @@
-import Shape, { TextEditable, ShapeId } from './shapes/Shape';
+import Shape from './shapes/Shape';
 
 import {
   createSlice,
@@ -91,7 +91,7 @@ interface ShapeData {
 }
 
 export interface ShapeState {
-  data: ShapeData;
+  shapes: ShapeData;
   shapeOrder: string[];
   select: SelectedShape | null;
   drag: DragState | null;
@@ -104,7 +104,7 @@ export interface ShapeState {
 }
 
 const initialState: ShapeState = {
-  data: {},
+  shapes: {},
   shapeOrder: [],
   select: null,
   groupSelect: null,
@@ -150,26 +150,26 @@ export function reorder(shapes: ShapeData, order: string[], shape: Shape) {
 }
 
 const addShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
-  state.data[action.payload.id] = action.payload as any;
-  reorder(state.data, state.shapeOrder, action.payload);
+  state.shapes[action.payload.id] = action.payload as any;
+  reorder(state.shapes, state.shapeOrder, action.payload);
 };
 
 const editShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
   const { id } = action.payload;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
-  const shape = state.data[id];
-  state.data[id] = {
+  const shape = state.shapes[id];
+  state.shapes[id] = {
     ...shape,
     ...action.payload,
   };
-  reorder(state.data, state.shapeOrder, action.payload);
+  reorder(state.shapes, state.shapeOrder, action.payload);
 };
 
 const syncShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
   const { id } = action.payload;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     return addShapeFn(state, {
       ...action,
       payload: { ...action.payload, isLastUpdatedBySync: true },
@@ -183,26 +183,26 @@ const syncShapeFn: ShapeReducer<PayloadAction<Shape>> = (state, action) => {
 
 const raiseShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   const id = action.payload;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  reorder(state.data, state.shapeOrder, state.data[id]);
+  reorder(state.shapes, state.shapeOrder, state.shapes[id]);
 };
 
 const deleteShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   const id = action.payload;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  delete state.data[id];
+  delete state.shapes[id];
   state.shapeOrder = state.shapeOrder.filter((shapeId) => {
     if (shapeId === id) {
       return false;
     }
 
-    const shape = state.data[shapeId];
+    const shape = state.shapes[shapeId];
     if (shape.type === 'arrow') {
       const arrow = shape as ArrowProps;
       if (arrow.fromId === id || arrow.toId === id) return false;
@@ -225,7 +225,7 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   }
 
   // cannot duplicate existing arrow.
-  const existing = Object.values(state.data).find((s) => {
+  const existing = Object.values(state.shapes).find((s) => {
     if (s.type === 'arrow') {
       const arrow = s as ArrowProps;
       return arrow.fromId === selectId && arrow.toId === action.payload;
@@ -242,8 +242,8 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   }
 
   // cannot draw arrow across zoomLevels
-  const fromShape = state.data[selectId] as RectProps;
-  const toShape = state.data[action.payload] as RectProps;
+  const fromShape = state.shapes[selectId] as RectProps;
+  const toShape = state.shapes[action.payload] as RectProps;
   if (!fromShape) throw new Error(`Cannot find shape (${selectId})`);
   if (!toShape) throw new Error(`Cannot find shape (${action.payload})`);
   if (fromShape.type !== 'rect')
@@ -266,8 +266,8 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
     createdAtZoomLevel: fromShape.createdAtZoomLevel,
   } as ArrowProps;
 
-  state.data[arrowId] = arrow;
-  reorder(state.data, state.shapeOrder, arrow);
+  state.shapes[arrowId] = arrow;
+  reorder(state.shapes, state.shapeOrder, arrow);
   state.select = {
     id: arrowId,
     isEditing: false,
@@ -319,8 +319,8 @@ const drawSlice = createSlice({
         isEditing: false,
       };
 
-      state.data[rect.id] = rect as any;
-      reorder(state.data, state.shapeOrder, rect);
+      state.shapes[rect.id] = rect as any;
+      reorder(state.shapes, state.shapeOrder, rect);
     },
     [endNewRectByClick.rejected as any]: (state, action) => {},
   },
@@ -349,5 +349,5 @@ export const {
   endDragSelection,
   endGroupDrag,
 } = drawSlice.actions;
-const shapesReducer = drawSlice.reducer;
-export default shapesReducer;
+const drawReducer = drawSlice.reducer;
+export default drawReducer;

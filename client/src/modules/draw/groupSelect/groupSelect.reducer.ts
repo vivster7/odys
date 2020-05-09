@@ -54,7 +54,7 @@ export const resizeDragSelectionFn: ShapeReducer<PayloadAction<
   selectionRect.width = deltaWidth;
   selectionRect.height = deltaHeight;
 
-  const selectedShapeIds = Object.values(state.data)
+  const selectedShapeIds = Object.values(state.shapes)
     .filter((s: Shape) => s.type === 'rect')
     .filter((s) => isOverlapping(s as RectProps, selectionRect))
     .map((s: Shape) => [s.id, true]);
@@ -85,7 +85,7 @@ export const endDragSelectionFn: ShapeReducer<PayloadAction> = (
     state.groupSelect.selectedShapeIds = {};
   } else {
     const rects = Object.keys(selectedShapeIds).map(
-      (id) => state.data[id] as RectProps
+      (id) => state.shapes[id] as RectProps
     );
     state.groupSelect.outline = outline(...rects);
   }
@@ -102,7 +102,7 @@ export const endGroupDragFn: ShapeReducer<PayloadAction<EndGroupDrag>> = (
   state.groupDrag = null;
   if (!state.groupSelect) return;
   Object.keys(state.groupSelect.selectedShapeIds).forEach((id) => {
-    const rect = state.data[id] as RectProps;
+    const rect = state.shapes[id] as RectProps;
     rect.x += action.payload.translateX;
     rect.y += action.payload.translateY;
   });

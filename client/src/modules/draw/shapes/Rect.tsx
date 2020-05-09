@@ -40,18 +40,18 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   const dispatch = useDispatch();
 
   const shape = useSelector(
-    (state: RootState) => state.shapes.data[id] as RectProps
+    (state: RootState) => state.draw.shapes[id] as RectProps
   );
 
   const isDragging = useSelector(
-    (state: RootState) => state.shapes.drag?.id === id
+    (state: RootState) => state.draw.drag?.id === id
   );
   const selected = useSelector(
     (state: RootState) =>
-      !!state.shapes.select?.id && state.shapes.data[state.shapes.select?.id]
+      !!state.draw.select?.id && state.draw.shapes[state.draw.select?.id]
   );
   const isGroupSelected = useSelector(
-    (state: RootState) => !!state.shapes.groupSelect?.selectedShapeIds[id]
+    (state: RootState) => !!state.draw.groupSelect?.selectedShapeIds[id]
   );
 
   useEffect(() => {

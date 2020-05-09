@@ -33,11 +33,11 @@ export const dragFn: ShapeReducer<PayloadAction<Drag>> = (state, action) => {
   }
 
   const { id } = state.drag;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.data[id] as RectProps;
+  const shape = state.shapes[id] as RectProps;
   shape.translateX =
     (action.payload.clickX - state.drag.clickX) / action.payload.scale;
   shape.translateY =
@@ -53,17 +53,17 @@ export const endDragFn: ShapeReducer<PayloadAction> = (state, action) => {
   }
 
   const { id } = state.drag;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.data[id] as RectProps;
+  const shape = state.shapes[id] as RectProps;
   shape.x = (shape.x as number) + (shape.translateX as number);
   shape.y = (shape.y as number) + (shape.translateY as number);
   shape.translateX = 0;
   shape.translateY = 0;
   shape.isLastUpdatedBySync = false;
 
-  reorder(state.data, state.shapeOrder, shape);
+  reorder(state.shapes, state.shapeOrder, shape);
   state.drag = null;
 };

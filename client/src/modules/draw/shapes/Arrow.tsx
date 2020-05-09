@@ -28,19 +28,19 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   }
 
   const arrow = useSelector(
-    (state: RootState) => state.shapes.data[id]
+    (state: RootState) => state.draw.shapes[id]
   ) as ArrowProps;
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = useSelector(
-    (state: RootState) => state.shapes.data[arrow.fromId]
+    (state: RootState) => state.draw.shapes[arrow.fromId]
   ) as RectProps;
   const r2 = useSelector(
-    (state: RootState) => state.shapes.data[arrow.toId]
+    (state: RootState) => state.draw.shapes[arrow.toId]
   ) as RectProps;
 
   const isSelected = useSelector(
-    (state: RootState) => state.shapes.select?.id === id
+    (state: RootState) => state.draw.select?.id === id
   );
   const color = isSelected ? 'cornflowerblue' : 'gray';
 

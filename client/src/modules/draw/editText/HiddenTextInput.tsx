@@ -19,7 +19,7 @@ function onKeyDownHandler(
 const HiddenTextInput: React.FC = React.memo(() => {
   const dispatch = useDispatch();
 
-  const select = useSelector((state: RootState) => state.shapes.select);
+  const select = useSelector((state: RootState) => state.draw.select);
 
   const id = select?.id;
   const isEditing = select?.isEditing;
@@ -27,7 +27,7 @@ const HiddenTextInput: React.FC = React.memo(() => {
   // This selector will refresh this component whenver the
   // selected shape changes (e.g. resize). This should trigger
   // focus onto this hidden input.
-  const shape = useSelector((state: RootState) => id && state.shapes.data[id]);
+  const shape = useSelector((state: RootState) => id && state.draw.shapes[id]);
 
   useEffect(() => {
     if (id === undefined || isEditing === undefined) return;

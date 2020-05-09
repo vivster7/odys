@@ -6,7 +6,7 @@ export const selectShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (
   action
 ) => {
   const id = action.payload;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
@@ -15,7 +15,7 @@ export const selectShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (
     isEditing: false,
   };
   state.groupSelect = null;
-  reorder(state.data, state.shapeOrder, state.data[id]);
+  reorder(state.shapes, state.shapeOrder, state.shapes[id]);
 };
 
 export const cancelSelectFn: ShapeReducer<PayloadAction> = (state, action) => {

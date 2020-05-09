@@ -78,20 +78,20 @@ interface PanState {
 
 const Svg: React.FC = () => {
   const dispatch = useDispatch();
-  const isDragging = useSelector((state: RootState) => !!state.shapes.drag);
+  const isDragging = useSelector((state: RootState) => !!state.draw.drag);
   const isGroupSelecting = useSelector(
-    (state: RootState) => !!state.shapes.groupSelect?.selectionRect
+    (state: RootState) => !!state.draw.groupSelect?.selectionRect
   );
 
   const newRectByClickState = useSelector(
-    (state: RootState) => state.shapes.newRectByClick
+    (state: RootState) => state.draw.newRectByClick
   );
   const isNewRectByDragState = useSelector(
-    (state: RootState) => !!state.shapes.endNewRectByDrag
+    (state: RootState) => !!state.draw.endNewRectByDrag
   );
 
   const svgState = useSelector((state: RootState) => state.svg);
-  const isResizing = useSelector((state: RootState) => !!state.shapes.resize);
+  const isResizing = useSelector((state: RootState) => !!state.draw.resize);
 
   // using local variable to make scale / pan fast!
   const [topLeftX, setTopLeftX] = useState(svgState.topLeftX);

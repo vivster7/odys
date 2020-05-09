@@ -49,8 +49,8 @@ export const endNewRectByClick = createAsyncThunk(
     const { svg } = state;
 
     if (
-      state.shapes.newRectByClick?.clickX !== clickX ||
-      state.shapes.newRectByClick?.clickY !== clickY
+      state.draw.newRectByClick?.clickX !== clickX ||
+      state.draw.newRectByClick?.clickY !== clickY
     )
       return;
 
@@ -142,8 +142,8 @@ export const endNewRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
     };
 
     state.endNewRectByDrag.shape = rect as any;
-    state.data[id] = rect as any;
-    reorder(state.data, state.shapeOrder, rect);
+    state.shapes[id] = rect as any;
+    reorder(state.shapes, state.shapeOrder, rect);
 
     state.resize = {
       id: id,

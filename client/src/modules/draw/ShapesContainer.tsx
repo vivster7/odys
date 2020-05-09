@@ -4,7 +4,7 @@ import { RootState } from '../../App';
 import { NewShape } from './shapes/Shape';
 
 const ShapesContainer: React.FC = React.memo(() => {
-  const shapeOrder = useSelector((state: RootState) => state.shapes.shapeOrder);
+  const shapeOrder = useSelector((state: RootState) => state.draw.shapeOrder);
 
   return (
     <>

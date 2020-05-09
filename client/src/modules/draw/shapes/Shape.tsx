@@ -42,7 +42,7 @@ export interface ShapeId {
 
 export const NewShape: React.FC<ShapeId> = (props) => {
   const { id } = props;
-  const shape = useSelector((state: RootState) => state.shapes.data[id]);
+  const shape = useSelector((state: RootState) => state.draw.shapes[id]);
   const dispatch = useDispatch();
 
   if (!shape) return <></>;

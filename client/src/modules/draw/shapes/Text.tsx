@@ -16,11 +16,11 @@ const Text: React.FC<ShapeId> = React.memo((props) => {
   const dispatch = useDispatch();
 
   const text = useSelector(
-    (state: RootState) => state.shapes.data[id]
+    (state: RootState) => state.draw.shapes[id]
   ) as TextProps;
   const transform = `translate(${text.x}, ${text.y})`;
   const draggedId = useSelector(
-    (state: RootState) => state.shapes.drag && state.shapes.drag.id
+    (state: RootState) => state.draw.drag && state.draw.drag.id
   );
 
   const cursor = draggedId === props.id ? 'grabbing' : 'grab';

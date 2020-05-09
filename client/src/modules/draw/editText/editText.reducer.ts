@@ -14,11 +14,11 @@ export const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
   }
 
   const { id } = select;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.data[id] as Shape & TextEditable;
+  const shape = state.shapes[id] as Shape & TextEditable;
   if (!shape.hasOwnProperty('text')) {
     throw new Error(
       `[draw/editText] Shape is missing 'text' property (${select.id})`

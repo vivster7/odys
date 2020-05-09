@@ -47,6 +47,5 @@
     ]
   },
   "devDependencies": {},
-  "proxy": "http://localhost:8080",
-  "homepage": "http://vivster7.github.io/posts/boxes-and-arrows/"
+  "proxy": "http://localhost:8080"
 }

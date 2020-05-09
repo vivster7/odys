@@ -13,10 +13,10 @@ interface GroupDragState {
 const GroupSelect: React.FC = () => {
   const dispatch = useDispatch();
   const selectionRect = useSelector(
-    (state: RootState) => state.shapes.groupSelect?.selectionRect
+    (state: RootState) => state.draw.groupSelect?.selectionRect
   );
   const selectionOutline = useSelector(
-    (state: RootState) => state.shapes.groupSelect?.outline
+    (state: RootState) => state.draw.groupSelect?.outline
   );
   const svgScale = useSelector((state: RootState) => state.svg.scale);
   const borderPadding = 20 / svgScale;

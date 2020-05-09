@@ -5,14 +5,14 @@ import { Provider } from 'react-redux';
 
 import Room from './modules/room/Room';
 
-import shapesReducer from './modules/draw/draw.reducer';
+import drawReducer from './modules/draw/draw.reducer';
 import svgReducer from './modules/svg/svg.reducer';
 
 import errorReducer from './modules/errors/errors.reducer';
 import socket from './socket/socket';
 
 const rootReducer = combineReducers({
-  shapes: shapesReducer,
+  draw: drawReducer,
   svg: svgReducer,
   errors: errorReducer,
 });

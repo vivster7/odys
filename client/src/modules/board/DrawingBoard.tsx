@@ -14,10 +14,10 @@ const id = () => `id-${v4()}`;
 
 const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
-  const shapes = useSelector((state: RootState) => state.shapes);
+  const shapes = useSelector((state: RootState) => state.draw);
 
   // temp seed data
-  if (Object.entries(shapes.data).length === 0) {
+  if (Object.entries(shapes.shapes).length === 0) {
     const rect1Id = '1';
     const rect2Id = '2';
 

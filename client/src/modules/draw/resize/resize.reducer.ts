@@ -40,7 +40,7 @@ export const resizeFn: ShapeReducer<PayloadAction<Resize>> = (
   }
 
   const { id } = state.resize;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
@@ -76,7 +76,7 @@ export const resizeFn: ShapeReducer<PayloadAction<Resize>> = (
       throw new Error(`Unknown anchor point ${state.resize.anchor}`);
   }
 
-  const shape = state.data[id] as RectProps;
+  const shape = state.shapes[id] as RectProps;
   shape.translateX = translateX;
   shape.translateY = translateY;
   shape.deltaWidth = deltaWidth;
@@ -92,11 +92,11 @@ export const endResizeFn: ShapeReducer<PayloadAction> = (state, action) => {
   }
 
   const { id } = state.resize;
-  if (!state.data[id]) {
+  if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.data[id] as RectProps;
+  const shape = state.shapes[id] as RectProps;
   shape.x = shape.x + shape.translateX;
   shape.y = shape.y + shape.translateY;
   shape.translateX = 0;
