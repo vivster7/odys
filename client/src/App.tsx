@@ -1,7 +1,9 @@
 import React from 'react';
+import { Route, Redirect, BrowserRouter, Switch } from 'react-router-dom';
 
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
+import { v4 } from 'uuid';
 
 import Room from './modules/room/Room';
 
@@ -33,7 +35,17 @@ const App: React.FC = () => {
 
   return (
     <Provider store={store}>
-      <Room></Room>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/:id">
+            <Room></Room>
+          </Route>
+          {/* Catchall route */}
+          <Route>
+            <Redirect to={`/${v4()}`} />
+          </Route>
+        </Switch>
+      </BrowserRouter>
       {/* <Scratch></Scratch> */}
     </Provider>
   );
