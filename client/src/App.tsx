@@ -3,13 +3,13 @@ import React from 'react';
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 
-import DrawingPage from './pages/DrawingPage';
+import Room from './modules/room/Room';
 
-import shapesReducer from './reducers/shapes/shape';
-import svgReducer from './reducers/svg';
+import shapesReducer from './modules/draw/draw.reducer';
+import svgReducer from './modules/svg/svg.reducer';
 
-import errorReducer from './reducers/errors';
-import socket from './socket';
+import errorReducer from './modules/errors/errors.reducer';
+import socket from './socket/socket';
 
 const rootReducer = combineReducers({
   shapes: shapesReducer,
@@ -33,7 +33,7 @@ const App: React.FC = () => {
 
   return (
     <Provider store={store}>
-      <DrawingPage></DrawingPage>
+      <Room></Room>
       {/* <Scratch></Scratch> */}
     </Provider>
   );
