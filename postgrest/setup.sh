@@ -37,4 +37,7 @@ db-anon-role = "$PG_ANON_USER"
 ## limit rows in response
 ## we should paginate if there are > 1000 rows
 max-rows     = 1000
+
+server-host  = "$HOST"
+server-port  = "$PORT"
 EOF

@@ -14,4 +14,4 @@ Setup `.env` file from secrets
 `curl http://localhost:3000/`
 
 For a UI of available endpoints:
-`opend index.html`
+`open index.html`
