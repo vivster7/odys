@@ -1,13 +1,23 @@
-import React from 'react';
-import { v4 } from 'uuid';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../../App';
-import Rect from './Rect';
+import { v4 } from 'uuid';
+
+import { RootState } from 'App';
+import { addError } from 'modules/errors/errors.reducer';
+import socket from 'socket/socket';
+
 import Arrow from './Arrow';
 import Text from './Text';
-import { addError } from '../../errors/errors.reducer';
+import Rect from './Rect';
 
 export type ShapeType = 'rect' | 'text' | 'arrow';
+
+// Shape can be drawn inside an SVG.
+export default interface Shape {
+  id: string;
+  type: ShapeType;
+  isLastUpdatedBySync: boolean;
+}
 
 export interface Draggable {
   id: string;
@@ -53,9 +63,11 @@ export const NewShape: React.FC<ShapeId> = (props) => {
   return <></>;
 };
 
-// Shape can be drawn inside an SVG.
-export default interface Shape {
-  id: string;
-  type: ShapeType;
-  isLastUpdatedBySync: boolean;
+export function useShapeChangeEmitter(shape: Shape) {
+  useEffect(() => {
+    if (shape.isLastUpdatedBySync) {
+      return;
+    }
+    socket.emit('shapeChange', { ...shape });
+  }, [shape]);
 }

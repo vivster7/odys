@@ -264,6 +264,7 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
     toId: action.payload,
     text: '',
     createdAtZoomLevel: fromShape.createdAtZoomLevel,
+    isLastUpdatedBySync: false,
   } as ArrowProps;
 
   state.shapes[arrowId] = arrow;

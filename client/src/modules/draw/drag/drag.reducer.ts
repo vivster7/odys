@@ -18,11 +18,18 @@ export const startDragFn: ShapeReducer<PayloadAction<StartDrag>> = (
   state,
   action
 ) => {
+  const id = action.payload.id;
+  if (!state.shapes[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
+  }
+
   state.drag = {
-    id: action.payload.id,
+    id: id,
     clickX: action.payload.clickX,
     clickY: action.payload.clickY,
   };
+
+  state.shapes[id].isLastUpdatedBySync = false;
 };
 
 export const dragFn: ShapeReducer<PayloadAction<Drag>> = (state, action) => {
