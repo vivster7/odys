@@ -86,7 +86,7 @@ interface NewRectByDragState {
   shape: Shape | null;
 }
 
-interface ShapeData {
+export interface ShapeData {
   [id: string]: Shape;
 }
 

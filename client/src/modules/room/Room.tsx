@@ -1,7 +1,7 @@
 import React from 'react';
 import DrawingBoard from '../board/DrawingBoard';
 import { useDispatch } from 'react-redux';
-import { syncShape } from '../draw/draw.reducer';
+import { syncShape, deleteShape } from '../draw/draw.reducer';
 import socket from '../../socket/socket';
 
 const Room: React.FC = () => {
@@ -9,6 +9,10 @@ const Room: React.FC = () => {
 
   socket.on('shapeChange', (data: any) => {
     dispatch(syncShape(data));
+  });
+
+  socket.on('shapeDeleted', (data: string) => {
+    dispatch(deleteShape(data));
   });
 
   return (

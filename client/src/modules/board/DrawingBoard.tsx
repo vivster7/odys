@@ -1,17 +1,37 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from 'App';
-import { addShape } from 'modules/draw/draw.reducer';
+import { addShape, ShapeData } from 'modules/draw/draw.reducer';
 import HiddenTextInput from 'modules/draw/editText/HiddenTextInput';
 import { RECT_HEIGHT, RECT_WIDTH, RectProps } from 'modules/draw/shapes/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Svg from 'modules/svg/Svg';
+import socket from 'socket/socket';
+
 import Cockpit from './cockpit/Cockpit';
+
+function usePreviousShapes(shapes: ShapeData) {
+  const ref = useRef({});
+  useEffect(() => {
+    ref.current = shapes;
+  });
+  return ref.current;
+}
 
 const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
   const shapes = useSelector((state: RootState) => state.draw);
+
+  const prevShapes = usePreviousShapes(shapes.shapes);
+  useEffect(() => {
+    const prevShapeIds = Object.keys(prevShapes);
+    const currShapeIds = Object.keys(shapes.shapes);
+    if (prevShapeIds.length > currShapeIds.length) {
+      const diff = prevShapeIds.filter((x) => !currShapeIds.includes(x));
+      socket.emit('shapeDeleted', diff[0]);
+    }
+  });
 
   // temp seed data
   if (Object.entries(shapes.shapes).length === 0) {
