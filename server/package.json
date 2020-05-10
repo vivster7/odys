@@ -6,8 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "ts-node-dev --respawn --transpileOnly src/app.ts",
-    "tsc": "tsc",
-    "prod": "tsc && node ./build/app.js"
+    "build-prod": "tsc",
+    "start-prod": "build-prod && node ./build/app.js"
   },
   "repository": {
     "type": "git",

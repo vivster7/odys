@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectShape,
@@ -16,9 +16,9 @@ import Shape, {
   Draggable,
   TextEditable,
   Resizable,
+  useShapeChangeEmitter,
 } from './Shape';
 import { isOverlapping } from '../../../math/rect';
-import socket from '../../../socket/socket';
 import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
 
 export const RECT_WIDTH = 150;
@@ -54,11 +54,7 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
     (state: RootState) => !!state.draw.groupSelect?.selectedShapeIds[id]
   );
 
-  useEffect(() => {
-    if (shape.isLastUpdatedBySync) return;
-
-    socket.emit('shapeChange', { ...shape });
-  }, [shape]);
+  useShapeChangeEmitter(shape);
 
   const isSelected = id === (selected && selected.id);
 

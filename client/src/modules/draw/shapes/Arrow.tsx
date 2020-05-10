@@ -1,13 +1,20 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { RootState } from 'App';
+import Line, { intersects } from 'math/line';
+import { selectShape } from 'modules/draw/draw.reducer';
+import { addError } from 'modules/errors/errors.reducer';
+import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
+
 import Arrowhead from './Arrowhead';
 import { RectProps } from './Rect';
-import Line, { intersects } from '../../../math/line';
-import { RootState } from '../../../App';
-import { useSelector, useDispatch } from 'react-redux';
-import Shape, { idFn, ShapeId, TextEditable } from './Shape';
-import { selectShape } from '../draw.reducer';
-import { addError } from '../../errors/errors.reducer';
-import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
+import Shape, {
+  idFn,
+  ShapeId,
+  TextEditable,
+  useShapeChangeEmitter,
+} from './Shape';
 
 export type ArrowProps = {
   type: 'arrow';
@@ -42,6 +49,7 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const isSelected = useSelector(
     (state: RootState) => state.draw.select?.id === id
   );
+
   const color = isSelected ? 'cornflowerblue' : 'gray';
 
   const fontSize = 14 / zoomLeveltoScaleMap[arrow.createdAtZoomLevel];
@@ -164,6 +172,8 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
 
   const left = false;
   const right = true;
+
+  useShapeChangeEmitter(arrow);
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();

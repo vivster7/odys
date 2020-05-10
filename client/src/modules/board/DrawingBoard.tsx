@@ -1,16 +1,13 @@
 import React from 'react';
-import Svg from '../svg/Svg';
-import { RECT_HEIGHT, RECT_WIDTH, RectProps } from '../draw/shapes/Rect';
-import { v4 } from 'uuid';
-import HiddenTextInput from '../draw/editText/HiddenTextInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { addShape } from '../draw/draw.reducer';
-import { RootState } from '../../App';
-import { ArrowProps } from '../draw/shapes/Arrow';
-import Cockpit from './cockpit/Cockpit';
-import ToastContainer from '../errors/ToastContainer';
 
-const id = () => `id-${v4()}`;
+import { RootState } from 'App';
+import { addShape } from 'modules/draw/draw.reducer';
+import HiddenTextInput from 'modules/draw/editText/HiddenTextInput';
+import { RECT_HEIGHT, RECT_WIDTH, RectProps } from 'modules/draw/shapes/Rect';
+import ToastContainer from 'modules/errors/ToastContainer';
+import Svg from 'modules/svg/Svg';
+import Cockpit from './cockpit/Cockpit';
 
 const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
@@ -18,19 +15,6 @@ const DrawingBoard: React.FC = () => {
 
   // temp seed data
   if (Object.entries(shapes.shapes).length === 0) {
-    const rect1Id = '1';
-    const rect2Id = '2';
-
-    const arrow: ArrowProps = {
-      type: 'arrow',
-      id: id(),
-      fromId: rect1Id,
-      toId: rect2Id,
-      text: '',
-      createdAtZoomLevel: 5,
-      isLastUpdatedBySync: false,
-    };
-
     const rect = (
       id: string,
       text: string,
