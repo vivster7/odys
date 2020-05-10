@@ -274,6 +274,20 @@ CREATE INDEX boards_created_at_idx ON api.boards USING btree (created_at);
 
 
 --
+-- Name: boards_room_id_idx; Type: INDEX; Schema: api; Owner: postgres
+--
+
+CREATE UNIQUE INDEX boards_room_id_idx ON api.boards USING btree (room_id);
+
+
+--
+-- Name: INDEX boards_room_id_idx; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON INDEX api.boards_room_id_idx IS 'A room can only have one board. For now.';
+
+
+--
 -- Name: boards_updated_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
@@ -386,6 +400,21 @@ ALTER TABLE ONLY api.arrows
 --
 
 COMMENT ON CONSTRAINT arrows_to_shape_id_fkt ON api.arrows IS 'arrow ends at to shape';
+
+
+--
+-- Name: boards boards_room_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+--
+
+ALTER TABLE ONLY api.boards
+    ADD CONSTRAINT boards_room_id_fkey FOREIGN KEY (room_id) REFERENCES api.rooms(id) ON DELETE CASCADE;
+
+
+--
+-- Name: CONSTRAINT boards_room_id_fkey ON boards; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON CONSTRAINT boards_room_id_fkey ON api.boards IS 'Board belongs to a room';
 
 
 --
