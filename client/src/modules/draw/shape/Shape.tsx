@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { v4 } from 'uuid';
 
 import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
@@ -44,8 +43,6 @@ export interface TextEditable {
   id: string;
   text: string;
 }
-
-export const idFn = () => `id-${v4()}`;
 
 export interface ShapeId {
   id: string;

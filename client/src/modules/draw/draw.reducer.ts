@@ -12,7 +12,6 @@ import { ArrowProps } from './arrow/Arrow';
 import { startDragFn, dragFn, endDragFn } from './drag/drag.reducer';
 import { startResizeFn, resizeFn, endResizeFn } from './resize/resize.reducer';
 import { selectShapeFn, cancelSelectFn } from './select/select.reducer';
-import { v4 } from 'uuid';
 import {
   startNewRectByClickFn,
   endNewRectByClick,
@@ -30,8 +29,12 @@ import {
 } from './groupSelect/groupSelect.reducer';
 import { selectedShapeEditTextFn } from './editText/editText.reducer';
 import { ShapeApi } from 'generated/apis/ShapeApi';
-import { OdysShape, OdysArrow } from 'generated';
-import { ArrowApi } from 'generated/apis/ArrowApi';
+import { OdysShape } from 'generated';
+import {
+  drawArrowFn,
+  getArrows,
+  getArrowsFulfilled,
+} from './arrow/arrow.reducer';
 
 export type ShapeID = string;
 export type NEAnchor = 'NEAnchor';
@@ -39,8 +42,6 @@ export type NWAnchor = 'NWAnchor';
 export type SEAnchor = 'SEAnchor';
 export type SWAnchor = 'SWAnchor';
 export type Anchor = NEAnchor | NWAnchor | SEAnchor | SWAnchor;
-
-const uid = () => `id-${v4()}`;
 
 export type ShapeReducer<T extends Action<any>> = CaseReducer<ShapeState, T>;
 
@@ -217,74 +218,11 @@ const deleteShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   });
 };
 
-const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
-  if (!state.select) {
-    throw new Error('Cannot draw arrow without selected object.');
-  }
-
-  const selectId = state.select.id;
-
-  // cannot draw arrow to self.
-  if (selectId === action.payload) {
-    return;
-  }
-
-  // cannot duplicate existing arrow.
-  const existing = Object.values(state.shapes).find((s) => {
-    if (s.type === 'arrow') {
-      const arrow = s as ArrowProps;
-      return arrow.fromId === selectId && arrow.toId === action.payload;
-    }
-    return false;
-  });
-
-  if (existing) {
-    return;
-  }
-
-  // cannot draw arrow across zoomLevels
-  const fromShape = state.shapes[selectId] as RectProps;
-  const toShape = state.shapes[action.payload] as RectProps;
-  if (!fromShape) throw new Error(`Cannot find shape (${selectId})`);
-  if (!toShape) throw new Error(`Cannot find shape (${action.payload})`);
-  if (fromShape.type !== 'rect' && fromShape.type !== 'grouping_rect')
-    throw new Error('Can only draw arrows from Rects.');
-  if (toShape.type !== 'rect' && toShape.type !== 'grouping_rect')
-    throw new Error('Can only draw arrows to Rects.');
-  if (fromShape.createdAtZoomLevel !== toShape.createdAtZoomLevel) {
-    throw new Error(
-      `Cannot draw arrow across zoomLevel (createdAtZoomLevels dont match)`
-    );
-  }
-
-  const arrowId = uid();
-  const arrow = {
-    type: 'arrow',
-    id: arrowId,
-    fromId: selectId,
-    toId: action.payload,
-    text: '',
-    createdAtZoomLevel: fromShape.createdAtZoomLevel,
-    isLastUpdatedBySync: false,
-  } as ArrowProps;
-
-  state.shapes[arrowId] = arrow;
-  reorder(state.shapes, state.shapeOrder, arrow);
-};
-
 export const getShapes = createAsyncThunk(
   'draw/getShapes',
   async (boardId: string, thunkAPI): Promise<OdysShape[]> => {
     const api = new ShapeApi();
     return api.shapeGet({ boardId: `eq.${boardId}` });
-  }
-);
-
-export const getArrows = createAsyncThunk(
-  'draw/getArrows',
-  async (boardId: string, thunkAPI): Promise<OdysArrow[]> => {
-    const api = new ArrowApi();
-    return api.arrowGet({ boardId: `eq.${boardId}` });
   }
 );
 
@@ -297,8 +235,9 @@ const drawSlice = createSlice({
     syncShape: syncShapeFn,
     raiseShape: raiseShapeFn,
     deleteShape: deleteShapeFn,
-    drawArrow: drawArrowFn,
     selectedShapeEditText: selectedShapeEditTextFn,
+    //arrow
+    drawArrow: drawArrowFn,
     // select
     selectShape: selectShapeFn,
     cancelSelect: cancelSelectFn,
@@ -364,26 +303,7 @@ const drawSlice = createSlice({
     },
     [getShapes.pending as any]: (state, action) => {},
     [getShapes.rejected as any]: (state, action) => {},
-    [getArrows.fulfilled as any]: (
-      state,
-      action: PayloadAction<OdysArrow[]>
-    ) => {
-      const arrows = action.payload;
-      arrows.forEach((a) => {
-        const arrow: ArrowProps = {
-          ...a,
-          type: 'arrow',
-          createdAtZoomLevel: 5,
-          fromId: a.fromShapeId,
-          toId: a.toShapeId,
-          isLastUpdatedBySync: false,
-          text: '',
-        };
-        state.shapes[a.id] = arrow;
-        //TODO: order should be saved on server.
-        reorder(state.shapes, state.shapeOrder, arrow);
-      });
-    },
+    [getArrows.fulfilled as any]: getArrowsFulfilled,
     [getArrows.pending as any]: (state, action) => {},
     [getArrows.rejected as any]: (state, action) => {},
   },

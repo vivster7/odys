@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../App';
 import { NewShape } from './shape/Shape';
-import { getShapes, getArrows } from './draw.reducer';
+import { getShapes } from './draw.reducer';
+import { getArrows } from './arrow/arrow.reducer';
 
 const ShapesContainer: React.FC = React.memo(() => {
   const dispatch = useDispatch();

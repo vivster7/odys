@@ -1,7 +1,7 @@
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { ShapeReducer, reorder } from '../draw.reducer';
 import { RectProps, RECT_WIDTH, RECT_HEIGHT } from '../shape/Rect';
-import { v4 } from 'uuid';
+import * as uuid from 'uuid';
 import { RootState } from '../../../App';
 import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
 import { GroupingRectProps } from '../shape/GroupingRect';
@@ -30,8 +30,6 @@ interface NewRectByDrag {
   svgZoomLevel: number;
 }
 
-const uid = () => `id-${v4()}`;
-
 export const startNewRectByClickFn: ShapeReducer<PayloadAction<
   StartNewRectByClick
 >> = (state, action) => {
@@ -55,7 +53,7 @@ export const endNewRectByClick = createAsyncThunk(
     )
       return;
 
-    const id = uid();
+    const id = uuid.v4();
     const x = (clickX - svg.topLeftX) / svg.scale;
     const y = (clickY - svg.topLeftY) / svg.scale;
 
@@ -114,7 +112,7 @@ export const endNewRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
   if (state.endNewRectByDrag.shape) {
     state.endNewRectByDrag = null;
   } else if (state.endNewRectByDrag && !state.endNewRectByDrag.shape) {
-    const id = uid();
+    const id = uuid.v4();
     const x = (state.endNewRectByDrag.clickX - svgTopLeftX) / svgScale;
     const y = (state.endNewRectByDrag.clickY - svgTopLeftY) / svgScale;
     const width =

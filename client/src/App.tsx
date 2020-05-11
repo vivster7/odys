@@ -3,7 +3,7 @@ import { Route, Redirect, BrowserRouter, Switch } from 'react-router-dom';
 
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import { v4 } from 'uuid';
+import * as uuid from 'uuid';
 
 import Room from './modules/room/Room';
 
@@ -42,7 +42,7 @@ const App: React.FC = () => {
           </Route>
           {/* Catchall route */}
           <Route>
-            <Redirect to={`/${v4()}`} />
+            <Redirect to={`/${uuid.v4()}`} />
           </Route>
         </Switch>
       </BrowserRouter>
