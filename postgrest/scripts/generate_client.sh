@@ -20,7 +20,7 @@ FILENAME="openapi-odys-spec.json"
 curl "$HOST:$PORT" > $FILENAME
 
 # generate client
-openapi-generator generate -i $FILENAME -g typescript-fetch -p typescriptThreePlus -o "$DIR"/../../client/src/generated
+openapi-generator generate -i $FILENAME -g typescript-fetch -p typescriptThreePlus --model-name-prefix Odys -o "$DIR"/../../client/src/generated
 
 # cleanup
 kill $POSTGREST_PID
