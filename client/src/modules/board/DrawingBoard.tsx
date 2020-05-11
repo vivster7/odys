@@ -23,7 +23,6 @@ function usePreviousShapes(shapes: ShapeData) {
 const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
   const room = useSelector((state: RootState) => state.room);
-  const board = useSelector((state: RootState) => state.board);
   const shapes = useSelector((state: RootState) => state.draw);
 
   const prevShapes = usePreviousShapes(shapes.shapes);
@@ -69,11 +68,6 @@ const DrawingBoard: React.FC = () => {
     if (room.loaded !== 'success') return;
     dispatch(getOrCreateBoard(room.id));
   }, [room, dispatch]);
-
-  useEffect(() => {
-    if (board.loaded !== 'success') return;
-    dispatch(getShapes(board.id));
-  }, [board, dispatch]);
 
   return (
     <>

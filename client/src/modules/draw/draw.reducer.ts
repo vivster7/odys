@@ -29,7 +29,8 @@ import {
 } from './groupSelect/groupSelect.reducer';
 import { selectedShapeEditTextFn } from './editText/editText.reducer';
 import { ShapeApi } from 'generated/apis/ShapeApi';
-import { OdysShape } from 'generated';
+import { OdysShape, OdysArrow } from 'generated';
+import { ArrowApi } from 'generated/apis/ArrowApi';
 
 export type ShapeID = string;
 export type NEAnchor = 'NEAnchor';
@@ -278,6 +279,14 @@ export const getShapes = createAsyncThunk(
   }
 );
 
+export const getArrows = createAsyncThunk(
+  'draw/getArrows',
+  async (boardId: string, thunkAPI): Promise<OdysArrow[]> => {
+    const api = new ArrowApi();
+    return api.arrowGet({ boardId: `eq.${boardId}` });
+  }
+);
+
 const drawSlice = createSlice({
   name: 'draw',
   initialState: initialState,
@@ -355,6 +364,28 @@ const drawSlice = createSlice({
     },
     [getShapes.pending as any]: (state, action) => {},
     [getShapes.rejected as any]: (state, action) => {},
+    [getArrows.fulfilled as any]: (
+      state,
+      action: PayloadAction<OdysArrow[]>
+    ) => {
+      const arrows = action.payload;
+      arrows.forEach((a) => {
+        const arrow: ArrowProps = {
+          ...a,
+          type: 'arrow',
+          createdAtZoomLevel: 5,
+          fromId: a.fromShapeId,
+          toId: a.toShapeId,
+          isLastUpdatedBySync: false,
+          text: '',
+        };
+        state.shapes[a.id] = arrow;
+        //TODO: order should be saved on server.
+        reorder(state.shapes, state.shapeOrder, arrow);
+      });
+    },
+    [getArrows.pending as any]: (state, action) => {},
+    [getArrows.rejected as any]: (state, action) => {},
   },
 });
 
