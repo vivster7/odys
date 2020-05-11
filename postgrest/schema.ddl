@@ -53,7 +53,8 @@ CREATE TABLE api.arrow (
     from_shape_id uuid NOT NULL,
     to_shape_id uuid NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    text text DEFAULT ''::text NOT NULL
 );
 
 

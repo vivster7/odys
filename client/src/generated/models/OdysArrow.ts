@@ -59,6 +59,12 @@ export interface OdysArrow {
    * @memberof OdysArrow
    */
   updatedAt: string;
+  /**
+   *
+   * @type {string}
+   * @memberof OdysArrow
+   */
+  text: string;
 }
 
 export function OdysArrowFromJSON(json: any): OdysArrow {
@@ -79,6 +85,7 @@ export function OdysArrowFromJSONTyped(
     toShapeId: json['to_shape_id'],
     createdAt: json['created_at'],
     updatedAt: json['updated_at'],
+    text: json['text'],
   };
 }
 
@@ -96,5 +103,6 @@ export function OdysArrowToJSON(value?: OdysArrow | null): any {
     to_shape_id: value.toShapeId,
     created_at: value.createdAt,
     updated_at: value.updatedAt,
+    text: value.text,
   };
 }

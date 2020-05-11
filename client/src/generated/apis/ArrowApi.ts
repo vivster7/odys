@@ -22,6 +22,7 @@ export interface ArrowDeleteRequest {
   toShapeId?: string;
   createdAt?: string;
   updatedAt?: string;
+  text?: string;
   prefer?: ArrowDeletePreferEnum;
 }
 
@@ -32,6 +33,7 @@ export interface ArrowGetRequest {
   toShapeId?: string;
   createdAt?: string;
   updatedAt?: string;
+  text?: string;
   select?: string;
   order?: string;
   range?: string;
@@ -48,6 +50,7 @@ export interface ArrowPatchRequest {
   toShapeId?: string;
   createdAt?: string;
   updatedAt?: string;
+  text?: string;
   prefer?: ArrowPatchPreferEnum;
   arrow?: OdysArrow;
 }
@@ -92,6 +95,10 @@ export class ArrowApi extends runtime.BaseAPI {
 
     if (requestParameters.updatedAt !== undefined) {
       queryParameters['updated_at'] = requestParameters.updatedAt;
+    }
+
+    if (requestParameters.text !== undefined) {
+      queryParameters['text'] = requestParameters.text;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -150,6 +157,10 @@ export class ArrowApi extends runtime.BaseAPI {
 
     if (requestParameters.updatedAt !== undefined) {
       queryParameters['updated_at'] = requestParameters.updatedAt;
+    }
+
+    if (requestParameters.text !== undefined) {
+      queryParameters['text'] = requestParameters.text;
     }
 
     if (requestParameters.select !== undefined) {
@@ -243,6 +254,10 @@ export class ArrowApi extends runtime.BaseAPI {
 
     if (requestParameters.updatedAt !== undefined) {
       queryParameters['updated_at'] = requestParameters.updatedAt;
+    }
+
+    if (requestParameters.text !== undefined) {
+      queryParameters['text'] = requestParameters.text;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
