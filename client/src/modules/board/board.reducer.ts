@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { Board, BoardFromJSON } from 'generated/models/Board';
 
 type LoadStates = 'loading' | 'success' | 'failed';
 
@@ -8,16 +9,12 @@ interface BoardState {
   loaded: LoadStates;
 }
 
-interface BoardResponse {
-  id: string;
-  room_id: string;
-}
-
 export const getOrCreateBoard = createAsyncThunk(
   'board/getOrCreateBoard',
-  async (roomId: string, thunkAPI): Promise<BoardResponse> => {
+  async (roomId: string, thunkAPI): Promise<Board> => {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/vnd.pgrst.object+json');
     headers.append('Prefer', 'resolution=merge-duplicates');
     headers.append('Prefer', 'return=representation');
 
@@ -32,7 +29,7 @@ export const getOrCreateBoard = createAsyncThunk(
     });
 
     const result = await p.json();
-    return { id: result.id, room_id: result.room_id };
+    return BoardFromJSON(result);
   }
 );
 
@@ -51,11 +48,11 @@ const boardSlice = createSlice({
     },
     [getOrCreateBoard.fulfilled as any]: (
       state,
-      action: PayloadAction<BoardResponse>
+      action: PayloadAction<Board>
     ) => {
       state.loaded = 'success';
       state.id = action.payload.id;
-      state.room_id = action.payload.room_id;
+      state.room_id = action.payload.roomId;
     },
     [getOrCreateBoard.rejected as any]: (state, action) => {
       state.loaded = 'failed';

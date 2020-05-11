@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { Room, RoomFromJSON } from 'generated/models/Room';
 
 type LoadStates = 'loading' | 'success' | 'failed';
 
@@ -7,13 +8,9 @@ interface RoomState {
   loaded: LoadStates;
 }
 
-interface RoomResponse {
-  id: string;
-}
-
 export const getOrCreateRoom = createAsyncThunk(
   'room/getOrCreateRoom',
-  async (id: string, thunkAPI): Promise<RoomResponse> => {
+  async (id: string, thunkAPI): Promise<Room> => {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Prefer', 'return=representation');
@@ -30,7 +27,7 @@ export const getOrCreateRoom = createAsyncThunk(
     });
 
     const result = await p.json();
-    return { id: result.id };
+    return RoomFromJSON(result);
   }
 );
 
@@ -44,7 +41,7 @@ const roomSlice = createSlice({
     },
     [getOrCreateRoom.fulfilled as any]: (
       state,
-      action: PayloadAction<RoomResponse>
+      action: PayloadAction<Room>
     ) => {
       state.loaded = 'success';
       state.id = action.payload.id;
