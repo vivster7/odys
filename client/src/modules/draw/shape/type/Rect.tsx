@@ -10,7 +10,7 @@ import Shape, {
   Resizable,
   useShapeChangeEmitter,
 } from '../Shape';
-import { isOverlapping } from '../../../../math/rect';
+import { isOverlapping } from '../../../../math/box';
 import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
 import SelectionCircles from '../../select/SelectionCircles';
 export const RECT_WIDTH = 150;

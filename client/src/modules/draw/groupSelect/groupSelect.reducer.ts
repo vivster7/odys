@@ -1,6 +1,6 @@
 import { DrawReducer } from '../draw.reducer';
 import Shape from '../shape/Shape';
-import Rect, { isOverlapping, outline } from '../../../math/rect';
+import Box, { isOverlapping, outline } from '../../../math/box';
 import { RectProps } from '../shape/type/Rect';
 
 export interface GroupDragState {
@@ -34,9 +34,9 @@ export const startDragSelectionFn: DrawReducer<startDragSelection> = (
 };
 
 export interface GroupSelectState {
-  selectionRect: Rect | null;
+  selectionRect: Box | null;
   selectedShapeIds: { [key: string]: boolean };
-  outline: Rect;
+  outline: Box;
 }
 interface resizeDragSelection {
   clickX: number;

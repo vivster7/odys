@@ -1,11 +1,11 @@
-interface Rect {
+interface Box {
   x: number;
   y: number;
   width: number;
   height: number;
 }
 
-export function isOverlapping(r1: Rect, r2: Rect): boolean {
+export function isOverlapping(r1: Box, r2: Box): boolean {
   return (
     ((r1.x < r2.x && r1.x + r1.width >= r2.x) ||
       (r2.x < r1.x && r2.x + r2.width >= r1.x)) &&
@@ -15,7 +15,7 @@ export function isOverlapping(r1: Rect, r2: Rect): boolean {
 }
 
 // Return rectangle that surrounds all input `rects`.
-export function outline(...rects: Rect[]): Rect {
+export function outline(...rects: Box[]): Box {
   if (rects.length === 0) throw new Error('`outline` needs >0 input `rects`');
   const first = rects[0];
   let [minX, minY] = [first.x, first.y];
@@ -36,4 +36,4 @@ export function outline(...rects: Rect[]): Rect {
   };
 }
 
-export default Rect;
+export default Box;
