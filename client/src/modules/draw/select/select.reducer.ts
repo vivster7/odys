@@ -20,7 +20,7 @@ export const selectShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (
     isEditing: false,
   };
   state.groupSelect = null;
-  reorder(state.shapes, state.shapeOrder, state.shapes[id]);
+  reorder(state.shapes, state.drawOrder, state.shapes[id]);
 };
 
 export const cancelSelectFn: ShapeReducer<PayloadAction> = (state, action) => {

@@ -7,7 +7,7 @@ import { getShapes } from './shape/shape.reducer';
 
 const DrawContainer: React.FC = React.memo(() => {
   const dispatch = useDispatch();
-  const shapeOrder = useSelector((state: RootState) => state.draw.shapeOrder);
+  const drawOrder = useSelector((state: RootState) => state.draw.drawOrder);
   const board = useSelector((state: RootState) => state.board);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const DrawContainer: React.FC = React.memo(() => {
 
   return (
     <>
-      {shapeOrder.map((shapeId) => {
+      {drawOrder.map((shapeId) => {
         return <NewShape key={shapeId} id={shapeId}></NewShape>;
       })}
     </>

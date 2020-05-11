@@ -108,7 +108,7 @@ export const endNewRectByClickFulfilled = (
   };
 
   state.shapes[rect.id] = rect as any;
-  reorder(state.shapes, state.shapeOrder, rect);
+  reorder(state.shapes, state.drawOrder, rect);
 };
 
 export const startNewRectByDragFn: ShapeReducer<PayloadAction<
@@ -171,7 +171,7 @@ export const endNewRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
 
     state.endNewRectByDrag.shape = rect as any;
     state.shapes[id] = rect as any;
-    reorder(state.shapes, state.shapeOrder, rect);
+    reorder(state.shapes, state.drawOrder, rect);
 
     state.resize = {
       id: id,

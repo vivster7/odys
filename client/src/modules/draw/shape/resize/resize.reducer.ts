@@ -125,8 +125,4 @@ export const endResizeFn: ShapeReducer<PayloadAction> = (state, action) => {
   state.drag = null;
   state.newRectByClick = null;
   state.resize = null;
-  // state.shapeOrder = [
-  //   ...state.shapeOrder.filter((shapeID) => shapeID !== id),
-  //   id,
-  // ];
 };

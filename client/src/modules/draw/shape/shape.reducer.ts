@@ -11,7 +11,7 @@ export const addShapeFn: ShapeReducer<PayloadAction<Shape>> = (
   action
 ) => {
   state.shapes[action.payload.id] = action.payload as any;
-  reorder(state.shapes, state.shapeOrder, action.payload);
+  reorder(state.shapes, state.drawOrder, action.payload);
 };
 
 export const editShapeFn: ShapeReducer<PayloadAction<Shape>> = (
@@ -27,7 +27,7 @@ export const editShapeFn: ShapeReducer<PayloadAction<Shape>> = (
     ...shape,
     ...action.payload,
   };
-  reorder(state.shapes, state.shapeOrder, action.payload);
+  reorder(state.shapes, state.drawOrder, action.payload);
 };
 
 export const syncShapeFn: ShapeReducer<PayloadAction<Shape>> = (
@@ -56,7 +56,7 @@ export const raiseShapeFn: ShapeReducer<PayloadAction<string>> = (
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  reorder(state.shapes, state.shapeOrder, state.shapes[id]);
+  reorder(state.shapes, state.drawOrder, state.shapes[id]);
 };
 
 export const deleteShapeFn: ShapeReducer<PayloadAction<string>> = (
@@ -69,7 +69,7 @@ export const deleteShapeFn: ShapeReducer<PayloadAction<string>> = (
   }
 
   delete state.shapes[id];
-  state.shapeOrder = state.shapeOrder.filter((shapeId) => {
+  state.drawOrder = state.drawOrder.filter((shapeId) => {
     if (shapeId === id) {
       return false;
     }
@@ -110,6 +110,6 @@ export const getShapesFulfilled = (
     };
     state.shapes[s.id] = shape;
     //TODO: order should be saved on server.
-    reorder(state.shapes, state.shapeOrder, shape);
+    reorder(state.shapes, state.drawOrder, shape);
   });
 };

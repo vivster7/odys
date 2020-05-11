@@ -32,7 +32,7 @@ export const getArrowsFulfilled = (
     };
     state.shapes[a.id] = arrow;
     //TODO: order should be saved on server.
-    reorder(state.shapes, state.shapeOrder, arrow);
+    reorder(state.shapes, state.drawOrder, arrow);
   });
 };
 
@@ -90,5 +90,5 @@ export const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (
   } as ArrowProps;
 
   state.shapes[arrow.id] = arrow;
-  reorder(state.shapes, state.shapeOrder, arrow);
+  reorder(state.shapes, state.drawOrder, arrow);
 };

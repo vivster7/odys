@@ -64,7 +64,7 @@ export interface ShapeData {
 
 export interface ShapeState {
   shapes: ShapeData;
-  shapeOrder: string[];
+  drawOrder: string[];
   select: SelectedShape | null;
   drag: DragState | null;
   groupSelect: GroupSelectState | null;
@@ -76,7 +76,7 @@ export interface ShapeState {
 
 const initialState: ShapeState = {
   shapes: {},
-  shapeOrder: [],
+  drawOrder: [],
   select: null,
   groupSelect: null,
   groupDrag: null,
