@@ -43,6 +43,7 @@ import {
   drawArrowFn,
   getArrows,
   getArrowsFulfilled,
+  Arrow,
 } from './arrow/arrow.reducer';
 import {
   addShapeFn,
@@ -60,8 +61,13 @@ export interface ShapeData {
   [id: string]: Shape;
 }
 
+export interface ArrowData {
+  [id: string]: Arrow;
+}
+
 export interface DrawState {
   shapes: ShapeData;
+  arrows: ArrowData;
   drawOrder: string[];
   select: SelectedShape | null;
   drag: DragState | null;
@@ -74,6 +80,7 @@ export interface DrawState {
 
 const initialState: DrawState = {
   shapes: {},
+  arrows: {},
   drawOrder: [],
   select: null,
   groupSelect: null,
@@ -84,37 +91,38 @@ const initialState: DrawState = {
   endNewRectByDrag: null,
 };
 
-export function reorder(shapes: ShapeData, order: string[], shape: Shape) {
+export function reorder(subject: Shape | Arrow, state: DrawState) {
+  const order = state.drawOrder;
   // remove from `order` array if present
-  const idx = order.findIndex((id) => id === shape.id);
+  const idx = order.findIndex((id) => id === subject.id);
   if (idx !== -1) {
     order.splice(idx, 1);
   }
 
   // grouping rects must come first. they are ordered against each other by `x` position.
-  if (shape.type === 'rect' || shape.type === 'grouping_rect') {
-    const rect = shape as RectProps | GroupingRectProps;
+  if (subject.type === 'rect' || subject.type === 'grouping_rect') {
+    const rect = subject as RectProps | GroupingRectProps;
 
     if (rect.type === 'grouping_rect') {
       let insertIdx = 0;
       for (let i = 0; i < order.length; i++) {
         const id = order[i];
-        const s = shapes[id];
+        const s = state.shapes[id];
 
-        if (s.type === 'rect' || s.type === 'grouping_rect') {
+        if (s?.type === 'rect' || s?.type === 'grouping_rect') {
           const t = s as RectProps | GroupingRectProps;
           if (t.type === 'grouping_rect' && t.x < rect.x) continue;
         }
         insertIdx = i;
         break;
       }
-      order.splice(insertIdx, 0, shape.id);
+      order.splice(insertIdx, 0, subject.id);
       return;
     }
   }
 
   // by default, add to top
-  order.push(shape.id);
+  order.push(subject.id);
 }
 
 const drawSlice = createSlice({

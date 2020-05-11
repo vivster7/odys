@@ -16,7 +16,7 @@ export const selectShapeFn: DrawReducer<string> = (state, action) => {
     isEditing: false,
   };
   state.groupSelect = null;
-  reorder(state.shapes, state.drawOrder, state.shapes[id]);
+  reorder(state.shapes[id], state);
 };
 
 export const cancelSelectFn: DrawReducer = (state, action) => {

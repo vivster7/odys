@@ -73,6 +73,6 @@ export const endDragFn: DrawReducer = (state, action) => {
   shape.translateY = 0;
   shape.isLastUpdatedBySync = false;
 
-  reorder(state.shapes, state.drawOrder, shape);
+  reorder(shape, state);
   state.drag = null;
 };

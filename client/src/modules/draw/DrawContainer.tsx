@@ -18,8 +18,8 @@ const DrawContainer: React.FC = React.memo(() => {
 
   return (
     <>
-      {drawOrder.map((shapeId) => {
-        return <NewShape key={shapeId} id={shapeId}></NewShape>;
+      {drawOrder.map((drawId) => {
+        return <NewShape key={drawId} id={drawId}></NewShape>;
       })}
     </>
   );

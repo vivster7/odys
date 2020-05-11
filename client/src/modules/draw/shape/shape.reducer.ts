@@ -1,14 +1,13 @@
 import { DrawReducer, reorder, DrawState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import Shape from './Shape';
-import { ArrowProps } from '../arrow/Arrow';
 import { OdysShape } from 'generated';
 import { ShapeApi } from 'generated/apis/ShapeApi';
 import { RectProps } from './type/Rect';
 
 export const addShapeFn: DrawReducer<Shape> = (state, action) => {
   state.shapes[action.payload.id] = action.payload as any;
-  reorder(state.shapes, state.drawOrder, action.payload);
+  reorder(action.payload, state);
 };
 
 export const editShapeFn: DrawReducer<Shape> = (state, action) => {
@@ -21,7 +20,7 @@ export const editShapeFn: DrawReducer<Shape> = (state, action) => {
     ...shape,
     ...action.payload,
   };
-  reorder(state.shapes, state.drawOrder, action.payload);
+  reorder(action.payload, state);
 };
 
 export const syncShapeFn: DrawReducer<Shape> = (state, action) => {
@@ -44,7 +43,7 @@ export const raiseShapeFn: DrawReducer<string> = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  reorder(state.shapes, state.drawOrder, state.shapes[id]);
+  reorder(state.shapes[id], state);
 };
 
 export const deleteShapeFn: DrawReducer<string> = (state, action) => {
@@ -54,16 +53,13 @@ export const deleteShapeFn: DrawReducer<string> = (state, action) => {
   }
 
   delete state.shapes[id];
-  state.drawOrder = state.drawOrder.filter((shapeId) => {
-    if (shapeId === id) {
+  state.drawOrder = state.drawOrder.filter((drawId) => {
+    if (drawId === id) {
       return false;
     }
 
-    const shape = state.shapes[shapeId];
-    if (shape.type === 'arrow') {
-      const arrow = shape as ArrowProps;
-      if (arrow.fromId === id || arrow.toId === id) return false;
-    }
+    const arrow = state.arrows[drawId];
+    if (arrow?.fromShapeId === id || arrow?.toShapeId === id) return false;
 
     return true;
   });
@@ -95,6 +91,6 @@ export const getShapesFulfilled = (
     };
     state.shapes[s.id] = shape;
     //TODO: order should be saved on server.
-    reorder(state.shapes, state.drawOrder, shape);
+    reorder(shape, state);
   });
 };

@@ -9,21 +9,8 @@ import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
 import Arrowhead from './Arrowhead';
 import { RectProps } from '../shape/type/Rect';
-import Shape, {
-  ShapeId,
-  TextEditable,
-  useShapeChangeEmitter,
-} from '../shape/Shape';
-
-export type ArrowProps = {
-  type: 'arrow';
-
-  // connect to shapes
-  fromId: string;
-  toId: string;
-  createdAtZoomLevel: number;
-} & Shape &
-  TextEditable;
+import { ShapeId, useShapeChangeEmitter } from '../shape/Shape';
+import { Arrow as ArrowType } from './arrow.reducer';
 
 const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;
@@ -34,15 +21,15 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   }
 
   const arrow = useSelector(
-    (state: RootState) => state.draw.shapes[id]
-  ) as ArrowProps;
+    (state: RootState) => state.draw.arrows[id]
+  ) as ArrowType;
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = useSelector(
-    (state: RootState) => state.draw.shapes[arrow.fromId]
+    (state: RootState) => state.draw.shapes[arrow.fromShapeId]
   ) as RectProps;
   const r2 = useSelector(
-    (state: RootState) => state.draw.shapes[arrow.toId]
+    (state: RootState) => state.draw.shapes[arrow.toShapeId]
   ) as RectProps;
 
   const isSelected = useSelector(
@@ -51,16 +38,17 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
 
   const color = isSelected ? 'cornflowerblue' : 'gray';
 
-  const fontSize = 14 / zoomLeveltoScaleMap[arrow.createdAtZoomLevel];
-  const strokeWidth = 1 / zoomLeveltoScaleMap[arrow.createdAtZoomLevel];
-  const offset = 5 / zoomLeveltoScaleMap[arrow.createdAtZoomLevel];
+  const zoomLevel = r1.createdAtZoomLevel;
+  const fontSize = 14 / zoomLeveltoScaleMap[zoomLevel];
+  const strokeWidth = 1 / zoomLeveltoScaleMap[zoomLevel];
+  const offset = 5 / zoomLeveltoScaleMap[zoomLevel];
 
   if (!r1) {
-    dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromId}`));
+    dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`));
     return <></>;
   }
   if (!r2) {
-    dispatch(addError(`[r2Arrow] Could not find shape$ ${arrow.toId}`));
+    dispatch(addError(`[r2Arrow] Could not find shape$ ${arrow.toShapeId}`));
     return <></>;
   }
 
@@ -196,7 +184,7 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
           direction="left"
           isSelected={isSelected}
           rotationAngleFromXInRadians={rotation}
-          createdAtZoomLevel={arrow.createdAtZoomLevel}
+          createdAtZoomLevel={zoomLevel}
         ></Arrowhead>
       ) : (
         <></>
@@ -208,7 +196,7 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
           direction="right"
           isSelected={isSelected}
           rotationAngleFromXInRadians={rotation}
-          createdAtZoomLevel={arrow.createdAtZoomLevel}
+          createdAtZoomLevel={zoomLevel}
         ></Arrowhead>
       ) : (
         <></>

@@ -1,11 +1,15 @@
 import { DrawReducer, reorder, DrawState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { ArrowProps } from './Arrow';
 import { GroupingRectProps } from '../shape/type/GroupingRect';
 import { RectProps } from '../shape/type/Rect';
 import * as uuid from 'uuid';
 import { OdysArrow } from 'generated';
 import { ArrowApi } from 'generated/apis/ArrowApi';
+
+export interface Arrow extends OdysArrow {
+  type: 'arrow';
+  isLastUpdatedBySync: boolean;
+}
 
 export const getArrows = createAsyncThunk(
   'draw/getArrows',
@@ -21,18 +25,14 @@ export const getArrowsFulfilled = (
 ) => {
   const arrows = action.payload;
   arrows.forEach((a) => {
-    const arrow: ArrowProps = {
+    const arrow: Arrow = {
       ...a,
       type: 'arrow',
-      createdAtZoomLevel: 5,
-      fromId: a.fromShapeId,
-      toId: a.toShapeId,
       isLastUpdatedBySync: false,
-      text: '',
     };
-    state.shapes[a.id] = arrow;
+    state.arrows[a.id] = arrow;
     //TODO: order should be saved on server.
-    reorder(state.shapes, state.drawOrder, arrow);
+    reorder(arrow, state);
   });
 };
 
@@ -51,8 +51,10 @@ export const drawArrowFn: DrawReducer<string> = (state, action) => {
   // cannot duplicate existing arrow.
   const existing = Object.values(state.shapes).find((s) => {
     if (s.type === 'arrow') {
-      const arrow = s as ArrowProps;
-      return arrow.fromId === selectId && arrow.toId === action.payload;
+      const arrow = s as Arrow;
+      return (
+        arrow.fromShapeId === selectId && arrow.toShapeId === action.payload
+      );
     }
     return false;
   });
@@ -79,13 +81,15 @@ export const drawArrowFn: DrawReducer<string> = (state, action) => {
   const arrow = {
     type: 'arrow',
     id: uuid.v4(),
-    fromId: selectId,
-    toId: action.payload,
+    fromShapeId: selectId,
+    toShapeId: action.payload,
     text: '',
-    createdAtZoomLevel: fromShape.createdAtZoomLevel,
     isLastUpdatedBySync: false,
-  } as ArrowProps;
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    boardId: '1', //TODO: state.shapes[id].boardId
+  } as Arrow;
 
-  state.shapes[arrow.id] = arrow;
-  reorder(state.shapes, state.drawOrder, arrow);
+  state.arrows[arrow.id] = arrow;
+  reorder(arrow, state);
 };
