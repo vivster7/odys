@@ -6,11 +6,12 @@ import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
 import socket from 'socket/socket';
 
-import Arrow from './Arrow';
+import Arrow from '../arrow/Arrow';
 import Text from './Text';
 import Rect from './Rect';
+import GroupingRect from './GroupingRect';
 
-export type ShapeType = 'rect' | 'text' | 'arrow';
+export type ShapeType = 'rect' | 'text' | 'arrow' | 'grouping_rect';
 
 // Shape can be drawn inside an SVG.
 export default interface Shape {
@@ -59,6 +60,8 @@ export const NewShape: React.FC<ShapeId> = (props) => {
   if (shape.type === 'rect') return <Rect id={id}></Rect>;
   if (shape.type === 'arrow') return <Arrow id={id}></Arrow>;
   if (shape.type === 'text') return <Text id={id}></Text>;
+  if (shape.type === 'grouping_rect')
+    return <GroupingRect id={id}></GroupingRect>;
   dispatch(addError(`unknown shape: ${shape.type}`));
   return <></>;
 };

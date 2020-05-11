@@ -1,4 +1,4 @@
-import Shape from './shapes/Shape';
+import Shape from './shape/Shape';
 
 import {
   createSlice,
@@ -8,7 +8,7 @@ import {
   createAsyncThunk,
 } from '@reduxjs/toolkit';
 
-import { ArrowProps } from './shapes/Arrow';
+import { ArrowProps } from './arrow/Arrow';
 import { startDragFn, dragFn, endDragFn } from './drag/drag.reducer';
 import { startResizeFn, resizeFn, endResizeFn } from './resize/resize.reducer';
 import { selectShapeFn, cancelSelectFn } from './select/select.reducer';
@@ -19,7 +19,8 @@ import {
   startNewRectByDragFn,
   endNewRectByDragFn,
 } from './newRect/newRect.reducer';
-import { RectProps } from './shapes/Rect';
+import { RectProps } from './shape/Rect';
+import { GroupingRectProps } from './shape/GroupingRect';
 import Rect from '../../math/rect';
 import {
   startDragSelectionFn,
@@ -128,18 +129,18 @@ export function reorder(shapes: ShapeData, order: string[], shape: Shape) {
   }
 
   // grouping rects must come first. they are ordered against each other by `x` position.
-  if (shape.type === 'rect') {
-    const rect = shape as RectProps;
+  if (shape.type === 'rect' || shape.type === 'grouping_rect') {
+    const rect = shape as RectProps | GroupingRectProps;
 
-    if (rect.isGroupingRect) {
+    if (rect.type === 'grouping_rect') {
       let insertIdx = 0;
       for (let i = 0; i < order.length; i++) {
         const id = order[i];
         const s = shapes[id];
 
-        if (s.type === 'rect') {
-          const t = s as RectProps;
-          if (t.isGroupingRect && t.x < rect.x) continue;
+        if (s.type === 'rect' || s.type === 'grouping_rect') {
+          const t = s as RectProps | GroupingRectProps;
+          if (t.type === 'grouping_rect' && t.x < rect.x) continue;
         }
         insertIdx = i;
         break;
@@ -246,9 +247,9 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   const toShape = state.shapes[action.payload] as RectProps;
   if (!fromShape) throw new Error(`Cannot find shape (${selectId})`);
   if (!toShape) throw new Error(`Cannot find shape (${action.payload})`);
-  if (fromShape.type !== 'rect')
+  if (fromShape.type !== 'rect' && fromShape.type !== 'grouping_rect')
     throw new Error('Can only draw arrows from Rects.');
-  if (toShape.type !== 'rect')
+  if (toShape.type !== 'rect' && toShape.type !== 'grouping_rect')
     throw new Error('Can only draw arrows to Rects.');
   if (fromShape.createdAtZoomLevel !== toShape.createdAtZoomLevel) {
     throw new Error(
@@ -349,7 +350,6 @@ const drawSlice = createSlice({
         const shape: RectProps = {
           ...s,
           type: 'rect',
-          isGroupingRect: false,
           createdAtZoomLevel: 5,
           isLastUpdatedBySync: false,
           translateX: 0,

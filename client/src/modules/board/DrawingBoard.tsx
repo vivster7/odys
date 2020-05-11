@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'App';
 import { addShape, ShapeData } from 'modules/draw/draw.reducer';
 import HiddenTextInput from 'modules/draw/editText/HiddenTextInput';
-import { RECT_HEIGHT, RECT_WIDTH, RectProps } from 'modules/draw/shapes/Rect';
+import { RECT_HEIGHT, RECT_WIDTH, RectProps } from 'modules/draw/shape/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Svg from 'modules/svg/Svg';
 import socket from 'socket/socket';
@@ -55,7 +55,6 @@ const DrawingBoard: React.FC = () => {
         height: RECT_HEIGHT,
         deltaWidth: 0,
         deltaHeight: 0,
-        isGroupingRect: false,
         createdAtZoomLevel: 5,
         isLastUpdatedBySync: false,
       };

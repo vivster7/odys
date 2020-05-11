@@ -1,9 +1,10 @@
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { ShapeReducer, reorder } from '../draw.reducer';
-import { RectProps, RECT_WIDTH, RECT_HEIGHT } from '../shapes/Rect';
+import { RectProps, RECT_WIDTH, RECT_HEIGHT } from '../shape/Rect';
 import { v4 } from 'uuid';
 import { RootState } from '../../../App';
 import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
+import { GroupingRectProps } from '../shape/GroupingRect';
 
 interface StartNewRectByClick {
   clickX: number;
@@ -73,7 +74,6 @@ export const endNewRectByClick = createAsyncThunk(
       height: height,
       deltaWidth: 0,
       deltaHeight: 0,
-      isGroupingRect: false,
       createdAtZoomLevel: svg.zoomLevel,
       isLastUpdatedBySync: false,
     };
@@ -124,8 +124,8 @@ export const endNewRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
       (clickY - svgTopLeftY) / svgScale -
       (state.endNewRectByDrag.clickY - svgTopLeftY) / svgScale;
 
-    const rect: RectProps = {
-      type: 'rect',
+    const rect: GroupingRectProps = {
+      type: 'grouping_rect',
       id: id,
       text: 'Group',
       x: x,
@@ -136,7 +136,6 @@ export const endNewRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
       height: height,
       deltaWidth: 0,
       deltaHeight: 0,
-      isGroupingRect: true,
       createdAtZoomLevel: svgZoomLevel,
       isLastUpdatedBySync: false,
     };

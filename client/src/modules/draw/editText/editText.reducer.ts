@@ -1,6 +1,6 @@
 import { ShapeReducer } from '../draw.reducer';
 import { PayloadAction } from '@reduxjs/toolkit';
-import Shape, { TextEditable } from '../shapes/Shape';
+import Shape, { TextEditable } from '../shape/Shape';
 
 export const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
   state,

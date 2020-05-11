@@ -8,13 +8,13 @@ import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
 import Arrowhead from './Arrowhead';
-import { RectProps } from './Rect';
+import { RectProps } from '../shape/Rect';
 import Shape, {
   idFn,
   ShapeId,
   TextEditable,
   useShapeChangeEmitter,
-} from './Shape';
+} from '../shape/Shape';
 
 export type ArrowProps = {
   type: 'arrow';

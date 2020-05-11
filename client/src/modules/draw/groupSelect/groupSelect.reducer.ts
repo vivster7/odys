@@ -1,8 +1,8 @@
 import { ShapeReducer } from '../draw.reducer';
 import { PayloadAction } from '@reduxjs/toolkit';
-import Shape from '../shapes/Shape';
+import Shape from '../shape/Shape';
 import { isOverlapping, outline } from '../../../math/rect';
-import { RectProps } from '../shapes/Rect';
+import { RectProps } from '../shape/Rect';
 
 interface startDragSelection {
   x: number;

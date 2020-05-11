@@ -1,6 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ShapeReducer, reorder } from '../draw.reducer';
-import { RectProps } from '../shapes/Rect';
+import { RectProps } from '../shape/Rect';
 
 interface StartDrag {
   id: string;
