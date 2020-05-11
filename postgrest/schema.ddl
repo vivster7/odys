@@ -44,10 +44,10 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: arrows; Type: TABLE; Schema: api; Owner: postgres
+-- Name: arrow; Type: TABLE; Schema: api; Owner: postgres
 --
 
-CREATE TABLE api.arrows (
+CREATE TABLE api.arrow (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     board_id integer NOT NULL,
     board_uuid uuid NOT NULL,
@@ -58,20 +58,20 @@ CREATE TABLE api.arrows (
 );
 
 
-ALTER TABLE api.arrows OWNER TO postgres;
+ALTER TABLE api.arrow OWNER TO postgres;
 
 --
--- Name: TABLE arrows; Type: COMMENT; Schema: api; Owner: postgres
+-- Name: TABLE arrow; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-COMMENT ON TABLE api.arrows IS 'An arrow connects two shapes. It must have a direction (from, to).';
+COMMENT ON TABLE api.arrow IS 'An arrow connects two shapes. It must have a direction (from, to).';
 
 
 --
--- Name: boards; Type: TABLE; Schema: api; Owner: postgres
+-- Name: board; Type: TABLE; Schema: api; Owner: postgres
 --
 
-CREATE TABLE api.boards (
+CREATE TABLE api.board (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     room_id uuid NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
@@ -79,40 +79,40 @@ CREATE TABLE api.boards (
 );
 
 
-ALTER TABLE api.boards OWNER TO postgres;
+ALTER TABLE api.board OWNER TO postgres;
 
 --
--- Name: TABLE boards; Type: COMMENT; Schema: api; Owner: postgres
+-- Name: TABLE board; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-COMMENT ON TABLE api.boards IS 'A board can be drawn on. Belongs to a room';
+COMMENT ON TABLE api.board IS 'A board can be drawn on. Belongs to a room';
 
 
 --
--- Name: rooms; Type: TABLE; Schema: api; Owner: postgres
+-- Name: room; Type: TABLE; Schema: api; Owner: postgres
 --
 
-CREATE TABLE api.rooms (
+CREATE TABLE api.room (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 
-ALTER TABLE api.rooms OWNER TO postgres;
+ALTER TABLE api.room OWNER TO postgres;
 
 --
--- Name: TABLE rooms; Type: COMMENT; Schema: api; Owner: postgres
+-- Name: TABLE room; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-COMMENT ON TABLE api.rooms IS 'User''s gather in a room to draw diagrams in real-time.';
+COMMENT ON TABLE api.room IS 'User''s gather in a room to draw diagrams in real-time.';
 
 
 --
--- Name: rooms_users; Type: TABLE; Schema: api; Owner: postgres
+-- Name: room_user; Type: TABLE; Schema: api; Owner: postgres
 --
 
-CREATE TABLE api.rooms_users (
+CREATE TABLE api.room_user (
     room_id uuid NOT NULL,
     user_id uuid NOT NULL,
     is_online boolean DEFAULT false NOT NULL,
@@ -121,13 +121,13 @@ CREATE TABLE api.rooms_users (
 );
 
 
-ALTER TABLE api.rooms_users OWNER TO postgres;
+ALTER TABLE api.room_user OWNER TO postgres;
 
 --
--- Name: shapes; Type: TABLE; Schema: api; Owner: postgres
+-- Name: shape; Type: TABLE; Schema: api; Owner: postgres
 --
 
-CREATE TABLE api.shapes (
+CREATE TABLE api.shape (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     board_id uuid NOT NULL,
     x double precision NOT NULL,
@@ -140,108 +140,108 @@ CREATE TABLE api.shapes (
 );
 
 
-ALTER TABLE api.shapes OWNER TO postgres;
+ALTER TABLE api.shape OWNER TO postgres;
 
 --
--- Name: TABLE shapes; Type: COMMENT; Schema: api; Owner: postgres
+-- Name: TABLE shape; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-COMMENT ON TABLE api.shapes IS 'A shape can be drawn on a board. Often as a rectangle, but could be a triangle, circle, etc. They can have text inside.';
-
-
---
--- Name: COLUMN shapes.x; Type: COMMENT; Schema: api; Owner: postgres
---
-
-COMMENT ON COLUMN api.shapes.x IS 'top left x-coordinate of shape';
+COMMENT ON TABLE api.shape IS 'A shape can be drawn on a board. Often as a rectangle, but could be a triangle, circle, etc. They can have text inside.';
 
 
 --
--- Name: COLUMN shapes.y; Type: COMMENT; Schema: api; Owner: postgres
+-- Name: COLUMN shape.x; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-COMMENT ON COLUMN api.shapes.y IS 'top left y-coordinate of shape';
-
-
---
--- Name: COLUMN shapes.width; Type: COMMENT; Schema: api; Owner: postgres
---
-
-COMMENT ON COLUMN api.shapes.width IS 'distance to grow in the x-axis';
+COMMENT ON COLUMN api.shape.x IS 'top left x-coordinate of shape';
 
 
 --
--- Name: COLUMN shapes.height; Type: COMMENT; Schema: api; Owner: postgres
+-- Name: COLUMN shape.y; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-COMMENT ON COLUMN api.shapes.height IS 'distance to grow in the y-axis';
-
-
---
--- Name: COLUMN shapes.text; Type: COMMENT; Schema: api; Owner: postgres
---
-
-COMMENT ON COLUMN api.shapes.text IS 'content inside shape';
+COMMENT ON COLUMN api.shape.y IS 'top left y-coordinate of shape';
 
 
 --
--- Name: users; Type: TABLE; Schema: api; Owner: postgres
+-- Name: COLUMN shape.width; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-CREATE TABLE api.users (
+COMMENT ON COLUMN api.shape.width IS 'distance to grow in the x-axis';
+
+
+--
+-- Name: COLUMN shape.height; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON COLUMN api.shape.height IS 'distance to grow in the y-axis';
+
+
+--
+-- Name: COLUMN shape.text; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON COLUMN api.shape.text IS 'content inside shape';
+
+
+--
+-- Name: user; Type: TABLE; Schema: api; Owner: postgres
+--
+
+CREATE TABLE api."user" (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 
-ALTER TABLE api.users OWNER TO postgres;
+ALTER TABLE api."user" OWNER TO postgres;
 
 --
--- Name: arrows arrows_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
+-- Name: arrow arrows_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.arrows
+ALTER TABLE ONLY api.arrow
     ADD CONSTRAINT arrows_pkey PRIMARY KEY (id);
 
 
 --
--- Name: boards boards_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
+-- Name: board boards_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.boards
+ALTER TABLE ONLY api.board
     ADD CONSTRAINT boards_pkey PRIMARY KEY (id);
 
 
 --
--- Name: rooms rooms_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
+-- Name: room rooms_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.rooms
+ALTER TABLE ONLY api.room
     ADD CONSTRAINT rooms_pkey PRIMARY KEY (id);
 
 
 --
--- Name: rooms_users rooms_users_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
+-- Name: room_user rooms_users_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.rooms_users
+ALTER TABLE ONLY api.room_user
     ADD CONSTRAINT rooms_users_pkey PRIMARY KEY (room_id, user_id);
 
 
 --
--- Name: shapes shapes_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
+-- Name: shape shapes_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.shapes
+ALTER TABLE ONLY api.shape
     ADD CONSTRAINT shapes_pkey PRIMARY KEY (id);
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
+-- Name: user users_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.users
+ALTER TABLE ONLY api."user"
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 
@@ -249,35 +249,35 @@ ALTER TABLE ONLY api.users
 -- Name: arrows_board_id_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX arrows_board_id_idx ON api.arrows USING btree (board_id);
+CREATE INDEX arrows_board_id_idx ON api.arrow USING btree (board_id);
 
 
 --
 -- Name: arrows_created_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX arrows_created_at_idx ON api.arrows USING btree (created_at);
+CREATE INDEX arrows_created_at_idx ON api.arrow USING btree (created_at);
 
 
 --
 -- Name: arrows_updated_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX arrows_updated_at_idx ON api.arrows USING btree (updated_at);
+CREATE INDEX arrows_updated_at_idx ON api.arrow USING btree (updated_at);
 
 
 --
 -- Name: boards_created_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX boards_created_at_idx ON api.boards USING btree (created_at);
+CREATE INDEX boards_created_at_idx ON api.board USING btree (created_at);
 
 
 --
 -- Name: boards_room_id_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE UNIQUE INDEX boards_room_id_idx ON api.boards USING btree (room_id);
+CREATE UNIQUE INDEX boards_room_id_idx ON api.board USING btree (room_id);
 
 
 --
@@ -291,175 +291,175 @@ COMMENT ON INDEX api.boards_room_id_idx IS 'A room can only have one board. For 
 -- Name: boards_updated_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX boards_updated_at_idx ON api.boards USING btree (updated_at);
+CREATE INDEX boards_updated_at_idx ON api.board USING btree (updated_at);
 
 
 --
 -- Name: rooms_created_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX rooms_created_at_idx ON api.rooms USING btree (created_at);
+CREATE INDEX rooms_created_at_idx ON api.room USING btree (created_at);
 
 
 --
 -- Name: rooms_updated_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX rooms_updated_at_idx ON api.rooms USING btree (updated_at);
+CREATE INDEX rooms_updated_at_idx ON api.room USING btree (updated_at);
 
 
 --
 -- Name: rooms_users_created_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX rooms_users_created_at_idx ON api.rooms_users USING btree (created_at);
+CREATE INDEX rooms_users_created_at_idx ON api.room_user USING btree (created_at);
 
 
 --
 -- Name: rooms_users_updated_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX rooms_users_updated_at_idx ON api.rooms_users USING btree (updated_at);
+CREATE INDEX rooms_users_updated_at_idx ON api.room_user USING btree (updated_at);
 
 
 --
 -- Name: shapes_board_id_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX shapes_board_id_idx ON api.shapes USING btree (board_id);
+CREATE INDEX shapes_board_id_idx ON api.shape USING btree (board_id);
 
 
 --
 -- Name: shapes_created_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX shapes_created_at_idx ON api.shapes USING btree (created_at);
+CREATE INDEX shapes_created_at_idx ON api.shape USING btree (created_at);
 
 
 --
 -- Name: shapes_updated_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX shapes_updated_at_idx ON api.shapes USING btree (updated_at);
+CREATE INDEX shapes_updated_at_idx ON api.shape USING btree (updated_at);
 
 
 --
 -- Name: users_created_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX users_created_at_idx ON api.users USING btree (created_at);
+CREATE INDEX users_created_at_idx ON api."user" USING btree (created_at);
 
 
 --
 -- Name: users_updated_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX users_updated_at_idx ON api.users USING btree (updated_at);
+CREATE INDEX users_updated_at_idx ON api."user" USING btree (updated_at);
 
 
 --
--- Name: arrows arrows_board_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+-- Name: arrow arrows_board_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.arrows
-    ADD CONSTRAINT arrows_board_id_fkey FOREIGN KEY (board_uuid) REFERENCES api.boards(id) ON DELETE CASCADE;
-
-
---
--- Name: CONSTRAINT arrows_board_id_fkey ON arrows; Type: COMMENT; Schema: api; Owner: postgres
---
-
-COMMENT ON CONSTRAINT arrows_board_id_fkey ON api.arrows IS 'arrow belongs to a board';
+ALTER TABLE ONLY api.arrow
+    ADD CONSTRAINT arrows_board_id_fkey FOREIGN KEY (board_uuid) REFERENCES api.board(id) ON DELETE CASCADE;
 
 
 --
--- Name: arrows arrows_from_shape_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+-- Name: CONSTRAINT arrows_board_id_fkey ON arrow; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.arrows
-    ADD CONSTRAINT arrows_from_shape_id_fkey FOREIGN KEY (from_shape_id) REFERENCES api.shapes(id) ON DELETE CASCADE;
-
-
---
--- Name: CONSTRAINT arrows_from_shape_id_fkey ON arrows; Type: COMMENT; Schema: api; Owner: postgres
---
-
-COMMENT ON CONSTRAINT arrows_from_shape_id_fkey ON api.arrows IS 'arrow start at from shape';
+COMMENT ON CONSTRAINT arrows_board_id_fkey ON api.arrow IS 'arrow belongs to a board';
 
 
 --
--- Name: arrows arrows_to_shape_id_fkt; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+-- Name: arrow arrows_from_shape_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.arrows
-    ADD CONSTRAINT arrows_to_shape_id_fkt FOREIGN KEY (to_shape_id) REFERENCES api.shapes(id) ON DELETE CASCADE;
-
-
---
--- Name: CONSTRAINT arrows_to_shape_id_fkt ON arrows; Type: COMMENT; Schema: api; Owner: postgres
---
-
-COMMENT ON CONSTRAINT arrows_to_shape_id_fkt ON api.arrows IS 'arrow ends at to shape';
+ALTER TABLE ONLY api.arrow
+    ADD CONSTRAINT arrows_from_shape_id_fkey FOREIGN KEY (from_shape_id) REFERENCES api.shape(id) ON DELETE CASCADE;
 
 
 --
--- Name: boards boards_room_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+-- Name: CONSTRAINT arrows_from_shape_id_fkey ON arrow; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.boards
-    ADD CONSTRAINT boards_room_id_fkey FOREIGN KEY (room_id) REFERENCES api.rooms(id) ON DELETE CASCADE;
-
-
---
--- Name: CONSTRAINT boards_room_id_fkey ON boards; Type: COMMENT; Schema: api; Owner: postgres
---
-
-COMMENT ON CONSTRAINT boards_room_id_fkey ON api.boards IS 'Board belongs to a room';
+COMMENT ON CONSTRAINT arrows_from_shape_id_fkey ON api.arrow IS 'arrow start at from shape';
 
 
 --
--- Name: rooms_users rooms_users_room_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+-- Name: arrow arrows_to_shape_id_fkt; Type: FK CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.rooms_users
-    ADD CONSTRAINT rooms_users_room_id_fkey FOREIGN KEY (room_id) REFERENCES api.rooms(id) ON DELETE CASCADE;
-
-
---
--- Name: CONSTRAINT rooms_users_room_id_fkey ON rooms_users; Type: COMMENT; Schema: api; Owner: postgres
---
-
-COMMENT ON CONSTRAINT rooms_users_room_id_fkey ON api.rooms_users IS 'Many-to-many users to rooms';
+ALTER TABLE ONLY api.arrow
+    ADD CONSTRAINT arrows_to_shape_id_fkt FOREIGN KEY (to_shape_id) REFERENCES api.shape(id) ON DELETE CASCADE;
 
 
 --
--- Name: rooms_users rooms_users_user_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+-- Name: CONSTRAINT arrows_to_shape_id_fkt ON arrow; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.rooms_users
-    ADD CONSTRAINT rooms_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES api.users(id) ON DELETE CASCADE;
-
-
---
--- Name: CONSTRAINT rooms_users_user_id_fkey ON rooms_users; Type: COMMENT; Schema: api; Owner: postgres
---
-
-COMMENT ON CONSTRAINT rooms_users_user_id_fkey ON api.rooms_users IS 'Many-to-many users to rooms';
+COMMENT ON CONSTRAINT arrows_to_shape_id_fkt ON api.arrow IS 'arrow ends at to shape';
 
 
 --
--- Name: shapes shapes_board_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+-- Name: board boards_room_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
 --
 
-ALTER TABLE ONLY api.shapes
-    ADD CONSTRAINT shapes_board_id_fkey FOREIGN KEY (board_id) REFERENCES api.boards(id) ON DELETE CASCADE;
+ALTER TABLE ONLY api.board
+    ADD CONSTRAINT boards_room_id_fkey FOREIGN KEY (room_id) REFERENCES api.room(id) ON DELETE CASCADE;
 
 
 --
--- Name: CONSTRAINT shapes_board_id_fkey ON shapes; Type: COMMENT; Schema: api; Owner: postgres
+-- Name: CONSTRAINT boards_room_id_fkey ON board; Type: COMMENT; Schema: api; Owner: postgres
 --
 
-COMMENT ON CONSTRAINT shapes_board_id_fkey ON api.shapes IS 'Shape belongs to a board';
+COMMENT ON CONSTRAINT boards_room_id_fkey ON api.board IS 'Board belongs to a room';
+
+
+--
+-- Name: room_user rooms_users_room_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+--
+
+ALTER TABLE ONLY api.room_user
+    ADD CONSTRAINT rooms_users_room_id_fkey FOREIGN KEY (room_id) REFERENCES api.room(id) ON DELETE CASCADE;
+
+
+--
+-- Name: CONSTRAINT rooms_users_room_id_fkey ON room_user; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON CONSTRAINT rooms_users_room_id_fkey ON api.room_user IS 'Many-to-many users to rooms';
+
+
+--
+-- Name: room_user rooms_users_user_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+--
+
+ALTER TABLE ONLY api.room_user
+    ADD CONSTRAINT rooms_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES api."user"(id) ON DELETE CASCADE;
+
+
+--
+-- Name: CONSTRAINT rooms_users_user_id_fkey ON room_user; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON CONSTRAINT rooms_users_user_id_fkey ON api.room_user IS 'Many-to-many users to rooms';
+
+
+--
+-- Name: shape shapes_board_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+--
+
+ALTER TABLE ONLY api.shape
+    ADD CONSTRAINT shapes_board_id_fkey FOREIGN KEY (board_id) REFERENCES api.board(id) ON DELETE CASCADE;
+
+
+--
+-- Name: CONSTRAINT shapes_board_id_fkey ON shape; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON CONSTRAINT shapes_board_id_fkey ON api.shape IS 'Shape belongs to a board';
 
 
 --
@@ -470,45 +470,45 @@ GRANT USAGE ON SCHEMA api TO anon;
 
 
 --
--- Name: TABLE arrows; Type: ACL; Schema: api; Owner: postgres
+-- Name: TABLE arrow; Type: ACL; Schema: api; Owner: postgres
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.arrows TO anon;
-
-
---
--- Name: TABLE boards; Type: ACL; Schema: api; Owner: postgres
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.boards TO anon;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.arrow TO anon;
 
 
 --
--- Name: TABLE rooms; Type: ACL; Schema: api; Owner: postgres
+-- Name: TABLE board; Type: ACL; Schema: api; Owner: postgres
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.rooms TO anon;
-
-
---
--- Name: TABLE rooms_users; Type: ACL; Schema: api; Owner: postgres
---
-
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.rooms_users TO anon;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.board TO anon;
 
 
 --
--- Name: TABLE shapes; Type: ACL; Schema: api; Owner: postgres
+-- Name: TABLE room; Type: ACL; Schema: api; Owner: postgres
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.shapes TO anon;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.room TO anon;
 
 
 --
--- Name: TABLE users; Type: ACL; Schema: api; Owner: postgres
+-- Name: TABLE room_user; Type: ACL; Schema: api; Owner: postgres
 --
 
-GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.users TO anon;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.room_user TO anon;
+
+
+--
+-- Name: TABLE shape; Type: ACL; Schema: api; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.shape TO anon;
+
+
+--
+-- Name: TABLE "user"; Type: ACL; Schema: api; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api."user" TO anon;
 
 
 --
