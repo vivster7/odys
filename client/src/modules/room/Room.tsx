@@ -4,16 +4,23 @@ import { useDispatch } from 'react-redux';
 import { syncShape, deleteShape } from '../draw/draw.reducer';
 import socket from '../../socket/socket';
 import { useParams } from 'react-router-dom';
+import { getOrCreateRoom } from './room.reducer';
 
 const Room: React.FC = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    socket.on('shapeChange', (data: any) => {
-      dispatch(syncShape(data));
-    });
-  });
+    const onShapeChange = (data: any) => dispatch(syncShape(data));
+    const emitter = socket.on('shapeChange', onShapeChange);
+    return () => {
+      emitter.off('shapeChange', onShapeChange);
+    };
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    dispatch(getOrCreateRoom(id));
+  }, [dispatch, id]);
 
   socket.on('shapeDeleted', (data: string) => {
     dispatch(deleteShape(data));

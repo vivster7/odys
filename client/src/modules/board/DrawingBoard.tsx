@@ -10,6 +10,7 @@ import Svg from 'modules/svg/Svg';
 import socket from 'socket/socket';
 
 import Cockpit from './cockpit/Cockpit';
+import { getOrCreateBoard } from './board.reducer';
 
 function usePreviousShapes(shapes: ShapeData) {
   const ref = useRef({});
@@ -21,6 +22,7 @@ function usePreviousShapes(shapes: ShapeData) {
 
 const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
+  const room = useSelector((state: RootState) => state.room);
   const shapes = useSelector((state: RootState) => state.draw);
 
   const prevShapes = usePreviousShapes(shapes.shapes);
@@ -61,6 +63,11 @@ const DrawingBoard: React.FC = () => {
     dispatch(addShape(rect('1', 'A', 150, 100)));
     dispatch(addShape(rect('2', 'B', 400, 100)));
   }
+
+  useEffect(() => {
+    if (room.loaded !== 'success') return;
+    dispatch(getOrCreateBoard(room.id));
+  }, [room, dispatch]);
 
   return (
     <>

@@ -12,11 +12,15 @@ import svgReducer from './modules/svg/svg.reducer';
 
 import errorReducer from './modules/errors/errors.reducer';
 import socket from './socket/socket';
+import roomReducer from './modules/room/room.reducer';
+import boardReducer from './modules/board/board.reducer';
 
 const rootReducer = combineReducers({
   draw: drawReducer,
   svg: svgReducer,
   errors: errorReducer,
+  room: roomReducer,
+  board: boardReducer,
 });
 export type RootState = ReturnType<typeof rootReducer>;
 
@@ -28,10 +32,6 @@ export type OdysDispatch = typeof store.dispatch;
 
 const App: React.FC = () => {
   socket.emit('client connected');
-
-  socket.on('other client connect', (data: any) => {
-    console.log(`welcome friend: ${data.id}`);
-  });
 
   return (
     <Provider store={store}>
@@ -46,7 +46,6 @@ const App: React.FC = () => {
           </Route>
         </Switch>
       </BrowserRouter>
-      {/* <Scratch></Scratch> */}
     </Provider>
   );
 };
