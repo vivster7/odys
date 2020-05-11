@@ -1,4 +1,4 @@
-import { ShapeReducer, reorder, ShapeState } from '../draw.reducer';
+import { DrawReducer, reorder, DrawState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import Shape from './Shape';
 import { ArrowProps } from '../arrow/Arrow';
@@ -6,18 +6,12 @@ import { OdysShape } from 'generated';
 import { ShapeApi } from 'generated/apis/ShapeApi';
 import { RectProps } from './type/Rect';
 
-export const addShapeFn: ShapeReducer<PayloadAction<Shape>> = (
-  state,
-  action
-) => {
+export const addShapeFn: DrawReducer<Shape> = (state, action) => {
   state.shapes[action.payload.id] = action.payload as any;
   reorder(state.shapes, state.drawOrder, action.payload);
 };
 
-export const editShapeFn: ShapeReducer<PayloadAction<Shape>> = (
-  state,
-  action
-) => {
+export const editShapeFn: DrawReducer<Shape> = (state, action) => {
   const { id } = action.payload;
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
@@ -30,10 +24,7 @@ export const editShapeFn: ShapeReducer<PayloadAction<Shape>> = (
   reorder(state.shapes, state.drawOrder, action.payload);
 };
 
-export const syncShapeFn: ShapeReducer<PayloadAction<Shape>> = (
-  state,
-  action
-) => {
+export const syncShapeFn: DrawReducer<Shape> = (state, action) => {
   const { id } = action.payload;
   if (!state.shapes[id]) {
     return addShapeFn(state, {
@@ -47,10 +38,7 @@ export const syncShapeFn: ShapeReducer<PayloadAction<Shape>> = (
   });
 };
 
-export const raiseShapeFn: ShapeReducer<PayloadAction<string>> = (
-  state,
-  action
-) => {
+export const raiseShapeFn: DrawReducer<string> = (state, action) => {
   const id = action.payload;
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
@@ -59,10 +47,7 @@ export const raiseShapeFn: ShapeReducer<PayloadAction<string>> = (
   reorder(state.shapes, state.drawOrder, state.shapes[id]);
 };
 
-export const deleteShapeFn: ShapeReducer<PayloadAction<string>> = (
-  state,
-  action
-) => {
+export const deleteShapeFn: DrawReducer<string> = (state, action) => {
   const id = action.payload;
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
@@ -93,7 +78,7 @@ export const getShapes = createAsyncThunk(
 );
 
 export const getShapesFulfilled = (
-  state: ShapeState,
+  state: DrawState,
   action: PayloadAction<OdysShape[]>
 ) => {
   const shapes = action.payload;

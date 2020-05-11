@@ -1,15 +1,11 @@
-import { ShapeReducer, ShapeID, reorder } from '../draw.reducer';
-import { PayloadAction } from '@reduxjs/toolkit';
+import { DrawReducer, reorder } from '../draw.reducer';
 
 export interface SelectedShape {
   id: string;
   isEditing: boolean;
 }
 
-export const selectShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (
-  state,
-  action
-) => {
+export const selectShapeFn: DrawReducer<string> = (state, action) => {
   const id = action.payload;
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
@@ -23,7 +19,7 @@ export const selectShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (
   reorder(state.shapes, state.drawOrder, state.shapes[id]);
 };
 
-export const cancelSelectFn: ShapeReducer<PayloadAction> = (state, action) => {
+export const cancelSelectFn: DrawReducer = (state, action) => {
   state.select = null;
   state.groupSelect = null;
 };

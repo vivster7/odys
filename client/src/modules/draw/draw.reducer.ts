@@ -1,6 +1,6 @@
 import Shape from './shape/Shape';
 
-import { createSlice, CaseReducer, Action } from '@reduxjs/toolkit';
+import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 
 import {
   startDragFn,
@@ -54,15 +54,13 @@ import {
   getShapesFulfilled,
 } from './shape/shape.reducer';
 
-export type ShapeID = string;
-
-export type ShapeReducer<T extends Action<any>> = CaseReducer<ShapeState, T>;
+export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 
 export interface ShapeData {
   [id: string]: Shape;
 }
 
-export interface ShapeState {
+export interface DrawState {
   shapes: ShapeData;
   drawOrder: string[];
   select: SelectedShape | null;
@@ -74,7 +72,7 @@ export interface ShapeState {
   endNewRectByDrag: NewRectByDragState | null;
 }
 
-const initialState: ShapeState = {
+const initialState: DrawState = {
   shapes: {},
   drawOrder: [],
   select: null,

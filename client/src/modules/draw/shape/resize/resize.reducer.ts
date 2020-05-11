@@ -1,5 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-import { ShapeReducer } from '../../draw.reducer';
+import { DrawReducer } from '../../draw.reducer';
 import { RectProps } from '../type/Rect';
 
 export type NEAnchor = 'NEAnchor';
@@ -30,10 +29,7 @@ interface Resize {
   svgScale: number;
 }
 
-export const startResizeFn: ShapeReducer<PayloadAction<StartResize>> = (
-  state,
-  action
-) => {
+export const startResizeFn: DrawReducer<StartResize> = (state, action) => {
   state.resize = {
     id: action.payload.id,
     anchor: action.payload.anchor,
@@ -44,10 +40,7 @@ export const startResizeFn: ShapeReducer<PayloadAction<StartResize>> = (
   };
 };
 
-export const resizeFn: ShapeReducer<PayloadAction<Resize>> = (
-  state,
-  action
-) => {
+export const resizeFn: DrawReducer<Resize> = (state, action) => {
   if (!state.resize) {
     throw new Error(
       'Cannot ODYS_RESIZE_ACTION without `state.resize` (did ODYS_START_RESIZE_ACTION fire first?)'
@@ -99,7 +92,7 @@ export const resizeFn: ShapeReducer<PayloadAction<Resize>> = (
   shape.isLastUpdatedBySync = false;
 };
 
-export const endResizeFn: ShapeReducer<PayloadAction> = (state, action) => {
+export const endResizeFn: DrawReducer = (state, action) => {
   if (!state.resize) {
     throw new Error(
       'Could not end resize shape action. Was it started with ODYS_START_RESIZE_ACTION?'

@@ -1,5 +1,4 @@
-import { ShapeReducer } from '../draw.reducer';
-import { PayloadAction } from '@reduxjs/toolkit';
+import { DrawReducer } from '../draw.reducer';
 import Shape from '../shape/Shape';
 import Rect, { isOverlapping, outline } from '../../../math/rect';
 import { RectProps } from '../shape/type/Rect';
@@ -17,9 +16,10 @@ interface startDragSelection {
   svgScale: number;
 }
 
-export const startDragSelectionFn: ShapeReducer<PayloadAction<
-  startDragSelection
->> = (state, action) => {
+export const startDragSelectionFn: DrawReducer<startDragSelection> = (
+  state,
+  action
+) => {
   const { x, y, svgTopLeftX, svgTopLeftY, svgScale } = action.payload;
   state.groupSelect = {
     selectionRect: {
@@ -46,9 +46,10 @@ interface resizeDragSelection {
   svgScale: number;
 }
 
-export const resizeDragSelectionFn: ShapeReducer<PayloadAction<
-  resizeDragSelection
->> = (state, action) => {
+export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
+  state,
+  action
+) => {
   if (!state.groupSelect || !state.groupSelect.selectionRect)
     throw new Error(
       `draw/startDragSelection must be called before draw/resizeDragSelection`
@@ -72,10 +73,7 @@ export const resizeDragSelectionFn: ShapeReducer<PayloadAction<
   state.groupSelect.selectedShapeIds = Object.fromEntries(selectedShapeIds);
 };
 
-export const endDragSelectionFn: ShapeReducer<PayloadAction> = (
-  state,
-  action
-) => {
+export const endDragSelectionFn: DrawReducer = (state, action) => {
   if (!state.groupSelect || !state.groupSelect.selectionRect)
     throw new Error(
       `draw/startDragSelection must be called before draw/endDragSelection`
@@ -105,10 +103,7 @@ interface EndGroupDrag {
   translateX: number;
   translateY: number;
 }
-export const endGroupDragFn: ShapeReducer<PayloadAction<EndGroupDrag>> = (
-  state,
-  action
-) => {
+export const endGroupDragFn: DrawReducer<EndGroupDrag> = (state, action) => {
   state.groupDrag = null;
   if (!state.groupSelect) return;
   Object.keys(state.groupSelect.selectedShapeIds).forEach((id) => {

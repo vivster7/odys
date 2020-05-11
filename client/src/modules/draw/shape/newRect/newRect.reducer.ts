@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { ShapeReducer, reorder, ShapeState } from '../../draw.reducer';
+import { DrawReducer, reorder, DrawState } from '../../draw.reducer';
 import { RectProps, RECT_WIDTH, RECT_HEIGHT } from '../type/Rect';
 import * as uuid from 'uuid';
 import { RootState } from '../../../../App';
@@ -42,9 +42,10 @@ interface NewRectByDrag {
   svgZoomLevel: number;
 }
 
-export const startNewRectByClickFn: ShapeReducer<PayloadAction<
-  StartNewRectByClick
->> = (state, action) => {
+export const startNewRectByClickFn: DrawReducer<StartNewRectByClick> = (
+  state,
+  action
+) => {
   state.newRectByClick = {
     clickX: action.payload.clickX,
     clickY: action.payload.clickY,
@@ -93,7 +94,7 @@ export const endNewRectByClick = createAsyncThunk(
 );
 
 export const endNewRectByClickFulfilled = (
-  state: ShapeState,
+  state: DrawState,
   action: PayloadAction<RectProps>
 ) => {
   const rect = action.payload;
@@ -111,9 +112,10 @@ export const endNewRectByClickFulfilled = (
   reorder(state.shapes, state.drawOrder, rect);
 };
 
-export const startNewRectByDragFn: ShapeReducer<PayloadAction<
-  StartNewRectByDrag
->> = (state, action) => {
+export const startNewRectByDragFn: DrawReducer<StartNewRectByDrag> = (
+  state,
+  action
+) => {
   state.endNewRectByDrag = {
     clickX: action.payload.clickX,
     clickY: action.payload.clickY,
@@ -121,7 +123,7 @@ export const startNewRectByDragFn: ShapeReducer<PayloadAction<
   };
 };
 
-export const endNewRectByDragFn: ShapeReducer<PayloadAction<NewRectByDrag>> = (
+export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
   state,
   action
 ) => {

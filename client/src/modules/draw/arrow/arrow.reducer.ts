@@ -1,4 +1,4 @@
-import { ShapeReducer, ShapeID, reorder, ShapeState } from '../draw.reducer';
+import { DrawReducer, reorder, DrawState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { ArrowProps } from './Arrow';
 import { GroupingRectProps } from '../shape/type/GroupingRect';
@@ -16,7 +16,7 @@ export const getArrows = createAsyncThunk(
 );
 
 export const getArrowsFulfilled = (
-  state: ShapeState,
+  state: DrawState,
   action: PayloadAction<OdysArrow[]>
 ) => {
   const arrows = action.payload;
@@ -36,10 +36,7 @@ export const getArrowsFulfilled = (
   });
 };
 
-export const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (
-  state,
-  action
-) => {
+export const drawArrowFn: DrawReducer<string> = (state, action) => {
   if (!state.select) {
     throw new Error('Cannot draw arrow without selected object.');
   }

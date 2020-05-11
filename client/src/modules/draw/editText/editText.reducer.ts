@@ -1,11 +1,7 @@
-import { ShapeReducer } from '../draw.reducer';
-import { PayloadAction } from '@reduxjs/toolkit';
+import { DrawReducer } from '../draw.reducer';
 import Shape, { TextEditable } from '../shape/Shape';
 
-export const selectedShapeEditTextFn: ShapeReducer<PayloadAction<string>> = (
-  state,
-  action
-) => {
+export const selectedShapeEditTextFn: DrawReducer<string> = (state, action) => {
   const { select } = state;
   if (!select) {
     throw new Error(

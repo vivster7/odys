@@ -1,5 +1,4 @@
-import { PayloadAction } from '@reduxjs/toolkit';
-import { ShapeReducer, reorder } from '../../draw.reducer';
+import { DrawReducer, reorder } from '../../draw.reducer';
 import { RectProps } from '../type/Rect';
 
 export interface DragState {
@@ -20,10 +19,7 @@ interface Drag {
   scale: number;
 }
 
-export const startDragFn: ShapeReducer<PayloadAction<StartDrag>> = (
-  state,
-  action
-) => {
+export const startDragFn: DrawReducer<StartDrag> = (state, action) => {
   const id = action.payload.id;
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
@@ -38,7 +34,7 @@ export const startDragFn: ShapeReducer<PayloadAction<StartDrag>> = (
   state.shapes[id].isLastUpdatedBySync = false;
 };
 
-export const dragFn: ShapeReducer<PayloadAction<Drag>> = (state, action) => {
+export const dragFn: DrawReducer<Drag> = (state, action) => {
   if (!state.drag) {
     throw new Error(
       'Cannot draw/drag without `state.drag` (did draw/startDrag fire first?)'
@@ -58,7 +54,7 @@ export const dragFn: ShapeReducer<PayloadAction<Drag>> = (state, action) => {
   shape.isLastUpdatedBySync = false;
 };
 
-export const endDragFn: ShapeReducer<PayloadAction> = (state, action) => {
+export const endDragFn: DrawReducer = (state, action) => {
   if (!state.drag) {
     throw new Error(
       'Could not end drag action. Was it started with ODYS_START_DRAG_ACTION?'
