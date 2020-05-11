@@ -50,18 +50,15 @@ export interface ShapeId {
 
 export const NewShape: React.FC<ShapeId> = (props) => {
   const { id } = props;
-  const shape = useSelector(
-    (state: RootState) => state.draw.shapes[id] || state.draw.arrows[id]
-  );
+  const shape = useSelector((state: RootState) => state.draw.shapes[id]);
   const dispatch = useDispatch();
 
-  if (!shape) return <></>;
-  if (shape.type === 'rect') return <Rect id={id}></Rect>;
-  if (shape.type === 'arrow') return <Arrow id={id}></Arrow>;
-  if (shape.type === 'text') return <Text id={id}></Text>;
-  if (shape.type === 'grouping_rect')
+  if (shape?.type === 'rect') return <Rect id={id}></Rect>;
+  if (shape?.type === 'text') return <Text id={id}></Text>;
+  if (shape?.type === 'grouping_rect')
     return <GroupingRect id={id}></GroupingRect>;
-  dispatch(addError(`unknown shape: ${shape.type}`));
+
+  dispatch(addError(`unknown shape ${shape.type}`));
   return <></>;
 };
 
