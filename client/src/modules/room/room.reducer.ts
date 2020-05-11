@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Room, RoomFromJSON } from 'generated/models/Room';
+import { OdysRoom, OdysRoomFromJSON } from 'generated';
 
 type LoadStates = 'loading' | 'success' | 'failed';
 
@@ -10,14 +10,15 @@ interface RoomState {
 
 export const getOrCreateRoom = createAsyncThunk(
   'room/getOrCreateRoom',
-  async (id: string, thunkAPI): Promise<Room> => {
+  async (id: string, thunkAPI): Promise<OdysRoom> => {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Prefer', 'return=representation');
     headers.append('Prefer', 'resolution=merge-duplicates');
     headers.append('Accept', 'application/vnd.pgrst.object+json');
 
-    const url = 'http://localhost:3001/rooms?on_conflict=id&select=id';
+    // not using generated client, missing support for on_conflict.
+    const url = 'http://localhost:3001/room?on_conflict=id&select=id';
     const p = await fetch(url, {
       headers: headers,
       method: 'POST',
@@ -26,8 +27,7 @@ export const getOrCreateRoom = createAsyncThunk(
       }),
     });
 
-    const result = await p.json();
-    return RoomFromJSON(result);
+    return OdysRoomFromJSON(await p.json());
   }
 );
 
@@ -41,7 +41,7 @@ const roomSlice = createSlice({
     },
     [getOrCreateRoom.fulfilled as any]: (
       state,
-      action: PayloadAction<Room>
+      action: PayloadAction<OdysRoom>
     ) => {
       state.loaded = 'success';
       state.id = action.payload.id;

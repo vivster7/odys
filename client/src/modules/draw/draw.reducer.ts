@@ -5,6 +5,7 @@ import {
   PayloadAction,
   CaseReducer,
   Action,
+  createAsyncThunk,
 } from '@reduxjs/toolkit';
 
 import { ArrowProps } from './shapes/Arrow';
@@ -27,6 +28,8 @@ import {
   endGroupDragFn,
 } from './groupSelect/groupSelect.reducer';
 import { selectedShapeEditTextFn } from './editText/editText.reducer';
+import { ShapeApi } from 'generated/apis/ShapeApi';
+import { OdysShape } from 'generated';
 
 export type ShapeID = string;
 export type NEAnchor = 'NEAnchor';
@@ -275,6 +278,14 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   };
 };
 
+export const getShapes = createAsyncThunk(
+  'draw/getShapes',
+  async (boardId: string, thunkAPI): Promise<OdysShape[]> => {
+    const api = new ShapeApi();
+    return api.shapeGet({ boardId: `eq.${boardId}` });
+  }
+);
+
 const drawSlice = createSlice({
   name: 'draw',
   initialState: initialState,
@@ -308,8 +319,11 @@ const drawSlice = createSlice({
     endGroupDrag: endGroupDragFn,
   },
   extraReducers: {
-    [endNewRectByClick.fulfilled as any]: (state, action) => {
-      const rect = action.payload as RectProps;
+    [endNewRectByClick.fulfilled as any]: (
+      state,
+      action: PayloadAction<RectProps>
+    ) => {
+      const rect = action.payload;
       if (!rect) return;
 
       state.drag = null;
@@ -323,7 +337,32 @@ const drawSlice = createSlice({
       state.shapes[rect.id] = rect as any;
       reorder(state.shapes, state.shapeOrder, rect);
     },
+    [endNewRectByClick.pending as any]: (state, action) => {},
     [endNewRectByClick.rejected as any]: (state, action) => {},
+    [getShapes.fulfilled as any]: (
+      state,
+      action: PayloadAction<OdysShape[]>
+    ) => {
+      const shapes = action.payload;
+      shapes.forEach((s) => {
+        const shape: RectProps = {
+          ...s,
+          type: 'rect',
+          isGroupingRect: false,
+          createdAtZoomLevel: 5,
+          isLastUpdatedBySync: false,
+          translateX: 0,
+          translateY: 0,
+          deltaWidth: 0,
+          deltaHeight: 0,
+        };
+        state.shapes[s.id] = shape;
+        //TODO: order should be saved on server.
+        reorder(state.shapes, state.shapeOrder, shape);
+      });
+    },
+    [getShapes.pending as any]: (state, action) => {},
+    [getShapes.rejected as any]: (state, action) => {},
   },
 });
 

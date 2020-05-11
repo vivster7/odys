@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Board, BoardFromJSON } from 'generated/models/Board';
+import { OdysBoard, OdysBoardFromJSON } from 'generated';
 
 type LoadStates = 'loading' | 'success' | 'failed';
 
@@ -11,15 +11,16 @@ interface BoardState {
 
 export const getOrCreateBoard = createAsyncThunk(
   'board/getOrCreateBoard',
-  async (roomId: string, thunkAPI): Promise<Board> => {
+  async (roomId: string, thunkAPI): Promise<OdysBoard> => {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/vnd.pgrst.object+json');
     headers.append('Prefer', 'resolution=merge-duplicates');
     headers.append('Prefer', 'return=representation');
 
+    // not using generated client, missing support for on_conflict.
     const url =
-      'http://localhost:3001/boards?on_conflict=room_id&select=id,room_id';
+      'http://localhost:3001/board?on_conflict=room_id&select=id,room_id';
     const p = await fetch(url, {
       headers: headers,
       method: 'POST',
@@ -28,8 +29,7 @@ export const getOrCreateBoard = createAsyncThunk(
       }),
     });
 
-    const result = await p.json();
-    return BoardFromJSON(result);
+    return OdysBoardFromJSON(await p.json());
   }
 );
 
@@ -48,7 +48,7 @@ const boardSlice = createSlice({
     },
     [getOrCreateBoard.fulfilled as any]: (
       state,
-      action: PayloadAction<Board>
+      action: PayloadAction<OdysBoard>
     ) => {
       state.loaded = 'success';
       state.id = action.payload.id;
