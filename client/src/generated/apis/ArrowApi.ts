@@ -17,8 +17,7 @@ import { OdysArrow, OdysArrowFromJSON, OdysArrowToJSON } from '../models';
 
 export interface ArrowDeleteRequest {
   id?: string;
-  boardId?: number;
-  boardUuid?: string;
+  boardId?: string;
   fromShapeId?: string;
   toShapeId?: string;
   createdAt?: string;
@@ -28,8 +27,7 @@ export interface ArrowDeleteRequest {
 
 export interface ArrowGetRequest {
   id?: string;
-  boardId?: number;
-  boardUuid?: string;
+  boardId?: string;
   fromShapeId?: string;
   toShapeId?: string;
   createdAt?: string;
@@ -45,8 +43,7 @@ export interface ArrowGetRequest {
 
 export interface ArrowPatchRequest {
   id?: string;
-  boardId?: number;
-  boardUuid?: string;
+  boardId?: string;
   fromShapeId?: string;
   toShapeId?: string;
   createdAt?: string;
@@ -79,10 +76,6 @@ export class ArrowApi extends runtime.BaseAPI {
 
     if (requestParameters.boardId !== undefined) {
       queryParameters['board_id'] = requestParameters.boardId;
-    }
-
-    if (requestParameters.boardUuid !== undefined) {
-      queryParameters['board_uuid'] = requestParameters.boardUuid;
     }
 
     if (requestParameters.fromShapeId !== undefined) {
@@ -141,10 +134,6 @@ export class ArrowApi extends runtime.BaseAPI {
 
     if (requestParameters.boardId !== undefined) {
       queryParameters['board_id'] = requestParameters.boardId;
-    }
-
-    if (requestParameters.boardUuid !== undefined) {
-      queryParameters['board_uuid'] = requestParameters.boardUuid;
     }
 
     if (requestParameters.fromShapeId !== undefined) {
@@ -238,10 +227,6 @@ export class ArrowApi extends runtime.BaseAPI {
 
     if (requestParameters.boardId !== undefined) {
       queryParameters['board_id'] = requestParameters.boardId;
-    }
-
-    if (requestParameters.boardUuid !== undefined) {
-      queryParameters['board_uuid'] = requestParameters.boardUuid;
     }
 
     if (requestParameters.fromShapeId !== undefined) {

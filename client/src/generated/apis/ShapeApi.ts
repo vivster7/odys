@@ -25,6 +25,8 @@ export interface ShapeDeleteRequest {
   text?: string;
   createdAt?: string;
   updatedAt?: string;
+  type?: string;
+  createdAtZoomLevel?: string;
   prefer?: ShapeDeletePreferEnum;
 }
 
@@ -38,6 +40,8 @@ export interface ShapeGetRequest {
   text?: string;
   createdAt?: string;
   updatedAt?: string;
+  type?: string;
+  createdAtZoomLevel?: string;
   select?: string;
   order?: string;
   range?: string;
@@ -57,6 +61,8 @@ export interface ShapePatchRequest {
   text?: string;
   createdAt?: string;
   updatedAt?: string;
+  type?: string;
+  createdAtZoomLevel?: string;
   prefer?: ShapePatchPreferEnum;
   shape?: OdysShape;
 }
@@ -113,6 +119,15 @@ export class ShapeApi extends runtime.BaseAPI {
 
     if (requestParameters.updatedAt !== undefined) {
       queryParameters['updated_at'] = requestParameters.updatedAt;
+    }
+
+    if (requestParameters.type !== undefined) {
+      queryParameters['type'] = requestParameters.type;
+    }
+
+    if (requestParameters.createdAtZoomLevel !== undefined) {
+      queryParameters['created_at_zoom_level'] =
+        requestParameters.createdAtZoomLevel;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -183,6 +198,15 @@ export class ShapeApi extends runtime.BaseAPI {
 
     if (requestParameters.updatedAt !== undefined) {
       queryParameters['updated_at'] = requestParameters.updatedAt;
+    }
+
+    if (requestParameters.type !== undefined) {
+      queryParameters['type'] = requestParameters.type;
+    }
+
+    if (requestParameters.createdAtZoomLevel !== undefined) {
+      queryParameters['created_at_zoom_level'] =
+        requestParameters.createdAtZoomLevel;
     }
 
     if (requestParameters.select !== undefined) {
@@ -288,6 +312,15 @@ export class ShapeApi extends runtime.BaseAPI {
 
     if (requestParameters.updatedAt !== undefined) {
       queryParameters['updated_at'] = requestParameters.updatedAt;
+    }
+
+    if (requestParameters.type !== undefined) {
+      queryParameters['type'] = requestParameters.type;
+    }
+
+    if (requestParameters.createdAtZoomLevel !== undefined) {
+      queryParameters['created_at_zoom_level'] =
+        requestParameters.createdAtZoomLevel;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};

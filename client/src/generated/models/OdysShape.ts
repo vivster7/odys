@@ -75,6 +75,18 @@ export interface OdysShape {
    * @memberof OdysShape
    */
   updatedAt: string;
+  /**
+   * e.g. rect, grouping_rect, text..
+   * @type {string}
+   * @memberof OdysShape
+   */
+  type: string;
+  /**
+   * a shape created at zoom level 5 will only be visible when around level 5
+   * @type {number}
+   * @memberof OdysShape
+   */
+  createdAtZoomLevel: number;
 }
 
 export function OdysShapeFromJSON(json: any): OdysShape {
@@ -98,6 +110,8 @@ export function OdysShapeFromJSONTyped(
     text: json['text'],
     createdAt: json['created_at'],
     updatedAt: json['updated_at'],
+    type: json['type'],
+    createdAtZoomLevel: json['created_at_zoom_level'],
   };
 }
 
@@ -118,5 +132,7 @@ export function OdysShapeToJSON(value?: OdysShape | null): any {
     text: value.text,
     created_at: value.createdAt,
     updated_at: value.updatedAt,
+    type: value.type,
+    created_at_zoom_level: value.createdAtZoomLevel,
   };
 }

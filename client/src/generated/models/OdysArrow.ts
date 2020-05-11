@@ -27,18 +27,12 @@ export interface OdysArrow {
    */
   id: string;
   /**
-   *
-   * @type {number}
-   * @memberof OdysArrow
-   */
-  boardId: number;
-  /**
    * Note:
    * This is a Foreign Key to `board.id`.<fk table='board' column='id'/>
    * @type {string}
    * @memberof OdysArrow
    */
-  boardUuid: string;
+  boardId: string;
   /**
    * Note:
    * This is a Foreign Key to `shape.id`.<fk table='shape' column='id'/>
@@ -81,7 +75,6 @@ export function OdysArrowFromJSONTyped(
   return {
     id: json['id'],
     boardId: json['board_id'],
-    boardUuid: json['board_uuid'],
     fromShapeId: json['from_shape_id'],
     toShapeId: json['to_shape_id'],
     createdAt: json['created_at'],
@@ -99,7 +92,6 @@ export function OdysArrowToJSON(value?: OdysArrow | null): any {
   return {
     id: value.id,
     board_id: value.boardId,
-    board_uuid: value.boardUuid,
     from_shape_id: value.fromShapeId,
     to_shape_id: value.toShapeId,
     created_at: value.createdAt,

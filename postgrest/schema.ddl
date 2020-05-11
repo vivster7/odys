@@ -49,8 +49,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE api.arrow (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    board_id integer NOT NULL,
-    board_uuid uuid NOT NULL,
+    board_id uuid NOT NULL,
     from_shape_id uuid NOT NULL,
     to_shape_id uuid NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
@@ -136,7 +135,9 @@ CREATE TABLE api.shape (
     height double precision NOT NULL,
     text text DEFAULT ''::text NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    updated_at timestamp with time zone DEFAULT now() NOT NULL
+    updated_at timestamp with time zone DEFAULT now() NOT NULL,
+    type text NOT NULL,
+    created_at_zoom_level smallint NOT NULL
 );
 
 
@@ -182,6 +183,20 @@ COMMENT ON COLUMN api.shape.height IS 'distance to grow in the y-axis';
 --
 
 COMMENT ON COLUMN api.shape.text IS 'content inside shape';
+
+
+--
+-- Name: COLUMN shape.type; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON COLUMN api.shape.type IS 'e.g. rect, grouping_rect, text..';
+
+
+--
+-- Name: COLUMN shape.created_at_zoom_level; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON COLUMN api.shape.created_at_zoom_level IS 'a shape created at zoom level 5 will only be visible when around level 5';
 
 
 --
@@ -246,10 +261,10 @@ ALTER TABLE ONLY api."user"
 
 
 --
--- Name: arrows_board_id_idx; Type: INDEX; Schema: api; Owner: postgres
+-- Name: arrow_board_id_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
-CREATE INDEX arrows_board_id_idx ON api.arrow USING btree (board_id);
+CREATE INDEX arrow_board_id_idx ON api.arrow USING btree (board_id);
 
 
 --
@@ -362,7 +377,7 @@ CREATE INDEX users_updated_at_idx ON api."user" USING btree (updated_at);
 --
 
 ALTER TABLE ONLY api.arrow
-    ADD CONSTRAINT arrows_board_id_fkey FOREIGN KEY (board_uuid) REFERENCES api.board(id) ON DELETE CASCADE;
+    ADD CONSTRAINT arrows_board_id_fkey FOREIGN KEY (board_id) REFERENCES api.board(id) ON DELETE CASCADE;
 
 
 --
