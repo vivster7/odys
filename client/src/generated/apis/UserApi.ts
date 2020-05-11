@@ -13,7 +13,7 @@
  */
 
 import * as runtime from '../runtime';
-import { User, UserFromJSON, UserToJSON } from '../models';
+import { OdysUser, OdysUserFromJSON, OdysUserToJSON } from '../models';
 
 export interface UserDeleteRequest {
   id?: string;
@@ -40,13 +40,13 @@ export interface UserPatchRequest {
   createdAt?: string;
   updatedAt?: string;
   prefer?: UserPatchPreferEnum;
-  user?: User;
+  user?: OdysUser;
 }
 
 export interface UserPostRequest {
   select?: string;
   prefer?: UserPostPreferEnum;
-  user?: User;
+  user?: OdysUser;
 }
 
 /**
@@ -101,7 +101,7 @@ export class UserApi extends runtime.BaseAPI {
    */
   async userGetRaw(
     requestParameters: UserGetRequest
-  ): Promise<runtime.ApiResponse<Array<User>>> {
+  ): Promise<runtime.ApiResponse<Array<OdysUser>>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     if (requestParameters.id !== undefined) {
@@ -163,13 +163,13 @@ export class UserApi extends runtime.BaseAPI {
     });
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(UserFromJSON)
+      jsonValue.map(OdysUserFromJSON)
     );
   }
 
   /**
    */
-  async userGet(requestParameters: UserGetRequest): Promise<Array<User>> {
+  async userGet(requestParameters: UserGetRequest): Promise<Array<OdysUser>> {
     const response = await this.userGetRaw(requestParameters);
     return await response.value();
   }
@@ -209,7 +209,7 @@ export class UserApi extends runtime.BaseAPI {
       method: 'PATCH',
       headers: headerParameters,
       query: queryParameters,
-      body: UserToJSON(requestParameters.user),
+      body: OdysUserToJSON(requestParameters.user),
     });
 
     return new runtime.VoidApiResponse(response);
@@ -248,7 +248,7 @@ export class UserApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: UserToJSON(requestParameters.user),
+      body: OdysUserToJSON(requestParameters.user),
     });
 
     return new runtime.VoidApiResponse(response);

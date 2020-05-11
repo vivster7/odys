@@ -16,75 +16,75 @@ import { exists, mapValues } from '../runtime';
 /**
  * A shape can be drawn on a board. Often as a rectangle, but could be a triangle, circle, etc. They can have text inside.
  * @export
- * @interface Shape
+ * @interface OdysShape
  */
-export interface Shape {
+export interface OdysShape {
   /**
    * Note:
    * This is a Primary Key.<pk/>
    * @type {string}
-   * @memberof Shape
+   * @memberof OdysShape
    */
   id: string;
   /**
    * Note:
    * This is a Foreign Key to `board.id`.<fk table='board' column='id'/>
    * @type {string}
-   * @memberof Shape
+   * @memberof OdysShape
    */
   boardId: string;
   /**
    * top left x-coordinate of shape
    * @type {number}
-   * @memberof Shape
+   * @memberof OdysShape
    */
   x: number;
   /**
    * top left y-coordinate of shape
    * @type {number}
-   * @memberof Shape
+   * @memberof OdysShape
    */
   y: number;
   /**
    * distance to grow in the x-axis
    * @type {number}
-   * @memberof Shape
+   * @memberof OdysShape
    */
   width: number;
   /**
    * distance to grow in the y-axis
    * @type {number}
-   * @memberof Shape
+   * @memberof OdysShape
    */
   height: number;
   /**
    * content inside shape
    * @type {string}
-   * @memberof Shape
+   * @memberof OdysShape
    */
   text: string;
   /**
    *
    * @type {string}
-   * @memberof Shape
+   * @memberof OdysShape
    */
   createdAt: string;
   /**
    *
    * @type {string}
-   * @memberof Shape
+   * @memberof OdysShape
    */
   updatedAt: string;
 }
 
-export function ShapeFromJSON(json: any): Shape {
-  return ShapeFromJSONTyped(json, false);
+export function OdysShapeFromJSON(json: any): OdysShape {
+  return OdysShapeFromJSONTyped(json, false);
 }
 
-export function ShapeFromJSONTyped(
+export function OdysShapeFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): Shape {
+): OdysShape {
   if (json === undefined || json === null) {
     return json;
   }
@@ -101,7 +101,7 @@ export function ShapeFromJSONTyped(
   };
 }
 
-export function ShapeToJSON(value?: Shape | null): any {
+export function OdysShapeToJSON(value?: OdysShape | null): any {
   if (value === undefined) {
     return undefined;
   }

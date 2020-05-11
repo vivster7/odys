@@ -16,38 +16,38 @@ import { exists, mapValues } from '../runtime';
 /**
  * User's gather in a room to draw diagrams in real-time.
  * @export
- * @interface Room
+ * @interface OdysRoom
  */
-export interface Room {
+export interface OdysRoom {
   /**
    * Note:
    * This is a Primary Key.<pk/>
    * @type {string}
-   * @memberof Room
+   * @memberof OdysRoom
    */
   id: string;
   /**
    *
    * @type {string}
-   * @memberof Room
+   * @memberof OdysRoom
    */
   createdAt: string;
   /**
    *
    * @type {string}
-   * @memberof Room
+   * @memberof OdysRoom
    */
   updatedAt: string;
 }
 
-export function RoomFromJSON(json: any): Room {
-  return RoomFromJSONTyped(json, false);
+export function OdysRoomFromJSON(json: any): OdysRoom {
+  return OdysRoomFromJSONTyped(json, false);
 }
 
-export function RoomFromJSONTyped(
+export function OdysRoomFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): Room {
+): OdysRoom {
   if (json === undefined || json === null) {
     return json;
   }
@@ -58,7 +58,7 @@ export function RoomFromJSONTyped(
   };
 }
 
-export function RoomToJSON(value?: Room | null): any {
+export function OdysRoomToJSON(value?: OdysRoom | null): any {
   if (value === undefined) {
     return undefined;
   }

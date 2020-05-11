@@ -16,65 +16,65 @@ import { exists, mapValues } from '../runtime';
 /**
  * An arrow connects two shapes. It must have a direction (from, to).
  * @export
- * @interface Arrow
+ * @interface OdysArrow
  */
-export interface Arrow {
+export interface OdysArrow {
   /**
    * Note:
    * This is a Primary Key.<pk/>
    * @type {string}
-   * @memberof Arrow
+   * @memberof OdysArrow
    */
   id: string;
   /**
    *
    * @type {number}
-   * @memberof Arrow
+   * @memberof OdysArrow
    */
   boardId: number;
   /**
    * Note:
    * This is a Foreign Key to `board.id`.<fk table='board' column='id'/>
    * @type {string}
-   * @memberof Arrow
+   * @memberof OdysArrow
    */
   boardUuid: string;
   /**
    * Note:
    * This is a Foreign Key to `shape.id`.<fk table='shape' column='id'/>
    * @type {string}
-   * @memberof Arrow
+   * @memberof OdysArrow
    */
   fromShapeId: string;
   /**
    * Note:
    * This is a Foreign Key to `shape.id`.<fk table='shape' column='id'/>
    * @type {string}
-   * @memberof Arrow
+   * @memberof OdysArrow
    */
   toShapeId: string;
   /**
    *
    * @type {string}
-   * @memberof Arrow
+   * @memberof OdysArrow
    */
   createdAt: string;
   /**
    *
    * @type {string}
-   * @memberof Arrow
+   * @memberof OdysArrow
    */
   updatedAt: string;
 }
 
-export function ArrowFromJSON(json: any): Arrow {
-  return ArrowFromJSONTyped(json, false);
+export function OdysArrowFromJSON(json: any): OdysArrow {
+  return OdysArrowFromJSONTyped(json, false);
 }
 
-export function ArrowFromJSONTyped(
+export function OdysArrowFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): Arrow {
+): OdysArrow {
   if (json === undefined || json === null) {
     return json;
   }
@@ -89,7 +89,7 @@ export function ArrowFromJSONTyped(
   };
 }
 
-export function ArrowToJSON(value?: Arrow | null): any {
+export function OdysArrowToJSON(value?: OdysArrow | null): any {
   if (value === undefined) {
     return undefined;
   }

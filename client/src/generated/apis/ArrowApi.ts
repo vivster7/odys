@@ -13,7 +13,7 @@
  */
 
 import * as runtime from '../runtime';
-import { Arrow, ArrowFromJSON, ArrowToJSON } from '../models';
+import { OdysArrow, OdysArrowFromJSON, OdysArrowToJSON } from '../models';
 
 export interface ArrowDeleteRequest {
   id?: string;
@@ -52,13 +52,13 @@ export interface ArrowPatchRequest {
   createdAt?: string;
   updatedAt?: string;
   prefer?: ArrowPatchPreferEnum;
-  arrow?: Arrow;
+  arrow?: OdysArrow;
 }
 
 export interface ArrowPostRequest {
   select?: string;
   prefer?: ArrowPostPreferEnum;
-  arrow?: Arrow;
+  arrow?: OdysArrow;
 }
 
 /**
@@ -132,7 +132,7 @@ export class ArrowApi extends runtime.BaseAPI {
    */
   async arrowGetRaw(
     requestParameters: ArrowGetRequest
-  ): Promise<runtime.ApiResponse<Array<Arrow>>> {
+  ): Promise<runtime.ApiResponse<Array<OdysArrow>>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     if (requestParameters.id !== undefined) {
@@ -210,14 +210,16 @@ export class ArrowApi extends runtime.BaseAPI {
     });
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(ArrowFromJSON)
+      jsonValue.map(OdysArrowFromJSON)
     );
   }
 
   /**
    * An arrow connects two shapes. It must have a direction (from, to).
    */
-  async arrowGet(requestParameters: ArrowGetRequest): Promise<Array<Arrow>> {
+  async arrowGet(
+    requestParameters: ArrowGetRequest
+  ): Promise<Array<OdysArrow>> {
     const response = await this.arrowGetRaw(requestParameters);
     return await response.value();
   }
@@ -274,7 +276,7 @@ export class ArrowApi extends runtime.BaseAPI {
       method: 'PATCH',
       headers: headerParameters,
       query: queryParameters,
-      body: ArrowToJSON(requestParameters.arrow),
+      body: OdysArrowToJSON(requestParameters.arrow),
     });
 
     return new runtime.VoidApiResponse(response);
@@ -315,7 +317,7 @@ export class ArrowApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: ArrowToJSON(requestParameters.arrow),
+      body: OdysArrowToJSON(requestParameters.arrow),
     });
 
     return new runtime.VoidApiResponse(response);

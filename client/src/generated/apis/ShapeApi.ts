@@ -13,7 +13,7 @@
  */
 
 import * as runtime from '../runtime';
-import { Shape, ShapeFromJSON, ShapeToJSON } from '../models';
+import { OdysShape, OdysShapeFromJSON, OdysShapeToJSON } from '../models';
 
 export interface ShapeDeleteRequest {
   id?: string;
@@ -58,13 +58,13 @@ export interface ShapePatchRequest {
   createdAt?: string;
   updatedAt?: string;
   prefer?: ShapePatchPreferEnum;
-  shape?: Shape;
+  shape?: OdysShape;
 }
 
 export interface ShapePostRequest {
   select?: string;
   prefer?: ShapePostPreferEnum;
-  shape?: Shape;
+  shape?: OdysShape;
 }
 
 /**
@@ -146,7 +146,7 @@ export class ShapeApi extends runtime.BaseAPI {
    */
   async shapeGetRaw(
     requestParameters: ShapeGetRequest
-  ): Promise<runtime.ApiResponse<Array<Shape>>> {
+  ): Promise<runtime.ApiResponse<Array<OdysShape>>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     if (requestParameters.id !== undefined) {
@@ -232,14 +232,16 @@ export class ShapeApi extends runtime.BaseAPI {
     });
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(ShapeFromJSON)
+      jsonValue.map(OdysShapeFromJSON)
     );
   }
 
   /**
    * A shape can be drawn on a board. Often as a rectangle, but could be a triangle, circle, etc. They can have text inside.
    */
-  async shapeGet(requestParameters: ShapeGetRequest): Promise<Array<Shape>> {
+  async shapeGet(
+    requestParameters: ShapeGetRequest
+  ): Promise<Array<OdysShape>> {
     const response = await this.shapeGetRaw(requestParameters);
     return await response.value();
   }
@@ -304,7 +306,7 @@ export class ShapeApi extends runtime.BaseAPI {
       method: 'PATCH',
       headers: headerParameters,
       query: queryParameters,
-      body: ShapeToJSON(requestParameters.shape),
+      body: OdysShapeToJSON(requestParameters.shape),
     });
 
     return new runtime.VoidApiResponse(response);
@@ -345,7 +347,7 @@ export class ShapeApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: ShapeToJSON(requestParameters.shape),
+      body: OdysShapeToJSON(requestParameters.shape),
     });
 
     return new runtime.VoidApiResponse(response);

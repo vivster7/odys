@@ -14,51 +14,59 @@
 
 import { exists, mapValues } from '../runtime';
 /**
- *
+ * A board can be drawn on. Belongs to a room
  * @export
- * @interface User
+ * @interface OdysBoard
  */
-export interface User {
+export interface OdysBoard {
   /**
    * Note:
    * This is a Primary Key.<pk/>
    * @type {string}
-   * @memberof User
+   * @memberof OdysBoard
    */
   id: string;
   /**
+   * Note:
+   * This is a Foreign Key to `room.id`.<fk table='room' column='id'/>
+   * @type {string}
+   * @memberof OdysBoard
+   */
+  roomId: string;
+  /**
    *
    * @type {string}
-   * @memberof User
+   * @memberof OdysBoard
    */
   createdAt: string;
   /**
    *
    * @type {string}
-   * @memberof User
+   * @memberof OdysBoard
    */
   updatedAt: string;
 }
 
-export function UserFromJSON(json: any): User {
-  return UserFromJSONTyped(json, false);
+export function OdysBoardFromJSON(json: any): OdysBoard {
+  return OdysBoardFromJSONTyped(json, false);
 }
 
-export function UserFromJSONTyped(
+export function OdysBoardFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): User {
+): OdysBoard {
   if (json === undefined || json === null) {
     return json;
   }
   return {
     id: json['id'],
+    roomId: json['room_id'],
     createdAt: json['created_at'],
     updatedAt: json['updated_at'],
   };
 }
 
-export function UserToJSON(value?: User | null): any {
+export function OdysBoardToJSON(value?: OdysBoard | null): any {
   if (value === undefined) {
     return undefined;
   }
@@ -67,6 +75,7 @@ export function UserToJSON(value?: User | null): any {
   }
   return {
     id: value.id,
+    room_id: value.roomId,
     created_at: value.createdAt,
     updated_at: value.updatedAt,
   };

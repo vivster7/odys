@@ -16,15 +16,15 @@ import { exists, mapValues } from '../runtime';
 /**
  *
  * @export
- * @interface RoomUser
+ * @interface OdysRoomUser
  */
-export interface RoomUser {
+export interface OdysRoomUser {
   /**
    * Note:
    * This is a Primary Key.<pk/>
    * This is a Foreign Key to `room.id`.<fk table='room' column='id'/>
    * @type {string}
-   * @memberof RoomUser
+   * @memberof OdysRoomUser
    */
   roomId: string;
   /**
@@ -32,37 +32,37 @@ export interface RoomUser {
    * This is a Primary Key.<pk/>
    * This is a Foreign Key to `user.id`.<fk table='user' column='id'/>
    * @type {string}
-   * @memberof RoomUser
+   * @memberof OdysRoomUser
    */
   userId: string;
   /**
    *
    * @type {boolean}
-   * @memberof RoomUser
+   * @memberof OdysRoomUser
    */
   isOnline: boolean;
   /**
    *
    * @type {string}
-   * @memberof RoomUser
+   * @memberof OdysRoomUser
    */
   createdAt: string;
   /**
    *
    * @type {string}
-   * @memberof RoomUser
+   * @memberof OdysRoomUser
    */
   updatedAt: string;
 }
 
-export function RoomUserFromJSON(json: any): RoomUser {
-  return RoomUserFromJSONTyped(json, false);
+export function OdysRoomUserFromJSON(json: any): OdysRoomUser {
+  return OdysRoomUserFromJSONTyped(json, false);
 }
 
-export function RoomUserFromJSONTyped(
+export function OdysRoomUserFromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): RoomUser {
+): OdysRoomUser {
   if (json === undefined || json === null) {
     return json;
   }
@@ -75,7 +75,7 @@ export function RoomUserFromJSONTyped(
   };
 }
 
-export function RoomUserToJSON(value?: RoomUser | null): any {
+export function OdysRoomUserToJSON(value?: OdysRoomUser | null): any {
   if (value === undefined) {
     return undefined;
   }

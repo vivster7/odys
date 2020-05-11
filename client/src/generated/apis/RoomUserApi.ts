@@ -13,7 +13,11 @@
  */
 
 import * as runtime from '../runtime';
-import { RoomUser, RoomUserFromJSON, RoomUserToJSON } from '../models';
+import {
+  OdysRoomUser,
+  OdysRoomUserFromJSON,
+  OdysRoomUserToJSON,
+} from '../models';
 
 export interface RoomUserDeleteRequest {
   roomId?: string;
@@ -46,13 +50,13 @@ export interface RoomUserPatchRequest {
   createdAt?: string;
   updatedAt?: string;
   prefer?: RoomUserPatchPreferEnum;
-  roomUser?: RoomUser;
+  roomUser?: OdysRoomUser;
 }
 
 export interface RoomUserPostRequest {
   select?: string;
   prefer?: RoomUserPostPreferEnum;
-  roomUser?: RoomUser;
+  roomUser?: OdysRoomUser;
 }
 
 /**
@@ -117,7 +121,7 @@ export class RoomUserApi extends runtime.BaseAPI {
    */
   async roomUserGetRaw(
     requestParameters: RoomUserGetRequest
-  ): Promise<runtime.ApiResponse<Array<RoomUser>>> {
+  ): Promise<runtime.ApiResponse<Array<OdysRoomUser>>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     if (requestParameters.roomId !== undefined) {
@@ -187,7 +191,7 @@ export class RoomUserApi extends runtime.BaseAPI {
     });
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(RoomUserFromJSON)
+      jsonValue.map(OdysRoomUserFromJSON)
     );
   }
 
@@ -195,7 +199,7 @@ export class RoomUserApi extends runtime.BaseAPI {
    */
   async roomUserGet(
     requestParameters: RoomUserGetRequest
-  ): Promise<Array<RoomUser>> {
+  ): Promise<Array<OdysRoomUser>> {
     const response = await this.roomUserGetRaw(requestParameters);
     return await response.value();
   }
@@ -243,7 +247,7 @@ export class RoomUserApi extends runtime.BaseAPI {
       method: 'PATCH',
       headers: headerParameters,
       query: queryParameters,
-      body: RoomUserToJSON(requestParameters.roomUser),
+      body: OdysRoomUserToJSON(requestParameters.roomUser),
     });
 
     return new runtime.VoidApiResponse(response);
@@ -282,7 +286,7 @@ export class RoomUserApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: RoomUserToJSON(requestParameters.roomUser),
+      body: OdysRoomUserToJSON(requestParameters.roomUser),
     });
 
     return new runtime.VoidApiResponse(response);

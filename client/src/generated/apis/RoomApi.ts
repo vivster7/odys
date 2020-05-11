@@ -13,7 +13,7 @@
  */
 
 import * as runtime from '../runtime';
-import { Room, RoomFromJSON, RoomToJSON } from '../models';
+import { OdysRoom, OdysRoomFromJSON, OdysRoomToJSON } from '../models';
 
 export interface RoomDeleteRequest {
   id?: string;
@@ -40,13 +40,13 @@ export interface RoomPatchRequest {
   createdAt?: string;
   updatedAt?: string;
   prefer?: RoomPatchPreferEnum;
-  room?: Room;
+  room?: OdysRoom;
 }
 
 export interface RoomPostRequest {
   select?: string;
   prefer?: RoomPostPreferEnum;
-  room?: Room;
+  room?: OdysRoom;
 }
 
 /**
@@ -104,7 +104,7 @@ export class RoomApi extends runtime.BaseAPI {
    */
   async roomGetRaw(
     requestParameters: RoomGetRequest
-  ): Promise<runtime.ApiResponse<Array<Room>>> {
+  ): Promise<runtime.ApiResponse<Array<OdysRoom>>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     if (requestParameters.id !== undefined) {
@@ -166,14 +166,14 @@ export class RoomApi extends runtime.BaseAPI {
     });
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(RoomFromJSON)
+      jsonValue.map(OdysRoomFromJSON)
     );
   }
 
   /**
    * User\'s gather in a room to draw diagrams in real-time.
    */
-  async roomGet(requestParameters: RoomGetRequest): Promise<Array<Room>> {
+  async roomGet(requestParameters: RoomGetRequest): Promise<Array<OdysRoom>> {
     const response = await this.roomGetRaw(requestParameters);
     return await response.value();
   }
@@ -214,7 +214,7 @@ export class RoomApi extends runtime.BaseAPI {
       method: 'PATCH',
       headers: headerParameters,
       query: queryParameters,
-      body: RoomToJSON(requestParameters.room),
+      body: OdysRoomToJSON(requestParameters.room),
     });
 
     return new runtime.VoidApiResponse(response);
@@ -255,7 +255,7 @@ export class RoomApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: RoomToJSON(requestParameters.room),
+      body: OdysRoomToJSON(requestParameters.room),
     });
 
     return new runtime.VoidApiResponse(response);

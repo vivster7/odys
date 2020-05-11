@@ -13,7 +13,7 @@
  */
 
 import * as runtime from '../runtime';
-import { Board, BoardFromJSON, BoardToJSON } from '../models';
+import { OdysBoard, OdysBoardFromJSON, OdysBoardToJSON } from '../models';
 
 export interface BoardDeleteRequest {
   id?: string;
@@ -43,13 +43,13 @@ export interface BoardPatchRequest {
   createdAt?: string;
   updatedAt?: string;
   prefer?: BoardPatchPreferEnum;
-  board?: Board;
+  board?: OdysBoard;
 }
 
 export interface BoardPostRequest {
   select?: string;
   prefer?: BoardPostPreferEnum;
-  board?: Board;
+  board?: OdysBoard;
 }
 
 /**
@@ -111,7 +111,7 @@ export class BoardApi extends runtime.BaseAPI {
    */
   async boardGetRaw(
     requestParameters: BoardGetRequest
-  ): Promise<runtime.ApiResponse<Array<Board>>> {
+  ): Promise<runtime.ApiResponse<Array<OdysBoard>>> {
     const queryParameters: runtime.HTTPQuery = {};
 
     if (requestParameters.id !== undefined) {
@@ -177,14 +177,16 @@ export class BoardApi extends runtime.BaseAPI {
     });
 
     return new runtime.JSONApiResponse(response, (jsonValue) =>
-      jsonValue.map(BoardFromJSON)
+      jsonValue.map(OdysBoardFromJSON)
     );
   }
 
   /**
    * A board can be drawn on. Belongs to a room
    */
-  async boardGet(requestParameters: BoardGetRequest): Promise<Array<Board>> {
+  async boardGet(
+    requestParameters: BoardGetRequest
+  ): Promise<Array<OdysBoard>> {
     const response = await this.boardGetRaw(requestParameters);
     return await response.value();
   }
@@ -229,7 +231,7 @@ export class BoardApi extends runtime.BaseAPI {
       method: 'PATCH',
       headers: headerParameters,
       query: queryParameters,
-      body: BoardToJSON(requestParameters.board),
+      body: OdysBoardToJSON(requestParameters.board),
     });
 
     return new runtime.VoidApiResponse(response);
@@ -270,7 +272,7 @@ export class BoardApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: BoardToJSON(requestParameters.board),
+      body: OdysBoardToJSON(requestParameters.board),
     });
 
     return new runtime.VoidApiResponse(response);
