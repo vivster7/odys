@@ -5,7 +5,7 @@ import { NewShape } from './shape/Shape';
 import { getShapes } from './draw.reducer';
 import { getArrows } from './arrow/arrow.reducer';
 
-const ShapesContainer: React.FC = React.memo(() => {
+const DrawContainer: React.FC = React.memo(() => {
   const dispatch = useDispatch();
   const shapeOrder = useSelector((state: RootState) => state.draw.shapeOrder);
   const board = useSelector((state: RootState) => state.board);
@@ -25,4 +25,4 @@ const ShapesContainer: React.FC = React.memo(() => {
   );
 });
 
-export default ShapesContainer;
+export default DrawContainer;

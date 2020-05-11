@@ -16,7 +16,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../App';
 import { wheelEnd, endPan, cleanSvg } from './svg.reducer';
-import ShapesContainer from '../draw/ShapesContainer';
+import DrawContainer from '../draw/DrawContainer';
 import { endNewRectByClick } from '../draw/newRect/newRect.reducer';
 import GroupSelect from '../draw/groupSelect/GroupSelect';
 import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
@@ -289,7 +289,7 @@ const Svg: React.FC = () => {
       cursor={cursor}
     >
       <g id="odys-zoomable-group" transform={transform}>
-        <ShapesContainer></ShapesContainer>
+        <DrawContainer></DrawContainer>
         <GroupSelect></GroupSelect>
       </g>
     </svg>
