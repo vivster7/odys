@@ -237,10 +237,6 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
   });
 
   if (existing) {
-    state.select = {
-      id: existing.id,
-      isEditing: false,
-    };
     return;
   }
 
@@ -272,10 +268,6 @@ const drawArrowFn: ShapeReducer<PayloadAction<ShapeID>> = (state, action) => {
 
   state.shapes[arrowId] = arrow;
   reorder(state.shapes, state.shapeOrder, arrow);
-  state.select = {
-    id: arrowId,
-    isEditing: false,
-  };
 };
 
 export const getShapes = createAsyncThunk(
