@@ -1,6 +1,11 @@
 import { ShapeReducer, ShapeID, reorder } from '../draw.reducer';
 import { PayloadAction } from '@reduxjs/toolkit';
 
+export interface SelectedShape {
+  id: string;
+  isEditing: boolean;
+}
+
 export const selectShapeFn: ShapeReducer<PayloadAction<ShapeID>> = (
   state,
   action

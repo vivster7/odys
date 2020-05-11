@@ -6,8 +6,8 @@ import {
   startDrag,
   startNewRectByClick,
   startNewRectByDrag,
-} from '../draw.reducer';
-import { RootState } from '../../../App';
+} from '../../draw.reducer';
+import { RootState } from '../../../../App';
 import Shape, {
   ShapeId,
   Selectable,
@@ -15,10 +15,10 @@ import Shape, {
   TextEditable,
   Resizable,
   useShapeChangeEmitter,
-} from './Shape';
-import { isOverlapping } from '../../../math/rect';
-import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
-import SelectionCircles from '../select/SelectionCircles';
+} from '../Shape';
+import { isOverlapping } from '../../../../math/rect';
+import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
+import SelectionCircles from '../../select/SelectionCircles';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;

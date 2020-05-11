@@ -1,8 +1,8 @@
 import { ShapeReducer, ShapeID, reorder, ShapeState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { ArrowProps } from './Arrow';
-import { GroupingRectProps } from '../shape/GroupingRect';
-import { RectProps } from '../shape/Rect';
+import { GroupingRectProps } from '../shape/type/GroupingRect';
+import { RectProps } from '../shape/type/Rect';
 import * as uuid from 'uuid';
 import { OdysArrow } from 'generated';
 import { ArrowApi } from 'generated/apis/ArrowApi';

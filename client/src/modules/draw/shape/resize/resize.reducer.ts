@@ -1,6 +1,21 @@
 import { PayloadAction } from '@reduxjs/toolkit';
-import { ShapeReducer, Anchor } from '../draw.reducer';
-import { RectProps } from '../shape/Rect';
+import { ShapeReducer } from '../../draw.reducer';
+import { RectProps } from '../type/Rect';
+
+export type NEAnchor = 'NEAnchor';
+export type NWAnchor = 'NWAnchor';
+export type SEAnchor = 'SEAnchor';
+export type SWAnchor = 'SWAnchor';
+export type Anchor = NEAnchor | NWAnchor | SEAnchor | SWAnchor;
+
+export interface ResizeState {
+  id: string;
+  anchor: Anchor;
+  originalX: number;
+  originalY: number;
+  clickX: number;
+  clickY: number;
+}
 
 interface StartResize {
   id: string;

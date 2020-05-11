@@ -6,9 +6,9 @@ import { addError } from 'modules/errors/errors.reducer';
 import socket from 'socket/socket';
 
 import Arrow from '../arrow/Arrow';
-import Text from './Text';
-import Rect from './Rect';
-import GroupingRect from './GroupingRect';
+import Text from './type/Text';
+import Rect from './type/Rect';
+import GroupingRect from './type/GroupingRect';
 
 export type ShapeType = 'rect' | 'text' | 'arrow' | 'grouping_rect';
 

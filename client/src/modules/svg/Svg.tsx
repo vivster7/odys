@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../App';
 import { wheelEnd, endPan, cleanSvg } from './svg.reducer';
 import DrawContainer from '../draw/DrawContainer';
-import { endNewRectByClick } from '../draw/newRect/newRect.reducer';
+import { endNewRectByClick } from '../draw/shape/newRect/newRect.reducer';
 import GroupSelect from '../draw/groupSelect/GroupSelect';
 import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
 

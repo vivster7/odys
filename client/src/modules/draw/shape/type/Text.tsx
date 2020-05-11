@@ -1,8 +1,8 @@
 import React from 'react';
-import { startDrag } from '../draw.reducer';
+import { startDrag } from '../../draw.reducer';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../App';
-import Shape, { ShapeId, Selectable, Draggable, TextEditable } from './Shape';
+import { RootState } from '../../../../App';
+import Shape, { ShapeId, Selectable, Draggable, TextEditable } from '../Shape';
 
 export type TextProps = {
   type: 'text';

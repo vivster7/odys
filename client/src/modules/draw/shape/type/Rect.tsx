@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectShape, drawArrow, startDrag } from '../draw.reducer';
-import { RootState } from '../../../App';
+import { selectShape, drawArrow, startDrag } from '../../draw.reducer';
+import { RootState } from '../../../../App';
 import Shape, {
   ShapeId,
   Selectable,
@@ -9,11 +9,10 @@ import Shape, {
   TextEditable,
   Resizable,
   useShapeChangeEmitter,
-} from './Shape';
-import { isOverlapping } from '../../../math/rect';
-import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
-import SelectionCircles from '../select/SelectionCircles';
-
+} from '../Shape';
+import { isOverlapping } from '../../../../math/rect';
+import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
+import SelectionCircles from '../../select/SelectionCircles';
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
 

@@ -1,8 +1,13 @@
 import { ShapeReducer } from '../draw.reducer';
 import { PayloadAction } from '@reduxjs/toolkit';
 import Shape from '../shape/Shape';
-import { isOverlapping, outline } from '../../../math/rect';
-import { RectProps } from '../shape/Rect';
+import Rect, { isOverlapping, outline } from '../../../math/rect';
+import { RectProps } from '../shape/type/Rect';
+
+export interface GroupDragState {
+  startX: number;
+  startY: number;
+}
 
 interface startDragSelection {
   x: number;
@@ -28,6 +33,11 @@ export const startDragSelectionFn: ShapeReducer<PayloadAction<
   };
 };
 
+export interface GroupSelectState {
+  selectionRect: Rect | null;
+  selectedShapeIds: { [key: string]: boolean };
+  outline: Rect;
+}
 interface resizeDragSelection {
   clickX: number;
   clickY: number;

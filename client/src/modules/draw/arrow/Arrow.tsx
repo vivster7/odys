@@ -8,7 +8,7 @@ import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
 import Arrowhead from './Arrowhead';
-import { RectProps } from '../shape/Rect';
+import { RectProps } from '../shape/type/Rect';
 import Shape, {
   ShapeId,
   TextEditable,
