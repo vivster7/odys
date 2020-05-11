@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from 'App';
-import { addShape, ShapeData, getShapes } from 'modules/draw/draw.reducer';
+import { addShape, ShapeData } from 'modules/draw/draw.reducer';
 import HiddenTextInput from 'modules/draw/editText/HiddenTextInput';
 import { RECT_HEIGHT, RECT_WIDTH, RectProps } from 'modules/draw/shapes/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
