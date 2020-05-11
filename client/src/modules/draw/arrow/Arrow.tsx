@@ -10,7 +10,6 @@ import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 import Arrowhead from './Arrowhead';
 import { RectProps } from '../shape/Rect';
 import Shape, {
-  idFn,
   ShapeId,
   TextEditable,
   useShapeChangeEmitter,
@@ -192,7 +191,6 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
       ></line>
       {left ? (
         <Arrowhead
-          id={idFn()}
           x={0}
           y={0}
           direction="left"
@@ -205,7 +203,6 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
       )}
       {right ? (
         <Arrowhead
-          id={idFn()}
           x={x2}
           y={y2}
           direction="right"

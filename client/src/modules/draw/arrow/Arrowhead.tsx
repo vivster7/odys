@@ -2,7 +2,6 @@ import React from 'react';
 import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
 
 type ArrowheadProps = {
-  id: string;
   x: number;
   y: number;
   isSelected: boolean;
