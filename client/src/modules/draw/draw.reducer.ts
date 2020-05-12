@@ -92,30 +92,30 @@ const initialState: DrawState = {
   endNewRectByDrag: null,
 };
 
-export function reorder(subject: Shape | Arrow, state: DrawState) {
+export function reorder(shape: Shape, state: DrawState) {
   const order = state.drawOrder;
   // remove from `order` array if present
-  const idx = order.findIndex((id) => id === subject.id);
+  const idx = order.findIndex((id) => id === shape.id);
   if (idx !== -1) {
     order.splice(idx, 1);
   }
 
   // grouping rects must come first. they are ordered against each other by `x` position.
-  if (subject.type === 'grouping_rect') {
+  if (shape.type === 'grouping_rect') {
     let insertIdx = 0;
     for (let i = 0; i < order.length; i++) {
       const id = order[i];
       const s = state.shapes[id];
-      if (s.type === 'grouping_rect' && s.x < subject.x) continue;
+      if (s.type === 'grouping_rect' && s.x < shape.x) continue;
       insertIdx = i;
       break;
     }
-    order.splice(insertIdx, 0, subject.id);
+    order.splice(insertIdx, 0, shape.id);
     return;
   }
 
   // by default, add to top
-  order.push(subject.id);
+  order.push(shape.id);
 }
 
 const drawSlice = createSlice({

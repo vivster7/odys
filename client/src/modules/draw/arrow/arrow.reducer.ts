@@ -3,11 +3,12 @@ import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as uuid from 'uuid';
 import { OdysArrow } from 'generated';
 import { ArrowApi } from 'generated/apis/ArrowApi';
+import { Syncable } from '../sync/sync.reducer';
+import { Selectable } from '../select/select.reducer';
+import { TextEditable } from '../editText/editText.reducer';
 
-export interface Arrow extends OdysArrow {
-  type: 'arrow';
-  isLastUpdatedBySync: boolean;
-}
+export interface Arrow extends OdysArrow, ArrowMixins {}
+type ArrowMixins = Selectable & TextEditable & Syncable;
 
 export const getArrows = createAsyncThunk(
   'draw/getArrows',
@@ -25,12 +26,11 @@ export const getArrowsFulfilled = (
   arrows.forEach((a) => {
     const arrow: Arrow = {
       ...a,
-      type: 'arrow',
       isLastUpdatedBySync: false,
     };
     state.arrows[a.id] = arrow;
     //TODO: order should be saved on server.
-    reorder(arrow, state);
+    state.drawOrder.push(arrow.id);
   });
 };
 
@@ -83,5 +83,5 @@ export const drawArrowFn: DrawReducer<string> = (state, action) => {
   } as Arrow;
 
   state.arrows[arrow.id] = arrow;
-  reorder(arrow, state);
+  state.drawOrder.push(arrow.id);
 };

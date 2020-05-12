@@ -9,19 +9,14 @@ import { Selectable } from 'modules/draw/select/select.reducer';
 import { Syncable } from 'modules/draw/sync/sync.reducer';
 
 export type Shape = Rect | GroupingRect | Text;
-export type ShapeMixins = OdysShape &
-  Draggable &
-  Resizable &
-  Selectable &
-  TextEditable &
-  Syncable;
-export interface Rect extends ShapeMixins {
+type ShapeMixins = Draggable & Resizable & Selectable & TextEditable & Syncable;
+export interface Rect extends OdysShape, ShapeMixins {
   type: 'rect';
 }
-export interface GroupingRect extends ShapeMixins {
+export interface GroupingRect extends OdysShape, ShapeMixins {
   type: 'grouping_rect';
 }
-export interface Text extends ShapeMixins {
+export interface Text extends OdysShape, ShapeMixins {
   type: 'text';
 }
 
