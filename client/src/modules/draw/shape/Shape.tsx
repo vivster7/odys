@@ -34,6 +34,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
   const { id } = props;
   const dispatch = useDispatch();
 
+  const board = useSelector((state: RootState) => state.board);
   const shape = useSelector((state: RootState) => state.draw.shapes[id]);
   const isDragging = useSelector(
     (state: RootState) => state.draw.drag?.id === id
@@ -57,7 +58,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
       !isOverlapping(shape, selectedShape) &&
       !isSelected
     ) {
-      dispatch(drawArrow(id));
+      dispatch(drawArrow({ id, boardId: board.id }));
     } else {
       dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
       dispatch(selectDrawing(id));
@@ -73,7 +74,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
       !isOverlapping(shape, selectedShape) &&
       !isSelected
     ) {
-      dispatch(drawArrow(id));
+      dispatch(drawArrow({ id, boardId: board.id }));
     } else if (e.altKey) {
       dispatch(startNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
       dispatch(startNewRectByDrag({ clickX: e.clientX, clickY: e.clientY }));

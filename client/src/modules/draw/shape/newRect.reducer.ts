@@ -42,6 +42,7 @@ interface NewRectByDrag {
   svgTopLeftY: number;
   svgScale: number;
   svgZoomLevel: number;
+  boardId: string;
 }
 
 export const startNewRectByClickFn: DrawReducer<StartNewRectByClick> = (
@@ -62,6 +63,7 @@ export const endNewRectByClick = createAsyncThunk(
     const state = thunkAPI.getState() as RootState;
     const { svg } = state;
 
+    // cancel this event if we've started dragging
     if (
       state.draw.newRectByClick?.clickX !== clickX ||
       state.draw.newRectByClick?.clickY !== clickY
@@ -89,7 +91,7 @@ export const endNewRectByClick = createAsyncThunk(
       deltaHeight: 0,
       createdAtZoomLevel: svg.zoomLevel,
       isLastUpdatedBySync: false,
-      boardId: '1', //TODO;
+      boardId: state.board.id,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -145,6 +147,7 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
     svgTopLeftY,
     svgScale,
     svgZoomLevel,
+    boardId,
   } = action.payload;
 
   if (state.endNewRectByDrag.shape) {
@@ -174,7 +177,7 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
       deltaHeight: 0,
       createdAtZoomLevel: svgZoomLevel,
       isLastUpdatedBySync: false,
-      boardId: '1', // TODO: boardId,
+      boardId: boardId,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };

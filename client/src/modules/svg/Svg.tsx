@@ -78,6 +78,7 @@ interface PanState {
 
 const Svg: React.FC = () => {
   const dispatch = useDispatch();
+  const boardId = useSelector((state: RootState) => state.board.id);
   const isDragging = useSelector((state: RootState) => !!state.draw.drag);
   const isGroupSelecting = useSelector(
     (state: RootState) => !!state.draw.groupSelect?.selectionRect
@@ -149,6 +150,7 @@ const Svg: React.FC = () => {
           svgTopLeftY: svgState.topLeftY,
           svgScale: svgState.scale,
           svgZoomLevel: svgState.zoomLevel,
+          boardId: boardId,
         })
       );
     }

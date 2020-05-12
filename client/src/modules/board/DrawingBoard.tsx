@@ -21,8 +21,31 @@ function usePreviousShapes(shapes: ShapeData) {
   return ref.current;
 }
 
+const BoardLoading: React.FC = () => (
+  <div
+    style={{
+      height: '100%',
+      width: '100%',
+      background: 'var(--odys-background-gray)',
+    }}
+  ></div>
+);
+
+const BoardFailed: React.FC = () => (
+  <div
+    style={{
+      height: '100%',
+      width: '100%',
+      background: 'rgba(180,160,160,0.6)',
+    }}
+  >
+    <h1>Could not load</h1>
+  </div>
+);
+
 const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
+  const board = useSelector((state: RootState) => state.board);
   const room = useSelector((state: RootState) => state.room);
   const shapes = useSelector((state: RootState) => state.draw);
 
@@ -67,6 +90,9 @@ const DrawingBoard: React.FC = () => {
     dispatch(getOrCreateBoard(room.id));
   }, [room, dispatch]);
 
+  if (board.loaded === 'failed' || room.loaded === 'failed')
+    return <BoardFailed></BoardFailed>;
+  if (board.loaded === 'loading') return <BoardLoading></BoardLoading>;
   return (
     <>
       <Svg></Svg>
