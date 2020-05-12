@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectedShapeEditText, deleteShape } from '../../draw.reducer';
+import { editText, deleteShape } from '../../draw.reducer';
 import { RootState, OdysDispatch } from '../../../../App';
 
 // add delete key handler
@@ -25,9 +25,11 @@ const HiddenTextInput: React.FC = React.memo(() => {
   const isEditing = select?.isEditing;
 
   // This selector will refresh this component whenver the
-  // selected shape changes (e.g. resize). This should trigger
+  // selected drawing changes (e.g. resize). This should trigger
   // focus onto this hidden input.
-  const shape = useSelector((state: RootState) => id && state.draw.shapes[id]);
+  const drawing = useSelector(
+    (state: RootState) => id && (state.draw.shapes[id] ?? state.draw.arrows[id])
+  );
 
   useEffect(() => {
     if (id === undefined || isEditing === undefined) return;
@@ -39,7 +41,7 @@ const HiddenTextInput: React.FC = React.memo(() => {
   });
 
   const inputEl = useRef<HTMLInputElement>(null);
-  const text = !!shape ? shape.text : '';
+  const text = !!drawing ? drawing.text : '';
   const inputValue = !!isEditing && text ? text : '';
   useEffect(() => {
     if (inputEl && inputEl.current) {
@@ -48,7 +50,7 @@ const HiddenTextInput: React.FC = React.memo(() => {
   });
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(selectedShapeEditText(event.target.value));
+    dispatch(editText(event.target.value));
   };
 
   if (!id) return <></>;

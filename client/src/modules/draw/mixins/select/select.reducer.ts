@@ -1,6 +1,6 @@
 import { DrawReducer, reorder } from '../../draw.reducer';
 
-export interface SelectedShape {
+export interface SelectedDrawing {
   id: string;
   isEditing: boolean;
 }
@@ -9,10 +9,11 @@ export interface Selectable {
   id: string;
 }
 
-export const selectShapeFn: DrawReducer<string> = (state, action) => {
+export const selectDrawingFn: DrawReducer<string> = (state, action) => {
   const id = action.payload;
-  if (!state.shapes[id]) {
-    throw new Error(`Cannot find shape with ${id}`);
+  const drawing = state.shapes[id] ?? state.arrows[id];
+  if (!drawing) {
+    throw new Error(`Cannot find drawing with ${id}`);
   }
 
   state.select = {
@@ -20,7 +21,7 @@ export const selectShapeFn: DrawReducer<string> = (state, action) => {
     isEditing: false,
   };
   state.groupSelect = null;
-  reorder(state.shapes[id], state);
+  reorder(drawing, state);
 };
 
 export const cancelSelectFn: DrawReducer = (state, action) => {

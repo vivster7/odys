@@ -12,7 +12,7 @@ import { isOverlapping } from 'math/box';
 import {
   drawArrow,
   startDrag,
-  selectShape,
+  selectDrawing,
   startNewRectByClick,
   startNewRectByDrag,
 } from '../draw.reducer';
@@ -60,7 +60,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
       dispatch(drawArrow(id));
     } else {
       dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
-      dispatch(selectShape(id));
+      dispatch(selectDrawing(id));
     }
   }
 
@@ -78,7 +78,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
       dispatch(startNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
       dispatch(startNewRectByDrag({ clickX: e.clientX, clickY: e.clientY }));
     } else {
-      dispatch(selectShape(id));
+      dispatch(selectDrawing(id));
       dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
     }
   }

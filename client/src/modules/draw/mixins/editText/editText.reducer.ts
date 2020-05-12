@@ -5,7 +5,7 @@ export interface TextEditable {
   text: string;
 }
 
-export const selectedShapeEditTextFn: DrawReducer<string> = (state, action) => {
+export const editTextFn: DrawReducer<string> = (state, action) => {
   const { select } = state;
   if (!select) {
     throw new Error(
@@ -14,13 +14,12 @@ export const selectedShapeEditTextFn: DrawReducer<string> = (state, action) => {
   }
 
   const { id } = select;
-  if (!state.shapes[id]) {
-    throw new Error(`Cannot find shape with ${id}`);
+  const drawing = state.shapes[id] ?? state.arrows[id];
+  if (!drawing) {
+    throw new Error(`Cannot find drawing with ${id}`);
   }
 
-  const shape = state.shapes[id];
-
-  shape.text = action.payload;
-  shape.isLastUpdatedBySync = false;
+  drawing.text = action.payload;
+  drawing.isLastUpdatedBySync = false;
   select.isEditing = true;
 };

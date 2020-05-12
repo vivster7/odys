@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from 'App';
 import Line, { intersects } from 'math/line';
-import { selectShape } from 'modules/draw/draw.reducer';
+import { selectDrawing } from 'modules/draw/draw.reducer';
 import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
@@ -161,7 +161,7 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
-    dispatch(selectShape(id));
+    dispatch(selectDrawing(id));
   }
 
   return (

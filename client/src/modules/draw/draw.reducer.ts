@@ -13,9 +13,9 @@ import {
   ResizeState,
 } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import {
-  selectShapeFn,
   cancelSelectFn,
-  SelectedShape,
+  SelectedDrawing,
+  selectDrawingFn,
 } from 'modules/draw/mixins/select/select.reducer';
 import {
   startNewRectByClickFn,
@@ -34,7 +34,7 @@ import {
   GroupSelectState,
   GroupDragState,
 } from 'modules/draw/mixins/groupSelect/groupSelect.reducer';
-import { selectedShapeEditTextFn } from './mixins/editText/editText.reducer';
+import { editTextFn } from './mixins/editText/editText.reducer';
 import {
   drawArrowFn,
   getArrows,
@@ -66,7 +66,7 @@ export interface DrawState {
   shapes: ShapeData;
   arrows: ArrowData;
   drawOrder: string[];
-  select: SelectedShape | null;
+  select: SelectedDrawing | null;
   drag: DragState | null;
   groupSelect: GroupSelectState | null;
   groupDrag: GroupDragState | null;
@@ -102,7 +102,7 @@ export function reorder(shape: Shape, state: DrawState) {
     for (let i = 0; i < order.length; i++) {
       const id = order[i];
       const s = state.shapes[id];
-      if (s.type === 'grouping_rect' && s.x < shape.x) continue;
+      if (s?.type === 'grouping_rect' && s?.x < shape.x) continue;
       insertIdx = i;
       break;
     }
@@ -125,11 +125,11 @@ const drawSlice = createSlice({
     raiseShape: raiseShapeFn,
     deleteShape: deleteShapeFn,
     // editText
-    selectedShapeEditText: selectedShapeEditTextFn,
+    editText: editTextFn,
     // arrow
     drawArrow: drawArrowFn,
     // select
-    selectShape: selectShapeFn,
+    selectDrawing: selectDrawingFn,
     cancelSelect: cancelSelectFn,
     // drag
     startDrag: startDragFn,
@@ -167,9 +167,9 @@ export const {
   editShape,
   syncShape,
   deleteShape,
-  selectedShapeEditText,
+  editText,
   cancelSelect,
-  selectShape,
+  selectDrawing,
   drawArrow,
   startDrag,
   drag,
