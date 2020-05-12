@@ -13,7 +13,7 @@ Setup `.env` file from secrets
 `postgrest postgrest.dev.conf`
 
 Its now working at:
-`curl http://localhost:3000/`
+`curl http://localhost:3001/`
 
 For a UI of available endpoints:
 `open index.html`
