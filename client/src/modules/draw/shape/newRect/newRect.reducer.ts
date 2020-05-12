@@ -1,11 +1,10 @@
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawReducer, reorder, DrawState } from '../../draw.reducer';
-import { RectProps, RECT_WIDTH, RECT_HEIGHT } from '../type/Rect';
+import { RECT_WIDTH, RECT_HEIGHT } from '../type/Rect';
 import * as uuid from 'uuid';
 import { RootState } from '../../../../App';
 import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
-import { GroupingRectProps } from '../type/GroupingRect';
-import Shape from '../Shape';
+import { Shape, GroupingRect, Rect } from '../shape.reducer';
 
 export interface NewRectByClickState {
   clickX: number;
@@ -73,7 +72,7 @@ export const endNewRectByClick = createAsyncThunk(
     const width = RECT_WIDTH / zoomLeveltoScaleMap[svg.zoomLevel];
     const height = RECT_HEIGHT / zoomLeveltoScaleMap[svg.zoomLevel];
 
-    const rect: RectProps = {
+    const rect: Rect = {
       type: 'rect',
       id: id,
       text: 'Concept',
@@ -87,6 +86,9 @@ export const endNewRectByClick = createAsyncThunk(
       deltaHeight: 0,
       createdAtZoomLevel: svg.zoomLevel,
       isLastUpdatedBySync: false,
+      boardId: '1', //TODO;
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     return rect;
@@ -95,7 +97,7 @@ export const endNewRectByClick = createAsyncThunk(
 
 export const endNewRectByClickFulfilled = (
   state: DrawState,
-  action: PayloadAction<RectProps>
+  action: PayloadAction<Rect>
 ) => {
   const rect = action.payload;
   if (!rect) return;
@@ -155,7 +157,7 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
       (clickY - svgTopLeftY) / svgScale -
       (state.endNewRectByDrag.clickY - svgTopLeftY) / svgScale;
 
-    const rect: GroupingRectProps = {
+    const rect: GroupingRect = {
       type: 'grouping_rect',
       id: id,
       text: 'Group',
@@ -169,6 +171,9 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
       deltaHeight: 0,
       createdAtZoomLevel: svgZoomLevel,
       isLastUpdatedBySync: false,
+      boardId: '1', // TODO: boardId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     state.endNewRectByDrag.shape = rect as any;

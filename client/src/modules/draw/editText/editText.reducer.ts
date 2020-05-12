@@ -1,5 +1,9 @@
 import { DrawReducer } from '../draw.reducer';
-import Shape, { TextEditable } from '../shape/Shape';
+
+export interface TextEditable {
+  id: string;
+  text: string;
+}
 
 export const selectedShapeEditTextFn: DrawReducer<string> = (state, action) => {
   const { select } = state;
@@ -14,12 +18,7 @@ export const selectedShapeEditTextFn: DrawReducer<string> = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.shapes[id] as Shape & TextEditable;
-  if (!shape.hasOwnProperty('text')) {
-    throw new Error(
-      `[draw/editText] Shape is missing 'text' property (${select.id})`
-    );
-  }
+  const shape = state.shapes[id];
 
   shape.text = action.payload;
   shape.isLastUpdatedBySync = false;

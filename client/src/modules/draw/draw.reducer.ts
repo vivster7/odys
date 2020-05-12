@@ -1,5 +1,3 @@
-import Shape from './shape/Shape';
-
 import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 
 import {
@@ -18,6 +16,7 @@ import {
   selectShapeFn,
   cancelSelectFn,
   SelectedShape,
+  Selectable,
 } from './select/select.reducer';
 import {
   startNewRectByClickFn,
@@ -28,8 +27,6 @@ import {
   NewRectByDragState,
   endNewRectByClickFulfilled,
 } from './shape/newRect/newRect.reducer';
-import { RectProps } from './shape/type/Rect';
-import { GroupingRectProps } from './shape/type/GroupingRect';
 import {
   startDragSelectionFn,
   resizeDragSelectionFn,
@@ -38,7 +35,10 @@ import {
   GroupSelectState,
   GroupDragState,
 } from './groupSelect/groupSelect.reducer';
-import { selectedShapeEditTextFn } from './editText/editText.reducer';
+import {
+  selectedShapeEditTextFn,
+  TextEditable,
+} from './editText/editText.reducer';
 import {
   drawArrowFn,
   getArrows,
@@ -53,6 +53,7 @@ import {
   deleteShapeFn,
   getShapes,
   getShapesFulfilled,
+  Shape,
 } from './shape/shape.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
@@ -100,25 +101,17 @@ export function reorder(subject: Shape | Arrow, state: DrawState) {
   }
 
   // grouping rects must come first. they are ordered against each other by `x` position.
-  if (subject.type === 'rect' || subject.type === 'grouping_rect') {
-    const rect = subject as RectProps | GroupingRectProps;
-
-    if (rect.type === 'grouping_rect') {
-      let insertIdx = 0;
-      for (let i = 0; i < order.length; i++) {
-        const id = order[i];
-        const s = state.shapes[id];
-
-        if (s?.type === 'rect' || s?.type === 'grouping_rect') {
-          const t = s as RectProps | GroupingRectProps;
-          if (t.type === 'grouping_rect' && t.x < rect.x) continue;
-        }
-        insertIdx = i;
-        break;
-      }
-      order.splice(insertIdx, 0, subject.id);
-      return;
+  if (subject.type === 'grouping_rect') {
+    let insertIdx = 0;
+    for (let i = 0; i < order.length; i++) {
+      const id = order[i];
+      const s = state.shapes[id];
+      if (s.type === 'grouping_rect' && s.x < subject.x) continue;
+      insertIdx = i;
+      break;
     }
+    order.splice(insertIdx, 0, subject.id);
+    return;
   }
 
   // by default, add to top

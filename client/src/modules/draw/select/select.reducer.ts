@@ -5,6 +5,10 @@ export interface SelectedShape {
   isEditing: boolean;
 }
 
+export interface Selectable {
+  id: string;
+}
+
 export const selectShapeFn: DrawReducer<string> = (state, action) => {
   const id = action.payload;
   if (!state.shapes[id]) {

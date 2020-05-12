@@ -1,5 +1,4 @@
 import { DrawReducer } from '../../draw.reducer';
-import { RectProps } from '../type/Rect';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -14,6 +13,18 @@ export interface ResizeState {
   originalY: number;
   clickX: number;
   clickY: number;
+}
+
+export interface Resizable {
+  id: string;
+  width: number;
+  height: number;
+  deltaWidth: number;
+  deltaHeight: number;
+  x: number;
+  y: number;
+  translateX: number;
+  translateY: number;
 }
 
 interface StartResize {
@@ -84,7 +95,7 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
       throw new Error(`Unknown anchor point ${state.resize.anchor}`);
   }
 
-  const shape = state.shapes[id] as RectProps;
+  const shape = state.shapes[id];
   shape.translateX = translateX;
   shape.translateY = translateY;
   shape.deltaWidth = deltaWidth;
@@ -104,7 +115,7 @@ export const endResizeFn: DrawReducer = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.shapes[id] as RectProps;
+  const shape = state.shapes[id];
   shape.x = shape.x + shape.translateX;
   shape.y = shape.y + shape.translateY;
   shape.translateX = 0;

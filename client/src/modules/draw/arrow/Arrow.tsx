@@ -8,7 +8,6 @@ import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
 import Arrowhead from './Arrowhead';
-import { RectProps } from '../shape/type/Rect';
 import { ShapeId, useShapeChangeEmitter } from '../shape/Shape';
 import { Arrow as ArrowType } from './arrow.reducer';
 
@@ -27,10 +26,10 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = useSelector(
     (state: RootState) => state.draw.shapes[arrow.fromShapeId]
-  ) as RectProps;
+  );
   const r2 = useSelector(
     (state: RootState) => state.draw.shapes[arrow.toShapeId]
-  ) as RectProps;
+  );
 
   const isSelected = useSelector(
     (state: RootState) => state.draw.select?.id === id

@@ -1,9 +1,29 @@
 import { DrawReducer, reorder, DrawState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import Shape from './Shape';
 import { OdysShape } from 'generated';
 import { ShapeApi } from 'generated/apis/ShapeApi';
-import { RectProps } from './type/Rect';
+import { Draggable } from 'modules/draw/shape/drag/drag.reducer';
+import { Resizable } from 'modules/draw/shape/resize/resize.reducer';
+import { TextEditable } from 'modules/draw/editText/editText.reducer';
+import { Selectable } from 'modules/draw/select/select.reducer';
+import { Syncable } from 'modules/draw/sync/sync.reducer';
+
+export type Shape = Rect | GroupingRect | Text;
+export type ShapeMixins = OdysShape &
+  Draggable &
+  Resizable &
+  Selectable &
+  TextEditable &
+  Syncable;
+export interface Rect extends ShapeMixins {
+  type: 'rect';
+}
+export interface GroupingRect extends ShapeMixins {
+  type: 'grouping_rect';
+}
+export interface Text extends ShapeMixins {
+  type: 'text';
+}
 
 export const addShapeFn: DrawReducer<Shape> = (state, action) => {
   state.shapes[action.payload.id] = action.payload as any;
@@ -79,16 +99,14 @@ export const getShapesFulfilled = (
 ) => {
   const shapes = action.payload;
   shapes.forEach((s) => {
-    const shape: RectProps = {
+    const shape = {
       ...s,
-      type: 'rect',
-      createdAtZoomLevel: 5,
       isLastUpdatedBySync: false,
       translateX: 0,
       translateY: 0,
       deltaWidth: 0,
       deltaHeight: 0,
-    };
+    } as Shape;
     state.shapes[s.id] = shape;
     //TODO: order should be saved on server.
     reorder(shape, state);

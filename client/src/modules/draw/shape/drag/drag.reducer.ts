@@ -1,5 +1,4 @@
 import { DrawReducer, reorder } from '../../draw.reducer';
-import { RectProps } from '../type/Rect';
 
 export interface DragState {
   id: string;
@@ -7,10 +6,12 @@ export interface DragState {
   clickY: number;
 }
 
-interface StartDrag {
+export interface Draggable {
   id: string;
-  clickX: number;
-  clickY: number;
+  x: number;
+  y: number;
+  translateX: number;
+  translateY: number;
 }
 
 interface Drag {
@@ -19,7 +20,7 @@ interface Drag {
   scale: number;
 }
 
-export const startDragFn: DrawReducer<StartDrag> = (state, action) => {
+export const startDragFn: DrawReducer<DragState> = (state, action) => {
   const id = action.payload.id;
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
@@ -46,7 +47,7 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.shapes[id] as RectProps;
+  const shape = state.shapes[id];
   shape.translateX =
     (action.payload.clickX - state.drag.clickX) / action.payload.scale;
   shape.translateY =
@@ -66,7 +67,7 @@ export const endDragFn: DrawReducer = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const shape = state.shapes[id] as RectProps;
+  const shape = state.shapes[id];
   shape.x = (shape.x as number) + (shape.translateX as number);
   shape.y = (shape.y as number) + (shape.translateY as number);
   shape.translateX = 0;

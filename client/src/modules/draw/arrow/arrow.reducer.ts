@@ -1,7 +1,5 @@
 import { DrawReducer, reorder, DrawState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { GroupingRectProps } from '../shape/type/GroupingRect';
-import { RectProps } from '../shape/type/Rect';
 import * as uuid from 'uuid';
 import { OdysArrow } from 'generated';
 import { ArrowApi } from 'generated/apis/ArrowApi';
@@ -49,23 +47,17 @@ export const drawArrowFn: DrawReducer<string> = (state, action) => {
   }
 
   // cannot duplicate existing arrow.
-  const existing = Object.values(state.shapes).find((s) => {
-    if (s.type === 'arrow') {
-      const arrow = s as Arrow;
-      return (
-        arrow.fromShapeId === selectId && arrow.toShapeId === action.payload
-      );
-    }
-    return false;
-  });
+  const existing = Object.values(state.arrows).find(
+    (a) => a.fromShapeId === selectId && a.toShapeId === action.payload
+  );
 
   if (existing) {
     return;
   }
 
   // cannot draw arrow across zoomLevels
-  const fromShape = state.shapes[selectId] as RectProps | GroupingRectProps;
-  const toShape = state.shapes[action.payload] as RectProps | GroupingRectProps;
+  const fromShape = state.shapes[selectId];
+  const toShape = state.shapes[action.payload];
   if (!fromShape) throw new Error(`Cannot find shape (${selectId})`);
   if (!toShape) throw new Error(`Cannot find shape (${action.payload})`);
   if (fromShape.type !== 'rect' && fromShape.type !== 'grouping_rect')

@@ -4,17 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'App';
 import { addShape, ShapeData } from 'modules/draw/draw.reducer';
 import HiddenTextInput from 'modules/draw/editText/HiddenTextInput';
-import {
-  RECT_HEIGHT,
-  RECT_WIDTH,
-  RectProps,
-} from 'modules/draw/shape/type/Rect';
+import { RECT_HEIGHT, RECT_WIDTH } from 'modules/draw/shape/type/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Svg from 'modules/svg/Svg';
 import socket from 'socket/socket';
 
 import Cockpit from './cockpit/Cockpit';
 import { getOrCreateBoard } from './board.reducer';
+import { Rect } from 'modules/draw/shape/shape.reducer';
 
 function usePreviousShapes(shapes: ShapeData) {
   const ref = useRef({});
@@ -41,12 +38,7 @@ const DrawingBoard: React.FC = () => {
 
   // temp seed data
   if (Object.entries(shapes.shapes).length === 0) {
-    const rect = (
-      id: string,
-      text: string,
-      x: number,
-      y: number
-    ): RectProps => {
+    const rect = (id: string, text: string, x: number, y: number): Rect => {
       return {
         type: 'rect',
         id: id,
@@ -61,6 +53,9 @@ const DrawingBoard: React.FC = () => {
         deltaHeight: 0,
         createdAtZoomLevel: 5,
         isLastUpdatedBySync: false,
+        boardId: '1', //TODO
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
     };
     dispatch(addShape(rect('1', 'A', 150, 100)));

@@ -1,7 +1,5 @@
 import { DrawReducer } from '../draw.reducer';
-import Shape from '../shape/Shape';
 import Box, { isOverlapping, outline } from '../../../math/box';
-import { RectProps } from '../shape/type/Rect';
 
 export interface GroupDragState {
   startX: number;
@@ -66,9 +64,9 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
   selectionRect.height = deltaHeight;
 
   const selectedShapeIds = Object.values(state.shapes)
-    .filter((s: Shape) => s.type === 'rect')
-    .filter((s) => isOverlapping(s as RectProps, selectionRect))
-    .map((s: Shape) => [s.id, true]);
+    .filter((s) => s.type === 'rect')
+    .filter((s) => isOverlapping(s, selectionRect))
+    .map((s) => [s.id, true]);
 
   state.groupSelect.selectedShapeIds = Object.fromEntries(selectedShapeIds);
 };
@@ -92,9 +90,7 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
     };
     state.groupSelect.selectedShapeIds = {};
   } else {
-    const rects = Object.keys(selectedShapeIds).map(
-      (id) => state.shapes[id] as RectProps
-    );
+    const rects = Object.keys(selectedShapeIds).map((id) => state.shapes[id]);
     state.groupSelect.outline = outline(...rects);
   }
 };
@@ -107,7 +103,7 @@ export const endGroupDragFn: DrawReducer<EndGroupDrag> = (state, action) => {
   state.groupDrag = null;
   if (!state.groupSelect) return;
   Object.keys(state.groupSelect.selectedShapeIds).forEach((id) => {
-    const rect = state.shapes[id] as RectProps;
+    const rect = state.shapes[id];
     rect.x += action.payload.translateX;
     rect.y += action.payload.translateY;
   });

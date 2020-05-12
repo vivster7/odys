@@ -5,44 +5,13 @@ import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
 import socket from 'socket/socket';
 
-import Arrow from '../arrow/Arrow';
 import Text from './type/Text';
 import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
+import { Shape } from './shape.reducer';
+import { Syncable } from '../sync/sync.reducer';
 
 export type ShapeType = 'rect' | 'text' | 'arrow' | 'grouping_rect';
-
-// Shape can be drawn inside an SVG.
-export default interface Shape {
-  id: string;
-  type: ShapeType;
-  isLastUpdatedBySync: boolean;
-}
-
-export interface Draggable {
-  id: string;
-  x: number;
-  y: number;
-  translateX: number;
-  translateY: number;
-}
-
-export interface Resizable {
-  id: string;
-  width: number;
-  height: number;
-  deltaWidth: number;
-  deltaHeight: number;
-}
-
-export interface Selectable {
-  id: string;
-}
-
-export interface TextEditable {
-  id: string;
-  text: string;
-}
 
 export interface ShapeId {
   id: string;
@@ -58,15 +27,15 @@ export const NewShape: React.FC<ShapeId> = (props) => {
   if (shape?.type === 'grouping_rect')
     return <GroupingRect id={id}></GroupingRect>;
 
-  dispatch(addError(`unknown shape ${shape.type}`));
+  dispatch(addError(`unknown shape ${id}`));
   return <></>;
 };
 
-export function useShapeChangeEmitter(shape: Shape) {
+export function useShapeChangeEmitter(subject: Syncable) {
   useEffect(() => {
-    if (shape.isLastUpdatedBySync) {
+    if (subject.isLastUpdatedBySync) {
       return;
     }
-    socket.emit('shapeChange', { ...shape });
-  }, [shape]);
+    socket.emit('shapeChange', { ...subject });
+  }, [subject]);
 }

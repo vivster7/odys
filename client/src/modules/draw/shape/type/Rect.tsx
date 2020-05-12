@@ -2,37 +2,19 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectShape, drawArrow, startDrag } from '../../draw.reducer';
 import { RootState } from '../../../../App';
-import Shape, {
-  ShapeId,
-  Selectable,
-  Draggable,
-  TextEditable,
-  Resizable,
-  useShapeChangeEmitter,
-} from '../Shape';
+import { ShapeId, useShapeChangeEmitter } from '../Shape';
 import { isOverlapping } from '../../../../math/box';
 import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
 import SelectionCircles from '../../select/SelectionCircles';
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
 
-export type RectProps = {
-  type: 'rect';
-  createdAtZoomLevel: number;
-} & Shape &
-  Selectable &
-  Draggable &
-  TextEditable &
-  Resizable;
-
 const Rect: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;
 
   const dispatch = useDispatch();
 
-  const shape = useSelector(
-    (state: RootState) => state.draw.shapes[id] as RectProps
-  );
+  const shape = useSelector((state: RootState) => state.draw.shapes[id]);
 
   const isDragging = useSelector(
     (state: RootState) => state.draw.drag?.id === id
@@ -71,7 +53,7 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
     if (
       e.altKey &&
       !!selected &&
-      !isOverlapping(shape, selected as RectProps) &&
+      !isOverlapping(shape, selected) &&
       !isSelected
     ) {
       dispatch(drawArrow(id));
