@@ -10,8 +10,6 @@ import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
 import { Syncable } from '../sync/sync.reducer';
 
-export type ShapeType = 'rect' | 'text' | 'arrow' | 'grouping_rect';
-
 export interface ShapeId {
   id: string;
 }
