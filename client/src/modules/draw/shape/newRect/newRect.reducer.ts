@@ -110,7 +110,7 @@ export const endNewRectByClickFulfilled = (
     isEditing: false,
   };
 
-  state.shapes[rect.id] = rect as any;
+  state.shapes[rect.id] = rect;
   reorder(rect, state);
 };
 
@@ -176,8 +176,8 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
       updatedAt: new Date().toISOString(),
     };
 
-    state.endNewRectByDrag.shape = rect as any;
-    state.shapes[id] = rect as any;
+    state.endNewRectByDrag.shape = rect;
+    state.shapes[id] = rect;
     reorder(rect, state);
 
     state.resize = {

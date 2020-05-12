@@ -9,7 +9,6 @@ import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
 import Arrowhead from './Arrowhead';
 import { ShapeId, useShapeChangeEmitter } from '../shape/Shape';
-import { Arrow as ArrowType } from './arrow.reducer';
 
 const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;
@@ -19,9 +18,7 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
     return Math.atan2(y2 - y1, x2 - x1);
   }
 
-  const arrow = useSelector(
-    (state: RootState) => state.draw.arrows[id]
-  ) as ArrowType;
+  const arrow = useSelector((state: RootState) => state.draw.arrows[id]);
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = useSelector(

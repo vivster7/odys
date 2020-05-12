@@ -33,14 +33,15 @@ export const getOrCreateBoard = createAsyncThunk(
   }
 );
 
+const initialState: BoardState = {
+  id: '',
+  room_id: '',
+  loaded: 'loading',
+};
+
 const boardSlice = createSlice({
   name: 'board',
-  initialState: {
-    id: '',
-    room_id: '',
-    position: 0,
-    loaded: 'loading',
-  } as BoardState,
+  initialState: initialState,
   reducers: {},
   extraReducers: {
     [getOrCreateBoard.pending as any]: (state, action) => {

@@ -80,7 +80,7 @@ export const drawArrowFn: DrawReducer<string> = (state, action) => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     boardId: '1', //TODO: state.shapes[id].boardId
-  } as Arrow;
+  };
 
   state.arrows[arrow.id] = arrow;
   state.drawOrder.push(arrow.id);

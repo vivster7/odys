@@ -21,7 +21,7 @@ export interface Text extends OdysShape, ShapeMixins {
 }
 
 export const addShapeFn: DrawReducer<Shape> = (state, action) => {
-  state.shapes[action.payload.id] = action.payload as any;
+  state.shapes[action.payload.id] = action.payload;
   reorder(action.payload, state);
 };
 
@@ -94,14 +94,17 @@ export const getShapesFulfilled = (
 ) => {
   const shapes = action.payload;
   shapes.forEach((s) => {
-    const shape = {
+    const type = s.type;
+    if (type !== 'rect' && type !== 'grouping_rect' && type !== 'text') return;
+    const shape: Shape = {
       ...s,
+      type: type,
       isLastUpdatedBySync: false,
       translateX: 0,
       translateY: 0,
       deltaWidth: 0,
       deltaHeight: 0,
-    } as Shape;
+    };
     state.shapes[s.id] = shape;
     //TODO: order should be saved on server.
     reorder(shape, state);

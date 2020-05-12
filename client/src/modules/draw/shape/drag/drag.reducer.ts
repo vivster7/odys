@@ -68,8 +68,8 @@ export const endDragFn: DrawReducer = (state, action) => {
   }
 
   const shape = state.shapes[id];
-  shape.x = (shape.x as number) + (shape.translateX as number);
-  shape.y = (shape.y as number) + (shape.translateY as number);
+  shape.x = shape.x + shape.translateX;
+  shape.y = shape.y + shape.translateY;
   shape.translateX = 0;
   shape.translateY = 0;
   shape.isLastUpdatedBySync = false;

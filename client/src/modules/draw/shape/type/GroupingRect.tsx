@@ -12,7 +12,6 @@ import { ShapeId, useShapeChangeEmitter } from '../Shape';
 import { isOverlapping } from '../../../../math/box';
 import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
 import SelectionCircles from '../../select/SelectionCircles';
-import { GroupingRect as GroupingRectType } from '../shape.reducer';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
@@ -22,9 +21,7 @@ const GroupingRect: React.FC<ShapeId> = React.memo((props) => {
 
   const dispatch = useDispatch();
 
-  const shape = useSelector(
-    (state: RootState) => state.draw.shapes[id] as GroupingRectType
-  );
+  const shape = useSelector((state: RootState) => state.draw.shapes[id]);
 
   const isDragging = useSelector(
     (state: RootState) => state.draw.drag?.id === id
@@ -63,7 +60,7 @@ const GroupingRect: React.FC<ShapeId> = React.memo((props) => {
     if (
       e.altKey &&
       !!selected &&
-      !isOverlapping(shape, selected as GroupingRectType) &&
+      !isOverlapping(shape, selected) &&
       !isSelected
     ) {
       dispatch(drawArrow(id));

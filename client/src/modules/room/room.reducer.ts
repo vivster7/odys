@@ -31,9 +31,11 @@ export const getOrCreateRoom = createAsyncThunk(
   }
 );
 
+const initialState: RoomState = { id: '', loaded: 'loading' };
+
 const roomSlice = createSlice({
   name: 'room',
-  initialState: { id: '', loaded: 'loading' } as RoomState,
+  initialState: initialState,
   reducers: {},
   extraReducers: {
     [getOrCreateRoom.pending as any]: (state, action) => {
