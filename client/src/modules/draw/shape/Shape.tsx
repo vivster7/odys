@@ -13,8 +13,7 @@ import {
   drawArrow,
   startDrag,
   selectDrawing,
-  startNewRectByClick,
-  startNewRectByDrag,
+  startNewRect,
 } from '../draw.reducer';
 import { Shape as ShapeType } from './shape.reducer';
 
@@ -76,8 +75,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
     ) {
       dispatch(drawArrow({ id, boardId: board.id }));
     } else if (e.altKey) {
-      dispatch(startNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
-      dispatch(startNewRectByDrag({ clickX: e.clientX, clickY: e.clientY }));
+      dispatch(startNewRect({ clickX: e.clientX, clickY: e.clientY }));
     } else {
       dispatch(selectDrawing(id));
       dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));

@@ -127,6 +127,6 @@ export const endResizeFn: DrawReducer = (state, action) => {
   shape.isLastUpdatedBySync = false;
 
   state.drag = null;
-  state.newRectByClick = null;
+  state.newRect = null;
   state.resize = null;
 };

@@ -18,13 +18,11 @@ import {
   selectDrawingFn,
 } from 'modules/draw/mixins/select/select.reducer';
 import {
-  startNewRectByClickFn,
   endNewRectByClick,
-  startNewRectByDragFn,
-  endNewRectByDragFn,
-  NewRectByClickState,
-  NewRectByDragState,
   endNewRectByClickFulfilled,
+  NewRectState,
+  startNewRectFn,
+  endNewRectByDragFn,
 } from 'modules/draw/shape/newRect.reducer';
 import {
   startDragSelectionFn,
@@ -67,8 +65,7 @@ export interface DrawState {
   groupSelect: GroupSelectState | null;
   groupDrag: GroupDragState | null;
   resize: ResizeState | null;
-  newRectByClick: NewRectByClickState | null;
-  endNewRectByDrag: NewRectByDragState | null;
+  newRect: NewRectState | null;
 }
 
 const initialState: DrawState = {
@@ -80,8 +77,7 @@ const initialState: DrawState = {
   groupDrag: null,
   drag: null,
   resize: null,
-  newRectByClick: null,
-  endNewRectByDrag: null,
+  newRect: null,
 };
 
 type Drawing = Arrow | Shape;
@@ -184,8 +180,7 @@ const drawSlice = createSlice({
     resize: resizeFn,
     endResize: endResizeFn,
     // newRect
-    startNewRectByClick: startNewRectByClickFn,
-    startNewRectByDrag: startNewRectByDragFn,
+    startNewRect: startNewRectFn,
     endNewRectByDrag: endNewRectByDragFn,
     // groupSelect
     startDragSelection: startDragSelectionFn,
@@ -220,8 +215,7 @@ export const {
   startResize,
   resize,
   endResize,
-  startNewRectByClick,
-  startNewRectByDrag,
+  startNewRect,
   endNewRectByDrag,
   startDragSelection,
   resizeDragSelection,

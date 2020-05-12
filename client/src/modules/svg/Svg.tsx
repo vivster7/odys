@@ -7,11 +7,10 @@ import {
   endNewRectByDrag,
   resize,
   endResize,
-  startNewRectByClick,
-  startNewRectByDrag,
   startDragSelection,
   resizeDragSelection,
   endDragSelection,
+  startNewRect,
 } from '../draw/draw.reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../App';
@@ -84,12 +83,7 @@ const Svg: React.FC = () => {
     (state: RootState) => !!state.draw.groupSelect?.selectionRect
   );
 
-  const newRectByClickState = useSelector(
-    (state: RootState) => state.draw.newRectByClick
-  );
-  const isNewRectByDragState = useSelector(
-    (state: RootState) => !!state.draw.endNewRectByDrag
-  );
+  const newRect = useSelector((state: RootState) => state.draw.newRect);
 
   const svgState = useSelector((state: RootState) => state.svg);
   const isResizing = useSelector((state: RootState) => !!state.draw.resize);
@@ -141,7 +135,7 @@ const Svg: React.FC = () => {
   }) scale(${scale})`;
 
   function handleMouseMove(e: React.MouseEvent) {
-    if (isNewRectByDragState) {
+    if (newRect) {
       dispatch(
         endNewRectByDrag({
           clickX: e.clientX,
@@ -197,8 +191,7 @@ const Svg: React.FC = () => {
     dispatch(cancelSelect());
 
     if (e.altKey) {
-      dispatch(startNewRectByClick({ clickX: e.clientX, clickY: e.clientY }));
-      dispatch(startNewRectByDrag({ clickX: e.clientX, clickY: e.clientY }));
+      dispatch(startNewRect({ clickX: e.clientX, clickY: e.clientY }));
     } else if (selectMode) {
       dispatch(
         startDragSelection({
@@ -216,9 +209,9 @@ const Svg: React.FC = () => {
 
   function handleMouseUp(e: React.MouseEvent) {
     if (
-      newRectByClickState &&
-      newRectByClickState.clickX === e.clientX &&
-      newRectByClickState.clickY === e.clientY
+      newRect &&
+      newRect.clickX === e.clientX &&
+      newRect.clickY === e.clientY
     ) {
       dispatch(
         endNewRectByClick({
