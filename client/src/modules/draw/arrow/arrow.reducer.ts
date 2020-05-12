@@ -1,4 +1,4 @@
-import { DrawReducer, reorder, DrawState } from '../draw.reducer';
+import { DrawReducer, DrawState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as uuid from 'uuid';
 import { OdysArrow } from 'generated';

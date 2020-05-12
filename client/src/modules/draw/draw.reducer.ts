@@ -16,7 +16,6 @@ import {
   selectShapeFn,
   cancelSelectFn,
   SelectedShape,
-  Selectable,
 } from './select/select.reducer';
 import {
   startNewRectByClickFn,
@@ -35,10 +34,7 @@ import {
   GroupSelectState,
   GroupDragState,
 } from './groupSelect/groupSelect.reducer';
-import {
-  selectedShapeEditTextFn,
-  TextEditable,
-} from './editText/editText.reducer';
+import { selectedShapeEditTextFn } from './editText/editText.reducer';
 import {
   drawArrowFn,
   getArrows,

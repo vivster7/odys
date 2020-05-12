@@ -8,7 +8,6 @@ import socket from 'socket/socket';
 import Text from './type/Text';
 import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
-import { Shape } from './shape.reducer';
 import { Syncable } from '../sync/sync.reducer';
 
 export type ShapeType = 'rect' | 'text' | 'arrow' | 'grouping_rect';
