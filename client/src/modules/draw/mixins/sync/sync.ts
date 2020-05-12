@@ -6,7 +6,7 @@ export interface Syncable {
   isLastUpdatedBySync: boolean;
 }
 
-export function useShapeChangeEmitter(subject: Syncable) {
+export function useDrawingChangeEmitter(subject: Syncable) {
   useEffect(() => {
     if (subject.isLastUpdatedBySync) {
       return;

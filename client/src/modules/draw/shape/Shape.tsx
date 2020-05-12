@@ -7,7 +7,7 @@ import { addError } from 'modules/errors/errors.reducer';
 import Text from './type/Text';
 import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
-import { useShapeChangeEmitter } from '../mixins/sync/sync';
+import { useDrawingChangeEmitter } from '../mixins/sync/sync';
 import { isOverlapping } from 'math/box';
 import {
   drawArrow,
@@ -48,7 +48,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
   );
   const isSelected = selectedShape && selectedShape.id === id;
 
-  useShapeChangeEmitter(shape);
+  useDrawingChangeEmitter(shape);
 
   function onMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
