@@ -10,6 +10,8 @@ export interface BaseShapeProps {
   fill: string;
   fillOpacity: number;
   strokeDasharray: number;
+  textX: number;
+  textY: number;
   shape: Shape;
   isGroupSelected: boolean;
   isSelected: boolean;
@@ -23,6 +25,8 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     fillOpacity,
     strokeDasharray,
     shape,
+    textX,
+    textY,
     isGroupSelected,
     isSelected,
     onMouseDown,
@@ -41,9 +45,6 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     createdAtZoomLevel,
     text,
   } = shape;
-
-  const textX = (width + deltaWidth) / 2;
-  const textY = (height + deltaHeight) / 2;
 
   const transform = `translate(${x + translateX}, ${y + translateY})`;
 
