@@ -1,37 +1,14 @@
 import React from 'react';
-import { startDrag } from '../../draw.reducer';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../../App';
-import { ShapeId } from '../Shape';
+import { ShapeProps } from '../Shape';
+import BaseShape from './BaseShape';
 
-const Text: React.FC<ShapeId> = React.memo((props) => {
-  const { id } = props;
-  const dispatch = useDispatch();
-
-  const text = useSelector((state: RootState) => state.draw.shapes[id]);
-  const transform = `translate(${text.x}, ${text.y})`;
-  const draggedId = useSelector(
-    (state: RootState) => state.draw.drag && state.draw.drag.id
-  );
-
-  const cursor = draggedId === props.id ? 'grabbing' : 'grab';
-
-  return (
-    <g
-      id={props.id}
-      transform={transform}
-      cursor={cursor}
-      onMouseDown={(e) =>
-        dispatch(
-          startDrag({ id: props.id, clickX: e.clientX, clickY: e.clientY })
-        )
-      }
-    >
-      <text style={{ textAnchor: 'middle' }}>
-        <tspan>{text.text}</tspan>
-      </text>
-    </g>
-  );
-});
+const Text: React.FC<ShapeProps> = (props) => {
+  const cursor = props.isDragging ? 'grabbing' : 'grab';
+  const fill = 'white';
+  const fillOpacity = 0;
+  const strokeDasharray = 0;
+  const childProps = { ...props, cursor, fill, fillOpacity, strokeDasharray };
+  return <BaseShape {...childProps}></BaseShape>;
+};
 
 export default Text;
