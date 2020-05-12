@@ -5,7 +5,6 @@ import { RootState } from '../../../../App';
 import { ShapeId } from '../Shape';
 import { isOverlapping } from '../../../../math/box';
 import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
-import { useShapeChangeEmitter } from 'modules/draw/mixins/sync/sync';
 import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
@@ -27,8 +26,6 @@ const Rect: React.FC<ShapeId> = React.memo((props) => {
   const isGroupSelected = useSelector(
     (state: RootState) => !!state.draw.groupSelect?.selectedShapeIds[id]
   );
-
-  useShapeChangeEmitter(shape);
 
   const isSelected = id === (selected && selected.id);
 
