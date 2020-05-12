@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectedShapeEditText, deleteShape } from '../draw.reducer';
-import { RootState, OdysDispatch } from '../../../App';
+import { selectedShapeEditText, deleteShape } from '../../draw.reducer';
+import { RootState, OdysDispatch } from '../../../../App';
 
 // add delete key handler
 function onKeyDownHandler(

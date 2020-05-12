@@ -5,18 +5,18 @@ import {
   dragFn,
   endDragFn,
   DragState,
-} from './shape/drag/drag.reducer';
+} from 'modules/draw/shape/mixins/drag/drag.reducer';
 import {
   startResizeFn,
   resizeFn,
   endResizeFn,
   ResizeState,
-} from './shape/resize/resize.reducer';
+} from 'modules/draw/shape/mixins/resize/resize.reducer';
 import {
   selectShapeFn,
   cancelSelectFn,
   SelectedShape,
-} from './select/select.reducer';
+} from 'modules/draw/mixins/select/select.reducer';
 import {
   startNewRectByClickFn,
   endNewRectByClick,
@@ -25,7 +25,7 @@ import {
   NewRectByClickState,
   NewRectByDragState,
   endNewRectByClickFulfilled,
-} from './shape/newRect/newRect.reducer';
+} from 'modules/draw/shape/newRect.reducer';
 import {
   startDragSelectionFn,
   resizeDragSelectionFn,
@@ -33,14 +33,14 @@ import {
   endGroupDragFn,
   GroupSelectState,
   GroupDragState,
-} from './groupSelect/groupSelect.reducer';
-import { selectedShapeEditTextFn } from './editText/editText.reducer';
+} from 'modules/draw/mixins/groupSelect/groupSelect.reducer';
+import { selectedShapeEditTextFn } from './mixins/editText/editText.reducer';
 import {
   drawArrowFn,
   getArrows,
   getArrowsFulfilled,
   Arrow,
-} from './arrow/arrow.reducer';
+} from 'modules/draw/arrow/arrow.reducer';
 import {
   addShapeFn,
   editShapeFn,
@@ -50,7 +50,7 @@ import {
   getShapes,
   getShapesFulfilled,
   Shape,
-} from './shape/shape.reducer';
+} from 'modules/draw/shape/shape.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 

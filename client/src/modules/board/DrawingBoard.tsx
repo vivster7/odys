@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from 'App';
 import { addShape, ShapeData } from 'modules/draw/draw.reducer';
-import HiddenTextInput from 'modules/draw/editText/HiddenTextInput';
+import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 import { RECT_HEIGHT, RECT_WIDTH } from 'modules/draw/shape/type/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Svg from 'modules/svg/Svg';

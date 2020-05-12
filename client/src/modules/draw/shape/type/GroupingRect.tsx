@@ -11,8 +11,8 @@ import { RootState } from '../../../../App';
 import { ShapeId } from '../Shape';
 import { isOverlapping } from '../../../../math/box';
 import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
-import SelectionCircles from '../../select/SelectionCircles';
-import { useShapeChangeEmitter } from 'modules/draw/sync/sync';
+import { useShapeChangeEmitter } from 'modules/draw/mixins/sync/sync';
+import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
 
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;

@@ -1,8 +1,8 @@
 import React from 'react';
 import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
-import { startResize } from '../draw.reducer';
+import { startResize } from 'modules/draw/draw.reducer';
 import { useDispatch } from 'react-redux';
-import { Anchor } from '../shape/resize/resize.reducer';
+import { Anchor } from 'modules/draw/shape/mixins/resize/resize.reducer';
 
 interface SelectionCirclesProps {
   id: string;

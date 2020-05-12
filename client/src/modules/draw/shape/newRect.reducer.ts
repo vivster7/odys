@@ -1,10 +1,13 @@
+// TODO: This filename will likely change.
+// Vaguely, this belongs inside shape.reducer.ts -- but not sure how to keep file size reasonable.
+
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { DrawReducer, reorder, DrawState } from '../../draw.reducer';
-import { RECT_WIDTH, RECT_HEIGHT } from '../type/Rect';
+import { DrawReducer, reorder, DrawState } from '../draw.reducer';
+import { RECT_WIDTH, RECT_HEIGHT } from './type/Rect';
 import * as uuid from 'uuid';
-import { RootState } from '../../../../App';
-import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
-import { Shape, GroupingRect, Rect } from '../shape.reducer';
+import { RootState } from '../../../App';
+import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
+import { Shape, GroupingRect, Rect } from './shape.reducer';
 
 export interface NewRectByClickState {
   clickX: number;

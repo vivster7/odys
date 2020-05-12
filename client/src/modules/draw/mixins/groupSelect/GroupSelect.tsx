@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../../App';
-import { endGroupDrag } from '../draw.reducer';
+import { RootState } from '../../../../App';
+import { endGroupDrag } from '../../draw.reducer';
 
 interface GroupDragState {
   startX: number;

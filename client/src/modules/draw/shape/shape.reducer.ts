@@ -2,11 +2,11 @@ import { DrawReducer, reorder, DrawState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysShape } from 'generated';
 import { ShapeApi } from 'generated/apis/ShapeApi';
-import { Draggable } from 'modules/draw/shape/drag/drag.reducer';
-import { Resizable } from 'modules/draw/shape/resize/resize.reducer';
-import { TextEditable } from 'modules/draw/editText/editText.reducer';
-import { Selectable } from 'modules/draw/select/select.reducer';
-import { Syncable } from 'modules/draw/sync/sync';
+import { Draggable } from 'modules/draw/shape/mixins/drag/drag.reducer';
+import { Resizable } from 'modules/draw/shape/mixins/resize/resize.reducer';
+import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
+import { Selectable } from 'modules/draw/mixins/select/select.reducer';
+import { Syncable } from 'modules/draw/mixins/sync/sync';
 
 export type Shape = Rect | GroupingRect | Text;
 type ShapeMixins = Draggable & Resizable & Selectable & TextEditable & Syncable;

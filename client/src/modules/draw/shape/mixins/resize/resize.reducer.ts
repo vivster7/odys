@@ -1,4 +1,4 @@
-import { DrawReducer } from '../../draw.reducer';
+import { DrawReducer } from 'modules/draw/draw.reducer';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';

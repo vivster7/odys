@@ -9,7 +9,7 @@ import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
 import Arrowhead from './Arrowhead';
 import { ShapeId } from '../shape/Shape';
-import { useShapeChangeEmitter } from '../sync/sync';
+import { useShapeChangeEmitter } from '../mixins/sync/sync';
 
 const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;

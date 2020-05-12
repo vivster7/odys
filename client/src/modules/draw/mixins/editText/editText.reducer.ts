@@ -1,4 +1,4 @@
-import { DrawReducer } from '../draw.reducer';
+import { DrawReducer } from '../../draw.reducer';
 
 export interface TextEditable {
   id: string;

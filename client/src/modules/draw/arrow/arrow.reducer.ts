@@ -3,9 +3,9 @@ import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as uuid from 'uuid';
 import { OdysArrow } from 'generated';
 import { ArrowApi } from 'generated/apis/ArrowApi';
-import { Syncable } from '../sync/sync';
-import { Selectable } from '../select/select.reducer';
-import { TextEditable } from '../editText/editText.reducer';
+import { Syncable } from '../mixins/sync/sync';
+import { Selectable } from 'modules/draw/mixins/select/select.reducer';
+import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
 type ArrowMixins = Selectable & TextEditable & Syncable;

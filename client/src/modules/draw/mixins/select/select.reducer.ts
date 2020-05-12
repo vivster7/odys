@@ -1,4 +1,4 @@
-import { DrawReducer, reorder } from '../draw.reducer';
+import { DrawReducer, reorder } from '../../draw.reducer';
 
 export interface SelectedShape {
   id: string;

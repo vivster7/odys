@@ -1,5 +1,5 @@
-import { DrawReducer } from '../draw.reducer';
-import Box, { isOverlapping, outline } from '../../../math/box';
+import { DrawReducer } from '../../draw.reducer';
+import Box, { isOverlapping, outline } from '../../../../math/box';
 
 export interface GroupDragState {
   startX: number;
