@@ -8,7 +8,8 @@ import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
 import Arrowhead from './Arrowhead';
-import { ShapeId, useShapeChangeEmitter } from '../shape/Shape';
+import { ShapeId } from '../shape/Shape';
+import { useShapeChangeEmitter } from '../sync/sync';
 
 const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;

@@ -6,7 +6,7 @@ import { Draggable } from 'modules/draw/shape/drag/drag.reducer';
 import { Resizable } from 'modules/draw/shape/resize/resize.reducer';
 import { TextEditable } from 'modules/draw/editText/editText.reducer';
 import { Selectable } from 'modules/draw/select/select.reducer';
-import { Syncable } from 'modules/draw/sync/sync.reducer';
+import { Syncable } from 'modules/draw/sync/sync';
 
 export type Shape = Rect | GroupingRect | Text;
 type ShapeMixins = Draggable & Resizable & Selectable & TextEditable & Syncable;

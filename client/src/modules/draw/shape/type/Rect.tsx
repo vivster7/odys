@@ -2,10 +2,11 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectShape, drawArrow, startDrag } from '../../draw.reducer';
 import { RootState } from '../../../../App';
-import { ShapeId, useShapeChangeEmitter } from '../Shape';
+import { ShapeId } from '../Shape';
 import { isOverlapping } from '../../../../math/box';
 import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
 import SelectionCircles from '../../select/SelectionCircles';
+import { useShapeChangeEmitter } from 'modules/draw/sync/sync';
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
 

@@ -3,7 +3,7 @@ import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as uuid from 'uuid';
 import { OdysArrow } from 'generated';
 import { ArrowApi } from 'generated/apis/ArrowApi';
-import { Syncable } from '../sync/sync.reducer';
+import { Syncable } from '../sync/sync';
 import { Selectable } from '../select/select.reducer';
 import { TextEditable } from '../editText/editText.reducer';
 

@@ -1,14 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
-import socket from 'socket/socket';
 
 import Text from './type/Text';
 import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
-import { Syncable } from '../sync/sync.reducer';
 
 export interface ShapeId {
   id: string;
@@ -27,12 +25,3 @@ export const Shape: React.FC<ShapeId> = (props) => {
   dispatch(addError(`unknown shape ${id}`));
   return <></>;
 };
-
-export function useShapeChangeEmitter(subject: Syncable) {
-  useEffect(() => {
-    if (subject.isLastUpdatedBySync) {
-      return;
-    }
-    socket.emit('shapeChange', { ...subject });
-  }, [subject]);
-}
