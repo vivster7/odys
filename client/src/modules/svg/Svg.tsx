@@ -4,7 +4,6 @@ import {
   cancelSelect,
   drag,
   endDrag,
-  endNewRectByDrag,
   resize,
   endResize,
   startDragSelection,
@@ -16,7 +15,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../App';
 import { wheelEnd, endPan, cleanSvg } from './svg.reducer';
 import DrawContainer from '../draw/DrawContainer';
-import { endNewRectByClick } from '../draw/shape/newRect.reducer';
+import {
+  endNewRectByClick,
+  endNewRectByDrag,
+} from '../draw/shape/newRect.reducer';
 import GroupSelect from '../draw/mixins/groupSelect/GroupSelect';
 import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
 
@@ -77,7 +79,6 @@ interface PanState {
 
 const Svg: React.FC = () => {
   const dispatch = useDispatch();
-  const boardId = useSelector((state: RootState) => state.board.id);
   const isDragging = useSelector((state: RootState) => !!state.draw.drag);
   const isGroupSelecting = useSelector(
     (state: RootState) => !!state.draw.groupSelect?.selectionRect
@@ -140,11 +141,6 @@ const Svg: React.FC = () => {
         endNewRectByDrag({
           clickX: e.clientX,
           clickY: e.clientY,
-          svgTopLeftX: svgState.topLeftX,
-          svgTopLeftY: svgState.topLeftY,
-          svgScale: svgState.scale,
-          svgZoomLevel: svgState.zoomLevel,
-          boardId: boardId,
         })
       );
     }

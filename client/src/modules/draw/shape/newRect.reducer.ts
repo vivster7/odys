@@ -8,7 +8,6 @@ import * as uuid from 'uuid';
 import { RootState } from '../../../App';
 import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
 import { Shape, GroupingRect, Rect } from './shape.reducer';
-import { ShapeApi } from 'generated';
 
 export interface NewRectState {
   clickX: number;
@@ -16,12 +15,12 @@ export interface NewRectState {
   shape: Shape | null;
 }
 
-interface StartNewRect {
+interface NewRect {
   clickX: number;
   clickY: number;
 }
 
-export const startNewRectFn: DrawReducer<StartNewRect> = (state, action) => {
+export const startNewRectFn: DrawReducer<NewRect> = (state, action) => {
   state.newRect = {
     clickX: action.payload.clickX,
     clickY: action.payload.clickY,
@@ -100,48 +99,27 @@ export const endNewRectByClickFulfilled = (
   reorder(rect, state);
 };
 
-interface NewRectByDrag {
-  clickX: number;
-  clickY: number;
-  svgTopLeftX: number;
-  svgTopLeftY: number;
-  svgScale: number;
-  svgZoomLevel: number;
-  boardId: string;
-}
+export const endNewRectByDrag: any = createAsyncThunk(
+  'draw/endNewRectByDrag',
+  async (args: NewRect, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    if (!state.draw.newRect) {
+      throw new Error(
+        'Cannot create rect on drag. Missing newRect state. Was draw/startNewRect called first?'
+      );
+    }
+    const { clickX, clickY } = args;
 
-export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
-  state,
-  action
-) => {
-  if (!state.newRect) {
-    throw new Error(
-      'Cannot create rect on drag. Missing newRect state. Was draw/startNewRect called first?'
-    );
-  }
+    const { topLeftX, topLeftY, scale, zoomLevel } = state.svg;
 
-  const {
-    clickX,
-    clickY,
-    svgTopLeftX,
-    svgTopLeftY,
-    svgScale,
-    svgZoomLevel,
-    boardId,
-  } = action.payload;
+    const startX = state.draw.newRect.clickX;
+    const startY = state.draw.newRect.clickY;
 
-  if (state.newRect.shape) {
-    state.newRect = null;
-  } else if (state.newRect && !state.newRect.shape) {
     const id = uuid.v4();
-    const x = (state.newRect.clickX - svgTopLeftX) / svgScale;
-    const y = (state.newRect.clickY - svgTopLeftY) / svgScale;
-    const width =
-      (clickX - svgTopLeftX) / svgScale -
-      (state.newRect.clickX - svgTopLeftX) / svgScale;
-    const height =
-      (clickY - svgTopLeftY) / svgScale -
-      (state.newRect.clickY - svgTopLeftY) / svgScale;
+    const x = (startX - topLeftX) / scale;
+    const y = (startY - topLeftY) / scale;
+    const width = (clickX - topLeftX) / scale - (startX - topLeftX) / scale;
+    const height = (clickY - topLeftY) / scale - (startY - topLeftY) / scale;
 
     const rect: GroupingRect = {
       type: 'grouping_rect',
@@ -155,24 +133,39 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
       height: height,
       deltaWidth: 0,
       deltaHeight: 0,
-      createdAtZoomLevel: svgZoomLevel,
+      createdAtZoomLevel: zoomLevel,
       isLastUpdatedBySync: false,
-      boardId: boardId,
+      boardId: state.board.id,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
-    state.newRect.shape = rect;
-    state.shapes[id] = rect;
-    reorder(rect, state);
-
-    state.resize = {
-      id: id,
-      anchor: 'SEAnchor',
-      originalX: state.newRect.clickX,
-      originalY: state.newRect.clickY,
-      clickX: 0,
-      clickY: 0,
+    return {
+      shape: rect,
+      clickX: startX,
+      clickY: startY,
     };
   }
+);
+
+export const endNewRectByDragFulfilled = (
+  state: DrawState,
+  action: PayloadAction<NewRectState>
+) => {
+  const { clickX, clickY, shape } = action.payload;
+
+  if (!shape) return;
+  state.newRect = null;
+
+  state.shapes[shape.id] = shape;
+  reorder(shape, state);
+
+  state.resize = {
+    id: shape.id,
+    anchor: 'SEAnchor',
+    originalX: clickX,
+    originalY: clickY,
+    clickX: 0,
+    clickY: 0,
+  };
 };
