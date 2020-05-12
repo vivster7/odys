@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../App';
-import { NewShape } from './shape/Shape';
+import { Shape } from './shape/Shape';
 import { getArrows } from './arrow/arrow.reducer';
 import { getShapes } from './shape/shape.reducer';
 import { addError } from 'modules/errors/errors.reducer';
@@ -17,7 +17,7 @@ const Drawing: React.FC<DrawId> = (props) => {
   const shape = useSelector((state: RootState) => state.draw.shapes[id]);
   const arrow = useSelector((state: RootState) => state.draw.arrows[id]);
 
-  if (shape) return <NewShape id={id}></NewShape>;
+  if (shape) return <Shape id={id}></Shape>;
   if (arrow) return <Arrow id={id}></Arrow>;
 
   dispatch(addError(`Cannot draw ${id}`));
