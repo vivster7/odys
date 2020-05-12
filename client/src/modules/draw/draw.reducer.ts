@@ -93,11 +93,10 @@ export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
 
   if (instanceOfArrow(drawing)) {
     state.arrows[drawing.id] = drawing;
-    state.drawOrder.push(drawing.id);
   } else {
     state.shapes[drawing.id] = drawing;
-    reorder(drawing, state);
   }
+  reorder(drawing, state);
 };
 
 export const syncDrawingFn: DrawReducer<Drawing> = (state, action) => {
@@ -130,30 +129,35 @@ export const deleteDrawingFn: DrawReducer<string> = (state, action) => {
   }
 };
 
-export function reorder(shape: Shape, state: DrawState) {
+export function reorder(drawing: Drawing, state: DrawState) {
   const order = state.drawOrder;
   // remove from `order` array if present
-  const idx = order.findIndex((id) => id === shape.id);
+  const idx = order.findIndex((id) => id === drawing.id);
   if (idx !== -1) {
     order.splice(idx, 1);
   }
 
+  if (instanceOfArrow(drawing)) {
+    order.push(drawing.id);
+    return;
+  }
+
   // grouping rects must come first. they are ordered against each other by `x` position.
-  if (shape.type === 'grouping_rect') {
+  if (drawing.type === 'grouping_rect') {
     let insertIdx = 0;
     for (let i = 0; i < order.length; i++) {
       const id = order[i];
       const s = state.shapes[id];
-      if (s?.type === 'grouping_rect' && s?.x < shape.x) continue;
+      if (s?.type === 'grouping_rect' && s?.x < drawing.x) continue;
       insertIdx = i;
       break;
     }
-    order.splice(insertIdx, 0, shape.id);
+    order.splice(insertIdx, 0, drawing.id);
     return;
   }
 
   // by default, add to top
-  order.push(shape.id);
+  order.push(drawing.id);
 }
 
 const drawSlice = createSlice({

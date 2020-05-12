@@ -1,4 +1,4 @@
-import { DrawReducer, DrawState } from '../draw.reducer';
+import { DrawReducer, DrawState, reorder } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import * as uuid from 'uuid';
 import { OdysArrow } from 'generated';
@@ -34,7 +34,7 @@ export const getArrowsFulfilled = (
     };
     state.arrows[a.id] = arrow;
     //TODO: order should be saved on server.
-    state.drawOrder.push(arrow.id);
+    reorder(arrow, state);
   });
 };
 
@@ -92,5 +92,5 @@ export const drawArrowFn: DrawReducer<DrawArrow> = (state, action) => {
   };
 
   state.arrows[arrow.id] = arrow;
-  state.drawOrder.push(arrow.id);
+  reorder(arrow, state);
 };
