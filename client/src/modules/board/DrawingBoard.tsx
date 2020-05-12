@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from 'App';
-import { addShape, ShapeData } from 'modules/draw/draw.reducer';
+import { updateDrawing, ShapeData } from 'modules/draw/draw.reducer';
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 import { RECT_HEIGHT, RECT_WIDTH } from 'modules/draw/shape/type/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
@@ -81,8 +81,8 @@ const DrawingBoard: React.FC = () => {
         updatedAt: new Date().toISOString(),
       };
     };
-    dispatch(addShape(rect('1', 'A', 150, 100)));
-    dispatch(addShape(rect('2', 'B', 400, 100)));
+    dispatch(updateDrawing(rect('1', 'A', 150, 100)));
+    dispatch(updateDrawing(rect('2', 'B', 400, 100)));
   }
 
   useEffect(() => {

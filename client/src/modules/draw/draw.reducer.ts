@@ -40,13 +40,9 @@ import {
   getArrows,
   getArrowsFulfilled,
   Arrow,
+  instanceOfArrow,
 } from 'modules/draw/arrow/arrow.reducer';
 import {
-  addShapeFn,
-  editShapeFn,
-  syncShapeFn,
-  raiseShapeFn,
-  deleteShapeFn,
   getShapes,
   getShapesFulfilled,
   Shape,
@@ -88,6 +84,52 @@ const initialState: DrawState = {
   endNewRectByDrag: null,
 };
 
+type Drawing = Arrow | Shape;
+
+export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
+  const { id } = action.payload;
+  const existing = state.shapes[id] ?? state.arrows[id] ?? {};
+  const drawing = Object.assign({}, existing, action.payload);
+
+  if (instanceOfArrow(drawing)) {
+    state.arrows[drawing.id] = drawing;
+    state.drawOrder.push(drawing.id);
+  } else {
+    state.shapes[drawing.id] = drawing;
+    reorder(drawing, state);
+  }
+};
+
+export const syncDrawingFn: DrawReducer<Drawing> = (state, action) => {
+  const synced = { ...action.payload, isLastUpdatedBySync: true };
+  action = {
+    type: 'draw/updateDrawing',
+    payload: synced,
+  };
+  return updateDrawingFn(state, action);
+};
+
+export const deleteDrawingFn: DrawReducer<string> = (state, action) => {
+  const id = action.payload;
+  const drawing = state.shapes[id] ?? state.arrows[id];
+  if (!drawing) {
+    throw new Error(`Cannot find drawing with ${id}`);
+  }
+
+  if (instanceOfArrow(drawing)) {
+    delete state.arrows[id];
+    state.drawOrder = state.drawOrder.filter((drawId) => drawId === id);
+  } else {
+    delete state.shapes[id];
+    const connections = Object.values(state.arrows)
+      .filter((a) => a.toShapeId === id || a.fromShapeId === id)
+      .map((a) => a.id);
+    state.drawOrder = state.drawOrder
+      .filter((drawId) => drawId === id)
+      .filter((drawId) => connections.includes(drawId));
+  }
+};
+
 export function reorder(shape: Shape, state: DrawState) {
   const order = state.drawOrder;
   // remove from `order` array if present
@@ -119,11 +161,9 @@ const drawSlice = createSlice({
   initialState: initialState,
   reducers: {
     // shape
-    addShape: addShapeFn,
-    editShape: editShapeFn,
-    syncShape: syncShapeFn,
-    raiseShape: raiseShapeFn,
-    deleteShape: deleteShapeFn,
+    updateDrawing: updateDrawingFn,
+    syncDrawing: syncDrawingFn,
+    deleteDrawing: deleteDrawingFn,
     // editText
     editText: editTextFn,
     // arrow
@@ -163,10 +203,9 @@ const drawSlice = createSlice({
 });
 
 export const {
-  addShape,
-  editShape,
-  syncShape,
-  deleteShape,
+  updateDrawing,
+  syncDrawing,
+  deleteDrawing,
   editText,
   cancelSelect,
   selectDrawing,

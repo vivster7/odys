@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import DrawingBoard from '../board/DrawingBoard';
 import { useDispatch } from 'react-redux';
-import { syncShape, deleteShape } from '../draw/draw.reducer';
+import { syncDrawing, deleteDrawing } from '../draw/draw.reducer';
 import socket from '../../socket/socket';
 import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
@@ -11,7 +11,7 @@ const Room: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const onShapeChange = (data: any) => dispatch(syncShape(data));
+    const onShapeChange = (data: any) => dispatch(syncDrawing(data));
     const emitter = socket.on('shapeChange', onShapeChange);
     return () => {
       emitter.off('shapeChange', onShapeChange);
@@ -23,7 +23,7 @@ const Room: React.FC = () => {
   }, [dispatch, id]);
 
   socket.on('shapeDeleted', (data: string) => {
-    dispatch(deleteShape(data));
+    dispatch(deleteDrawing(data));
   });
 
   return (

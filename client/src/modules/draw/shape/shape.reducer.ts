@@ -1,4 +1,4 @@
-import { DrawReducer, reorder, DrawState } from '../draw.reducer';
+import { reorder, DrawState } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysShape } from 'generated';
 import { ShapeApi } from 'generated/apis/ShapeApi';
@@ -19,66 +19,6 @@ export interface GroupingRect extends OdysShape, ShapeMixins {
 export interface Text extends OdysShape, ShapeMixins {
   type: 'text';
 }
-
-export const addShapeFn: DrawReducer<Shape> = (state, action) => {
-  state.shapes[action.payload.id] = action.payload;
-  reorder(action.payload, state);
-};
-
-export const editShapeFn: DrawReducer<Shape> = (state, action) => {
-  const { id } = action.payload;
-  if (!state.shapes[id]) {
-    throw new Error(`Cannot find shape with ${id}`);
-  }
-  const shape = state.shapes[id];
-  state.shapes[id] = {
-    ...shape,
-    ...action.payload,
-  };
-  reorder(action.payload, state);
-};
-
-export const syncShapeFn: DrawReducer<Shape> = (state, action) => {
-  const { id } = action.payload;
-  if (!state.shapes[id]) {
-    return addShapeFn(state, {
-      ...action,
-      payload: { ...action.payload, isLastUpdatedBySync: true },
-    });
-  }
-  return editShapeFn(state, {
-    ...action,
-    payload: { ...action.payload, isLastUpdatedBySync: true },
-  });
-};
-
-export const raiseShapeFn: DrawReducer<string> = (state, action) => {
-  const id = action.payload;
-  if (!state.shapes[id]) {
-    throw new Error(`Cannot find shape with ${id}`);
-  }
-
-  reorder(state.shapes[id], state);
-};
-
-export const deleteShapeFn: DrawReducer<string> = (state, action) => {
-  const id = action.payload;
-  if (!state.shapes[id]) {
-    throw new Error(`Cannot find shape with ${id}`);
-  }
-
-  delete state.shapes[id];
-  state.drawOrder = state.drawOrder.filter((drawId) => {
-    if (drawId === id) {
-      return false;
-    }
-
-    const arrow = state.arrows[drawId];
-    if (arrow?.fromShapeId === id || arrow?.toShapeId === id) return false;
-
-    return true;
-  });
-};
 
 export const getShapes = createAsyncThunk(
   'draw/getShapes',

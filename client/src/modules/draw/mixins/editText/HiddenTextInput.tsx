@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { editText, deleteShape } from '../../draw.reducer';
+import { editText, deleteDrawing } from '../../draw.reducer';
 import { RootState, OdysDispatch } from '../../../../App';
 
 // add delete key handler
@@ -11,7 +11,7 @@ function onKeyDownHandler(
 ) {
   return (e: KeyboardEvent) => {
     if (e.code === 'Backspace' && isEditing === false) {
-      dispatch(deleteShape(id));
+      dispatch(deleteDrawing(id));
     }
   };
 }

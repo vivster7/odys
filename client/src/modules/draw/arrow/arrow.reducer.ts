@@ -10,6 +10,10 @@ import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 export interface Arrow extends OdysArrow, ArrowMixins {}
 type ArrowMixins = Selectable & TextEditable & Syncable;
 
+export function instanceOfArrow(object: any): object is Arrow {
+  return 'fromShapeId' in object && 'toShapeId' in object;
+}
+
 export const getArrows = createAsyncThunk(
   'draw/getArrows',
   async (boardId: string, thunkAPI): Promise<OdysArrow[]> => {
