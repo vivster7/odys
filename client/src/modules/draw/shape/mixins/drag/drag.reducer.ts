@@ -78,10 +78,7 @@ export const endDrag: any = createAsyncThunk(
 );
 
 // endDragPending optimistically updates the shape
-export const endDragPending = (
-  state: DrawState,
-  action: PayloadAction<string>
-) => {
+export const endDragPending = (state: DrawState, action: PayloadAction) => {
   if (!state.drag) {
     throw new Error(
       'Cannot draw/endDrag without drag state. Did draw/startDrag fire?'

@@ -29,6 +29,8 @@ import {
   NewRectState,
   startNewRectFn,
   endNewRectByDragFn,
+  endNewRectByClickPending,
+  endNewRectByClickRejected,
 } from 'modules/draw/shape/newRect.reducer';
 import {
   startDragSelectionFn,
@@ -203,25 +205,25 @@ const drawSlice = createSlice({
   },
   extraReducers: {
     // shape
-    [getShapes.fulfilled as any]: getShapesFulfilled,
     [getShapes.pending as any]: (state, action) => {},
+    [getShapes.fulfilled as any]: getShapesFulfilled,
     [getShapes.rejected as any]: (state, action) => {},
     // arrow
-    [getArrows.fulfilled as any]: getArrowsFulfilled,
     [getArrows.pending as any]: (state, action) => {},
+    [getArrows.fulfilled as any]: getArrowsFulfilled,
     [getArrows.rejected as any]: (state, action) => {},
     // drag
-    [endDrag.fulfilled as any]: endDragFulfilled,
     [endDrag.pending as any]: endDragPending,
+    [endDrag.fulfilled as any]: endDragFulfilled,
     [endDrag.rejected as any]: endDragRejected,
     // resize
-    [endResize.fulfilled as any]: endResizeFulfilled,
     [endResize.pending as any]: endResizePending,
+    [endResize.fulfilled as any]: endResizeFulfilled,
     [endResize.rejected as any]: endResizeRejected,
     // newRect
+    [endNewRectByClick.pending as any]: endNewRectByClickPending,
     [endNewRectByClick.fulfilled as any]: endNewRectByClickFulfilled,
-    [endNewRectByClick.pending as any]: (state, action) => {},
-    [endNewRectByClick.rejected as any]: (state, action) => {},
+    [endNewRectByClick.rejected as any]: endNewRectByClickRejected,
   },
 });
 

@@ -1,106 +1,21 @@
 // TODO: This filename will likely change.
 // Vaguely, this belongs inside shape.reducer.ts -- but not sure how to keep file size reasonable.
 
-import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawReducer, reorder, DrawState } from '../draw.reducer';
 import { RECT_WIDTH, RECT_HEIGHT } from './type/Rect';
-import * as uuid from 'uuid';
 import { RootState } from '../../../App';
 import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
 import { GroupingRect, Rect } from './shape.reducer';
-import { ShapeApi } from 'generated';
+import { ShapeApi, Configuration } from 'generated';
 
 export interface NewRectState {
   clickX: number;
   clickY: number;
 }
 
-interface NewRect {
-  clickX: number;
-  clickY: number;
-}
-
-export const startNewRectFn: DrawReducer<NewRect> = (state, action) => {
-  state.newRect = {
-    clickX: action.payload.clickX,
-    clickY: action.payload.clickY,
-  };
-};
-
-interface EndNewRectByClick {
-  clickX: number;
-  clickY: number;
-}
-
-export const endNewRectByClick = createAsyncThunk(
-  'draw/endNewRectByClick',
-  async (args: EndNewRectByClick, thunkAPI) => {
-    const { clickX, clickY } = args;
-
-    const state = thunkAPI.getState() as RootState;
-    const { svg } = state;
-
-    // cancel this event if we've started dragging
-    if (
-      state.draw.newRect?.clickX !== clickX ||
-      state.draw.newRect?.clickY !== clickY
-    )
-      return;
-
-    const id = uuid.v4();
-    const x = (clickX - svg.topLeftX) / svg.scale;
-    const y = (clickY - svg.topLeftY) / svg.scale;
-
-    const width = RECT_WIDTH / zoomLeveltoScaleMap[svg.zoomLevel];
-    const height = RECT_HEIGHT / zoomLeveltoScaleMap[svg.zoomLevel];
-
-    const rect: Rect = {
-      type: 'rect',
-      id: id,
-      text: 'Concept',
-      x: x - width / 2,
-      y: y - height / 2,
-      width: width,
-      height: height,
-      createdAtZoomLevel: svg.zoomLevel,
-      boardId: state.board.id,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      translateX: 0,
-      translateY: 0,
-      deltaWidth: 0,
-      deltaHeight: 0,
-      isLastUpdatedBySync: false,
-      isSavedInDB: false,
-      deleted: false,
-    };
-
-    const api = new ShapeApi();
-    await api.shapePost({ shape: rect });
-
-    return rect;
-  }
-);
-
-export const endNewRectByClickFulfilled = (
-  state: DrawState,
-  action: PayloadAction<Rect>
-) => {
-  const rect = action.payload;
-  if (!rect) return;
-
-  state.drag = null;
-  state.newRect = null;
-  state.select = {
-    id: rect.id,
-    isEditing: false,
-  };
-
-  state.shapes[rect.id] = rect;
-  reorder(rect, state);
-};
-
-interface NewRectByDrag {
+export interface NewRect {
+  id: string;
   clickX: number;
   clickY: number;
   svgTopLeftX: number;
@@ -109,10 +24,44 @@ interface NewRectByDrag {
   svgZoomLevel: number;
   boardId: string;
 }
-// This event is fired twice to actually e
-export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
-  state,
-  action
+
+export const startNewRectFn: DrawReducer<NewRectState> = (state, action) => {
+  state.newRect = {
+    clickX: action.payload.clickX,
+    clickY: action.payload.clickY,
+  };
+};
+
+// endNewRectByClick saves the optimistic update to the DB.
+export const endNewRectByClick = createAsyncThunk(
+  'draw/endNewRectByClick',
+  async (args: NewRect, thunkAPI) => {
+    const { id } = args;
+    const state = thunkAPI.getState() as RootState;
+
+    const shape = state.draw.shapes[id];
+    if (!shape) {
+      throw new Error(`Cannot find shape with ${id}`);
+    }
+
+    const api = new ShapeApi(
+      new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
+    );
+    await api.shapePost({ shape: shape });
+    return id;
+  }
+);
+
+// endNewRectByClickPending optimistically updates the shape
+export const endNewRectByClickPending = (
+  state: DrawState,
+  action: {
+    payload: undefined;
+    meta: {
+      requestId: string;
+      arg: NewRect;
+    };
+  }
 ) => {
   if (!state.newRect) {
     throw new Error(
@@ -121,6 +70,102 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
   }
 
   const {
+    id,
+    clickX,
+    clickY,
+    svgTopLeftX,
+    svgTopLeftY,
+    svgScale,
+    svgZoomLevel,
+    boardId,
+  } = action.meta.arg;
+
+  // cancel this event if we've started dragging
+  // TODO: need to cancel the async dispatch after
+  // https://redux-toolkit.js.org/api/createAsyncThunk#cancellation
+  if (state.newRect.clickX !== clickX || state.newRect.clickY !== clickY)
+    return;
+
+  const x = (clickX - svgTopLeftX) / svgScale;
+  const y = (clickY - svgTopLeftY) / svgScale;
+
+  const width = RECT_WIDTH / zoomLeveltoScaleMap[svgZoomLevel];
+  const height = RECT_HEIGHT / zoomLeveltoScaleMap[svgZoomLevel];
+
+  const rect: Rect = {
+    type: 'rect',
+    id: id,
+    text: 'Concept',
+    x: x - width / 2,
+    y: y - height / 2,
+    width: width,
+    height: height,
+    createdAtZoomLevel: svgZoomLevel,
+    boardId: boardId,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    deleted: false,
+    translateX: 0,
+    translateY: 0,
+    deltaWidth: 0,
+    deltaHeight: 0,
+    isLastUpdatedBySync: false,
+    isSavedInDB: false,
+  };
+
+  // state.drag = null;
+  state.newRect = null;
+  state.shapes[rect.id] = rect;
+  reorder(rect, state);
+
+  state.select = {
+    id: rect.id,
+    isEditing: false,
+  };
+};
+
+// endNewRectByClickFulfilled indicates the save was successful
+export const endNewRectByClickFulfilled = (
+  state: DrawState,
+  action: {
+    payload: undefined;
+    meta: {
+      requestId: string;
+      arg: NewRect;
+    };
+  }
+) => {
+  const { id } = action.meta.arg;
+  const shape = state.shapes[id];
+  shape.isSavedInDB = true;
+};
+
+// endNewRectByClickRejected indicates the save was unsuccessful
+export const endNewRectByClickRejected = (
+  state: DrawState,
+  action: {
+    payload: undefined;
+    meta: {
+      requestId: string;
+      arg: NewRect;
+    };
+  }
+) => {
+  const { id } = action.meta.arg;
+  const shape = state.shapes[id];
+  shape.isSavedInDB = false;
+  // TODO: schedule a future job to try and save?
+};
+
+export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
+  if (!state.newRect) {
+    throw new Error(
+      'Cannot create rect on drag. Missing newRect state. Was draw/startNewRect called first?'
+    );
+  }
+
+  const {
+    id,
     clickX,
     clickY,
     svgTopLeftX,
@@ -135,7 +180,6 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
   // prevent more draw/endNewRectByDrag event from firing.
   state.newRect = null;
 
-  const id = uuid.v4();
   const x = (startX - svgTopLeftX) / svgScale;
   const y = (startY - svgTopLeftY) / svgScale;
   const width =

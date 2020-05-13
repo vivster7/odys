@@ -19,6 +19,7 @@ import GroupSelect from '../draw/mixins/groupSelect/GroupSelect';
 import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
+import * as uuid from 'uuid';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -106,6 +107,18 @@ const Svg: React.FC = () => {
   const [selectMode, setSelectMode] = useState(false);
   const cursor = selectMode ? 'crosshair' : 'auto';
 
+  const transform = `translate(${topLeftX + translateX}, ${
+    topLeftY + translateY
+  }) scale(${scale})`;
+
+  if (svgState.dirty) {
+    setTopLeftX(svgState.topLeftX);
+    setTopLeftY(svgState.topLeftY);
+    setScale(svgState.scale);
+    setZoomLevel(svgState.zoomLevel);
+    dispatch(cleanSvg());
+  }
+
   function onKeyDownHandler(e: KeyboardEvent) {
     if (e.key === 'Shift') {
       setSelectMode(true);
@@ -127,22 +140,11 @@ const Svg: React.FC = () => {
     };
   });
 
-  if (svgState.dirty) {
-    setTopLeftX(svgState.topLeftX);
-    setTopLeftY(svgState.topLeftY);
-    setScale(svgState.scale);
-    setZoomLevel(svgState.zoomLevel);
-    dispatch(cleanSvg());
-  }
-
-  const transform = `translate(${topLeftX + translateX}, ${
-    topLeftY + translateY
-  }) scale(${scale})`;
-
   function handleMouseMove(e: React.MouseEvent) {
     if (newRect) {
       dispatch(
         endNewRectByDrag({
+          id: uuid.v4(),
           clickX: e.clientX,
           clickY: e.clientY,
           svgTopLeftX: svgState.topLeftX,
@@ -220,8 +222,14 @@ const Svg: React.FC = () => {
     ) {
       dispatch(
         endNewRectByClick({
+          id: uuid.v4(),
           clickX: e.clientX,
           clickY: e.clientY,
+          svgTopLeftX: svgState.topLeftX,
+          svgTopLeftY: svgState.topLeftY,
+          svgScale: svgState.scale,
+          svgZoomLevel: svgState.zoomLevel,
+          boardId: boardId,
         })
       );
     }
