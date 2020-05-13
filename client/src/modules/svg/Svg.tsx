@@ -3,7 +3,6 @@ import debounce from 'lodash.debounce';
 import {
   cancelSelect,
   drag,
-  endDrag,
   resize,
   endResize,
   startDragSelection,
@@ -21,6 +20,7 @@ import {
 } from '../draw/shape/newRect.reducer';
 import GroupSelect from '../draw/mixins/groupSelect/GroupSelect';
 import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
+import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 
 const debouncedOnWheelEnd = debounce(
   (

@@ -140,11 +140,12 @@ export const endNewRectByDrag: any = createAsyncThunk(
       updatedAt: new Date().toISOString(),
     };
 
-    return {
+    const result: NewRectState = {
       shape: rect,
       clickX: startX,
       clickY: startY,
     };
+    return result;
   }
 );
 

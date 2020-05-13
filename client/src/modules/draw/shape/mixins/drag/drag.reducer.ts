@@ -1,4 +1,6 @@
-import { DrawReducer, reorder } from '../../../draw.reducer';
+import { DrawReducer, reorder, DrawState } from '../../../draw.reducer';
+import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from 'App';
 
 export interface DragState {
   id: string;
@@ -55,25 +57,44 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
   shape.isLastUpdatedBySync = false;
 };
 
-export const endDragFn: DrawReducer = (state, action) => {
-  if (!state.drag) {
-    throw new Error(
-      'Could not end drag action. Was it started with ODYS_START_DRAG_ACTION?'
-    );
-  }
+export const endDrag: any = createAsyncThunk(
+  'draw/endDrag',
+  async (args: void, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    if (!state.draw.drag) {
+      throw new Error(
+        'Could not end drag action. Was it started with ODYS_START_DRAG_ACTION?'
+      );
+    }
+    const { id } = state.draw.drag;
+    if (!state.draw.shapes[id]) {
+      throw new Error(`Cannot find shape with ${id}`);
+    }
 
-  const { id } = state.drag;
-  if (!state.shapes[id]) {
-    throw new Error(`Cannot find shape with ${id}`);
+    const shape = state.draw.shapes[id];
+    const result: Draggable = {
+      id: id,
+      x: shape.x + shape.translateX,
+      y: shape.y + shape.translateY,
+      translateX: 0,
+      translateY: 0,
+    };
+    return result;
   }
+);
+
+export const endDragFulfilled = (
+  state: DrawState,
+  action: PayloadAction<Draggable>
+) => {
+  const { id, x, y, translateX, translateY } = action.payload;
 
   const shape = state.shapes[id];
-  shape.x = shape.x + shape.translateX;
-  shape.y = shape.y + shape.translateY;
-  shape.translateX = 0;
-  shape.translateY = 0;
+  shape.x = x;
+  shape.y = y;
+  shape.translateX = translateX;
+  shape.translateY = translateY;
   shape.isLastUpdatedBySync = false;
-
   reorder(shape, state);
   state.drag = null;
 };

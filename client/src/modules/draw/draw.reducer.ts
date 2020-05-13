@@ -3,8 +3,9 @@ import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
   startDragFn,
   dragFn,
-  endDragFn,
   DragState,
+  endDragFulfilled,
+  endDrag,
 } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import {
   startResizeFn,
@@ -175,7 +176,6 @@ const drawSlice = createSlice({
     // drag
     startDrag: startDragFn,
     drag: dragFn,
-    endDrag: endDragFn,
     // resize
     startResize: startResizeFn,
     resize: resizeFn,
@@ -193,6 +193,11 @@ const drawSlice = createSlice({
     [endNewRectByClick.pending as any]: (state, action) => {},
     [endNewRectByClick.rejected as any]: (state, action) => {},
     [endNewRectByDrag.fulfilled as any]: endNewRectByDragFulfilled,
+    [endNewRectByDrag.pending as any]: (state, action) => {},
+    [endNewRectByDrag.rejected as any]: (state, action) => {},
+    [endDrag.fulfilled as any]: endDragFulfilled,
+    [endDrag.pending as any]: (state, action) => {},
+    [endDrag.rejected as any]: (state, action) => {},
     [getShapes.fulfilled as any]: getShapesFulfilled,
     [getShapes.pending as any]: (state, action) => {},
     [getShapes.rejected as any]: (state, action) => {},
@@ -212,7 +217,6 @@ export const {
   drawArrow,
   startDrag,
   drag,
-  endDrag,
   startResize,
   resize,
   endResize,
