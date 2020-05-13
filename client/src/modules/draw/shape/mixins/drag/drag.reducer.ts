@@ -1,6 +1,8 @@
 import { DrawReducer, reorder, DrawState } from '../../../draw.reducer';
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'App';
+import { ShapeApi } from 'generated';
+import { Shape } from '../../shape.reducer';
 
 export interface DragState {
   id: string;
@@ -79,6 +81,10 @@ export const endDrag: any = createAsyncThunk(
       translateX: 0,
       translateY: 0,
     };
+
+    const api = new ShapeApi();
+    await api.shapePatch({ id: `eq.${id}`, shape: result as Shape });
+
     return result;
   }
 );
