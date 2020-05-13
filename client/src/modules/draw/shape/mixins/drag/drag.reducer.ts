@@ -1,12 +1,11 @@
 import {
   DrawReducer,
   reorder,
-  DrawState,
   DrawActionPending,
   DrawActionFulfilled,
   DrawActionRejected,
 } from '../../../draw.reducer';
-import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { ShapeApi, Configuration } from 'generated';
 
