@@ -9,13 +9,10 @@ import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
 import { useDrawingChangeEmitter } from '../mixins/sync/sync';
 import { isOverlapping } from 'math/box';
-import {
-  drawArrow,
-  startDrag,
-  selectDrawing,
-  startNewRect,
-} from '../draw.reducer';
+import { startDrag, selectDrawing, startNewRect } from '../draw.reducer';
 import { Shape as ShapeType } from './shape.reducer';
+import { drawArrow } from '../arrow/arrow.reducer';
+import * as uuid from 'uuid';
 
 export interface ShapeId {
   id: string;
@@ -58,7 +55,14 @@ export const Shape: React.FC<ShapeId> = (props) => {
       !isOverlapping(shape, selectedShape) &&
       !isSelected
     ) {
-      dispatch(drawArrow({ id, boardId: board.id }));
+      dispatch(
+        drawArrow({
+          id: uuid.v4(),
+          fromShapeId: selectedShape.id,
+          toShapeId: id,
+          boardId: board.id,
+        })
+      );
     } else {
       dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
       dispatch(selectDrawing(id));
@@ -74,7 +78,14 @@ export const Shape: React.FC<ShapeId> = (props) => {
       !isOverlapping(shape, selectedShape) &&
       !isSelected
     ) {
-      dispatch(drawArrow({ id, boardId: board.id }));
+      dispatch(
+        drawArrow({
+          id: uuid.v4(),
+          fromShapeId: selectedShape.id,
+          toShapeId: id,
+          boardId: board.id,
+        })
+      );
     } else if (e.altKey) {
       dispatch(startNewRect({ clickX: e.clientX, clickY: e.clientY }));
     } else {

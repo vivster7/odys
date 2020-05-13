@@ -1,12 +1,18 @@
-import { DrawReducer, DrawState, reorder } from '../draw.reducer';
+import {
+  DrawState,
+  reorder,
+  DrawActionPending,
+  DrawActionFulfilled,
+  DrawActionRejected,
+} from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import * as uuid from 'uuid';
-import { OdysArrow } from 'generated';
+import { OdysArrow, Configuration } from 'generated';
 import { ArrowApi } from 'generated/apis/ArrowApi';
 import { Syncable } from '../mixins/sync/sync';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 import { Deleteable } from 'modules/draw/mixins/delete/delete';
+import { RootState } from 'App';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
 type ArrowMixins = Selectable & TextEditable & Syncable & Deleteable;
@@ -43,39 +49,52 @@ export const getArrowsFulfilled = (
 
 interface DrawArrow {
   id: string;
+  fromShapeId: string;
+  toShapeId: string;
   boardId: string;
 }
-export const drawArrowFn: DrawReducer<DrawArrow> = (state, action) => {
-  if (!state.select) {
-    throw new Error('Cannot draw arrow without selected object.');
-  }
 
-  const { id, boardId } = action.payload;
-  const selectId = state.select.id;
+export const drawArrow = createAsyncThunk(
+  'draw/drawArrow',
+  async (arg: DrawArrow, thunkAPI) => {
+    const { id } = arg;
+    const state = thunkAPI.getState() as RootState;
+    const arrow = state.draw.arrows[id];
+    if (!arrow) {
+      throw new Error(`Cannot find arrow ${id}`);
+    }
+
+    const api = new ArrowApi(
+      new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
+    );
+    await api.arrowPost({ arrow: arrow });
+  }
+);
+
+export const drawArrowPending: DrawActionPending<DrawArrow> = (
+  state,
+  action
+) => {
+  const { id, fromShapeId, toShapeId, boardId } = action.meta.arg;
 
   // cannot draw arrow to self.
-  if (id === selectId) {
+  if (fromShapeId === toShapeId) {
     return;
   }
 
   // cannot duplicate existing arrow.
   const existing = Object.values(state.arrows).find(
-    (a) => a.fromShapeId === selectId && a.toShapeId === id
+    (a) => a.fromShapeId === fromShapeId && a.toShapeId === toShapeId
   );
-
   if (existing) {
     return;
   }
 
   // cannot draw arrow across zoomLevels
-  const fromShape = state.shapes[selectId];
-  const toShape = state.shapes[id];
-  if (!fromShape) throw new Error(`Cannot find shape (${selectId})`);
-  if (!toShape) throw new Error(`Cannot find shape (${id})`);
-  if (fromShape.type !== 'rect' && fromShape.type !== 'grouping_rect')
-    throw new Error('Can only draw arrows from Rects.');
-  if (toShape.type !== 'rect' && toShape.type !== 'grouping_rect')
-    throw new Error('Can only draw arrows to Rects.');
+  const fromShape = state.shapes[fromShapeId];
+  const toShape = state.shapes[toShapeId];
+  if (!fromShape) throw new Error(`Cannot find shape (${fromShapeId})`);
+  if (!toShape) throw new Error(`Cannot find shape (${toShapeId})`);
   if (fromShape.createdAtZoomLevel !== toShape.createdAtZoomLevel) {
     throw new Error(
       `Cannot draw arrow across zoomLevel (createdAtZoomLevels dont match)`
@@ -84,9 +103,9 @@ export const drawArrowFn: DrawReducer<DrawArrow> = (state, action) => {
 
   const arrow = {
     type: 'arrow',
-    id: uuid.v4(),
-    fromShapeId: selectId,
-    toShapeId: id,
+    id: id,
+    fromShapeId: fromShapeId,
+    toShapeId: toShapeId,
     text: '',
     isLastUpdatedBySync: false,
     isSavedInDB: false,
@@ -98,4 +117,21 @@ export const drawArrowFn: DrawReducer<DrawArrow> = (state, action) => {
 
   state.arrows[arrow.id] = arrow;
   reorder(arrow, state);
+};
+
+export const drawArrowFulfilled: DrawActionFulfilled<DrawArrow> = (
+  state,
+  action
+) => {
+  const { id } = action.meta.arg;
+  const arrow = state.arrows[id];
+  arrow.isSavedInDB = true;
+};
+export const drawArrowRejected: DrawActionRejected<DrawArrow> = (
+  state,
+  action
+) => {
+  const { id } = action.meta.arg;
+  const arrow = state.arrows[id];
+  arrow.isSavedInDB = false;
 };

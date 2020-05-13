@@ -47,11 +47,14 @@ import {
 } from 'modules/draw/mixins/groupSelect/groupSelect.reducer';
 import { editTextFn } from './mixins/editText/editText.reducer';
 import {
-  drawArrowFn,
   getArrows,
   getArrowsFulfilled,
   Arrow,
   instanceOfArrow,
+  drawArrowFulfilled,
+  drawArrow,
+  drawArrowPending,
+  drawArrowRejected,
 } from 'modules/draw/arrow/arrow.reducer';
 import {
   getShapes,
@@ -213,8 +216,6 @@ const drawSlice = createSlice({
     deleteDrawing: deleteDrawingFn,
     // editText
     editText: editTextFn,
-    // arrow
-    drawArrow: drawArrowFn,
     // select
     selectDrawing: selectDrawingFn,
     cancelSelect: cancelSelectFn,
@@ -242,6 +243,9 @@ const drawSlice = createSlice({
     [getArrows.pending as any]: (state, action) => {},
     [getArrows.fulfilled as any]: getArrowsFulfilled,
     [getArrows.rejected as any]: (state, action) => {},
+    [drawArrow.pending as any]: drawArrowPending,
+    [drawArrow.fulfilled as any]: drawArrowFulfilled,
+    [drawArrow.rejected as any]: drawArrowRejected,
     // drag
     [endDrag.pending as any]: endDragPending,
     [endDrag.fulfilled as any]: endDragFulfilled,
@@ -264,7 +268,6 @@ export const {
   editText,
   cancelSelect,
   selectDrawing,
-  drawArrow,
   startDrag,
   drag,
   startResize,

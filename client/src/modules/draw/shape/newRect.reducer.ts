@@ -54,7 +54,6 @@ export const endNewRectByClick = createAsyncThunk(
       new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
     );
     await api.shapePost({ shape: shape });
-    return id;
   }
 );
 
