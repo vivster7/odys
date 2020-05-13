@@ -19,7 +19,6 @@ import { endNewRectByClick } from '../draw/shape/newRect.reducer';
 import GroupSelect from '../draw/mixins/groupSelect/GroupSelect';
 import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
-import boardReducer from 'modules/board/board.reducer';
 
 const debouncedOnWheelEnd = debounce(
   (
