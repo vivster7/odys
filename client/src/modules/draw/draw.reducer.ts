@@ -23,8 +23,7 @@ import {
   endNewRectByClickFulfilled,
   NewRectState,
   startNewRectFn,
-  endNewRectByDrag,
-  endNewRectByDragFulfilled,
+  endNewRectByDragFn,
 } from 'modules/draw/shape/newRect.reducer';
 import {
   startDragSelectionFn,
@@ -182,6 +181,7 @@ const drawSlice = createSlice({
     endResize: endResizeFn,
     // newRect
     startNewRect: startNewRectFn,
+    endNewRectByDrag: endNewRectByDragFn,
     // groupSelect
     startDragSelection: startDragSelectionFn,
     resizeDragSelection: resizeDragSelectionFn,
@@ -192,9 +192,6 @@ const drawSlice = createSlice({
     [endNewRectByClick.fulfilled as any]: endNewRectByClickFulfilled,
     [endNewRectByClick.pending as any]: (state, action) => {},
     [endNewRectByClick.rejected as any]: (state, action) => {},
-    [endNewRectByDrag.fulfilled as any]: endNewRectByDragFulfilled,
-    [endNewRectByDrag.pending as any]: (state, action) => {},
-    [endNewRectByDrag.rejected as any]: (state, action) => {},
     [endDrag.fulfilled as any]: endDragFulfilled,
     [endDrag.pending as any]: (state, action) => {},
     [endDrag.rejected as any]: (state, action) => {},
@@ -221,6 +218,7 @@ export const {
   resize,
   endResize,
   startNewRect,
+  endNewRectByDrag,
   startDragSelection,
   resizeDragSelection,
   endDragSelection,
