@@ -7,9 +7,15 @@ import { Resizable } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { Syncable } from 'modules/draw/mixins/sync/sync';
+import { Deleteable } from 'modules/draw/mixins/delete/delete';
 
 export type Shape = Rect | GroupingRect | Text;
-type ShapeMixins = Draggable & Resizable & Selectable & TextEditable & Syncable;
+type ShapeMixins = Draggable &
+  Resizable &
+  Selectable &
+  TextEditable &
+  Syncable &
+  Deleteable;
 export interface Rect extends OdysShape, ShapeMixins {
   type: 'rect';
 }
@@ -41,6 +47,7 @@ export const getShapesFulfilled = (
       type: type,
       isLastUpdatedBySync: false,
       isSavedInDB: true,
+      deleted: false,
       translateX: 0,
       translateY: 0,
       deltaWidth: 0,

@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { editText, deleteDrawing } from '../../draw.reducer';
-import { RootState, OdysDispatch } from '../../../../App';
+import { editText, deleteDrawing, Drawing } from 'modules/draw/draw.reducer';
+import { RootState, OdysDispatch } from 'App';
 
 // add delete key handler
 function onKeyDownHandler(
   dispatch: OdysDispatch,
-  id: string,
+  drawing: Drawing,
   isEditing: boolean
 ) {
   return (e: KeyboardEvent) => {
     if (e.code === 'Backspace' && isEditing === false) {
-      dispatch(deleteDrawing(id));
+      dispatch(deleteDrawing(drawing));
     }
   };
 }
@@ -27,13 +27,13 @@ const HiddenTextInput: React.FC = React.memo(() => {
   // This selector will refresh this component whenver the
   // selected drawing changes (e.g. resize). This should trigger
   // focus onto this hidden input.
-  const drawing = useSelector(
-    (state: RootState) => id && (state.draw.shapes[id] ?? state.draw.arrows[id])
+  const drawing = useSelector((state: RootState) =>
+    id ? state.draw.shapes[id] ?? state.draw.arrows[id] : undefined
   );
 
   useEffect(() => {
-    if (id === undefined || isEditing === undefined) return;
-    const handler = onKeyDownHandler(dispatch, id, isEditing);
+    if (drawing === undefined || isEditing === undefined) return;
+    const handler = onKeyDownHandler(dispatch, drawing, isEditing);
     window.addEventListener('keydown', handler, { capture: true });
     return () => {
       window.removeEventListener('keydown', handler, { capture: true });

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import DrawingBoard from '../board/DrawingBoard';
 import { useDispatch } from 'react-redux';
-import { syncDrawing, deleteDrawing } from '../draw/draw.reducer';
-import socket from '../../socket/socket';
+import { syncDrawing } from '../draw/draw.reducer';
+import socket from 'socket/socket';
 import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
 
@@ -21,10 +21,6 @@ const Room: React.FC = () => {
   useEffect(() => {
     dispatch(getOrCreateRoom(id));
   }, [dispatch, id]);
-
-  socket.on('shapeDeleted', (data: string) => {
-    dispatch(deleteDrawing(data));
-  });
 
   return (
     <div

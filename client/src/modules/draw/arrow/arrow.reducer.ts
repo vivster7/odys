@@ -6,9 +6,10 @@ import { ArrowApi } from 'generated/apis/ArrowApi';
 import { Syncable } from '../mixins/sync/sync';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
+import { Deleteable } from 'modules/draw/mixins/delete/delete';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
-type ArrowMixins = Selectable & TextEditable & Syncable;
+type ArrowMixins = Selectable & TextEditable & Syncable & Deleteable;
 
 export function instanceOfArrow(object: any): object is Arrow {
   return 'fromShapeId' in object && 'toShapeId' in object;
@@ -32,6 +33,7 @@ export const getArrowsFulfilled = (
       ...a,
       isLastUpdatedBySync: false,
       isSavedInDB: true,
+      deleted: false,
     };
     state.arrows[a.id] = arrow;
     //TODO: order should be saved on server.
@@ -91,6 +93,7 @@ export const drawArrowFn: DrawReducer<DrawArrow> = (state, action) => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     boardId: boardId,
+    deleted: false,
   };
 
   state.arrows[arrow.id] = arrow;

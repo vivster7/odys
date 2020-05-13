@@ -2,21 +2,21 @@ import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from 'App';
-import { updateDrawing, ShapeData } from 'modules/draw/draw.reducer';
+import { updateDrawing, ArrowData, ShapeData } from 'modules/draw/draw.reducer';
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
+import { useDrawingDeleteDiff } from 'modules/draw/mixins/delete/delete';
 import { RECT_HEIGHT, RECT_WIDTH } from 'modules/draw/shape/type/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Svg from 'modules/svg/Svg';
-import socket from 'socket/socket';
 
 import Cockpit from './cockpit/Cockpit';
 import { getOrCreateBoard } from './board.reducer';
 import { Rect } from 'modules/draw/shape/shape.reducer';
 
-function usePreviousShapes(shapes: ShapeData) {
+function usePreviousDrawings(drawingData: ShapeData | ArrowData) {
   const ref = useRef({});
   useEffect(() => {
-    ref.current = shapes;
+    ref.current = drawingData;
   });
   return ref.current;
 }
@@ -49,15 +49,11 @@ const DrawingBoard: React.FC = () => {
   const room = useSelector((state: RootState) => state.room);
   const shapes = useSelector((state: RootState) => state.draw);
 
-  const prevShapes = usePreviousShapes(shapes.shapes);
-  useEffect(() => {
-    const prevShapeIds = Object.keys(prevShapes);
-    const currShapeIds = Object.keys(shapes.shapes);
-    if (prevShapeIds.length > currShapeIds.length) {
-      const diff = prevShapeIds.filter((x) => !currShapeIds.includes(x));
-      socket.emit('shapeDeleted', diff[0]);
-    }
-  });
+  const prevShapes: ShapeData = usePreviousDrawings(shapes.shapes);
+  useDrawingDeleteDiff(prevShapes, shapes.shapes);
+
+  const prevArrows: ArrowData = usePreviousDrawings(shapes.arrows);
+  useDrawingDeleteDiff(prevArrows, shapes.arrows);
 
   // temp seed data
   if (Object.entries(shapes.shapes).length === 0) {
@@ -80,6 +76,7 @@ const DrawingBoard: React.FC = () => {
         boardId: '1', //TODO
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        deleted: false,
       };
     };
     dispatch(updateDrawing(rect('1', 'A', 150, 100)));

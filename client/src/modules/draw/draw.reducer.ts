@@ -86,7 +86,7 @@ const initialState: DrawState = {
   newRect: null,
 };
 
-type Drawing = Arrow | Shape;
+export type Drawing = Arrow | Shape;
 
 export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
   const { id } = action.payload;
@@ -103,31 +103,40 @@ export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
 
 export const syncDrawingFn: DrawReducer<Drawing> = (state, action) => {
   const synced = { ...action.payload, isLastUpdatedBySync: true };
-  action = {
-    type: 'draw/updateDrawing',
-    payload: synced,
-  };
-  return updateDrawingFn(state, action);
+
+  if (synced.deleted) {
+    action = {
+      type: 'draw/deleteDrawing',
+      payload: synced,
+    };
+    return deleteDrawingFn(state, action);
+  } else {
+    action = {
+      type: 'draw/updateDrawing',
+      payload: synced,
+    };
+    return updateDrawingFn(state, action);
+  }
 };
 
-export const deleteDrawingFn: DrawReducer<string> = (state, action) => {
-  const id = action.payload;
+export const deleteDrawingFn: DrawReducer<Drawing> = (state, action) => {
+  const { id } = action.payload;
   const drawing = state.shapes[id] ?? state.arrows[id];
   if (!drawing) {
     throw new Error(`Cannot find drawing with ${id}`);
   }
 
   if (instanceOfArrow(drawing)) {
-    delete state.arrows[id];
-    state.drawOrder = state.drawOrder.filter((drawId) => drawId === id);
+    state.arrows[id].deleted = true;
+    state.drawOrder = state.drawOrder.filter((drawId) => drawId !== id);
   } else {
-    delete state.shapes[id];
+    state.shapes[id].deleted = true;
     const connections = Object.values(state.arrows)
       .filter((a) => a.toShapeId === id || a.fromShapeId === id)
       .map((a) => a.id);
     state.drawOrder = state.drawOrder
-      .filter((drawId) => drawId === id)
-      .filter((drawId) => connections.includes(drawId));
+      .filter((drawId) => drawId !== id)
+      .filter((drawId) => !connections.includes(drawId));
   }
 };
 

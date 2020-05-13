@@ -72,6 +72,7 @@ export const endNewRectByClick = createAsyncThunk(
       deltaHeight: 0,
       isLastUpdatedBySync: false,
       isSavedInDB: false,
+      deleted: false,
     };
 
     const api = new ShapeApi();
@@ -160,6 +161,7 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
     boardId: boardId,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    deleted: false,
   };
 
   state.shapes[id] = rect;

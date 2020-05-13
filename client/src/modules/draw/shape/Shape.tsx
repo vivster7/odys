@@ -91,6 +91,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
     onMouseDown,
   };
 
+  if (shape?.deleted) return <></>;
   if (shape?.type === 'rect') return <Rect {...childProps}></Rect>;
   if (shape?.type === 'text') return <Text {...childProps}></Text>;
   if (shape?.type === 'grouping_rect') {
