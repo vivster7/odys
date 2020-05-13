@@ -12,8 +12,11 @@ import {
 import {
   startResizeFn,
   resizeFn,
-  endResizeFn,
   ResizeState,
+  endResizeFulfilled,
+  endResizePending,
+  endResizeRejected,
+  endResize,
 } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import {
   cancelSelectFn,
@@ -180,7 +183,6 @@ const drawSlice = createSlice({
     // resize
     startResize: startResizeFn,
     resize: resizeFn,
-    endResize: endResizeFn,
     // newRect
     startNewRect: startNewRectFn,
     endNewRectByDrag: endNewRectByDragFn,
@@ -191,18 +193,26 @@ const drawSlice = createSlice({
     endGroupDrag: endGroupDragFn,
   },
   extraReducers: {
-    [endNewRectByClick.fulfilled as any]: endNewRectByClickFulfilled,
-    [endNewRectByClick.pending as any]: (state, action) => {},
-    [endNewRectByClick.rejected as any]: (state, action) => {},
-    [endDrag.fulfilled as any]: endDragFulfilled,
-    [endDrag.pending as any]: endDragPending,
-    [endDrag.rejected as any]: endDragRejected,
+    // shape
     [getShapes.fulfilled as any]: getShapesFulfilled,
     [getShapes.pending as any]: (state, action) => {},
     [getShapes.rejected as any]: (state, action) => {},
+    // arrow
     [getArrows.fulfilled as any]: getArrowsFulfilled,
     [getArrows.pending as any]: (state, action) => {},
     [getArrows.rejected as any]: (state, action) => {},
+    // drag
+    [endDrag.fulfilled as any]: endDragFulfilled,
+    [endDrag.pending as any]: endDragPending,
+    [endDrag.rejected as any]: endDragRejected,
+    // resize
+    [endResize.fulfilled as any]: endResizeFulfilled,
+    [endResize.pending as any]: endResizePending,
+    [endResize.rejected as any]: endResizeRejected,
+    // newRect
+    [endNewRectByClick.fulfilled as any]: endNewRectByClickFulfilled,
+    [endNewRectByClick.pending as any]: (state, action) => {},
+    [endNewRectByClick.rejected as any]: (state, action) => {},
   },
 });
 
@@ -218,7 +228,6 @@ export const {
   drag,
   startResize,
   resize,
-  endResize,
   startNewRect,
   endNewRectByDrag,
   startDragSelection,

@@ -4,7 +4,6 @@ import {
   cancelSelect,
   drag,
   resize,
-  endResize,
   startDragSelection,
   resizeDragSelection,
   endDragSelection,
@@ -19,6 +18,7 @@ import { endNewRectByClick } from '../draw/shape/newRect.reducer';
 import GroupSelect from '../draw/mixins/groupSelect/GroupSelect';
 import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
+import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -89,7 +89,9 @@ const Svg: React.FC = () => {
   const newRect = useSelector((state: RootState) => state.draw.newRect);
 
   const svgState = useSelector((state: RootState) => state.svg);
-  const isResizing = useSelector((state: RootState) => !!state.draw.resize);
+  const resizingId = useSelector(
+    (state: RootState) => state.draw.resize && state.draw.resize.id
+  );
 
   // using local variable to make scale / pan fast!
   const [topLeftX, setTopLeftX] = useState(svgState.topLeftX);
@@ -179,7 +181,7 @@ const Svg: React.FC = () => {
       setTranslateY(e.clientY - pan.startY);
     }
 
-    if (isResizing) {
+    if (resizingId) {
       dispatch(
         resize({
           clickX: e.clientX,
@@ -240,8 +242,8 @@ const Svg: React.FC = () => {
       dispatch(endPan({ topLeftX, topLeftY }));
     }
 
-    if (isResizing) {
-      dispatch(endResize());
+    if (resizingId) {
+      dispatch(endResize(resizingId));
     }
   }
 

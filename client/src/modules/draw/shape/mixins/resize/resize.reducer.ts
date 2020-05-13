@@ -1,4 +1,7 @@
-import { DrawReducer } from 'modules/draw/draw.reducer';
+import { DrawReducer, DrawState } from 'modules/draw/draw.reducer';
+import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from 'App';
+import { ShapeApi, Configuration } from 'generated';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -103,7 +106,31 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
   shape.isLastUpdatedBySync = false;
 };
 
-export const endResizeFn: DrawReducer = (state, action) => {
+// endResize saves the optimistic update to the DB.
+// TODO: This is the same as endDrag
+export const endResize: any = createAsyncThunk(
+  'draw/endResize',
+  async (args: string, thunkAPI) => {
+    const id = args;
+    const state = thunkAPI.getState() as RootState;
+    const shape = state.draw.shapes[id];
+    if (!shape) {
+      throw new Error(`Cannot find shape with ${id}`);
+    }
+
+    const api = new ShapeApi(
+      new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
+    );
+    await api.shapePost({ shape: shape });
+    return id;
+  }
+);
+
+// endResizePending optimistically updates the shape
+export const endResizePending = (
+  state: DrawState,
+  action: PayloadAction<string>
+) => {
   if (!state.resize) {
     throw new Error(
       'Could not end resize shape action. Was it started with ODYS_START_RESIZE_ACTION?'
@@ -125,8 +152,32 @@ export const endResizeFn: DrawReducer = (state, action) => {
   shape.deltaWidth = 0;
   shape.deltaHeight = 0;
   shape.isLastUpdatedBySync = false;
+  shape.isSavedInDB = false;
 
   state.drag = null;
   state.newRect = null;
   state.resize = null;
+};
+
+// endResizeFulfilled indicates the save was successful
+// TODO: This is the same as endDrag
+export const endResizeFulfilled = (
+  state: DrawState,
+  action: PayloadAction<string>
+) => {
+  const id = action.payload;
+  const shape = state.shapes[id];
+  shape.isSavedInDB = true;
+};
+
+// endResizeRejected indicates the save was unsuccessful
+// TODO: This is the same as endDrag
+export const endResizeRejected = (
+  state: DrawState,
+  action: PayloadAction<string>
+) => {
+  const id = action.payload;
+  const shape = state.shapes[id];
+  shape.isSavedInDB = false;
+  // TODO: schedule a future job to try and save?
 };
