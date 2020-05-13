@@ -1,4 +1,10 @@
-import { DrawReducer, DrawState } from 'modules/draw/draw.reducer';
+import {
+  DrawReducer,
+  DrawState,
+  DrawActionFulfilled,
+  DrawActionPending,
+  DrawActionRejected,
+} from 'modules/draw/draw.reducer';
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { ShapeApi, Configuration } from 'generated';
@@ -110,8 +116,8 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
 // TODO: This is the same as endDrag
 export const endResize: any = createAsyncThunk(
   'draw/endResize',
-  async (args: string, thunkAPI) => {
-    const id = args;
+  async (arg: string, thunkAPI) => {
+    const id = arg;
     const state = thunkAPI.getState() as RootState;
     const shape = state.draw.shapes[id];
     if (!shape) {
@@ -122,15 +128,11 @@ export const endResize: any = createAsyncThunk(
       new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
     );
     await api.shapePost({ shape: shape });
-    return id;
   }
 );
 
 // endResizePending optimistically updates the shape
-export const endResizePending = (
-  state: DrawState,
-  action: PayloadAction<string>
-) => {
+export const endResizePending: DrawActionPending<string> = (state, action) => {
   if (!state.resize) {
     throw new Error(
       'Could not end resize shape action. Was it started with ODYS_START_RESIZE_ACTION?'
@@ -161,22 +163,22 @@ export const endResizePending = (
 
 // endResizeFulfilled indicates the save was successful
 // TODO: This is the same as endDrag
-export const endResizeFulfilled = (
-  state: DrawState,
-  action: PayloadAction<string>
+export const endResizeFulfilled: DrawActionFulfilled<string> = (
+  state,
+  action
 ) => {
-  const id = action.payload;
+  const id = action.meta.arg;
   const shape = state.shapes[id];
   shape.isSavedInDB = true;
 };
 
 // endResizeRejected indicates the save was unsuccessful
 // TODO: This is the same as endDrag
-export const endResizeRejected = (
-  state: DrawState,
-  action: PayloadAction<string>
+export const endResizeRejected: DrawActionRejected<string> = (
+  state,
+  action
 ) => {
-  const id = action.payload;
+  const id = action.meta.arg;
   const shape = state.shapes[id];
   shape.isSavedInDB = false;
   // TODO: schedule a future job to try and save?

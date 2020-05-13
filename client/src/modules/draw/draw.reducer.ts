@@ -1,4 +1,9 @@
-import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  CaseReducer,
+  PayloadAction,
+  SerializedError,
+} from '@reduxjs/toolkit';
 
 import {
   startDragFn,
@@ -55,6 +60,31 @@ import {
 } from 'modules/draw/shape/shape.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
+export type DrawActionPending<T> = (
+  state: DrawState,
+  action: {
+    type: string;
+    payload: undefined;
+    meta: { requestId: string; arg: T };
+  }
+) => void;
+export type DrawActionFulfilled<T, S = void> = (
+  state: DrawState,
+  action: {
+    type: string;
+    payload: Promise<S>;
+    meta: { requestId: string; arg: T };
+  }
+) => void;
+export type DrawActionRejected<T> = (
+  state: DrawState,
+  action: {
+    type: string;
+    payload: undefined;
+    error: SerializedError | any;
+    meta: { requestId: string; arg: T };
+  }
+) => void;
 
 export interface ShapeData {
   [id: string]: Shape;

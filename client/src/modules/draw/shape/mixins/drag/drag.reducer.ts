@@ -1,4 +1,11 @@
-import { DrawReducer, reorder, DrawState } from '../../../draw.reducer';
+import {
+  DrawReducer,
+  reorder,
+  DrawState,
+  DrawActionPending,
+  DrawActionFulfilled,
+  DrawActionRejected,
+} from '../../../draw.reducer';
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { ShapeApi, Configuration } from 'generated';
@@ -61,8 +68,8 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
 // endDrag saves the optimistic update to the DB.
 export const endDrag: any = createAsyncThunk(
   'draw/endDrag',
-  async (args: string, thunkAPI) => {
-    const id = args;
+  async (arg: string, thunkAPI) => {
+    const id = arg;
     const state = thunkAPI.getState() as RootState;
     const shape = state.draw.shapes[id];
     if (!shape) {
@@ -73,12 +80,11 @@ export const endDrag: any = createAsyncThunk(
       new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
     );
     await api.shapePost({ shape: shape });
-    return id;
   }
 );
 
 // endDragPending optimistically updates the shape
-export const endDragPending = (state: DrawState, action: PayloadAction) => {
+export const endDragPending: DrawActionPending<string> = (state, action) => {
   if (!state.drag) {
     throw new Error(
       'Cannot draw/endDrag without drag state. Did draw/startDrag fire?'
@@ -102,21 +108,18 @@ export const endDragPending = (state: DrawState, action: PayloadAction) => {
 };
 
 // endDragFulfilled indicates the save was successful
-export const endDragFulfilled = (
-  state: DrawState,
-  action: PayloadAction<string>
+export const endDragFulfilled: DrawActionFulfilled<string> = (
+  state,
+  action
 ) => {
-  const id = action.payload;
+  const id = action.meta.arg;
   const shape = state.shapes[id];
   shape.isSavedInDB = true;
 };
 
 // endDragRejected indicates the save was unsuccessful
-export const endDragRejected = (
-  state: DrawState,
-  action: PayloadAction<string>
-) => {
-  const id = action.payload;
+export const endDragRejected: DrawActionRejected<string> = (state, action) => {
+  const id = action.meta.arg;
   const shape = state.shapes[id];
   shape.isSavedInDB = false;
   // TODO: schedule a future job to try and save?
