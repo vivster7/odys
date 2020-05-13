@@ -8,6 +8,7 @@ import * as uuid from 'uuid';
 import { RootState } from '../../../App';
 import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
 import { GroupingRect, Rect } from './shape.reducer';
+import { ShapeApi } from 'generated';
 
 export interface NewRectState {
   clickX: number;
@@ -72,8 +73,8 @@ export const endNewRectByClick = createAsyncThunk(
       isLastUpdatedBySync: false,
     };
 
-    // const api = new ShapeApi()
-    // await api.shapePost({ shape: rect });
+    const api = new ShapeApi();
+    await api.shapePost({ shape: rect });
 
     return rect;
   }
