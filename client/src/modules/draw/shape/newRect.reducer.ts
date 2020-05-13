@@ -71,6 +71,7 @@ export const endNewRectByClick = createAsyncThunk(
       deltaWidth: 0,
       deltaHeight: 0,
       isLastUpdatedBySync: false,
+      isSavedInDB: false,
     };
 
     const api = new ShapeApi();
@@ -155,6 +156,7 @@ export const endNewRectByDragFn: DrawReducer<NewRectByDrag> = (
     deltaHeight: 0,
     createdAtZoomLevel: svgZoomLevel,
     isLastUpdatedBySync: false,
+    isSavedInDB: false,
     boardId: boardId,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),

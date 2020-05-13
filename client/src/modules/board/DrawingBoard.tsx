@@ -76,6 +76,7 @@ const DrawingBoard: React.FC = () => {
         deltaHeight: 0,
         createdAtZoomLevel: 5,
         isLastUpdatedBySync: false,
+        isSavedInDB: true,
         boardId: '1', //TODO
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),

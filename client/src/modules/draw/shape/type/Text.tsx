@@ -1,8 +1,8 @@
 import React from 'react';
-import { ShapeProps } from '../Shape';
+import { ShapeTypeProps } from '../Shape';
 import BaseShape from './BaseShape';
 
-const Text: React.FC<ShapeProps> = (props) => {
+const Text: React.FC<ShapeTypeProps> = (props) => {
   const cursor = props.isDragging ? 'grabbing' : 'grab';
   const fill = 'white';
   const fillOpacity = 0;

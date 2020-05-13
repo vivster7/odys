@@ -40,6 +40,7 @@ export const getShapesFulfilled = (
       ...s,
       type: type,
       isLastUpdatedBySync: false,
+      isSavedInDB: true,
       translateX: 0,
       translateY: 0,
       deltaWidth: 0,

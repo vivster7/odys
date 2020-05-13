@@ -21,7 +21,8 @@ export interface ShapeId {
   id: string;
 }
 
-export interface ShapeProps {
+// ShapeTypeProps are passed to shape types: rect, text, grouping_rect
+export interface ShapeTypeProps {
   shape: ShapeType;
   isDragging: boolean;
   isGroupSelected: boolean;

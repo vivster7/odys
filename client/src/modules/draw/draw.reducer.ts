@@ -6,6 +6,8 @@ import {
   DragState,
   endDragFulfilled,
   endDrag,
+  endDragPending,
+  endDragRejected,
 } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import {
   startResizeFn,
@@ -193,8 +195,8 @@ const drawSlice = createSlice({
     [endNewRectByClick.pending as any]: (state, action) => {},
     [endNewRectByClick.rejected as any]: (state, action) => {},
     [endDrag.fulfilled as any]: endDragFulfilled,
-    [endDrag.pending as any]: (state, action) => {},
-    [endDrag.rejected as any]: (state, action) => {},
+    [endDrag.pending as any]: endDragPending,
+    [endDrag.rejected as any]: endDragRejected,
     [getShapes.fulfilled as any]: getShapesFulfilled,
     [getShapes.pending as any]: (state, action) => {},
     [getShapes.rejected as any]: (state, action) => {},

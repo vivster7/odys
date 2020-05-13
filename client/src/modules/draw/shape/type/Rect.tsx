@@ -1,10 +1,10 @@
 import React from 'react';
-import { ShapeProps } from '../Shape';
+import { ShapeTypeProps } from '../Shape';
 import BaseShape from './BaseShape';
 export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
 
-const Rect: React.FC<ShapeProps> = (props) => {
+const Rect: React.FC<ShapeTypeProps> = (props) => {
   const cursor = props.isDragging ? 'grabbing' : 'grab';
   const fill = 'white';
   const fillOpacity = 1;

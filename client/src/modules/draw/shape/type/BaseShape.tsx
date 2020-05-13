@@ -44,6 +44,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     deltaHeight,
     createdAtZoomLevel,
     text,
+    isSavedInDB,
   } = shape;
 
   const transform = `translate(${x + translateX}, ${y + translateY})`;
@@ -61,6 +62,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
       id={id}
       transform={transform}
       cursor={cursor}
+      opacity={isSavedInDB ? 1 : 0.5}
       onMouseDown={(e) => onMouseDown(e)}
     >
       <rect

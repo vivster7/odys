@@ -31,6 +31,7 @@ export const getArrowsFulfilled = (
     const arrow: Arrow = {
       ...a,
       isLastUpdatedBySync: false,
+      isSavedInDB: true,
     };
     state.arrows[a.id] = arrow;
     //TODO: order should be saved on server.
@@ -86,6 +87,7 @@ export const drawArrowFn: DrawReducer<DrawArrow> = (state, action) => {
     toShapeId: id,
     text: '',
     isLastUpdatedBySync: false,
+    isSavedInDB: false,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     boardId: boardId,

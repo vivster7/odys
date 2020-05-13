@@ -1,8 +1,7 @@
 import { DrawReducer, reorder, DrawState } from '../../../draw.reducer';
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'App';
-import { ShapeApi } from 'generated';
-import { Shape } from '../../shape.reducer';
+import { ShapeApi, Configuration } from 'generated';
 
 export interface DragState {
   id: string;
@@ -51,56 +50,77 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
+  const { clickX, clickY, scale } = action.payload;
+
   const shape = state.shapes[id];
-  shape.translateX =
-    (action.payload.clickX - state.drag.clickX) / action.payload.scale;
-  shape.translateY =
-    (action.payload.clickY - state.drag.clickY) / action.payload.scale;
+  shape.translateX = (clickX - state.drag.clickX) / scale;
+  shape.translateY = (clickY - state.drag.clickY) / scale;
   shape.isLastUpdatedBySync = false;
 };
 
+// endDrag saves the optimistic update to the DB.
 export const endDrag: any = createAsyncThunk(
   'draw/endDrag',
-  async (args: void, thunkAPI) => {
+  async (args: string, thunkAPI) => {
+    const id = args;
     const state = thunkAPI.getState() as RootState;
-    if (!state.draw.drag) {
-      throw new Error(
-        'Could not end drag action. Was it started with ODYS_START_DRAG_ACTION?'
-      );
-    }
-    const { id } = state.draw.drag;
-    if (!state.draw.shapes[id]) {
+    const shape = state.draw.shapes[id];
+    if (!shape) {
       throw new Error(`Cannot find shape with ${id}`);
     }
 
-    const shape = state.draw.shapes[id];
-    const result: Draggable = {
-      id: id,
-      x: shape.x + shape.translateX,
-      y: shape.y + shape.translateY,
-      translateX: 0,
-      translateY: 0,
-    };
-
-    const api = new ShapeApi();
-    await api.shapePatch({ id: `eq.${id}`, shape: result as Shape });
-
-    return result;
+    const api = new ShapeApi(
+      new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
+    );
+    await api.shapePost({ shape: shape });
+    return id;
   }
 );
 
-export const endDragFulfilled = (
+// endDragPending optimistically updates the shape
+export const endDragPending = (
   state: DrawState,
-  action: PayloadAction<Draggable>
+  action: PayloadAction<string>
 ) => {
-  const { id, x, y, translateX, translateY } = action.payload;
+  if (!state.drag) {
+    throw new Error(
+      'Cannot draw/endDrag without drag state. Did draw/startDrag fire?'
+    );
+  }
+
+  const { id } = state.drag;
+  if (!state.shapes[id]) {
+    throw new Error(`Cannot find shape with ${id}`);
+  }
 
   const shape = state.shapes[id];
-  shape.x = x;
-  shape.y = y;
-  shape.translateX = translateX;
-  shape.translateY = translateY;
+  shape.x = shape.x + shape.translateX;
+  shape.y = shape.y + shape.translateY;
+  shape.translateX = 0;
+  shape.translateY = 0;
   shape.isLastUpdatedBySync = false;
+  shape.isSavedInDB = false;
   reorder(shape, state);
   state.drag = null;
+};
+
+// endDragFulfilled indicates the save was successful
+export const endDragFulfilled = (
+  state: DrawState,
+  action: PayloadAction<string>
+) => {
+  const id = action.payload;
+  const shape = state.shapes[id];
+  shape.isSavedInDB = true;
+};
+
+// endDragRejected indicates the save was unsuccessful
+export const endDragRejected = (
+  state: DrawState,
+  action: PayloadAction<string>
+) => {
+  const id = action.payload;
+  const shape = state.shapes[id];
+  shape.isSavedInDB = false;
+  // TODO: schedule a future job to try and save?
 };

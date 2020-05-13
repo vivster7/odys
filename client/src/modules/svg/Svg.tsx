@@ -79,7 +79,9 @@ const Svg: React.FC = () => {
   const dispatch = useDispatch();
 
   const boardId = useSelector((state: RootState) => state.board.id);
-  const isDragging = useSelector((state: RootState) => !!state.draw.drag);
+  const draggingId = useSelector(
+    (state: RootState) => state.draw.drag && state.draw.drag.id
+  );
   const isGroupSelecting = useSelector(
     (state: RootState) => !!state.draw.groupSelect?.selectionRect
   );
@@ -150,7 +152,7 @@ const Svg: React.FC = () => {
       );
     }
 
-    if (isDragging) {
+    if (draggingId) {
       dispatch(
         drag({
           clickX: e.clientX,
@@ -222,8 +224,8 @@ const Svg: React.FC = () => {
       );
     }
 
-    if (isDragging) {
-      dispatch(endDrag());
+    if (draggingId) {
+      dispatch(endDrag(draggingId));
     }
     if (isGroupSelecting) {
       dispatch(endDragSelection());

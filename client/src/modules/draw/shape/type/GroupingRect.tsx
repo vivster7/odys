@@ -1,9 +1,9 @@
 import React from 'react';
-import { ShapeProps } from '../Shape';
+import { ShapeTypeProps } from '../Shape';
 import BaseShape from './BaseShape';
 import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
-const GroupingRect: React.FC<ShapeProps> = (props) => {
+const GroupingRect: React.FC<ShapeTypeProps> = (props) => {
   const { isSelected, isDragging } = props;
   const cursor = isSelected ? (isDragging ? 'grabbing' : 'grab') : 'auto';
   const fill = 'darkgray';
