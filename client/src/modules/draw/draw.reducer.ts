@@ -43,6 +43,7 @@ import {
   endGroupDragFn,
   GroupSelectState,
   GroupDragState,
+  selectAllFn,
 } from 'modules/draw/mixins/groupSelect/groupSelect.reducer';
 import { editTextFn } from './mixins/editText/editText.reducer';
 import {
@@ -170,6 +171,7 @@ const drawSlice = createSlice({
     resizeDragSelection: resizeDragSelectionFn,
     endDragSelection: endDragSelectionFn,
     endGroupDrag: endGroupDragFn,
+    selectAll: selectAllFn,
   },
   extraReducers: {
     //save
@@ -222,6 +224,7 @@ export const {
   resizeDragSelection,
   endDragSelection,
   endGroupDrag,
+  selectAll,
 } = drawSlice.actions;
 const drawReducer = drawSlice.reducer;
 export default drawReducer;

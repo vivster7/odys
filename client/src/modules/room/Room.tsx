@@ -5,10 +5,23 @@ import { syncDrawing } from '../draw/draw.reducer';
 import socket from 'socket/socket';
 import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
+import { keydown } from 'global/keydown.reducer';
 
 const Room: React.FC = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+
+  // listen to keydown events and fire events
+  // kinda want this at app level, but app doesn't have access to dispatch yet.
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      dispatch(keydown({ code: e.code, metaKey: e.metaKey }));
+    };
+    window.addEventListener('keydown', handler, { capture: true });
+    return () => {
+      window.removeEventListener('keydown', handler, { capture: true });
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     const onDrawingChanged = (data: any) => dispatch(syncDrawing(data));
@@ -16,7 +29,7 @@ const Room: React.FC = () => {
     return () => {
       emitter.off('drawingChanged', onDrawingChanged);
     };
-  }, [dispatch, id]);
+  }, [dispatch]);
 
   useEffect(() => {
     const onDrawingDeleted = (data: any) =>
@@ -28,7 +41,7 @@ const Room: React.FC = () => {
     return () => {
       emitter.off('drawingDeleted', onDrawingDeleted);
     };
-  }, [dispatch, id]);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(getOrCreateRoom(id));
