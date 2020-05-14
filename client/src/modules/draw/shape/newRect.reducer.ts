@@ -2,18 +2,12 @@
 // Vaguely, this belongs inside shape.reducer.ts -- but not sure how to keep file size reasonable.
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  DrawReducer,
-  DrawActionPending,
-  DrawActionFulfilled,
-  DrawActionRejected,
-} from '../draw.reducer';
+import { DrawReducer, DrawActionPending } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { RECT_WIDTH, RECT_HEIGHT } from './type/Rect';
-import { RootState } from '../../../App';
 import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
 import { GroupingRect, Rect } from './shape.reducer';
-import { ShapeApi, Configuration } from 'generated';
+import { save } from '../mixins/save/save.reducer';
 
 export interface NewRectState {
   clickX: number;
@@ -43,17 +37,7 @@ export const endNewRectByClick = createAsyncThunk(
   'draw/endNewRectByClick',
   async (arg: NewRect, thunkAPI) => {
     const { id } = arg;
-    const state = thunkAPI.getState() as RootState;
-
-    const shape = state.draw.shapes[id];
-    if (!shape) {
-      throw new Error(`Cannot find shape with ${id}`);
-    }
-
-    const api = new ShapeApi(
-      new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
-    );
-    await api.shapePost({ shape: shape });
+    thunkAPI.dispatch(save(id));
   }
 );
 
@@ -121,23 +105,6 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     id: rect.id,
     isEditing: false,
   };
-};
-
-// endNewRectByClickFulfilled indicates the save was successful
-export const endNewRectByClickFulfilled: DrawActionFulfilled<NewRect> = (
-  state,
-  action
-) => {};
-
-// endNewRectByClickRejected indicates the save was unsuccessful
-export const endNewRectByClickRejected: DrawActionRejected<NewRect> = (
-  state,
-  action
-) => {
-  const { id } = action.meta.arg;
-  const shape = state.shapes[id];
-  shape.isSavedInDB = false;
-  // TODO: schedule a future job to try and save?
 };
 
 export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {

@@ -9,25 +9,19 @@ import {
   startDragFn,
   dragFn,
   DragState,
-  endDragFulfilled,
   endDrag,
   endDragPending,
-  endDragRejected,
 } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import {
   deleteDrawing,
   deleteDrawingPending,
-  deleteDrawingFulfilled,
-  deleteDrawingRejected,
 } from 'modules/draw/mixins/delete/delete.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import {
   startResizeFn,
   resizeFn,
   ResizeState,
-  endResizeFulfilled,
   endResizePending,
-  endResizeRejected,
   endResize,
 } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import {
@@ -37,12 +31,10 @@ import {
 } from 'modules/draw/mixins/select/select.reducer';
 import {
   endNewRectByClick,
-  endNewRectByClickFulfilled,
   NewRectState,
   startNewRectFn,
   endNewRectByDragFn,
   endNewRectByClickPending,
-  endNewRectByClickRejected,
 } from 'modules/draw/shape/newRect.reducer';
 import {
   startDragSelectionFn,
@@ -58,10 +50,8 @@ import {
   getArrowsFulfilled,
   Arrow,
   instanceOfArrow,
-  drawArrowFulfilled,
   drawArrow,
   drawArrowPending,
-  drawArrowRejected,
 } from 'modules/draw/arrow/arrow.reducer';
 import {
   getShapes,
@@ -195,24 +185,24 @@ const drawSlice = createSlice({
     [getArrows.fulfilled as any]: getArrowsFulfilled,
     [getArrows.rejected as any]: (state, action) => {},
     [drawArrow.pending as any]: drawArrowPending,
-    [drawArrow.fulfilled as any]: drawArrowFulfilled,
-    [drawArrow.rejected as any]: drawArrowRejected,
+    [drawArrow.fulfilled as any]: (state, action) => {},
+    [drawArrow.rejected as any]: (state, action) => {},
     // drag
     [endDrag.pending as any]: endDragPending,
-    [endDrag.fulfilled as any]: endDragFulfilled,
-    [endDrag.rejected as any]: endDragRejected,
+    [endDrag.fulfilled as any]: (state, action) => {},
+    [endDrag.rejected as any]: (state, action) => {},
     // resize
     [endResize.pending as any]: endResizePending,
-    [endResize.fulfilled as any]: endResizeFulfilled,
-    [endResize.rejected as any]: endResizeRejected,
+    [endResize.fulfilled as any]: (state, action) => {},
+    [endResize.rejected as any]: (state, action) => {},
     // newRect
     [endNewRectByClick.pending as any]: endNewRectByClickPending,
-    [endNewRectByClick.fulfilled as any]: endNewRectByClickFulfilled,
-    [endNewRectByClick.rejected as any]: endNewRectByClickRejected,
+    [endNewRectByClick.fulfilled as any]: (state, action) => {},
+    [endNewRectByClick.rejected as any]: (state, action) => {},
     // delete
     [deleteDrawing.pending as any]: deleteDrawingPending,
-    [deleteDrawing.rejected as any]: deleteDrawingRejected,
-    [deleteDrawing.fulfilled as any]: deleteDrawingFulfilled,
+    [deleteDrawing.rejected as any]: (state, action) => {},
+    [deleteDrawing.fulfilled as any]: (state, action) => {},
   },
 });
 

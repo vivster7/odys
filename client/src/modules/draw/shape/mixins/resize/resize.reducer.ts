@@ -1,12 +1,6 @@
-import {
-  DrawReducer,
-  DrawActionFulfilled,
-  DrawActionPending,
-  DrawActionRejected,
-} from 'modules/draw/draw.reducer';
+import { DrawReducer, DrawActionPending } from 'modules/draw/draw.reducer';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from 'App';
-import { ShapeApi, Configuration } from 'generated';
+import { save } from 'modules/draw/mixins/save/save.reducer';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -112,21 +106,11 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
 };
 
 // endResize saves the optimistic update to the DB.
-// TODO: This is the same as endDrag
 export const endResize: any = createAsyncThunk(
   'draw/endResize',
   async (arg: string, thunkAPI) => {
     const id = arg;
-    const state = thunkAPI.getState() as RootState;
-    const shape = state.draw.shapes[id];
-    if (!shape) {
-      throw new Error(`Cannot find shape with ${id}`);
-    }
-
-    const api = new ShapeApi(
-      new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
-    );
-    await api.shapePost({ shape: shape });
+    thunkAPI.dispatch(save(id));
   }
 );
 
@@ -158,27 +142,4 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
   state.drag = null;
   state.newRect = null;
   state.resize = null;
-};
-
-// endResizeFulfilled indicates the save was successful
-// TODO: This is the same as endDrag
-export const endResizeFulfilled: DrawActionFulfilled<string> = (
-  state,
-  action
-) => {
-  const id = action.meta.arg;
-  const shape = state.shapes[id];
-  shape.isSavedInDB = true;
-};
-
-// endResizeRejected indicates the save was unsuccessful
-// TODO: This is the same as endDrag
-export const endResizeRejected: DrawActionRejected<string> = (
-  state,
-  action
-) => {
-  const id = action.meta.arg;
-  const shape = state.shapes[id];
-  shape.isSavedInDB = false;
-  // TODO: schedule a future job to try and save?
 };

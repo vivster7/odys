@@ -1,13 +1,7 @@
-import {
-  DrawReducer,
-  DrawActionPending,
-  DrawActionFulfilled,
-  DrawActionRejected,
-} from '../../../draw.reducer';
+import { DrawReducer, DrawActionPending } from '../../../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from 'App';
-import { ShapeApi, Configuration } from 'generated';
+import { save } from 'modules/draw/mixins/save/save.reducer';
 
 export interface DragState {
   id: string;
@@ -69,16 +63,7 @@ export const endDrag: any = createAsyncThunk(
   'draw/endDrag',
   async (arg: string, thunkAPI) => {
     const id = arg;
-    const state = thunkAPI.getState() as RootState;
-    const shape = state.draw.shapes[id];
-    if (!shape) {
-      throw new Error(`Cannot find shape with ${id}`);
-    }
-
-    const api = new ShapeApi(
-      new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
-    );
-    await api.shapePost({ shape: shape });
+    thunkAPI.dispatch(save(id));
   }
 );
 
@@ -104,18 +89,4 @@ export const endDragPending: DrawActionPending<string> = (state, action) => {
   shape.isSavedInDB = true;
   reorder(shape, state);
   state.drag = null;
-};
-
-// endDragFulfilled indicates the save was successful
-export const endDragFulfilled: DrawActionFulfilled<string> = (
-  state,
-  action
-) => {};
-
-// endDragRejected indicates the save was unsuccessful
-export const endDragRejected: DrawActionRejected<string> = (state, action) => {
-  const id = action.meta.arg;
-  const shape = state.shapes[id];
-  shape.isSavedInDB = false;
-  // TODO: schedule a future job to try and save?
 };

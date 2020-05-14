@@ -45,6 +45,7 @@ export const saveRejected: DrawActionRejected<string> = (state, action) => {
   const id = action.meta.arg;
   const drawing = state.shapes[id] ?? state.arrows[id];
   drawing.isSavedInDB = false;
+  // TODO: schedule a future job to try and save?
 };
 
 export const saveFulfilled: DrawActionFulfilled<string> = (state, action) => {

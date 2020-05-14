@@ -1,19 +1,13 @@
-import {
-  DrawState,
-  DrawActionPending,
-  DrawActionFulfilled,
-  DrawActionRejected,
-} from '../draw.reducer';
+import { DrawState, DrawActionPending } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { OdysArrow, Configuration } from 'generated';
+import { OdysArrow } from 'generated';
 import { ArrowApi } from 'generated/apis/ArrowApi';
 import { Syncable } from '../mixins/sync/sync';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import { RootState } from 'App';
-import { Saveable } from '../mixins/save/save.reducer';
+import { Saveable, save } from '../mixins/save/save.reducer';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
 type ArrowMixins = Selectable & TextEditable & Syncable & Saveable & Deleteable;
@@ -62,16 +56,7 @@ export const drawArrow = createAsyncThunk(
   'draw/drawArrow',
   async (arg: DrawArrow, thunkAPI) => {
     const { id } = arg;
-    const state = thunkAPI.getState() as RootState;
-    const arrow = state.draw.arrows[id];
-    if (!arrow) {
-      throw new Error(`Cannot find arrow ${id}`);
-    }
-
-    const api = new ArrowApi(
-      new Configuration({ headers: { Prefer: 'resolution=merge-duplicates' } })
-    );
-    await api.arrowPost({ arrow: arrow });
+    thunkAPI.dispatch(save(id));
   }
 );
 
@@ -121,18 +106,4 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
 
   state.arrows[arrow.id] = arrow;
   reorder(arrow, state);
-};
-
-export const drawArrowFulfilled: DrawActionFulfilled<DrawArrow> = (
-  state,
-  action
-) => {};
-
-export const drawArrowRejected: DrawActionRejected<DrawArrow> = (
-  state,
-  action
-) => {
-  const { id } = action.meta.arg;
-  const arrow = state.arrows[id];
-  arrow.isSavedInDB = false;
 };

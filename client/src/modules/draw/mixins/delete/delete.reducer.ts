@@ -1,15 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-
-import { RootState } from 'App';
-import { ShapeApi, ArrowApi, Configuration } from 'generated';
-import {
-  DrawActionPending,
-  DrawActionFulfilled,
-  DrawActionRejected,
-} from 'modules/draw/draw.reducer';
+import { DrawActionPending } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { instanceOfArrow } from 'modules/draw/arrow/arrow.reducer';
 import socket from 'socket/socket';
+import { save } from '../save/save.reducer';
 
 export interface Deleteable {
   id: string;
@@ -18,28 +12,10 @@ export interface Deleteable {
 
 export const deleteDrawing: any = createAsyncThunk(
   'draw/deleteDrawing',
-  async (args: string, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const id = args;
-    const drawing = state.draw.shapes[id] ?? state.draw.arrows[id];
-
+  async (arg: string, thunkAPI) => {
+    const id = arg;
     socket.emit('drawingDeleted', id);
-
-    if (instanceOfArrow(drawing)) {
-      const api = new ArrowApi(
-        new Configuration({
-          headers: { Prefer: 'resolution=merge-duplicates' },
-        })
-      );
-      await api.arrowPost({ arrow: drawing });
-    } else {
-      const api = new ShapeApi(
-        new Configuration({
-          headers: { Prefer: 'resolution=merge-duplicates' },
-        })
-      );
-      await api.shapePost({ shape: drawing });
-    }
+    thunkAPI.dispatch(save(id));
   }
 );
 
@@ -59,16 +35,4 @@ export const deleteDrawingPending: DrawActionPending<string> = (
     drawing.deleted = true;
   }
   reorder(drawing, state);
-};
-
-export const deleteDrawingRejected: DrawActionRejected<string> = (
-  state,
-  action
-) => {};
-
-export const deleteDrawingFulfilled: DrawActionFulfilled<string> = (
-  state,
-  action
-) => {
-  // TODO
 };
