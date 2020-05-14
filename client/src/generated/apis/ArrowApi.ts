@@ -23,7 +23,7 @@ export interface ArrowDeleteRequest {
   createdAt?: string;
   updatedAt?: string;
   text?: string;
-  deleted?: boolean;
+  isDeleted?: boolean;
   prefer?: ArrowDeletePreferEnum;
 }
 
@@ -35,7 +35,7 @@ export interface ArrowGetRequest {
   createdAt?: string;
   updatedAt?: string;
   text?: string;
-  deleted?: boolean;
+  isDeleted?: boolean;
   select?: string;
   order?: string;
   range?: string;
@@ -53,7 +53,7 @@ export interface ArrowPatchRequest {
   createdAt?: string;
   updatedAt?: string;
   text?: string;
-  deleted?: boolean;
+  isDeleted?: boolean;
   prefer?: ArrowPatchPreferEnum;
   arrow?: OdysArrow;
 }
@@ -104,8 +104,8 @@ export class ArrowApi extends runtime.BaseAPI {
       queryParameters['text'] = requestParameters.text;
     }
 
-    if (requestParameters.deleted !== undefined) {
-      queryParameters['deleted'] = requestParameters.deleted;
+    if (requestParameters.isDeleted !== undefined) {
+      queryParameters['is_deleted'] = requestParameters.isDeleted;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -170,8 +170,8 @@ export class ArrowApi extends runtime.BaseAPI {
       queryParameters['text'] = requestParameters.text;
     }
 
-    if (requestParameters.deleted !== undefined) {
-      queryParameters['deleted'] = requestParameters.deleted;
+    if (requestParameters.isDeleted !== undefined) {
+      queryParameters['is_deleted'] = requestParameters.isDeleted;
     }
 
     if (requestParameters.select !== undefined) {
@@ -271,8 +271,8 @@ export class ArrowApi extends runtime.BaseAPI {
       queryParameters['text'] = requestParameters.text;
     }
 
-    if (requestParameters.deleted !== undefined) {
-      queryParameters['deleted'] = requestParameters.deleted;
+    if (requestParameters.isDeleted !== undefined) {
+      queryParameters['is_deleted'] = requestParameters.isDeleted;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};

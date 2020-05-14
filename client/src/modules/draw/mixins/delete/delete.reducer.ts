@@ -7,7 +7,7 @@ import { save } from '../save/save.reducer';
 
 export interface Deleteable {
   id: string;
-  deleted: boolean;
+  isDeleted: boolean;
 }
 
 export const deleteDrawing: any = createAsyncThunk(
@@ -29,9 +29,9 @@ export const deleteDrawingPending: DrawActionPending<string> = (
   }
 
   if (instanceOfArrow(drawing)) {
-    drawing.deleted = true;
+    drawing.isDeleted = true;
   } else {
-    drawing.deleted = true;
+    drawing.isDeleted = true;
   }
   reorder(drawing, state);
 };

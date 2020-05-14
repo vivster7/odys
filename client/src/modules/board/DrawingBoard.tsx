@@ -61,7 +61,7 @@ const DrawingBoard: React.FC = () => {
         boardId: '1', //TODO
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        deleted: false,
+        isDeleted: false,
       };
     };
     dispatch(updateDrawing(rect('1', 'A', 150, 100)));

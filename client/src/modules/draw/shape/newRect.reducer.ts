@@ -86,7 +86,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     boardId: boardId,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    deleted: false,
+    isDeleted: false,
     translateX: 0,
     translateY: 0,
     deltaWidth: 0,
@@ -154,7 +154,7 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
     boardId: boardId,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    deleted: false,
+    isDeleted: false,
   };
 
   state.shapes[id] = rect;

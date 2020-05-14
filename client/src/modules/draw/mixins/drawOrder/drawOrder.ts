@@ -9,7 +9,7 @@ export function reorder(drawing: Drawing, state: DrawState) {
     order.splice(idx, 1);
   }
 
-  if (drawing.deleted) {
+  if (drawing.isDeleted) {
     if (!instanceOfArrow(drawing)) {
       const connections = Object.values(state.arrows)
         .filter(

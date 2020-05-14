@@ -22,7 +22,7 @@ export const getArrows = createAsyncThunk(
     const api = new ArrowApi();
     return api.arrowGet({
       boardId: `eq.${boardId}`,
-      deleted: ('is.false' as any) as boolean,
+      isDeleted: ('is.false' as any) as boolean,
     });
   }
 );
@@ -37,7 +37,7 @@ export const getArrowsFulfilled = (
       ...a,
       isLastUpdatedBySync: true,
       isSavedInDB: true,
-      deleted: false,
+      isDeleted: false,
     };
     state.arrows[a.id] = arrow;
     //TODO: order should be saved on server.
@@ -100,7 +100,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     boardId: boardId,
-    deleted: false,
+    isDeleted: false,
   };
 
   state.arrows[arrow.id] = arrow;

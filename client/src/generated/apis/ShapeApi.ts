@@ -27,7 +27,7 @@ export interface ShapeDeleteRequest {
   updatedAt?: string;
   type?: string;
   createdAtZoomLevel?: string;
-  deleted?: boolean;
+  isDeleted?: boolean;
   prefer?: ShapeDeletePreferEnum;
 }
 
@@ -43,7 +43,7 @@ export interface ShapeGetRequest {
   updatedAt?: string;
   type?: string;
   createdAtZoomLevel?: string;
-  deleted?: boolean;
+  isDeleted?: boolean;
   select?: string;
   order?: string;
   range?: string;
@@ -65,7 +65,7 @@ export interface ShapePatchRequest {
   updatedAt?: string;
   type?: string;
   createdAtZoomLevel?: string;
-  deleted?: boolean;
+  isDeleted?: boolean;
   prefer?: ShapePatchPreferEnum;
   shape?: OdysShape;
 }
@@ -133,8 +133,8 @@ export class ShapeApi extends runtime.BaseAPI {
         requestParameters.createdAtZoomLevel;
     }
 
-    if (requestParameters.deleted !== undefined) {
-      queryParameters['deleted'] = requestParameters.deleted;
+    if (requestParameters.isDeleted !== undefined) {
+      queryParameters['is_deleted'] = requestParameters.isDeleted;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -216,8 +216,8 @@ export class ShapeApi extends runtime.BaseAPI {
         requestParameters.createdAtZoomLevel;
     }
 
-    if (requestParameters.deleted !== undefined) {
-      queryParameters['deleted'] = requestParameters.deleted;
+    if (requestParameters.isDeleted !== undefined) {
+      queryParameters['is_deleted'] = requestParameters.isDeleted;
     }
 
     if (requestParameters.select !== undefined) {
@@ -334,8 +334,8 @@ export class ShapeApi extends runtime.BaseAPI {
         requestParameters.createdAtZoomLevel;
     }
 
-    if (requestParameters.deleted !== undefined) {
-      queryParameters['deleted'] = requestParameters.deleted;
+    if (requestParameters.isDeleted !== undefined) {
+      queryParameters['is_deleted'] = requestParameters.isDeleted;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};

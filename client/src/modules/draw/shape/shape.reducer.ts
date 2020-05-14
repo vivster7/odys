@@ -35,7 +35,7 @@ export const getShapes = createAsyncThunk(
     const api = new ShapeApi();
     return api.shapeGet({
       boardId: `eq.${boardId}`,
-      deleted: ('is.false' as any) as boolean,
+      isDeleted: ('is.false' as any) as boolean,
     });
   }
 );
@@ -53,7 +53,7 @@ export const getShapesFulfilled = (
       type: type,
       isLastUpdatedBySync: true,
       isSavedInDB: true,
-      deleted: false,
+      isDeleted: false,
       translateX: 0,
       translateY: 0,
       deltaWidth: 0,

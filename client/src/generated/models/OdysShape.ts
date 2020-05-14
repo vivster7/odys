@@ -92,7 +92,7 @@ export interface OdysShape {
    * @type {boolean}
    * @memberof OdysShape
    */
-  deleted: boolean;
+  isDeleted: boolean;
 }
 
 export function OdysShapeFromJSON(json: any): OdysShape {
@@ -118,7 +118,7 @@ export function OdysShapeFromJSONTyped(
     updatedAt: json['updated_at'],
     type: json['type'],
     createdAtZoomLevel: json['created_at_zoom_level'],
-    deleted: json['deleted'],
+    isDeleted: json['is_deleted'],
   };
 }
 
@@ -141,6 +141,6 @@ export function OdysShapeToJSON(value?: OdysShape | null): any {
     updated_at: value.updatedAt,
     type: value.type,
     created_at_zoom_level: value.createdAtZoomLevel,
-    deleted: value.deleted,
+    is_deleted: value.isDeleted,
   };
 }
