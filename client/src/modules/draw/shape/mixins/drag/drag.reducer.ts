@@ -58,11 +58,22 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
   shape.isLastUpdatedBySync = false;
 };
 
+interface EndDrag {
+  id: string;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+}
+
 // endDrag saves the optimistic update to the DB.
 export const endDrag: any = createAsyncThunk(
   'draw/endDrag',
-  async (id: string, thunkAPI) => {
-    thunkAPI.dispatch(save(id));
+  async ({ id, startX, startY, endX, endY }: EndDrag, thunkAPI) => {
+    const hasMoved = startX !== endX || startY !== endY;
+    if (hasMoved) {
+      thunkAPI.dispatch(save(id));
+    }
   }
 );
 
