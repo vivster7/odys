@@ -61,8 +61,7 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
 // endDrag saves the optimistic update to the DB.
 export const endDrag: any = createAsyncThunk(
   'draw/endDrag',
-  async (arg: string, thunkAPI) => {
-    const id = arg;
+  async (id: string, thunkAPI) => {
     thunkAPI.dispatch(save(id));
   }
 );

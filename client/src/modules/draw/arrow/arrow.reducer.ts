@@ -54,8 +54,7 @@ interface DrawArrow {
 
 export const drawArrow = createAsyncThunk(
   'draw/drawArrow',
-  async (arg: DrawArrow, thunkAPI) => {
-    const { id } = arg;
+  async ({ id }: DrawArrow, thunkAPI) => {
     thunkAPI.dispatch(save(id));
   }
 );

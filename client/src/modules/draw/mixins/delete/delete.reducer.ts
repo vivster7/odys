@@ -12,8 +12,7 @@ export interface Deleteable {
 
 export const deleteDrawing: any = createAsyncThunk(
   'draw/deleteDrawing',
-  async (arg: string, thunkAPI) => {
-    const id = arg;
+  async (id: string, thunkAPI) => {
     socket.emit('drawingDeleted', id);
     thunkAPI.dispatch(save(id));
   }

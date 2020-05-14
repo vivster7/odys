@@ -15,8 +15,7 @@ export interface Saveable {
 
 export const save: any = createAsyncThunk(
   'draw/save',
-  async (arg: string, thunkAPI) => {
-    const id = arg;
+  async (id: string, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const drawing = state.draw.shapes[id] ?? state.draw.arrows[id];
     if (!drawing) {

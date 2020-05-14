@@ -35,8 +35,7 @@ export const startNewRectFn: DrawReducer<NewRectState> = (state, action) => {
 // endNewRectByClick saves the optimistic update to the DB.
 export const endNewRectByClick = createAsyncThunk(
   'draw/endNewRectByClick',
-  async (arg: NewRect, thunkAPI) => {
-    const { id } = arg;
+  async ({ id }: NewRect, thunkAPI) => {
     thunkAPI.dispatch(save(id));
   }
 );

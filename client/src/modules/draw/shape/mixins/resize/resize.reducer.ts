@@ -108,8 +108,7 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
 // endResize saves the optimistic update to the DB.
 export const endResize: any = createAsyncThunk(
   'draw/endResize',
-  async (arg: string, thunkAPI) => {
-    const id = arg;
+  async (id: string, thunkAPI) => {
     thunkAPI.dispatch(save(id));
   }
 );
