@@ -109,7 +109,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     deltaWidth: 0,
     deltaHeight: 0,
     isLastUpdatedBySync: false,
-    isSavedInDB: false,
+    isSavedInDB: true,
   };
 
   // state.drag = null;
@@ -127,11 +127,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
 export const endNewRectByClickFulfilled: DrawActionFulfilled<NewRect> = (
   state,
   action
-) => {
-  const { id } = action.meta.arg;
-  const shape = state.shapes[id];
-  shape.isSavedInDB = true;
-};
+) => {};
 
 // endNewRectByClickRejected indicates the save was unsuccessful
 export const endNewRectByClickRejected: DrawActionRejected<NewRect> = (

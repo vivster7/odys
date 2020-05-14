@@ -111,7 +111,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
     toShapeId: toShapeId,
     text: '',
     isLastUpdatedBySync: false,
-    isSavedInDB: false,
+    isSavedInDB: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     boardId: boardId,
@@ -125,11 +125,8 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
 export const drawArrowFulfilled: DrawActionFulfilled<DrawArrow> = (
   state,
   action
-) => {
-  const { id } = action.meta.arg;
-  const arrow = state.arrows[id];
-  arrow.isSavedInDB = true;
-};
+) => {};
+
 export const drawArrowRejected: DrawActionRejected<DrawArrow> = (
   state,
   action

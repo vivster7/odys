@@ -101,7 +101,7 @@ export const endDragPending: DrawActionPending<string> = (state, action) => {
   shape.translateX = 0;
   shape.translateY = 0;
   shape.isLastUpdatedBySync = false;
-  shape.isSavedInDB = false;
+  shape.isSavedInDB = true;
   reorder(shape, state);
   state.drag = null;
 };
@@ -110,11 +110,7 @@ export const endDragPending: DrawActionPending<string> = (state, action) => {
 export const endDragFulfilled: DrawActionFulfilled<string> = (
   state,
   action
-) => {
-  const id = action.meta.arg;
-  const shape = state.shapes[id];
-  shape.isSavedInDB = true;
-};
+) => {};
 
 // endDragRejected indicates the save was unsuccessful
 export const endDragRejected: DrawActionRejected<string> = (state, action) => {
