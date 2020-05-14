@@ -1,17 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { editText, deleteDrawing, Drawing } from 'modules/draw/draw.reducer';
+import { editText } from 'modules/draw/draw.reducer';
+import { deleteDrawing } from 'modules/draw/mixins/delete/delete.reducer';
 import { RootState, OdysDispatch } from 'App';
 
 // add delete key handler
 function onKeyDownHandler(
   dispatch: OdysDispatch,
-  drawing: Drawing,
+  id: string,
   isEditing: boolean
 ) {
   return (e: KeyboardEvent) => {
     if (e.code === 'Backspace' && isEditing === false) {
-      dispatch(deleteDrawing(drawing));
+      dispatch(deleteDrawing(id));
     }
   };
 }
@@ -32,8 +33,8 @@ const HiddenTextInput: React.FC = React.memo(() => {
   );
 
   useEffect(() => {
-    if (drawing === undefined || isEditing === undefined) return;
-    const handler = onKeyDownHandler(dispatch, drawing, isEditing);
+    if (id === undefined || isEditing === undefined) return;
+    const handler = onKeyDownHandler(dispatch, id, isEditing);
     window.addEventListener('keydown', handler, { capture: true });
     return () => {
       window.removeEventListener('keydown', handler, { capture: true });

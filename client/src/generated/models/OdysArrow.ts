@@ -65,6 +65,12 @@ export interface OdysArrow {
    * @memberof OdysArrow
    */
   text: string;
+  /**
+   *
+   * @type {boolean}
+   * @memberof OdysArrow
+   */
+  deleted: boolean;
 }
 
 export function OdysArrowFromJSON(json: any): OdysArrow {
@@ -86,6 +92,7 @@ export function OdysArrowFromJSONTyped(
     createdAt: json['created_at'],
     updatedAt: json['updated_at'],
     text: json['text'],
+    deleted: json['deleted'],
   };
 }
 
@@ -104,5 +111,6 @@ export function OdysArrowToJSON(value?: OdysArrow | null): any {
     created_at: value.createdAt,
     updated_at: value.updatedAt,
     text: value.text,
+    deleted: value.deleted,
   };
 }

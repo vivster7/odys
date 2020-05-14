@@ -1,4 +1,5 @@
-import { DrawReducer, reorder } from '../../draw.reducer';
+import { DrawReducer } from '../../draw.reducer';
+import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 
 export interface SelectedDrawing {
   id: string;

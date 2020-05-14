@@ -27,6 +27,7 @@ export interface ShapeDeleteRequest {
   updatedAt?: string;
   type?: string;
   createdAtZoomLevel?: string;
+  deleted?: boolean;
   prefer?: ShapeDeletePreferEnum;
 }
 
@@ -42,6 +43,7 @@ export interface ShapeGetRequest {
   updatedAt?: string;
   type?: string;
   createdAtZoomLevel?: string;
+  deleted?: boolean;
   select?: string;
   order?: string;
   range?: string;
@@ -63,6 +65,7 @@ export interface ShapePatchRequest {
   updatedAt?: string;
   type?: string;
   createdAtZoomLevel?: string;
+  deleted?: boolean;
   prefer?: ShapePatchPreferEnum;
   shape?: OdysShape;
 }
@@ -128,6 +131,10 @@ export class ShapeApi extends runtime.BaseAPI {
     if (requestParameters.createdAtZoomLevel !== undefined) {
       queryParameters['created_at_zoom_level'] =
         requestParameters.createdAtZoomLevel;
+    }
+
+    if (requestParameters.deleted !== undefined) {
+      queryParameters['deleted'] = requestParameters.deleted;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -207,6 +214,10 @@ export class ShapeApi extends runtime.BaseAPI {
     if (requestParameters.createdAtZoomLevel !== undefined) {
       queryParameters['created_at_zoom_level'] =
         requestParameters.createdAtZoomLevel;
+    }
+
+    if (requestParameters.deleted !== undefined) {
+      queryParameters['deleted'] = requestParameters.deleted;
     }
 
     if (requestParameters.select !== undefined) {
@@ -321,6 +332,10 @@ export class ShapeApi extends runtime.BaseAPI {
     if (requestParameters.createdAtZoomLevel !== undefined) {
       queryParameters['created_at_zoom_level'] =
         requestParameters.createdAtZoomLevel;
+    }
+
+    if (requestParameters.deleted !== undefined) {
+      queryParameters['deleted'] = requestParameters.deleted;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};

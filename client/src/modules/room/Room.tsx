@@ -19,6 +19,18 @@ const Room: React.FC = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
+    const onDrawingDeleted = (data: any) =>
+      dispatch({
+        type: 'draw/deleteDrawing/pending',
+        meta: { arg: data },
+      });
+    const emitter = socket.on('drawingDeleted', onDrawingDeleted);
+    return () => {
+      emitter.off('drawingDeleted', onDrawingDeleted);
+    };
+  }, [dispatch, id]);
+
+  useEffect(() => {
     dispatch(getOrCreateRoom(id));
   }, [dispatch, id]);
 

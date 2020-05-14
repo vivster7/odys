@@ -1,6 +1,5 @@
 import {
   DrawState,
-  reorder,
   DrawActionPending,
   DrawActionFulfilled,
   DrawActionRejected,
@@ -11,7 +10,8 @@ import { ArrowApi } from 'generated/apis/ArrowApi';
 import { Syncable } from '../mixins/sync/sync';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
-import { Deleteable } from 'modules/draw/mixins/delete/delete';
+import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
+import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { RootState } from 'App';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
@@ -25,7 +25,10 @@ export const getArrows = createAsyncThunk(
   'draw/getArrows',
   async (boardId: string, thunkAPI): Promise<OdysArrow[]> => {
     const api = new ArrowApi();
-    return api.arrowGet({ boardId: `eq.${boardId}` });
+    return api.arrowGet({
+      boardId: `eq.${boardId}`,
+      deleted: ('is.false' as any) as boolean,
+    });
   }
 );
 

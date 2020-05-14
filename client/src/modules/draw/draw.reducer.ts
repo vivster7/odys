@@ -15,6 +15,13 @@ import {
   endDragRejected,
 } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import {
+  deleteDrawing,
+  deleteDrawingPending,
+  deleteDrawingFulfilled,
+  deleteDrawingRejected,
+} from 'modules/draw/mixins/delete/delete.reducer';
+import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
+import {
   startResizeFn,
   resizeFn,
   ResizeState,
@@ -139,72 +146,12 @@ export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
 export const syncDrawingFn: DrawReducer<Drawing> = (state, action) => {
   const synced = { ...action.payload, isLastUpdatedBySync: true };
 
-  if (synced.deleted) {
-    action = {
-      type: 'draw/deleteDrawing',
-      payload: synced,
-    };
-    return deleteDrawingFn(state, action);
-  } else {
-    action = {
-      type: 'draw/updateDrawing',
-      payload: synced,
-    };
-    return updateDrawingFn(state, action);
-  }
+  action = {
+    type: 'draw/updateDrawing',
+    payload: synced,
+  };
+  return updateDrawingFn(state, action);
 };
-
-export const deleteDrawingFn: DrawReducer<Drawing> = (state, action) => {
-  const { id } = action.payload;
-  const drawing = state.shapes[id] ?? state.arrows[id];
-  if (!drawing) {
-    throw new Error(`Cannot find drawing with ${id}`);
-  }
-
-  if (instanceOfArrow(drawing)) {
-    state.arrows[id].deleted = true;
-    state.drawOrder = state.drawOrder.filter((drawId) => drawId !== id);
-  } else {
-    state.shapes[id].deleted = true;
-    const connections = Object.values(state.arrows)
-      .filter((a) => a.toShapeId === id || a.fromShapeId === id)
-      .map((a) => a.id);
-    state.drawOrder = state.drawOrder
-      .filter((drawId) => drawId !== id)
-      .filter((drawId) => !connections.includes(drawId));
-  }
-};
-
-export function reorder(drawing: Drawing, state: DrawState) {
-  const order = state.drawOrder;
-  // remove from `order` array if present
-  const idx = order.findIndex((id) => id === drawing.id);
-  if (idx !== -1) {
-    order.splice(idx, 1);
-  }
-
-  if (instanceOfArrow(drawing)) {
-    order.push(drawing.id);
-    return;
-  }
-
-  // grouping rects must come first. they are ordered against each other by `x` position.
-  if (drawing.type === 'grouping_rect') {
-    let insertIdx = 0;
-    for (let i = 0; i < order.length; i++) {
-      const id = order[i];
-      const s = state.shapes[id];
-      if (s?.type === 'grouping_rect' && s?.x < drawing.x) continue;
-      insertIdx = i;
-      break;
-    }
-    order.splice(insertIdx, 0, drawing.id);
-    return;
-  }
-
-  // by default, add to top
-  order.push(drawing.id);
-}
 
 const drawSlice = createSlice({
   name: 'draw',
@@ -213,7 +160,6 @@ const drawSlice = createSlice({
     // shape
     updateDrawing: updateDrawingFn,
     syncDrawing: syncDrawingFn,
-    deleteDrawing: deleteDrawingFn,
     // editText
     editText: editTextFn,
     // select
@@ -258,13 +204,16 @@ const drawSlice = createSlice({
     [endNewRectByClick.pending as any]: endNewRectByClickPending,
     [endNewRectByClick.fulfilled as any]: endNewRectByClickFulfilled,
     [endNewRectByClick.rejected as any]: endNewRectByClickRejected,
+    // delete
+    [deleteDrawing.pending as any]: deleteDrawingPending,
+    [deleteDrawing.rejected as any]: deleteDrawingRejected,
+    [deleteDrawing.fulfilled as any]: deleteDrawingFulfilled,
   },
 });
 
 export const {
   updateDrawing,
   syncDrawing,
-  deleteDrawing,
   editText,
   cancelSelect,
   selectDrawing,

@@ -30,6 +30,10 @@ io.on('connection', (socket: socket.Socket) => {
     socket.broadcast.volatile.emit('shapeChange', data);
   });
 
+  socket.on('drawingDeleted', (data) => {
+    socket.broadcast.volatile.emit('drawingDeleted', data);
+  });
+
   socket.on('disconnect', () => {
     console.log('client disconnected');
   });

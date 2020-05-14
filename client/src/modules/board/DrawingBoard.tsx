@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from 'App';
-import { updateDrawing, ArrowData, ShapeData } from 'modules/draw/draw.reducer';
+import { updateDrawing } from 'modules/draw/draw.reducer';
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
-import { useDrawingDeleteDiff } from 'modules/draw/mixins/delete/delete';
 import { RECT_HEIGHT, RECT_WIDTH } from 'modules/draw/shape/type/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Svg from 'modules/svg/Svg';
@@ -12,14 +11,6 @@ import Svg from 'modules/svg/Svg';
 import Cockpit from './cockpit/Cockpit';
 import { getOrCreateBoard } from './board.reducer';
 import { Rect } from 'modules/draw/shape/shape.reducer';
-
-function usePreviousDrawings(drawingData: ShapeData | ArrowData) {
-  const ref = useRef({});
-  useEffect(() => {
-    ref.current = drawingData;
-  });
-  return ref.current;
-}
 
 const BoardLoading: React.FC = () => (
   <div
@@ -48,12 +39,6 @@ const DrawingBoard: React.FC = () => {
   const board = useSelector((state: RootState) => state.board);
   const room = useSelector((state: RootState) => state.room);
   const shapes = useSelector((state: RootState) => state.draw);
-
-  const prevShapes: ShapeData = usePreviousDrawings(shapes.shapes);
-  useDrawingDeleteDiff(prevShapes, shapes.shapes);
-
-  const prevArrows: ArrowData = usePreviousDrawings(shapes.arrows);
-  useDrawingDeleteDiff(prevArrows, shapes.arrows);
 
   // temp seed data
   if (Object.entries(shapes.shapes).length === 0) {

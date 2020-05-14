@@ -1,10 +1,10 @@
 import {
   DrawReducer,
-  reorder,
   DrawActionPending,
   DrawActionFulfilled,
   DrawActionRejected,
 } from '../../../draw.reducer';
+import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { ShapeApi, Configuration } from 'generated';

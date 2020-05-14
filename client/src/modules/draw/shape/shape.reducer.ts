@@ -1,4 +1,5 @@
-import { reorder, DrawState } from '../draw.reducer';
+import { DrawState } from '../draw.reducer';
+import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysShape } from 'generated';
 import { ShapeApi } from 'generated/apis/ShapeApi';
@@ -7,7 +8,7 @@ import { Resizable } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { Syncable } from 'modules/draw/mixins/sync/sync';
-import { Deleteable } from 'modules/draw/mixins/delete/delete';
+import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
 
 export type Shape = Rect | GroupingRect | Text;
 type ShapeMixins = Draggable &
@@ -30,7 +31,10 @@ export const getShapes = createAsyncThunk(
   'draw/getShapes',
   async (boardId: string, thunkAPI): Promise<OdysShape[]> => {
     const api = new ShapeApi();
-    return api.shapeGet({ boardId: `eq.${boardId}` });
+    return api.shapeGet({
+      boardId: `eq.${boardId}`,
+      deleted: ('is.false' as any) as boolean,
+    });
   }
 );
 

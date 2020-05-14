@@ -4,11 +4,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   DrawReducer,
-  reorder,
   DrawActionPending,
   DrawActionFulfilled,
   DrawActionRejected,
 } from '../draw.reducer';
+import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { RECT_WIDTH, RECT_HEIGHT } from './type/Rect';
 import { RootState } from '../../../App';
 import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
