@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { editText } from 'modules/draw/draw.reducer';
 import { deleteDrawing } from 'modules/draw/mixins/delete/delete.reducer';
 import { RootState, OdysDispatch } from 'App';
+import debounce from 'lodash.debounce';
+import { save } from 'modules/draw/mixins/save/save.reducer';
+import { editText } from 'modules/draw/draw.reducer';
 
 // add delete key handler
 function onKeyDownHandler(
@@ -16,6 +18,10 @@ function onKeyDownHandler(
     }
   };
 }
+
+const debouncedSave = debounce((dispatch: OdysDispatch, id: string) => {
+  dispatch(save(id));
+}, 300);
 
 const HiddenTextInput: React.FC = React.memo(() => {
   const dispatch = useDispatch();
@@ -52,6 +58,7 @@ const HiddenTextInput: React.FC = React.memo(() => {
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(editText(event.target.value));
+    if (id) debouncedSave(dispatch, id);
   };
 
   if (!id) return <></>;
