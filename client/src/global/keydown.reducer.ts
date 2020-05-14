@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { deleteDrawing } from 'modules/draw/mixins/delete/delete.reducer';
-import { selectAll } from 'modules/draw/draw.reducer';
+import { selectAll, cancelSelect } from 'modules/draw/draw.reducer';
 
 // Only keys in this list will trigger the keydown condition.
 const LISTEN_KEYS = ['Backspace', 'KeyA'];
@@ -13,12 +13,22 @@ interface Keydown {
 
 export const keydown = createAsyncThunk(
   'global/keydown',
-  (e: Keydown, thunkAPI) => {
+  async (e: Keydown, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
 
-    const { select } = state.draw;
-    if (e.code === 'Backspace' && select?.id && select.isEditing === false) {
-      return thunkAPI.dispatch(deleteDrawing(select?.id));
+    const { select, groupSelect } = state.draw;
+    if (e.code === 'Backspace') {
+      if (select?.id && select.isEditing === false) {
+        return thunkAPI.dispatch(deleteDrawing(select?.id));
+      }
+
+      if (groupSelect) {
+        const ids = Object.keys(groupSelect.selectedShapeIds);
+        await Promise.all(
+          ids.map((id) => thunkAPI.dispatch(deleteDrawing(id)))
+        );
+        return thunkAPI.dispatch(cancelSelect());
+      }
     }
 
     if (e.code === 'KeyA' && e.metaKey) {

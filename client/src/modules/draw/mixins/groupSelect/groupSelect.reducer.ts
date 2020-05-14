@@ -115,6 +115,7 @@ export const selectAllFn: DrawReducer = (state, action) => {
   const shapeIds = Object.keys(state.shapes);
   const shapes = Object.values(state.shapes);
 
+  state.select = null;
   state.groupSelect = {
     selectionRect: null,
     selectedShapeIds: Object.fromEntries(shapeIds.map((id) => [id, true])),
