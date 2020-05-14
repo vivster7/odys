@@ -68,6 +68,7 @@ import {
   getShapesFulfilled,
   Shape,
 } from 'modules/draw/shape/shape.reducer';
+import { save, saveFulfilled, saveRejected } from './mixins/save/save.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type DrawActionPending<T> = (
@@ -181,6 +182,10 @@ const drawSlice = createSlice({
     endGroupDrag: endGroupDragFn,
   },
   extraReducers: {
+    //save
+    [save.pending as any]: (state, action) => {},
+    [save.fulfilled as any]: saveFulfilled,
+    [save.rejected as any]: saveRejected,
     // shape
     [getShapes.pending as any]: (state, action) => {},
     [getShapes.fulfilled as any]: getShapesFulfilled,

@@ -4,7 +4,6 @@ import socket from 'socket/socket';
 export interface Syncable {
   id: string;
   isLastUpdatedBySync: boolean;
-  isSavedInDB: boolean; // TODO: move to separate mixin
 }
 
 export function useDebounce(value: any, delay: number) {

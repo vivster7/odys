@@ -9,6 +9,7 @@ import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { Syncable } from 'modules/draw/mixins/sync/sync';
 import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
+import { Saveable } from '../mixins/save/save.reducer';
 
 export type Shape = Rect | GroupingRect | Text;
 type ShapeMixins = Draggable &
@@ -16,6 +17,7 @@ type ShapeMixins = Draggable &
   Selectable &
   TextEditable &
   Syncable &
+  Saveable &
   Deleteable;
 export interface Rect extends OdysShape, ShapeMixins {
   type: 'rect';

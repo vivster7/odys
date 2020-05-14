@@ -13,9 +13,10 @@ import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { RootState } from 'App';
+import { Saveable } from '../mixins/save/save.reducer';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
-type ArrowMixins = Selectable & TextEditable & Syncable & Deleteable;
+type ArrowMixins = Selectable & TextEditable & Syncable & Saveable & Deleteable;
 
 export function instanceOfArrow(object: any): object is Arrow {
   return 'fromShapeId' in object && 'toShapeId' in object;
