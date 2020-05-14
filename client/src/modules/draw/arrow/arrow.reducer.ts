@@ -40,7 +40,7 @@ export const getArrowsFulfilled = (
   arrows.forEach((a) => {
     const arrow: Arrow = {
       ...a,
-      isLastUpdatedBySync: false,
+      isLastUpdatedBySync: true,
       isSavedInDB: true,
       deleted: false,
     };

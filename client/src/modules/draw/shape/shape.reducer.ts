@@ -49,7 +49,7 @@ export const getShapesFulfilled = (
     const shape: Shape = {
       ...s,
       type: type,
-      isLastUpdatedBySync: false,
+      isLastUpdatedBySync: true,
       isSavedInDB: true,
       deleted: false,
       translateX: 0,

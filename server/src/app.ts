@@ -26,8 +26,8 @@ io.on('connection', (socket: socket.Socket) => {
     socket.broadcast.emit('other client connect', { id: socket.client.id });
   });
 
-  socket.on('shapeChange', (data) => {
-    socket.broadcast.volatile.emit('shapeChange', data);
+  socket.on('drawingChanged', (data) => {
+    socket.broadcast.volatile.emit('drawingChanged', data);
   });
 
   socket.on('drawingDeleted', (data) => {

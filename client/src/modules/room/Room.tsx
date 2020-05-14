@@ -11,10 +11,10 @@ const Room: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const onShapeChange = (data: any) => dispatch(syncDrawing(data));
-    const emitter = socket.on('shapeChange', onShapeChange);
+    const onDrawingChanged = (data: any) => dispatch(syncDrawing(data));
+    const emitter = socket.on('drawingChanged', onDrawingChanged);
     return () => {
-      emitter.off('shapeChange', onShapeChange);
+      emitter.off('drawingChanged', onDrawingChanged);
     };
   }, [dispatch, id]);
 

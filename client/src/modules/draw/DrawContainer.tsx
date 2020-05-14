@@ -6,6 +6,10 @@ import { getArrows } from './arrow/arrow.reducer';
 import { getShapes } from './shape/shape.reducer';
 import { addError } from 'modules/errors/errors.reducer';
 import Arrow from './arrow/Arrow';
+import {
+  useDebounce,
+  useDrawingChangedEmitter,
+} from 'modules/draw/mixins/sync/sync';
 
 interface DrawId {
   id: string;
@@ -16,6 +20,11 @@ const Drawing: React.FC<DrawId> = (props) => {
   const dispatch = useDispatch();
   const shape = useSelector((state: RootState) => state.draw.shapes[id]);
   const arrow = useSelector((state: RootState) => state.draw.arrows[id]);
+
+  const debouncedShape = useDebounce(shape, 0);
+  useDrawingChangedEmitter(debouncedShape);
+  const debouncedArrow = useDebounce(arrow, 0);
+  useDrawingChangedEmitter(debouncedArrow);
 
   if (shape) return <Shape id={id}></Shape>;
   if (arrow) return <Arrow id={id}></Arrow>;

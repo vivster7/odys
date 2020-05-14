@@ -9,7 +9,6 @@ import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
 
 import Arrowhead from './Arrowhead';
 import { ShapeId } from '../shape/Shape';
-import { useDrawingChangeEmitter } from '../mixins/sync/sync';
 
 const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;
@@ -156,8 +155,6 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
 
   const left = false;
   const right = true;
-
-  useDrawingChangeEmitter(arrow);
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();

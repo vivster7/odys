@@ -7,7 +7,6 @@ import { addError } from 'modules/errors/errors.reducer';
 import Text from './type/Text';
 import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
-import { useDrawingChangeEmitter } from '../mixins/sync/sync';
 import { isOverlapping } from 'math/box';
 import { startDrag, selectDrawing, startNewRect } from '../draw.reducer';
 import { Shape as ShapeType } from './shape.reducer';
@@ -44,8 +43,6 @@ export const Shape: React.FC<ShapeId> = (props) => {
       !!state.draw.select?.id && state.draw.shapes[state.draw.select?.id]
   );
   const isSelected = selectedShape && selectedShape.id === id;
-
-  useDrawingChangeEmitter(shape);
 
   function onMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
