@@ -34,11 +34,6 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
 
   const color = isSelected ? 'cornflowerblue' : 'gray';
 
-  const zoomLevel = r1.createdAtZoomLevel;
-  const fontSize = 14 / zoomLeveltoScaleMap[zoomLevel];
-  const strokeWidth = 1 / zoomLeveltoScaleMap[zoomLevel];
-  const offset = 5 / zoomLeveltoScaleMap[zoomLevel];
-
   if (!r1) {
     dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`));
     return <></>;
@@ -47,6 +42,11 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
     dispatch(addError(`[r2Arrow] Could not find shape$ ${arrow.toShapeId}`));
     return <></>;
   }
+
+  const zoomLevel = r1.createdAtZoomLevel;
+  const fontSize = 14 / zoomLeveltoScaleMap[zoomLevel];
+  const strokeWidth = 1 / zoomLeveltoScaleMap[zoomLevel];
+  const offset = 5 / zoomLeveltoScaleMap[zoomLevel];
 
   const r1X = r1.x + r1.translateX;
   const r1Y = r1.y + r1.translateY;
