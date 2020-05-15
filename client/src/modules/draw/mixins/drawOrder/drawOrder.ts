@@ -1,5 +1,6 @@
 import { Drawing, DrawState } from 'modules/draw/draw.reducer';
 import { instanceOfArrow } from 'modules/draw/arrow/arrow.reducer';
+import { instanceOfShape } from 'modules/draw/shape/shape.reducer';
 
 export function reorder(drawing: Drawing, state: DrawState) {
   let order = state.drawOrder;
@@ -10,13 +11,13 @@ export function reorder(drawing: Drawing, state: DrawState) {
   }
 
   if (drawing.isDeleted) {
-    if (!instanceOfArrow(drawing)) {
+    if (instanceOfShape(drawing)) {
       const connections = Object.values(state.arrows)
         .filter(
           (a) => a.toShapeId === drawing.id || a.fromShapeId === drawing.id
         )
         .map((a) => a.id);
-      order = order.filter((drawId) => !connections.includes(drawId));
+      state.drawOrder = order.filter((drawId) => !connections.includes(drawId));
     }
     return;
   }
