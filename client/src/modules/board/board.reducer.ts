@@ -5,7 +5,7 @@ type LoadStates = 'loading' | 'success' | 'failed';
 
 interface BoardState {
   id: string;
-  room_id: string;
+  roomId: string;
   loaded: LoadStates;
 }
 
@@ -35,7 +35,7 @@ export const getOrCreateBoard = createAsyncThunk(
 
 const initialState: BoardState = {
   id: '',
-  room_id: '',
+  roomId: '',
   loaded: 'loading',
 };
 
@@ -53,7 +53,7 @@ const boardSlice = createSlice({
     ) => {
       state.loaded = 'success';
       state.id = action.payload.id;
-      state.room_id = action.payload.roomId;
+      state.roomId = action.payload.roomId;
     },
     [getOrCreateBoard.rejected as any]: (state, action) => {
       state.loaded = 'failed';
