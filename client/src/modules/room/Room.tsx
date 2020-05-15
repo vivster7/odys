@@ -15,7 +15,9 @@ const Room: React.FC = () => {
   // kinda want this at app level, but app doesn't have access to dispatch yet.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      dispatch(keydown({ code: e.code, metaKey: e.metaKey }));
+      dispatch(
+        keydown({ code: e.code, metaKey: e.metaKey, shiftKey: e.shiftKey })
+      );
     };
     window.addEventListener('keydown', handler, { capture: true });
     return () => {

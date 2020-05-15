@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawActionPending } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import { instanceOfArrow } from 'modules/draw/arrow/arrow.reducer';
 import socket from 'socket/socket';
 import { save } from '../save/save.reducer';
 

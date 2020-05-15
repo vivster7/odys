@@ -60,32 +60,46 @@ import {
   Shape,
 } from 'modules/draw/shape/shape.reducer';
 import { save, saveFulfilled, saveRejected } from './mixins/save/save.reducer';
+import {
+  TimeTravelState,
+  safeUpdateDrawing,
+  safeDeleteDrawingPending,
+  safeDeleteDrawing,
+  safeUpdateDrawingPending,
+} from 'modules/draw/timetravel/timeTravel';
+import { undo, undoFulfilled } from './timetravel/undo.reducer';
+import { redo, redoFulfilled } from './timetravel/redo.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
-export type DrawActionPending<T> = (
+export type ActionPending<T = void> = {
+  type: string;
+  payload: undefined;
+  meta: { requestId: string; arg: T };
+};
+export type ActionFulfilled<T = void, S = void> = {
+  type: string;
+  payload: Promise<S>;
+  meta: { requestId: string; arg: T };
+};
+export type ActionRejected<T = void> = {
+  type: string;
+  payload: undefined;
+  error: SerializedError | any;
+  meta: { requestId: string; arg: T };
+};
+
+export type DrawActionPending<T = void> = (
   state: DrawState,
-  action: {
-    type: string;
-    payload: undefined;
-    meta: { requestId: string; arg: T };
-  }
+  action: ActionPending<T>
 ) => void;
-export type DrawActionFulfilled<T, S = void> = (
+
+export type DrawActionFulfilled<T = void, S = void> = (
   state: DrawState,
-  action: {
-    type: string;
-    payload: Promise<S>;
-    meta: { requestId: string; arg: T };
-  }
+  action: ActionFulfilled<T, S>
 ) => void;
-export type DrawActionRejected<T> = (
+export type DrawActionRejected<T = void> = (
   state: DrawState,
-  action: {
-    type: string;
-    payload: undefined;
-    error: SerializedError | any;
-    meta: { requestId: string; arg: T };
-  }
+  action: ActionRejected<T>
 ) => void;
 
 export interface ShapeData {
@@ -106,6 +120,7 @@ export interface DrawState {
   multiDrag: MultiDragState | null;
   resize: ResizeState | null;
   newRect: NewRectState | null;
+  timetravel: TimeTravelState;
 }
 
 const initialState: DrawState = {
@@ -118,6 +133,7 @@ const initialState: DrawState = {
   drag: null,
   resize: null,
   newRect: null,
+  timetravel: { undos: [], redos: [] },
 };
 
 export type Drawing = Arrow | Shape;
@@ -203,8 +219,21 @@ const drawSlice = createSlice({
     [endNewRectByClick.rejected as any]: (state, action) => {},
     // delete
     [deleteDrawing.pending as any]: deleteDrawingPending,
-    [deleteDrawing.rejected as any]: (state, action) => {},
     [deleteDrawing.fulfilled as any]: (state, action) => {},
+    [deleteDrawing.rejected as any]: (state, action) => {},
+    // timetravel
+    [undo.pending as any]: (state, action) => {},
+    [undo.fulfilled as any]: undoFulfilled,
+    [undo.rejected as any]: (state, action) => {},
+    [redo.pending as any]: (state, action) => {},
+    [redo.fulfilled as any]: redoFulfilled,
+    [redo.rejected as any]: (state, action) => {},
+    [safeUpdateDrawing.pending as any]: safeUpdateDrawingPending,
+    [safeUpdateDrawing.fulfilled as any]: (state, action) => {},
+    [safeUpdateDrawing.rejected as any]: (state, action) => {},
+    [safeDeleteDrawing.pending as any]: safeDeleteDrawingPending,
+    [safeDeleteDrawing.fulfilled as any]: (state, action) => {},
+    [safeDeleteDrawing.rejected as any]: (state, action) => {},
   },
 });
 
