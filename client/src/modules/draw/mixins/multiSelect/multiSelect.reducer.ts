@@ -1,7 +1,7 @@
 import { DrawReducer } from '../../draw.reducer';
 import Box, { isOverlapping, outline } from '../../../../math/box';
 
-export interface GroupDragState {
+export interface MultiDragState {
   startX: number;
   startY: number;
 }
@@ -101,12 +101,12 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
   }
 };
 
-interface EndGroupDrag {
+interface EndMultiDrag {
   translateX: number;
   translateY: number;
 }
-export const endGroupDragFn: DrawReducer<EndGroupDrag> = (state, action) => {
-  state.groupDrag = null;
+export const endMultiDragFn: DrawReducer<EndMultiDrag> = (state, action) => {
+  state.multiDrag = null;
   if (!state.multiSelect) return;
   Object.keys(state.multiSelect.selectedShapeIds).forEach((id) => {
     const rect = state.shapes[id];

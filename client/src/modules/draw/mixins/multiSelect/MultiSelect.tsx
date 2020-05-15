@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../App';
-import { endGroupDrag } from '../../draw.reducer';
+import { endMultiDrag } from '../../draw.reducer';
 
-interface GroupDragState {
+interface MultiDragState {
   startX: number;
   startY: number;
   x: number;
@@ -22,34 +22,34 @@ const MultiSelect: React.FC = () => {
   const borderPadding = 20 / canvasScale;
   const dashArray = 5 / canvasScale;
 
-  const [groupDrag, setGroupDrag] = useState<GroupDragState | null>(null);
+  const [multiDrag, setMultiDrag] = useState<MultiDragState | null>(null);
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
-    setGroupDrag({ startX: e.clientX, startY: e.clientY, x: 0, y: 0 });
+    setMultiDrag({ startX: e.clientX, startY: e.clientY, x: 0, y: 0 });
   }
 
   function handleMouseMove(e: MouseEvent) {
-    if (!groupDrag) return;
-    setGroupDrag({
-      ...groupDrag,
-      x: (e.clientX - groupDrag.startX) / canvasScale,
-      y: (e.clientY - groupDrag.startY) / canvasScale,
+    if (!multiDrag) return;
+    setMultiDrag({
+      ...multiDrag,
+      x: (e.clientX - multiDrag.startX) / canvasScale,
+      y: (e.clientY - multiDrag.startY) / canvasScale,
     });
   }
 
   function handleMouseUp(e: MouseEvent) {
     dispatch(
-      endGroupDrag({
-        translateX: (groupDrag && groupDrag.x) || 0,
-        translateY: (groupDrag && groupDrag.y) || 0,
+      endMultiDrag({
+        translateX: (multiDrag && multiDrag.x) || 0,
+        translateY: (multiDrag && multiDrag.y) || 0,
       })
     );
-    setGroupDrag(null);
+    setMultiDrag(null);
   }
 
   useEffect(() => {
-    if (!groupDrag) return;
+    if (!multiDrag) return;
 
     window.addEventListener('mousemove', handleMouseMove, { capture: true });
     window.addEventListener('mouseup', handleMouseUp, { capture: true });
@@ -76,10 +76,10 @@ const MultiSelect: React.FC = () => {
     return (
       <rect
         x={
-          selectionOutline.x - borderPadding + ((groupDrag && groupDrag.x) || 0)
+          selectionOutline.x - borderPadding + ((multiDrag && multiDrag.x) || 0)
         }
         y={
-          selectionOutline.y - borderPadding + ((groupDrag && groupDrag.y) || 0)
+          selectionOutline.y - borderPadding + ((multiDrag && multiDrag.y) || 0)
         }
         width={selectionOutline.width + borderPadding + borderPadding}
         height={selectionOutline.height + borderPadding + borderPadding}

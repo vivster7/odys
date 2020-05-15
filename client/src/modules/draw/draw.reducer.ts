@@ -40,9 +40,9 @@ import {
   startDragSelectionFn,
   resizeDragSelectionFn,
   endDragSelectionFn,
-  endGroupDragFn,
+  endMultiDragFn,
   MultiSelectState,
-  GroupDragState,
+  MultiDragState,
   selectAllFn,
 } from 'modules/draw/mixins/multiSelect/multiSelect.reducer';
 import { editTextFn } from './mixins/editText/editText.reducer';
@@ -103,7 +103,7 @@ export interface DrawState {
   select: SelectedDrawing | null;
   drag: DragState | null;
   multiSelect: MultiSelectState | null;
-  groupDrag: GroupDragState | null;
+  multiDrag: MultiDragState | null;
   resize: ResizeState | null;
   newRect: NewRectState | null;
 }
@@ -114,7 +114,7 @@ const initialState: DrawState = {
   drawOrder: [],
   select: null,
   multiSelect: null,
-  groupDrag: null,
+  multiDrag: null,
   drag: null,
   resize: null,
   newRect: null,
@@ -170,7 +170,7 @@ const drawSlice = createSlice({
     startDragSelection: startDragSelectionFn,
     resizeDragSelection: resizeDragSelectionFn,
     endDragSelection: endDragSelectionFn,
-    endGroupDrag: endGroupDragFn,
+    endMultiDrag: endMultiDragFn,
     selectAll: selectAllFn,
   },
   extraReducers: {
@@ -223,7 +223,7 @@ export const {
   startDragSelection,
   resizeDragSelection,
   endDragSelection,
-  endGroupDrag,
+  endMultiDrag,
   selectAll,
 } = drawSlice.actions;
 const drawReducer = drawSlice.reducer;
