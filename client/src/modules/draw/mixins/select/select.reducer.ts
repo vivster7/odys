@@ -21,11 +21,11 @@ export const selectDrawingFn: DrawReducer<string> = (state, action) => {
     id,
     isEditing: false,
   };
-  state.groupSelect = null;
+  state.multiSelect = null;
   reorder(drawing, state);
 };
 
 export const cancelSelectFn: DrawReducer = (state, action) => {
   state.select = null;
-  state.groupSelect = null;
+  state.multiSelect = null;
 };

@@ -19,7 +19,7 @@ export const startDragSelectionFn: DrawReducer<startDragSelection> = (
   action
 ) => {
   const { x, y, canvasTopLeftX, canvasTopLeftY, canvasScale } = action.payload;
-  state.groupSelect = {
+  state.multiSelect = {
     selectionRect: {
       x: (x - canvasTopLeftX) / canvasScale,
       y: (y - canvasTopLeftY) / canvasScale,
@@ -31,7 +31,7 @@ export const startDragSelectionFn: DrawReducer<startDragSelection> = (
   };
 };
 
-export interface GroupSelectState {
+export interface MultiSelectState {
   selectionRect: Box | null;
   selectedShapeIds: { [key: string]: boolean };
   outline: Box;
@@ -48,12 +48,12 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
   state,
   action
 ) => {
-  if (!state.groupSelect || !state.groupSelect.selectionRect)
+  if (!state.multiSelect || !state.multiSelect.selectionRect)
     throw new Error(
       `draw/startDragSelection must be called before draw/resizeDragSelection`
     );
 
-  const { selectionRect } = state.groupSelect;
+  const { selectionRect } = state.multiSelect;
 
   const {
     clickX,
@@ -74,17 +74,17 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
     .filter((s) => isOverlapping(s, selectionRect))
     .map((s) => [s.id, true]);
 
-  state.groupSelect.selectedShapeIds = Object.fromEntries(selectedShapeIds);
+  state.multiSelect.selectedShapeIds = Object.fromEntries(selectedShapeIds);
 };
 
 export const endDragSelectionFn: DrawReducer = (state, action) => {
-  if (!state.groupSelect || !state.groupSelect.selectionRect)
+  if (!state.multiSelect || !state.multiSelect.selectionRect)
     throw new Error(
       `draw/startDragSelection must be called before draw/endDragSelection`
     );
 
-  state.groupSelect.selectionRect = null;
-  const { selectedShapeIds } = state.groupSelect;
+  state.multiSelect.selectionRect = null;
+  const { selectedShapeIds } = state.multiSelect;
 
   const keys = Object.keys(selectedShapeIds);
   if (keys.length === 0) {
@@ -94,10 +94,10 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
       id: keys[0],
       isEditing: false,
     };
-    state.groupSelect.selectedShapeIds = {};
+    state.multiSelect.selectedShapeIds = {};
   } else {
     const rects = Object.keys(selectedShapeIds).map((id) => state.shapes[id]);
-    state.groupSelect.outline = outline(...rects);
+    state.multiSelect.outline = outline(...rects);
   }
 };
 
@@ -107,14 +107,14 @@ interface EndGroupDrag {
 }
 export const endGroupDragFn: DrawReducer<EndGroupDrag> = (state, action) => {
   state.groupDrag = null;
-  if (!state.groupSelect) return;
-  Object.keys(state.groupSelect.selectedShapeIds).forEach((id) => {
+  if (!state.multiSelect) return;
+  Object.keys(state.multiSelect.selectedShapeIds).forEach((id) => {
     const rect = state.shapes[id];
     rect.x += action.payload.translateX;
     rect.y += action.payload.translateY;
   });
-  state.groupSelect.outline.x += action.payload.translateX;
-  state.groupSelect.outline.y += action.payload.translateY;
+  state.multiSelect.outline.x += action.payload.translateX;
+  state.multiSelect.outline.y += action.payload.translateY;
 };
 
 export const selectAllFn: DrawReducer = (state, action) => {
@@ -122,7 +122,7 @@ export const selectAllFn: DrawReducer = (state, action) => {
   const shapes = Object.values(state.shapes);
 
   state.select = null;
-  state.groupSelect = {
+  state.multiSelect = {
     selectionRect: null,
     selectedShapeIds: Object.fromEntries(shapeIds.map((id) => [id, true])),
     outline: outline(...shapes),

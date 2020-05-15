@@ -13,7 +13,7 @@ export interface BaseShapeProps {
   textX: number;
   textY: number;
   shape: Shape;
-  isGroupSelected: boolean;
+  isMultiSelected: boolean;
   isSelected: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
 }
@@ -27,7 +27,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     shape,
     textX,
     textY,
-    isGroupSelected,
+    isMultiSelected,
     isSelected,
     onMouseDown,
   } = props;
@@ -72,10 +72,10 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         ry={radiusSize + 'px'}
         fill={fill}
         fillOpacity={fillOpacity}
-        stroke={isSelected || isGroupSelected ? 'cornflowerblue' : 'darkgray'}
+        stroke={isSelected || isMultiSelected ? 'cornflowerblue' : 'darkgray'}
         strokeWidth={strokeWidth + 'px'}
         strokeDasharray={
-          isSelected || isGroupSelected
+          isSelected || isMultiSelected
             ? selectedStrokeDashArray + 'px'
             : scaledStrokeDasharray + 'px'
         }

@@ -10,13 +10,13 @@ interface GroupDragState {
   y: number;
 }
 
-const GroupSelect: React.FC = () => {
+const MultiSelect: React.FC = () => {
   const dispatch = useDispatch();
   const selectionRect = useSelector(
-    (state: RootState) => state.draw.groupSelect?.selectionRect
+    (state: RootState) => state.draw.multiSelect?.selectionRect
   );
   const selectionOutline = useSelector(
-    (state: RootState) => state.draw.groupSelect?.outline
+    (state: RootState) => state.draw.multiSelect?.outline
   );
   const canvasScale = useSelector((state: RootState) => state.canvas.scale);
   const borderPadding = 20 / canvasScale;
@@ -95,4 +95,4 @@ const GroupSelect: React.FC = () => {
   return <></>;
 };
 
-export default GroupSelect;
+export default MultiSelect;

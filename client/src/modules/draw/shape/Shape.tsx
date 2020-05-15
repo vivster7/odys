@@ -21,7 +21,7 @@ export interface ShapeId {
 export interface ShapeTypeProps {
   shape: ShapeType;
   isDragging: boolean;
-  isGroupSelected: boolean;
+  isMultiSelected: boolean;
   isSelected: boolean;
   onMouseDown: (e: React.MouseEvent) => void;
 }
@@ -35,8 +35,8 @@ export const Shape: React.FC<ShapeId> = (props) => {
   const isDragging = useSelector(
     (state: RootState) => state.draw.drag?.id === id
   );
-  const isGroupSelected = useSelector(
-    (state: RootState) => !!state.draw.groupSelect?.selectedShapeIds[id]
+  const isMultiSelected = useSelector(
+    (state: RootState) => !!state.draw.multiSelect?.selectedShapeIds[id]
   );
   const selectedShape = useSelector(
     (state: RootState) =>
@@ -94,7 +94,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
   const childProps = {
     shape,
     isDragging,
-    isGroupSelected,
+    isMultiSelected,
     isSelected,
     onMouseDown,
   };

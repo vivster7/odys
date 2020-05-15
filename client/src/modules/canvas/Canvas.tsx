@@ -15,7 +15,7 @@ import { RootState } from '../../App';
 import { wheelEnd, endPan, cleanCanvas } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
 import { endNewRectByClick } from '../draw/shape/newRect.reducer';
-import GroupSelect from '../draw/mixins/groupSelect/GroupSelect';
+import MultiSelect from '../draw/mixins/multiSelect/MultiSelect';
 import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
@@ -81,8 +81,8 @@ const Canvas: React.FC = () => {
 
   const boardId = useSelector((state: RootState) => state.board.id);
   const dragState = useSelector((state: RootState) => state.draw.drag);
-  const isGroupSelecting = useSelector(
-    (state: RootState) => !!state.draw.groupSelect?.selectionRect
+  const isMultiSelecting = useSelector(
+    (state: RootState) => !!state.draw.multiSelect?.selectionRect
   );
 
   const newRect = useSelector((state: RootState) => state.draw.newRect);
@@ -164,7 +164,7 @@ const Canvas: React.FC = () => {
       );
     }
 
-    if (isGroupSelecting) {
+    if (isMultiSelecting) {
       dispatch(
         resizeDragSelection({
           clickX: e.clientX,
@@ -243,7 +243,7 @@ const Canvas: React.FC = () => {
         })
       );
     }
-    if (isGroupSelecting) {
+    if (isMultiSelecting) {
       dispatch(endDragSelection());
     }
 
@@ -304,7 +304,7 @@ const Canvas: React.FC = () => {
     >
       <g id="odys-zoomable-group" transform={transform}>
         <DrawContainer></DrawContainer>
-        <GroupSelect></GroupSelect>
+        <MultiSelect></MultiSelect>
       </g>
     </svg>
   );

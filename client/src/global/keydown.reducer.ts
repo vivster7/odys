@@ -16,14 +16,14 @@ export const keydown = createAsyncThunk(
   async (e: Keydown, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
 
-    const { select, groupSelect } = state.draw;
+    const { select, multiSelect } = state.draw;
     if (e.code === 'Backspace') {
       if (select?.id && select.isEditing === false) {
         return thunkAPI.dispatch(deleteDrawing(select?.id));
       }
 
-      if (groupSelect) {
-        const ids = Object.keys(groupSelect.selectedShapeIds);
+      if (multiSelect) {
+        const ids = Object.keys(multiSelect.selectedShapeIds);
         await Promise.all(
           ids.map((id) => thunkAPI.dispatch(deleteDrawing(id)))
         );
