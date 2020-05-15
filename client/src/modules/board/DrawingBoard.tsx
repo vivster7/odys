@@ -6,7 +6,7 @@ import { updateDrawing } from 'modules/draw/draw.reducer';
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 import { RECT_HEIGHT, RECT_WIDTH } from 'modules/draw/shape/type/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
-import Svg from 'modules/svg/Svg';
+import Canvas from 'modules/canvas/Canvas';
 
 import Cockpit from './cockpit/Cockpit';
 import { getOrCreateBoard } from './board.reducer';
@@ -78,7 +78,7 @@ const DrawingBoard: React.FC = () => {
   if (board.loaded === 'loading') return <BoardLoading></BoardLoading>;
   return (
     <>
-      <Svg></Svg>
+      <Canvas></Canvas>
       <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
         <HiddenTextInput></HiddenTextInput>
       </div>

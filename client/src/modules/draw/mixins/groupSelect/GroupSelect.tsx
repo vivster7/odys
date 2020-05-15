@@ -18,9 +18,9 @@ const GroupSelect: React.FC = () => {
   const selectionOutline = useSelector(
     (state: RootState) => state.draw.groupSelect?.outline
   );
-  const svgScale = useSelector((state: RootState) => state.svg.scale);
-  const borderPadding = 20 / svgScale;
-  const dashArray = 5 / svgScale;
+  const canvasScale = useSelector((state: RootState) => state.canvas.scale);
+  const borderPadding = 20 / canvasScale;
+  const dashArray = 5 / canvasScale;
 
   const [groupDrag, setGroupDrag] = useState<GroupDragState | null>(null);
 
@@ -33,8 +33,8 @@ const GroupSelect: React.FC = () => {
     if (!groupDrag) return;
     setGroupDrag({
       ...groupDrag,
-      x: (e.clientX - groupDrag.startX) / svgScale,
-      y: (e.clientY - groupDrag.startY) / svgScale,
+      x: (e.clientX - groupDrag.startX) / canvasScale,
+      y: (e.clientY - groupDrag.startY) / canvasScale,
     });
   }
 

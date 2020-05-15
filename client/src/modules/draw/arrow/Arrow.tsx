@@ -5,7 +5,7 @@ import { RootState } from 'App';
 import Line, { intersects } from 'math/line';
 import { selectDrawing } from 'modules/draw/draw.reducer';
 import { addError } from 'modules/errors/errors.reducer';
-import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
+import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 
 import Arrowhead from './Arrowhead';
 import { ShapeId } from '../shape/Shape';

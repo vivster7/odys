@@ -1,5 +1,5 @@
 import React from 'react';
-import { zoomLeveltoScaleMap } from '../../../svg/zoom/zoom.reducer';
+import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
 import { Shape } from '../shape.reducer';
 export const SHAPE_WIDTH = 150;

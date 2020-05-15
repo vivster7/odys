@@ -12,7 +12,7 @@ import {
 } from '../draw/draw.reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../App';
-import { wheelEnd, endPan, cleanSvg } from './svg.reducer';
+import { wheelEnd, endPan, cleanCanvas } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
 import { endNewRectByClick } from '../draw/shape/newRect.reducer';
 import GroupSelect from '../draw/mixins/groupSelect/GroupSelect';
@@ -76,7 +76,7 @@ interface PanState {
   startY: number;
 }
 
-const Svg: React.FC = () => {
+const Canvas: React.FC = () => {
   const dispatch = useDispatch();
 
   const boardId = useSelector((state: RootState) => state.board.id);
@@ -87,18 +87,18 @@ const Svg: React.FC = () => {
 
   const newRect = useSelector((state: RootState) => state.draw.newRect);
 
-  const svgState = useSelector((state: RootState) => state.svg);
+  const canvasState = useSelector((state: RootState) => state.canvas);
   const resizingId = useSelector(
     (state: RootState) => state.draw.resize && state.draw.resize.id
   );
 
   // using local variable to make scale / pan fast!
-  const [topLeftX, setTopLeftX] = useState(svgState.topLeftX);
-  const [topLeftY, setTopLeftY] = useState(svgState.topLeftY);
+  const [topLeftX, setTopLeftX] = useState(canvasState.topLeftX);
+  const [topLeftY, setTopLeftY] = useState(canvasState.topLeftY);
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
-  const [scale, setScale] = useState(svgState.scale);
-  const [zoomLevel, setZoomLevel] = useState(svgState.zoomLevel);
+  const [scale, setScale] = useState(canvasState.scale);
+  const [zoomLevel, setZoomLevel] = useState(canvasState.zoomLevel);
 
   const [pan, setPan] = useState<PanState | null>(null);
 
@@ -109,12 +109,12 @@ const Svg: React.FC = () => {
     topLeftY + translateY
   }) scale(${scale})`;
 
-  if (svgState.dirty) {
-    setTopLeftX(svgState.topLeftX);
-    setTopLeftY(svgState.topLeftY);
-    setScale(svgState.scale);
-    setZoomLevel(svgState.zoomLevel);
-    dispatch(cleanSvg());
+  if (canvasState.dirty) {
+    setTopLeftX(canvasState.topLeftX);
+    setTopLeftY(canvasState.topLeftY);
+    setScale(canvasState.scale);
+    setZoomLevel(canvasState.zoomLevel);
+    dispatch(cleanCanvas());
   }
 
   function onKeyDownHandler(e: KeyboardEvent) {
@@ -145,10 +145,10 @@ const Svg: React.FC = () => {
           id: uuid.v4(),
           clickX: e.clientX,
           clickY: e.clientY,
-          svgTopLeftX: svgState.topLeftX,
-          svgTopLeftY: svgState.topLeftY,
-          svgScale: svgState.scale,
-          svgZoomLevel: svgState.zoomLevel,
+          canvasTopLeftX: canvasState.topLeftX,
+          canvasTopLeftY: canvasState.topLeftY,
+          canvasScale: canvasState.scale,
+          canvasZoomLevel: canvasState.zoomLevel,
           boardId: boardId,
         })
       );
@@ -159,7 +159,7 @@ const Svg: React.FC = () => {
         drag({
           clickX: e.clientX,
           clickY: e.clientY,
-          scale: svgState.scale,
+          scale: canvasState.scale,
         })
       );
     }
@@ -169,9 +169,9 @@ const Svg: React.FC = () => {
         resizeDragSelection({
           clickX: e.clientX,
           clickY: e.clientY,
-          svgTopLeftX: svgState.topLeftX,
-          svgTopLeftY: svgState.topLeftY,
-          svgScale: svgState.scale,
+          canvasTopLeftX: canvasState.topLeftX,
+          canvasTopLeftY: canvasState.topLeftY,
+          canvasScale: canvasState.scale,
         })
       );
     }
@@ -186,7 +186,7 @@ const Svg: React.FC = () => {
         resize({
           clickX: e.clientX,
           clickY: e.clientY,
-          svgScale: svgState.scale,
+          canvasScale: canvasState.scale,
         })
       );
     }
@@ -202,9 +202,9 @@ const Svg: React.FC = () => {
         startDragSelection({
           x: e.clientX,
           y: e.clientY,
-          svgTopLeftX: topLeftX,
-          svgTopLeftY: topLeftY,
-          svgScale: scale,
+          canvasTopLeftX: topLeftX,
+          canvasTopLeftY: topLeftY,
+          canvasScale: scale,
         })
       );
     } else {
@@ -223,10 +223,10 @@ const Svg: React.FC = () => {
           id: uuid.v4(),
           clickX: e.clientX,
           clickY: e.clientY,
-          svgTopLeftX: svgState.topLeftX,
-          svgTopLeftY: svgState.topLeftY,
-          svgScale: svgState.scale,
-          svgZoomLevel: svgState.zoomLevel,
+          canvasTopLeftX: canvasState.topLeftX,
+          canvasTopLeftY: canvasState.topLeftY,
+          canvasScale: canvasState.scale,
+          canvasZoomLevel: canvasState.zoomLevel,
           boardId: boardId,
         })
       );
@@ -290,7 +290,7 @@ const Svg: React.FC = () => {
 
   return (
     <svg
-      id="odys-svg"
+      id="odys-canvas"
       style={{
         height: '100%',
         width: '100%',
@@ -310,4 +310,4 @@ const Svg: React.FC = () => {
   );
 };
 
-export default Svg;
+export default Canvas;

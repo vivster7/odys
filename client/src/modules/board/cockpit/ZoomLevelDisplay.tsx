@@ -2,7 +2,7 @@ import React from 'react';
 import plus from './plus.svg';
 import minus from './minus.svg';
 import { useDispatch } from 'react-redux';
-import { changeZoomLevel, dirtySvg } from '../../svg/svg.reducer';
+import { changeZoomLevel, dirtyCanvas } from '../../canvas/canvas.reducer';
 
 interface ZoomLevelDisplayProps {
   zoomLevel: number;
@@ -14,12 +14,12 @@ const ZoomLevelDisplay: React.FC<ZoomLevelDisplayProps> = (props) => {
 
   function incrementZoomLevel() {
     dispatch(changeZoomLevel({ zoomLevel: zoomLevel + 1 }));
-    dispatch(dirtySvg());
+    dispatch(dirtyCanvas());
   }
 
   function decrementZoomLevel() {
     dispatch(changeZoomLevel({ zoomLevel: zoomLevel - 1 }));
-    dispatch(dirtySvg());
+    dispatch(dirtyCanvas());
   }
 
   return (

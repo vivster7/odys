@@ -9,20 +9,20 @@ export interface GroupDragState {
 interface startDragSelection {
   x: number;
   y: number;
-  svgTopLeftX: number;
-  svgTopLeftY: number;
-  svgScale: number;
+  canvasTopLeftX: number;
+  canvasTopLeftY: number;
+  canvasScale: number;
 }
 
 export const startDragSelectionFn: DrawReducer<startDragSelection> = (
   state,
   action
 ) => {
-  const { x, y, svgTopLeftX, svgTopLeftY, svgScale } = action.payload;
+  const { x, y, canvasTopLeftX, canvasTopLeftY, canvasScale } = action.payload;
   state.groupSelect = {
     selectionRect: {
-      x: (x - svgTopLeftX) / svgScale,
-      y: (y - svgTopLeftY) / svgScale,
+      x: (x - canvasTopLeftX) / canvasScale,
+      y: (y - canvasTopLeftY) / canvasScale,
       width: 0,
       height: 0,
     },
@@ -39,9 +39,9 @@ export interface GroupSelectState {
 interface resizeDragSelection {
   clickX: number;
   clickY: number;
-  svgTopLeftX: number;
-  svgTopLeftY: number;
-  svgScale: number;
+  canvasTopLeftX: number;
+  canvasTopLeftY: number;
+  canvasScale: number;
 }
 
 export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
@@ -55,10 +55,16 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
 
   const { selectionRect } = state.groupSelect;
 
-  const { clickX, clickY, svgTopLeftX, svgTopLeftY, svgScale } = action.payload;
+  const {
+    clickX,
+    clickY,
+    canvasTopLeftX,
+    canvasTopLeftY,
+    canvasScale,
+  } = action.payload;
   const { x, y } = selectionRect;
-  const deltaWidth = (clickX - svgTopLeftX) / svgScale - x;
-  const deltaHeight = (clickY - svgTopLeftY) / svgScale - y;
+  const deltaWidth = (clickX - canvasTopLeftX) / canvasScale - x;
+  const deltaHeight = (clickY - canvasTopLeftY) / canvasScale - y;
 
   selectionRect.width = deltaWidth;
   selectionRect.height = deltaHeight;

@@ -39,7 +39,7 @@ interface StartResize {
 interface Resize {
   clickX: number;
   clickY: number;
-  svgScale: number;
+  canvasScale: number;
 }
 
 export const startResizeFn: DrawReducer<StartResize> = (state, action) => {
@@ -65,7 +65,7 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
-  const { clickX, clickY, svgScale } = action.payload;
+  const { clickX, clickY, canvasScale } = action.payload;
   const { originalX, originalY } = state.resize;
 
   let translateX = 0;
@@ -74,24 +74,24 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
   let deltaHeight = 0;
   switch (state.resize.anchor) {
     case 'SEAnchor':
-      deltaWidth = (clickX - originalX) / svgScale;
-      deltaHeight = (clickY - originalY) / svgScale;
+      deltaWidth = (clickX - originalX) / canvasScale;
+      deltaHeight = (clickY - originalY) / canvasScale;
       break;
     case 'SWAnchor':
-      translateX = (clickX - originalX) / svgScale;
-      deltaWidth = (originalX - clickX) / svgScale;
-      deltaHeight = (clickY - originalY) / svgScale;
+      translateX = (clickX - originalX) / canvasScale;
+      deltaWidth = (originalX - clickX) / canvasScale;
+      deltaHeight = (clickY - originalY) / canvasScale;
       break;
     case 'NEAnchor':
-      translateY = (clickY - originalY) / svgScale;
-      deltaWidth = (clickX - originalX) / svgScale;
-      deltaHeight = (originalY - clickY) / svgScale;
+      translateY = (clickY - originalY) / canvasScale;
+      deltaWidth = (clickX - originalX) / canvasScale;
+      deltaHeight = (originalY - clickY) / canvasScale;
       break;
     case 'NWAnchor':
-      translateX = (clickX - originalX) / svgScale;
-      translateY = (clickY - originalY) / svgScale;
-      deltaWidth = (originalX - clickX) / svgScale;
-      deltaHeight = (originalY - clickY) / svgScale;
+      translateX = (clickX - originalX) / canvasScale;
+      translateY = (clickY - originalY) / canvasScale;
+      deltaWidth = (originalX - clickX) / canvasScale;
+      deltaHeight = (originalY - clickY) / canvasScale;
       break;
     default:
       throw new Error(`Unknown anchor point ${state.resize.anchor}`);

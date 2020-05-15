@@ -1,5 +1,5 @@
 import React from 'react';
-import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
+import { zoomLeveltoScaleMap } from '../../canvas/zoom/zoom.reducer';
 
 type ArrowheadProps = {
   x: number;

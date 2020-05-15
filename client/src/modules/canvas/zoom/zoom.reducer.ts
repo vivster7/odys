@@ -1,5 +1,5 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
-import { SVGState } from '../svg.reducer';
+import { CanvasState } from '../canvas.reducer';
 
 export const zoomLeveltoScaleMap: {
   [key: number]: number;
@@ -20,7 +20,7 @@ interface ChangeZoomLevel {
 }
 
 export const changeZoomLevelFn: CaseReducer<
-  SVGState,
+  CanvasState,
   PayloadAction<ChangeZoomLevel>
 > = (state, action) => {
   // TODO: grab (x,y) as center of viewport
@@ -50,7 +50,7 @@ interface WheelEnd {
   zoomLevel: number;
 }
 
-export const wheelEndFn: CaseReducer<SVGState, PayloadAction<WheelEnd>> = (
+export const wheelEndFn: CaseReducer<CanvasState, PayloadAction<WheelEnd>> = (
   state,
   action
 ) => {

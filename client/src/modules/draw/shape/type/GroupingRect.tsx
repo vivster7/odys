@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShapeTypeProps } from '../Shape';
 import BaseShape from './BaseShape';
-import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
+import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 
 const GroupingRect: React.FC<ShapeTypeProps> = (props) => {
   const { isSelected, isDragging } = props;

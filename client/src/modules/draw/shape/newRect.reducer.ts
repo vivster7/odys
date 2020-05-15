@@ -5,7 +5,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawReducer, DrawActionPending } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { RECT_WIDTH, RECT_HEIGHT } from './type/Rect';
-import { zoomLeveltoScaleMap } from '../../svg/zoom/zoom.reducer';
+import { zoomLeveltoScaleMap } from '../../canvas/zoom/zoom.reducer';
 import { GroupingRect, Rect } from './shape.reducer';
 import { save } from '../mixins/save/save.reducer';
 
@@ -18,10 +18,10 @@ export interface NewRect {
   id: string;
   clickX: number;
   clickY: number;
-  svgTopLeftX: number;
-  svgTopLeftY: number;
-  svgScale: number;
-  svgZoomLevel: number;
+  canvasTopLeftX: number;
+  canvasTopLeftY: number;
+  canvasScale: number;
+  canvasZoomLevel: number;
   boardId: string;
 }
 
@@ -55,10 +55,10 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     id,
     clickX,
     clickY,
-    svgTopLeftX,
-    svgTopLeftY,
-    svgScale,
-    svgZoomLevel,
+    canvasTopLeftX,
+    canvasTopLeftY,
+    canvasScale,
+    canvasZoomLevel,
     boardId,
   } = action.meta.arg;
 
@@ -68,11 +68,11 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   if (state.newRect.clickX !== clickX || state.newRect.clickY !== clickY)
     return;
 
-  const x = (clickX - svgTopLeftX) / svgScale;
-  const y = (clickY - svgTopLeftY) / svgScale;
+  const x = (clickX - canvasTopLeftX) / canvasScale;
+  const y = (clickY - canvasTopLeftY) / canvasScale;
 
-  const width = RECT_WIDTH / zoomLeveltoScaleMap[svgZoomLevel];
-  const height = RECT_HEIGHT / zoomLeveltoScaleMap[svgZoomLevel];
+  const width = RECT_WIDTH / zoomLeveltoScaleMap[canvasZoomLevel];
+  const height = RECT_HEIGHT / zoomLeveltoScaleMap[canvasZoomLevel];
 
   const rect: Rect = {
     type: 'rect',
@@ -82,7 +82,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     y: y - height / 2,
     width: width,
     height: height,
-    createdAtZoomLevel: svgZoomLevel,
+    createdAtZoomLevel: canvasZoomLevel,
     boardId: boardId,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -117,10 +117,10 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
     id,
     clickX,
     clickY,
-    svgTopLeftX,
-    svgTopLeftY,
-    svgScale,
-    svgZoomLevel,
+    canvasTopLeftX,
+    canvasTopLeftY,
+    canvasScale,
+    canvasZoomLevel,
     boardId,
   } = action.payload;
 
@@ -129,12 +129,14 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
   // prevent more draw/endNewRectByDrag event from firing.
   state.newRect = null;
 
-  const x = (startX - svgTopLeftX) / svgScale;
-  const y = (startY - svgTopLeftY) / svgScale;
+  const x = (startX - canvasTopLeftX) / canvasScale;
+  const y = (startY - canvasTopLeftY) / canvasScale;
   const width =
-    (clickX - svgTopLeftX) / svgScale - (startX - svgTopLeftX) / svgScale;
+    (clickX - canvasTopLeftX) / canvasScale -
+    (startX - canvasTopLeftX) / canvasScale;
   const height =
-    (clickY - svgTopLeftY) / svgScale - (startY - svgTopLeftY) / svgScale;
+    (clickY - canvasTopLeftY) / canvasScale -
+    (startY - canvasTopLeftY) / canvasScale;
 
   const rect: GroupingRect = {
     type: 'grouping_rect',
@@ -148,7 +150,7 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
     height: height,
     deltaWidth: 0,
     deltaHeight: 0,
-    createdAtZoomLevel: svgZoomLevel,
+    createdAtZoomLevel: canvasZoomLevel,
     isLastUpdatedBySync: false,
     isSavedInDB: false,
     boardId: boardId,

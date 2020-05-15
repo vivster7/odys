@@ -8,7 +8,7 @@ import * as uuid from 'uuid';
 import Room from './modules/room/Room';
 
 import drawReducer from './modules/draw/draw.reducer';
-import svgReducer from './modules/svg/svg.reducer';
+import canvasReducer from './modules/canvas/canvas.reducer';
 
 import errorReducer from './modules/errors/errors.reducer';
 import socket from './socket/socket';
@@ -17,7 +17,7 @@ import boardReducer from './modules/board/board.reducer';
 
 const rootReducer = combineReducers({
   draw: drawReducer,
-  svg: svgReducer,
+  canvas: canvasReducer,
   errors: errorReducer,
   room: roomReducer,
   board: boardReducer,

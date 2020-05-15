@@ -1,5 +1,5 @@
 import React from 'react';
-import { zoomLeveltoScaleMap } from 'modules/svg/zoom/zoom.reducer';
+import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import { startResize } from 'modules/draw/draw.reducer';
 import { useDispatch } from 'react-redux';
 import { Anchor } from 'modules/draw/shape/mixins/resize/resize.reducer';

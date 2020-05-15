@@ -1,12 +1,12 @@
 import { CaseReducer, PayloadAction } from '@reduxjs/toolkit';
-import { SVGState } from '../svg.reducer';
+import { CanvasState } from '../canvas.reducer';
 
 interface PanEnd {
   topLeftX: number;
   topLeftY: number;
 }
 
-export const endPanFn: CaseReducer<SVGState, PayloadAction<PanEnd>> = (
+export const endPanFn: CaseReducer<CanvasState, PayloadAction<PanEnd>> = (
   state,
   action
 ) => {

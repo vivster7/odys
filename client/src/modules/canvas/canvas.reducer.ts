@@ -6,7 +6,7 @@ import {
 } from './zoom/zoom.reducer';
 import { endPanFn } from './pan/pan.reducer';
 
-export interface SVGState {
+export interface CanvasState {
   topLeftX: number;
   topLeftY: number;
   translateX: number;
@@ -22,15 +22,21 @@ interface PanState {
   clickY: number;
 }
 
-const dirtySvgFn: CaseReducer<SVGState, PayloadAction> = (state, action) => {
+const dirtyCanvasFn: CaseReducer<CanvasState, PayloadAction> = (
+  state,
+  action
+) => {
   state.dirty = true;
 };
 
-const cleanSvgFn: CaseReducer<SVGState, PayloadAction> = (state, action) => {
+const cleanCanvasFn: CaseReducer<CanvasState, PayloadAction> = (
+  state,
+  action
+) => {
   state.dirty = false;
 };
 
-const initialState: SVGState = {
+const initialState: CanvasState = {
   topLeftX: 0,
   topLeftY: 0,
   translateX: 0,
@@ -41,15 +47,15 @@ const initialState: SVGState = {
   dirty: false,
 };
 
-const svgSlice = createSlice({
-  name: 'svg',
+const canvasSlice = createSlice({
+  name: 'canvas',
   initialState: initialState,
   reducers: {
     changeZoomLevel: changeZoomLevelFn,
     wheelEnd: wheelEndFn,
     endPan: endPanFn,
-    dirtySvg: dirtySvgFn,
-    cleanSvg: cleanSvgFn,
+    dirtyCanvas: dirtyCanvasFn,
+    cleanCanvas: cleanCanvasFn,
   },
 });
 
@@ -57,8 +63,8 @@ export const {
   changeZoomLevel,
   wheelEnd,
   endPan,
-  dirtySvg,
-  cleanSvg,
-} = svgSlice.actions;
-const svgReducer = svgSlice.reducer;
-export default svgReducer;
+  dirtyCanvas,
+  cleanCanvas,
+} = canvasSlice.actions;
+const canvasReducer = canvasSlice.reducer;
+export default canvasReducer;

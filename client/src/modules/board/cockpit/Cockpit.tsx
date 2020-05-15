@@ -5,8 +5,8 @@ import ZoomLevelDisplay from './ZoomLevelDisplay';
 import PositionDisplay from './PositionDisplay';
 
 const Cockpit: React.FC = () => {
-  const svgState = useSelector((state: RootState) => state.svg);
-  const { topLeftX, topLeftY, scale, zoomLevel } = svgState;
+  const canvasState = useSelector((state: RootState) => state.canvas);
+  const { topLeftX, topLeftY, scale, zoomLevel } = canvasState;
 
   return (
     <div style={{ display: 'flex', flexFlow: 'column nowrap' }}>
