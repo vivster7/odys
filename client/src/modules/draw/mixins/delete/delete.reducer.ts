@@ -28,10 +28,6 @@ export const deleteDrawingPending: DrawActionPending<string> = (
     throw new Error(`Cannot find drawing with ${id}`);
   }
 
-  if (instanceOfArrow(drawing)) {
-    drawing.isDeleted = true;
-  } else {
-    drawing.isDeleted = true;
-  }
+  drawing.isDeleted = true;
   reorder(drawing, state);
 };
