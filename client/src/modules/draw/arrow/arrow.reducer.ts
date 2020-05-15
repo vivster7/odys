@@ -1,4 +1,4 @@
-import { DrawState, DrawActionPending } from '../draw.reducer';
+import { DrawState, DrawActionPending, Drawing } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysArrow } from 'generated';
 import { ArrowApi } from 'generated/apis/ArrowApi';
@@ -12,8 +12,8 @@ import { Saveable, save } from '../mixins/save/save.reducer';
 export interface Arrow extends OdysArrow, ArrowMixins {}
 type ArrowMixins = Selectable & TextEditable & Syncable & Saveable & Deleteable;
 
-export function instanceOfArrow(object: any): object is Arrow {
-  return 'fromShapeId' in object && 'toShapeId' in object;
+export function instanceOfArrow(drawing: Drawing): drawing is Arrow {
+  return 'fromShapeId' in drawing && 'toShapeId' in drawing;
 }
 
 export const getArrows = createAsyncThunk(

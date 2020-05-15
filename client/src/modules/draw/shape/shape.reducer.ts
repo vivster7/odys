@@ -1,4 +1,4 @@
-import { DrawState } from '../draw.reducer';
+import { DrawState, Drawing } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysShape } from 'generated';
@@ -27,6 +27,10 @@ export interface GroupingRect extends OdysShape, ShapeMixins {
 }
 export interface Text extends OdysShape, ShapeMixins {
   type: 'text';
+}
+
+export function instanceOfShape(drawing: Drawing): drawing is Shape {
+  return 'type' in drawing;
 }
 
 export const getShapes = createAsyncThunk(
