@@ -10,7 +10,7 @@ export const undo: any = createAsyncThunk(
 
     const undos = state.draw.timetravel.undos;
     if (undos.length > 0) {
-      const { undo } = undos[0];
+      const { undo } = undos[undos.length - 1];
       const { actionCreatorName, arg } = undo;
       const actionCreator: any = actionCreatorMap[actionCreatorName];
       thunkAPI.dispatch(await actionCreator(arg));

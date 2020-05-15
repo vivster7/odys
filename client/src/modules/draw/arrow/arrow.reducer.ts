@@ -109,4 +109,5 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   const undo = { actionCreatorName: 'safeDeleteDrawing', arg: id };
   const redo = { actionCreatorName: 'safeUpdateDrawing', arg: arrow };
   state.timetravel.undos.push({ undo, redo });
+  state.timetravel.redos = [];
 };

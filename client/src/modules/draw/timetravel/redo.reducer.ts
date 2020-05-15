@@ -10,7 +10,7 @@ export const redo: any = createAsyncThunk(
 
     const redos = state.draw.timetravel.redos;
     if (redos.length > 0) {
-      const { redo } = redos[0];
+      const { redo } = redos[redos.length - 1];
       const { actionCreatorName, arg } = redo;
       const actionCreator: any = actionCreatorMap[actionCreatorName];
       thunkAPI.dispatch(await actionCreator(arg));
