@@ -126,6 +126,13 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
     throw new Error(`Cannot find shape with ${id}`);
   }
 
+  const snapshot = Object.assign({}, state.shapes[id], {
+    translateX: 0,
+    translateY: 0,
+    deltaWidth: 0,
+    deltaHeight: 0,
+  });
+
   const shape = state.shapes[id];
   shape.x = shape.x + shape.translateX;
   shape.y = shape.y + shape.translateY;
@@ -141,4 +148,9 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
   state.drag = null;
   state.newRect = null;
   state.resize = null;
+
+  const undo = { actionCreatorName: 'safeUpdateDrawing', arg: snapshot };
+  const redo = { actionCreatorName: 'safeUpdateDrawing', arg: shape };
+  state.timetravel.undos.push({ undo, redo });
+  state.timetravel.redos = [];
 };
