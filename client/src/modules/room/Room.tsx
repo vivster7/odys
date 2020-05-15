@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
 import { keydown } from 'global/keydown.reducer';
+import { useDrawingSelectedListener } from 'modules/draw/mixins/select/select.reducer';
 import { useDrawingChangedListener } from 'modules/draw/mixins/sync/sync';
 import { useDrawingDeletedListener } from 'modules/draw/mixins/delete/delete.reducer';
 import { useDrawingSavedListener } from 'modules/draw/mixins/save/save.reducer';
@@ -29,6 +30,7 @@ const Room: React.FC = () => {
   useDrawingChangedListener(dispatch);
   useDrawingSavedListener(dispatch);
   useDrawingDeletedListener(dispatch);
+  useDrawingSelectedListener(dispatch);
 
   useEffect(() => {
     dispatch(getOrCreateRoom(id));

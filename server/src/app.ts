@@ -39,6 +39,10 @@ io.on('connection', (socket: socket.Socket) => {
     socket.broadcast.volatile.emit('drawingDeleted', data);
   });
 
+  socket.on('drawingSelected', (data) => {
+    socket.broadcast.volatile.emit('drawingSelected', data);
+  });
+
   socket.on('disconnect', () => {
     console.log('client disconnected');
   });

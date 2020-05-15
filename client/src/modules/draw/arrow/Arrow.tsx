@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from 'App';
 import Line, { intersects } from 'math/line';
-import { selectDrawing } from 'modules/draw/draw.reducer';
+import { selectDrawing } from 'modules/draw/mixins/select/select.reducer';
 import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 

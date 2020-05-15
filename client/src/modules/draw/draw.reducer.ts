@@ -27,7 +27,8 @@ import {
 import {
   cancelSelectFn,
   SelectedDrawing,
-  selectDrawingFn,
+  selectDrawing,
+  selectDrawingPending,
 } from 'modules/draw/mixins/select/select.reducer';
 import {
   endNewRectByClick,
@@ -197,7 +198,6 @@ const drawSlice = createSlice({
     startEditText: startEditTextFn,
     editText: editTextFn,
     // select
-    selectDrawing: selectDrawingFn,
     cancelSelect: cancelSelectFn,
     // drag
     startDrag: startDragFn,
@@ -264,6 +264,10 @@ const drawSlice = createSlice({
     [endEditText.pending as any]: endEditTextPending,
     [endEditText.fulfilled as any]: (state, action) => {},
     [endEditText.rejected as any]: (state, action) => {},
+    // select
+    [selectDrawing.pending as any]: selectDrawingPending,
+    [selectDrawing.rejected as any]: (state, action) => {},
+    [selectDrawing.fulfilled as any]: (state, action) => {},
   },
 });
 
@@ -273,7 +277,6 @@ export const {
   startEditText,
   editText,
   cancelSelect,
-  selectDrawing,
   startDrag,
   drag,
   startResize,
