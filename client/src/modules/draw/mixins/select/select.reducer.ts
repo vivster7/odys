@@ -1,4 +1,4 @@
-import { DrawReducer } from '../../draw.reducer';
+import { DrawReducer, getDrawing } from '../../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 
 export interface SelectedDrawing {
@@ -11,10 +11,7 @@ export interface Selectable {
 
 export const selectDrawingFn: DrawReducer<string> = (state, action) => {
   const id = action.payload;
-  const drawing = state.shapes[id] ?? state.arrows[id];
-  if (!drawing) {
-    throw new Error(`Cannot find drawing with ${id}`);
-  }
+  const drawing = getDrawing(state, id);
 
   state.select = {
     id,

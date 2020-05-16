@@ -8,6 +8,7 @@ import {
   DrawActionRejected,
   DrawActionFulfilled,
   syncDrawing,
+  getDrawing,
 } from 'modules/draw/draw.reducer';
 import socket, { registerSocketListener } from 'socket/socket';
 
@@ -48,14 +49,14 @@ export const save: any = createAsyncThunk(
 
 export const saveRejected: DrawActionRejected<string> = (state, action) => {
   const id = action.meta.arg;
-  const drawing = state.shapes[id] ?? state.arrows[id];
+  const drawing = getDrawing(state, id);
   drawing.isSavedInDB = false;
   // TODO: schedule a future job to try and save?
 };
 
 export const saveFulfilled: DrawActionFulfilled<string> = (state, action) => {
   const id = action.meta.arg;
-  const drawing = state.shapes[id] ?? state.arrows[id];
+  const drawing = getDrawing(state, id);
   drawing.isSavedInDB = true;
 };
 

@@ -1,5 +1,5 @@
 import { createAsyncThunk, ActionCreatorsMapObject } from '@reduxjs/toolkit';
-import { Drawing, DrawActionPending } from '../draw.reducer';
+import { Drawing, DrawActionPending, getDrawing } from '../draw.reducer';
 import { instanceOfArrow } from '../arrow/arrow.reducer';
 import { reorder } from '../mixins/drawOrder/drawOrder';
 import socket from 'socket/socket';
@@ -63,10 +63,7 @@ export const safeDeleteDrawingPending: DrawActionPending<string> = (
   action
 ) => {
   const id = action.meta.arg;
-  const drawing = state.shapes[id] ?? state.arrows[id];
-  if (!drawing) {
-    throw new Error(`Cannot find drawing with ${id}`);
-  }
+  const drawing = getDrawing(state, id);
 
   drawing.isDeleted = true;
   reorder(drawing, state);

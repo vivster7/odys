@@ -1,6 +1,6 @@
 import { useEffect, Dispatch } from 'react';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { DrawActionPending } from 'modules/draw/draw.reducer';
+import { DrawActionPending, getDrawing } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import socket, { registerSocketListener } from 'socket/socket';
 import { save } from '../save/save.reducer';
@@ -23,7 +23,7 @@ export const deleteDrawingPending: DrawActionPending<string> = (
   action
 ) => {
   const id = action.meta.arg;
-  const drawing = state.shapes[id] ?? state.arrows[id];
+  const drawing = getDrawing(state, id);
   const snapshot = Object.assign({}, drawing, {
     isLastUpdatedBySync: false,
     isSavedInDB: true, // optimistically assume this operation will succeed

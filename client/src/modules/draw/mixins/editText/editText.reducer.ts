@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { DrawReducer, DrawActionPending } from '../../draw.reducer';
+import { DrawReducer, DrawActionPending, getDrawing } from '../../draw.reducer';
 import { save } from 'modules/draw/mixins/save/save.reducer';
 
 export interface EditTextState {
@@ -21,10 +21,7 @@ export const startEditTextFn: DrawReducer = (state, action) => {
   }
 
   const { id } = select;
-  const drawing = state.shapes[id] ?? state.arrows[id];
-  if (!drawing) {
-    throw new Error(`Cannot find drawing with ${id}`);
-  }
+  const drawing = getDrawing(state, id);
 
   state.editText = {
     startingText: drawing.text,
@@ -41,10 +38,7 @@ export const editTextFn: DrawReducer<string> = (state, action) => {
   }
 
   const { id } = select;
-  const drawing = state.shapes[id] ?? state.arrows[id];
-  if (!drawing) {
-    throw new Error(`Cannot find drawing with ${id}`);
-  }
+  const drawing = getDrawing(state, id);
 
   drawing.text = action.payload;
   drawing.isLastUpdatedBySync = false;
@@ -63,11 +57,7 @@ export const endEditTextPending: DrawActionPending<string> = (
   action
 ) => {
   const id = action.meta.arg;
-  const drawing = state.shapes[id] ?? state.arrows[id];
-
-  if (!drawing) {
-    throw new Error(`Cannot find drawing with ${id}`);
-  }
+  const drawing = getDrawing(state, id);
 
   const snapshot = { ...drawing, text: state.editText.startingText };
 

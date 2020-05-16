@@ -146,6 +146,18 @@ const initialState: DrawState = {
 
 export type Drawing = Arrow | Shape;
 
+export function getDrawing(state: DrawState, id: string): Drawing {
+  const drawing = state.shapes[id] ?? state.arrows[id];
+  if (!drawing) {
+    throw new Error(`Cannot find drawing with ${id}`);
+  }
+  return drawing;
+}
+
+export function getDrawings(state: DrawState, ids: string[]): Drawing[] {
+  return ids.map((id) => getDrawing(state, id));
+}
+
 export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
   // be wary of adding undo/redo buffer to this fn
   // they sync changes from socket updates and need to be synchronous
