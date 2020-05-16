@@ -1,6 +1,5 @@
 import { Drawing, DrawState } from 'modules/draw/draw.reducer';
 import { instanceOfArrow } from 'modules/draw/arrow/arrow.reducer';
-import { instanceOfShape } from 'modules/draw/shape/shape.reducer';
 
 export function reorder(drawings: Drawing[], state: DrawState): void {
   drawings.forEach((d) => reorderOne(d, state));
@@ -15,15 +14,19 @@ function reorderOne(drawing: Drawing, state: DrawState): void {
   }
 
   if (drawing.isDeleted) {
-    if (instanceOfShape(drawing)) {
-      const connections = Object.values(state.arrows)
-        .filter(
-          (a) => a.toShapeId === drawing.id || a.fromShapeId === drawing.id
-        )
-        .map((a) => a.id);
-      state.drawOrder = order.filter((drawId) => !connections.includes(drawId));
-    }
     return;
+    // 2020-05-16: I think arrows get marked as deleted before we call reorder.
+    // So don't need to grab connection logic here.
+    //
+    // if (instanceOfShape(drawing)) {
+    //   const connections = Object.values(state.arrows)
+    //     .filter(
+    //       (a) => a.toShapeId === drawing.id || a.fromShapeId === drawing.id
+    //     )
+    //     .map((a) => a.id);
+    //   state.drawOrder = order.filter((drawId) => !connections.includes(drawId));
+    // }
+    // return;
   }
 
   if (instanceOfArrow(drawing)) {
