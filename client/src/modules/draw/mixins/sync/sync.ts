@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
-import socket from 'socket/socket';
+import { useState, useEffect, Dispatch } from 'react';
+import { PayloadAction } from '@reduxjs/toolkit';
+import socket, { registerSocketListener } from 'socket/socket';
+import { syncDrawing, Drawing } from 'modules/draw/draw.reducer';
 
 export interface Syncable {
   id: string;
@@ -45,4 +47,13 @@ export function useDrawingChangedEmitter(subject?: Syncable) {
     }
     socket.emit('drawingChanged', { ...subject });
   }, [subject]);
+}
+
+export function useDrawingChangedListener(
+  dispatch: Dispatch<PayloadAction<Drawing>>
+) {
+  useEffect(() => {
+    const onDrawingChanged = (data: any) => dispatch(syncDrawing(data));
+    return registerSocketListener('drawingChanged', onDrawingChanged);
+  }, [dispatch]);
 }

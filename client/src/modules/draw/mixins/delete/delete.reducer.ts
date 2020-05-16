@@ -1,7 +1,8 @@
+import { useEffect, Dispatch } from 'react';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawActionPending } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import socket from 'socket/socket';
+import socket, { registerSocketListener } from 'socket/socket';
 import { save } from '../save/save.reducer';
 
 export interface Deleteable {
@@ -9,7 +10,7 @@ export interface Deleteable {
   isDeleted: boolean;
 }
 
-export const deleteDrawing: any = createAsyncThunk(
+export const deleteDrawing = createAsyncThunk(
   'draw/deleteDrawing',
   async (id: string, thunkAPI) => {
     socket.emit('drawingDeleted', id);
@@ -39,3 +40,19 @@ export const deleteDrawingPending: DrawActionPending<string> = (
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };
+
+export function useDrawingDeletedListener(
+  dispatch: Dispatch<{
+    type: string;
+    meta: { arg: any };
+  }>
+) {
+  useEffect(() => {
+    const onDrawingDeleted = (data: any) =>
+      dispatch({
+        type: 'draw/deleteDrawing/pending',
+        meta: { arg: data },
+      });
+    return registerSocketListener('drawingDeleted', onDrawingDeleted);
+  }, [dispatch]);
+}

@@ -1,12 +1,15 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { useEffect, Dispatch } from 'react';
+import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { instanceOfArrow } from 'modules/draw/arrow/arrow.reducer';
 import { ShapeApi, Configuration, ArrowApi } from 'generated';
 import {
+  Drawing,
   DrawActionRejected,
   DrawActionFulfilled,
+  syncDrawing,
 } from 'modules/draw/draw.reducer';
-import socket from 'socket/socket';
+import socket, { registerSocketListener } from 'socket/socket';
 
 // Saveable is a mixin related to saving an object in a database.
 export interface Saveable {
@@ -55,3 +58,12 @@ export const saveFulfilled: DrawActionFulfilled<string> = (state, action) => {
   const drawing = state.shapes[id] ?? state.arrows[id];
   drawing.isSavedInDB = true;
 };
+
+export function useDrawingSavedListener(
+  dispatch: Dispatch<PayloadAction<Drawing>>
+) {
+  useEffect(() => {
+    const onDrawingSaved = (data: any) => dispatch(syncDrawing(data));
+    return registerSocketListener('drawingSaved', onDrawingSaved);
+  }, [dispatch]);
+}

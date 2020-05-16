@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import DrawingBoard from '../board/DrawingBoard';
 import { useDispatch } from 'react-redux';
-import { syncDrawing } from '../draw/draw.reducer';
-import socket from 'socket/socket';
 import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
 import { keydown } from 'global/keydown.reducer';
+import { useDrawingChangedListener } from 'modules/draw/mixins/sync/sync';
+import { useDrawingDeletedListener } from 'modules/draw/mixins/delete/delete.reducer';
+import { useDrawingSavedListener } from 'modules/draw/mixins/save/save.reducer';
 
 const Room: React.FC = () => {
   const { id } = useParams();
@@ -25,33 +26,9 @@ const Room: React.FC = () => {
     };
   }, [dispatch]);
 
-  useEffect(() => {
-    const onDrawingChanged = (data: any) => dispatch(syncDrawing(data));
-    const emitter = socket.on('drawingChanged', onDrawingChanged);
-    return () => {
-      emitter.off('drawingChanged', onDrawingChanged);
-    };
-  }, [dispatch]);
-
-  useEffect(() => {
-    const onDrawingChanged = (data: any) => dispatch(syncDrawing(data));
-    const emitter = socket.on('drawingSaved', onDrawingChanged);
-    return () => {
-      emitter.off('drawingSaved', onDrawingChanged);
-    };
-  }, [dispatch]);
-
-  useEffect(() => {
-    const onDrawingDeleted = (data: any) =>
-      dispatch({
-        type: 'draw/deleteDrawing/pending',
-        meta: { arg: data },
-      });
-    const emitter = socket.on('drawingDeleted', onDrawingDeleted);
-    return () => {
-      emitter.off('drawingDeleted', onDrawingDeleted);
-    };
-  }, [dispatch]);
+  useDrawingChangedListener(dispatch);
+  useDrawingSavedListener(dispatch);
+  useDrawingDeletedListener(dispatch);
 
   useEffect(() => {
     dispatch(getOrCreateRoom(id));
