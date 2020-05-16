@@ -175,5 +175,6 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
     originalY: startY,
     clickX: 0,
     clickY: 0,
+    isNewRect: true,
   };
 };

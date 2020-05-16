@@ -15,6 +15,8 @@ export interface ResizeState {
   originalY: number;
   clickX: number;
   clickY: number;
+  // isNewRect is true when we create a new rect by drag
+  isNewRect: boolean;
 }
 
 export interface Resizable {
@@ -50,6 +52,7 @@ export const startResizeFn: DrawReducer<StartResize> = (state, action) => {
     originalY: action.payload.originalY,
     clickX: 0,
     clickY: 0,
+    isNewRect: false,
   };
 };
 
@@ -121,7 +124,7 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
     );
   }
 
-  const { id } = state.resize;
+  const { id, isNewRect } = state.resize;
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
@@ -151,7 +154,9 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
   state.newRect = null;
   state.resize = null;
 
-  const undo = { actionCreatorName: 'safeUpdateDrawing', arg: snapshot };
+  const undo = isNewRect
+    ? { actionCreatorName: 'safeDeleteDrawing', arg: id }
+    : { actionCreatorName: 'safeUpdateDrawing', arg: snapshot };
   const redo = { actionCreatorName: 'safeUpdateDrawing', arg: shape };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
