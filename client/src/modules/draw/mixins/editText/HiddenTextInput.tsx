@@ -14,25 +14,11 @@ const HiddenTextInput: React.FC = React.memo(() => {
   const id = useSelector((state: RootState) => state.draw.select?.id);
   useSelector((state: RootState) => state.draw.select?.isEditing);
 
-  // This selector will refresh this component whenver the
-  // selected drawing changes (e.g. resize). This should trigger
-  // focus onto this hidden input.
-
-  // Selecting on these fields only, rather than the whole drawing object, prevents re-rendering
-  // as `onInputChange` updates `text` and triggers the input to re-render
-  // TODO: trigger focus on keydown rather than checking on these fields
-  const height = useSelector((state: RootState) =>
-    id ? state.draw.shapes[id]?.height : null
-  );
-  const width = useSelector((state: RootState) =>
-    id ? state.draw.shapes[id]?.width : null
-  );
-  const x = useSelector((state: RootState) =>
-    id ? state.draw.shapes[id]?.x : null
-  );
-  const y = useSelector((state: RootState) =>
-    id ? state.draw.shapes[id]?.y : null
-  );
+  // This selector will refresh this component whenver the resize
+  // object changes. This will focus the hidden input.
+  // Without this selector, clicking the selection circles causes
+  // the hidden input to lose focus and typing won't edit the selected rect.
+  useSelector((state: RootState) => state.draw.resize);
 
   const inputEl = useRef<HTMLInputElement>(null);
   useEffect(() => {
@@ -40,7 +26,7 @@ const HiddenTextInput: React.FC = React.memo(() => {
       inputEl.current.focus();
       inputEl.current.value = '';
     }
-  }, [id, height, width, x, y]);
+  });
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(editText(event.target.value));
