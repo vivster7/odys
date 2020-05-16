@@ -1,5 +1,10 @@
 import { createAsyncThunk, ActionCreatorsMapObject } from '@reduxjs/toolkit';
-import { Drawing, DrawActionPending, getDrawing } from '../draw.reducer';
+import {
+  Drawing,
+  DrawActionPending,
+  getDrawing,
+  getDrawings,
+} from '../draw.reducer';
 import { instanceOfArrow } from '../arrow/arrow.reducer';
 import { reorder } from '../mixins/drawOrder/drawOrder';
 import socket from 'socket/socket';
@@ -26,31 +31,36 @@ export interface TimeTravelState {
 }
 
 // just like draw/updateDrawing, except this will NEVER update the undo/redo buffer
-export const safeUpdateDrawing: any = createAsyncThunk(
-  'draw/safeUpdateDrawing',
-  async ({ id }: Drawing, thunkAPI) => {
-    thunkAPI.dispatch(save([id]));
+export const safeUpdateDrawings: any = createAsyncThunk(
+  'draw/safeUpdateDrawings',
+  async (ds: Drawing[], thunkAPI) => {
+    thunkAPI.dispatch(save(ds.map((d) => d.id)));
   }
 );
 
-export const safeUpdateDrawingPending: DrawActionPending<Drawing> = (
+export const safeUpdateDrawingsPending: DrawActionPending<Drawing[]> = (
   state,
   action
 ) => {
-  const { id } = action.meta.arg;
-  const existing = state.shapes[id] ?? state.arrows[id] ?? {};
-  const drawing = Object.assign({}, existing, action.meta.arg);
+  const updates: Drawing[] = action.meta.arg;
+  const drawings = updates.map((update) => {
+    const existing: Drawing =
+      state.shapes[update.id] ?? state.arrows[update.id] ?? {};
+    return { ...existing, ...update };
+  });
 
-  if (instanceOfArrow(drawing)) {
-    state.arrows[drawing.id] = drawing;
-  } else {
-    state.shapes[drawing.id] = drawing;
-  }
-  reorder(drawing, state);
+  drawings.forEach((d) => {
+    if (instanceOfArrow(d)) {
+      state.arrows[d.id] = d;
+    } else {
+      state.shapes[d.id] = d;
+    }
+    reorder(d, state);
+  });
 };
 
 // just like draw/deleteDrawing, except this will NEVER update the undo/redo buffer
-export const safeDeleteDrawing: any = createAsyncThunk(
+export const safeDeleteDrawing = createAsyncThunk(
   'draw/safeDeleteDrawing',
   async (id: string, thunkAPI) => {
     socket.emit('drawingDeleted', id);
@@ -71,5 +81,5 @@ export const safeDeleteDrawingPending: DrawActionPending<string> = (
 
 export const actionCreatorMap: ActionCreatorsMapObject = {
   safeDeleteDrawing: safeDeleteDrawing,
-  safeUpdateDrawing: safeUpdateDrawing,
+  safeUpdateDrawings: safeUpdateDrawings,
 };

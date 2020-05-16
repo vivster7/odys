@@ -35,7 +35,7 @@ export const deleteDrawingPending: DrawActionPending<string> = (
   drawing.isDeleted = true;
   reorder(drawing, state);
 
-  const undo = { actionCreatorName: 'safeUpdateDrawing', arg: snapshot };
+  const undo = { actionCreatorName: 'safeUpdateDrawings', arg: [snapshot] };
   const redo = { actionCreatorName: 'safeDeleteDrawing', arg: id };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

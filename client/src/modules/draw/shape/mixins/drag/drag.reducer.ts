@@ -111,8 +111,8 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   shape.isSavedInDB = true;
   reorder(shape, state);
 
-  const undo = { actionCreatorName: 'safeUpdateDrawing', arg: snapshot };
-  const redo = { actionCreatorName: 'safeUpdateDrawing', arg: shape };
+  const undo = { actionCreatorName: 'safeUpdateDrawings', arg: [snapshot] };
+  const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [shape] };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };

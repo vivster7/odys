@@ -107,7 +107,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   reorder(arrow, state);
 
   const undo = { actionCreatorName: 'safeDeleteDrawing', arg: id };
-  const redo = { actionCreatorName: 'safeUpdateDrawing', arg: arrow };
+  const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [arrow] };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };

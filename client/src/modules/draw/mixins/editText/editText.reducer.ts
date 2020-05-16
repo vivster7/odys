@@ -61,8 +61,8 @@ export const endEditTextPending: DrawActionPending<string> = (
 
   const snapshot = { ...drawing, text: state.editText.startingText };
 
-  const undo = { actionCreatorName: 'safeUpdateDrawing', arg: snapshot };
-  const redo = { actionCreatorName: 'safeUpdateDrawing', arg: drawing };
+  const undo = { actionCreatorName: 'safeUpdateDrawings', arg: [snapshot] };
+  const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [drawing] };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };

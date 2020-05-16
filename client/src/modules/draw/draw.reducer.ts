@@ -68,10 +68,10 @@ import {
 import { save, saveFulfilled, saveRejected } from './mixins/save/save.reducer';
 import {
   TimeTravelState,
-  safeUpdateDrawing,
+  safeUpdateDrawings,
   safeDeleteDrawingPending,
   safeDeleteDrawing,
-  safeUpdateDrawingPending,
+  safeUpdateDrawingsPending,
 } from 'modules/draw/timetravel/timeTravel';
 import { undo, undoFulfilled } from './timetravel/undo.reducer';
 import { redo, redoFulfilled } from './timetravel/redo.reducer';
@@ -254,9 +254,9 @@ const drawSlice = createSlice({
     [redo.pending as any]: (state, action) => {},
     [redo.fulfilled as any]: redoFulfilled,
     [redo.rejected as any]: (state, action) => {},
-    [safeUpdateDrawing.pending as any]: safeUpdateDrawingPending,
-    [safeUpdateDrawing.fulfilled as any]: (state, action) => {},
-    [safeUpdateDrawing.rejected as any]: (state, action) => {},
+    [safeUpdateDrawings.pending as any]: safeUpdateDrawingsPending,
+    [safeUpdateDrawings.fulfilled as any]: (state, action) => {},
+    [safeUpdateDrawings.rejected as any]: (state, action) => {},
     [safeDeleteDrawing.pending as any]: safeDeleteDrawingPending,
     [safeDeleteDrawing.fulfilled as any]: (state, action) => {},
     [safeDeleteDrawing.rejected as any]: (state, action) => {},
