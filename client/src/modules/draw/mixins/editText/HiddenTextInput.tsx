@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, OdysDispatch } from 'App';
 import debounce from 'lodash.debounce';
-import { save } from 'modules/draw/mixins/save/save.reducer';
 import { editText } from 'modules/draw/draw.reducer';
 import { endEditText } from 'modules/draw/mixins/editText/editText.reducer';
 
@@ -12,27 +11,36 @@ const debouncedSave = debounce((dispatch: OdysDispatch, id: string) => {
 
 const HiddenTextInput: React.FC = React.memo(() => {
   const dispatch = useDispatch();
-
-  const select = useSelector((state: RootState) => state.draw.select);
-
-  const id = select?.id;
-  const isEditing = select?.isEditing;
+  const id = useSelector((state: RootState) => state.draw.select?.id);
+  useSelector((state: RootState) => state.draw.select?.isEditing);
 
   // This selector will refresh this component whenver the
   // selected drawing changes (e.g. resize). This should trigger
   // focus onto this hidden input.
-  const drawing = useSelector((state: RootState) =>
-    id ? state.draw.shapes[id] ?? state.draw.arrows[id] : undefined
+
+  // Selecting on these fields only, rather than the whole drawing object, prevents re-rendering
+  // as `onInputChange` updates `text` and triggers the input to re-render
+  // TODO: trigger focus on keydown rather than checking on these fields
+  const height = useSelector((state: RootState) =>
+    id ? state.draw.shapes[id]?.height : null
+  );
+  const width = useSelector((state: RootState) =>
+    id ? state.draw.shapes[id]?.width : null
+  );
+  const x = useSelector((state: RootState) =>
+    id ? state.draw.shapes[id]?.x : null
+  );
+  const y = useSelector((state: RootState) =>
+    id ? state.draw.shapes[id]?.y : null
   );
 
   const inputEl = useRef<HTMLInputElement>(null);
-  const text = !!drawing ? drawing.text : '';
-  const inputValue = !!isEditing && text ? text : '';
   useEffect(() => {
     if (inputEl && inputEl.current) {
       inputEl.current.focus();
+      inputEl.current.value = '';
     }
-  });
+  }, [id, height, width, x, y]);
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(editText(event.target.value));
@@ -47,7 +55,6 @@ const HiddenTextInput: React.FC = React.memo(() => {
         ref={inputEl}
         type="text"
         onChange={onInputChange}
-        value={inputValue}
       />
     </>
   );
