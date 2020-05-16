@@ -17,7 +17,7 @@ export const selectDrawingFn: DrawReducer<string> = (state, action) => {
     id,
   };
   state.multiSelect = null;
-  reorder(drawing, state);
+  reorder([drawing], state);
 };
 
 export const cancelSelectFn: DrawReducer = (state, action) => {

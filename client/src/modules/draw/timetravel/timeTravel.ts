@@ -49,8 +49,8 @@ export const safeUpdateDrawingsPending: DrawActionPending<Drawing[]> = (
     } else {
       state.shapes[d.id] = d;
     }
-    reorder(d, state);
   });
+  reorder(drawings, state);
 };
 
 // just like draw/deleteDrawing, except this will NEVER update the undo/redo buffer
@@ -71,7 +71,7 @@ export const safeDeleteDrawingsPending: DrawActionPending<string[]> = (
   const drawings = getDrawings(state, ids);
 
   drawings.forEach((d) => (d.isDeleted = true));
-  drawings.forEach((d) => reorder(d, state));
+  reorder(drawings, state);
 };
 
 export const actionCreatorMap: ActionCreatorsMapObject = {

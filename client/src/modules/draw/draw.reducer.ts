@@ -171,7 +171,7 @@ export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
   } else {
     state.shapes[drawing.id] = drawing;
   }
-  reorder(drawing, state);
+  reorder([drawing], state);
 };
 
 export const syncDrawingFn: DrawReducer<Drawing> = (state, action) => {

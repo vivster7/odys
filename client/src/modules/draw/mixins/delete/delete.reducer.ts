@@ -34,7 +34,7 @@ export const deleteDrawingPending: DrawActionPending<string> = (
   }
 
   drawing.isDeleted = true;
-  reorder(drawing, state);
+  reorder([drawing], state);
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',

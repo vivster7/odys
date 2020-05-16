@@ -2,7 +2,11 @@ import { Drawing, DrawState } from 'modules/draw/draw.reducer';
 import { instanceOfArrow } from 'modules/draw/arrow/arrow.reducer';
 import { instanceOfShape } from 'modules/draw/shape/shape.reducer';
 
-export function reorder(drawing: Drawing, state: DrawState) {
+export function reorder(drawings: Drawing[], state: DrawState): void {
+  drawings.forEach((d) => reorderOne(d, state));
+}
+
+function reorderOne(drawing: Drawing, state: DrawState): void {
   let order = state.drawOrder;
   // remove from `order` array if present
   const idx = order.findIndex((id) => id === drawing.id);

@@ -99,7 +99,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   // state.drag = null;
   state.newRect = null;
   state.shapes[rect.id] = rect;
-  reorder(rect, state);
+  reorder([rect], state);
 
   state.select = {
     id: rect.id,
@@ -171,7 +171,7 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
   };
 
   state.shapes[id] = rect;
-  reorder(rect, state);
+  reorder([rect], state);
 
   // Setting resize is similar to firing the draw/startResize events.
   // resize events will occur on mouse move; endResize occurs on mouse up.

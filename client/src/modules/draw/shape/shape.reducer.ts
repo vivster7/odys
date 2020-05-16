@@ -65,6 +65,6 @@ export const getShapesFulfilled = (
     };
     state.shapes[s.id] = shape;
     //TODO: order should be saved on server.
-    reorder(shape, state);
+    reorder([shape], state);
   });
 };

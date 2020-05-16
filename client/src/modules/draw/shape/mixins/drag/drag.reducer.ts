@@ -110,7 +110,7 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   shape.translateY = 0;
   shape.isLastUpdatedBySync = false;
   shape.isSavedInDB = true;
-  reorder(shape, state);
+  reorder([shape], state);
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',

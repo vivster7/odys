@@ -42,7 +42,7 @@ export const getArrowsFulfilled = (
     };
     state.arrows[a.id] = arrow;
     //TODO: order should be saved on server.
-    reorder(arrow, state);
+    reorder([arrow], state);
   });
 };
 
@@ -105,7 +105,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   };
 
   state.arrows[arrow.id] = arrow;
-  reorder(arrow, state);
+  reorder([arrow], state);
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',
