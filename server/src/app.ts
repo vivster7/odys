@@ -30,6 +30,11 @@ io.on('connection', (socket: socket.Socket) => {
     socket.broadcast.volatile.emit('drawingChanged', data);
   });
 
+  socket.on('drawingSaved', (data) => {
+    // TODO timestamp against drawingChanged
+    socket.broadcast.emit('drawingSaved', data);
+  });
+
   socket.on('drawingDeleted', (data) => {
     socket.broadcast.volatile.emit('drawingDeleted', data);
   });

@@ -131,6 +131,8 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
     translateY: 0,
     deltaWidth: 0,
     deltaHeight: 0,
+    isLastUpdatedBySync: false,
+    isSavedInDB: true,
   });
 
   const shape = state.shapes[id];
@@ -143,7 +145,7 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
   shape.deltaWidth = 0;
   shape.deltaHeight = 0;
   shape.isLastUpdatedBySync = false;
-  shape.isSavedInDB = false;
+  shape.isSavedInDB = true;
 
   state.drag = null;
   state.newRect = null;

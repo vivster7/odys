@@ -34,6 +34,14 @@ const Room: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    const onDrawingChanged = (data: any) => dispatch(syncDrawing(data));
+    const emitter = socket.on('drawingSaved', onDrawingChanged);
+    return () => {
+      emitter.off('drawingSaved', onDrawingChanged);
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
     const onDrawingDeleted = (data: any) =>
       dispatch({
         type: 'draw/deleteDrawing/pending',

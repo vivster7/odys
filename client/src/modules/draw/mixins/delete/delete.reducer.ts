@@ -23,7 +23,10 @@ export const deleteDrawingPending: DrawActionPending<string> = (
 ) => {
   const id = action.meta.arg;
   const drawing = state.shapes[id] ?? state.arrows[id];
-  const snapshot = Object.assign({}, drawing);
+  const snapshot = Object.assign({}, drawing, {
+    isLastUpdatedBySync: false,
+    isSavedInDB: true, // optimistically assume this operation will succeed
+  });
   if (!drawing) {
     throw new Error(`Cannot find drawing with ${id}`);
   }

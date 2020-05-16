@@ -6,6 +6,7 @@ import {
   DrawActionRejected,
   DrawActionFulfilled,
 } from 'modules/draw/draw.reducer';
+import socket from 'socket/socket';
 
 // Saveable is a mixin related to saving an object in a database.
 export interface Saveable {
@@ -37,6 +38,8 @@ export const save: any = createAsyncThunk(
       );
       await api.shapePost({ shape: drawing });
     }
+
+    socket.emit('drawingSaved', drawing);
   }
 );
 
