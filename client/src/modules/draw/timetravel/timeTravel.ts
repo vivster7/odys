@@ -60,26 +60,27 @@ export const safeUpdateDrawingsPending: DrawActionPending<Drawing[]> = (
 };
 
 // just like draw/deleteDrawing, except this will NEVER update the undo/redo buffer
-export const safeDeleteDrawing = createAsyncThunk(
-  'draw/safeDeleteDrawing',
-  async (id: string, thunkAPI) => {
-    socket.emit('drawingDeleted', id);
-    thunkAPI.dispatch(save([id]));
+export const safeDeleteDrawings = createAsyncThunk(
+  'draw/safeDeleteDrawings',
+  async (ids: string[], thunkAPI) => {
+    // TODO: bulk socket
+    socket.emit('drawingDeleted', ids[0]);
+    thunkAPI.dispatch(save(ids));
   }
 );
 
-export const safeDeleteDrawingPending: DrawActionPending<string> = (
+export const safeDeleteDrawingsPending: DrawActionPending<string[]> = (
   state,
   action
 ) => {
-  const id = action.meta.arg;
-  const drawing = getDrawing(state, id);
+  const ids = action.meta.arg;
+  const drawings = getDrawings(state, ids);
 
-  drawing.isDeleted = true;
-  reorder(drawing, state);
+  drawings.forEach((d) => (d.isDeleted = true));
+  drawings.forEach((d) => reorder(d, state));
 };
 
 export const actionCreatorMap: ActionCreatorsMapObject = {
-  safeDeleteDrawing: safeDeleteDrawing,
+  safeDeleteDrawings: safeDeleteDrawings,
   safeUpdateDrawings: safeUpdateDrawings,
 };

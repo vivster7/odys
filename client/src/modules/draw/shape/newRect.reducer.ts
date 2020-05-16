@@ -104,7 +104,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     id: rect.id,
   };
 
-  const undo = { actionCreatorName: 'safeDeleteDrawing', arg: id };
+  const undo = { actionCreatorName: 'safeDeleteDrawings', arg: [id] };
   const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [rect] };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

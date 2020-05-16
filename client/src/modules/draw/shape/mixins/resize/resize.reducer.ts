@@ -155,7 +155,7 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
   state.resize = null;
 
   const undo = isNewRect
-    ? { actionCreatorName: 'safeDeleteDrawing', arg: id }
+    ? { actionCreatorName: 'safeDeleteDrawings', arg: [id] }
     : { actionCreatorName: 'safeUpdateDrawings', arg: [snapshot] };
   const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [shape] };
   state.timetravel.undos.push({ undo, redo });
