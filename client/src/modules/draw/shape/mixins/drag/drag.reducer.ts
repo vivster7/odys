@@ -78,14 +78,19 @@ export const endDrag: any = createAsyncThunk(
 );
 
 // endDragPending optimistically updates the shape
-export const endDragPending: DrawActionPending<string> = (state, action) => {
+export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   if (!state.drag) {
     throw new Error(
       'Cannot draw/endDrag without drag state. Did draw/startDrag fire?'
     );
   }
+  state.drag = null;
 
-  const { id } = state.drag;
+  const { id, startX, startY, endX, endY } = action.meta.arg;
+  const hasMoved = startX !== endX || startY !== endY;
+  if (!hasMoved) {
+    return;
+  }
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
@@ -105,7 +110,6 @@ export const endDragPending: DrawActionPending<string> = (state, action) => {
   shape.isLastUpdatedBySync = false;
   shape.isSavedInDB = true;
   reorder(shape, state);
-  state.drag = null;
 
   const undo = { actionCreatorName: 'safeUpdateDrawing', arg: snapshot };
   const redo = { actionCreatorName: 'safeUpdateDrawing', arg: shape };
