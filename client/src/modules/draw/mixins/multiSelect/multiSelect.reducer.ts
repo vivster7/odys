@@ -92,7 +92,6 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
   } else if (keys.length === 1) {
     state.select = {
       id: keys[0],
-      isEditing: false,
     };
     state.multiSelect.selectedShapeIds = {};
   } else {

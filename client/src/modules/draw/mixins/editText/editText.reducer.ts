@@ -2,16 +2,41 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawReducer, DrawActionPending } from '../../draw.reducer';
 import { save } from 'modules/draw/mixins/save/save.reducer';
 
+export interface EditTextState {
+  startingText: string;
+  isEditing: boolean;
+}
+
 export interface TextEditable {
   id: string;
   text: string;
 }
 
+export const startEditTextFn: DrawReducer = (state, action) => {
+  const { select } = state;
+  if (!select) {
+    throw new Error(
+      `[draw/startEditText] Cannot edit text if a shape is not selected. draw/select should have fired first.`
+    );
+  }
+
+  const { id } = select;
+  const drawing = state.shapes[id] ?? state.arrows[id];
+  if (!drawing) {
+    throw new Error(`Cannot find drawing with ${id}`);
+  }
+
+  state.editText = {
+    startingText: drawing.text,
+    isEditing: false,
+  };
+};
+
 export const editTextFn: DrawReducer<string> = (state, action) => {
   const { select } = state;
   if (!select) {
     throw new Error(
-      `[draw/editText] Cannot edit text if a shape is not selected. ODYS_SELECT_SHAPE_ACTION should have fired first.`
+      `[draw/editText] Cannot edit text if a shape is not selected. draw/select should have fired first.`
     );
   }
 
@@ -23,7 +48,7 @@ export const editTextFn: DrawReducer<string> = (state, action) => {
 
   drawing.text = action.payload;
   drawing.isLastUpdatedBySync = false;
-  select.isEditing = true;
+  state.editText.isEditing = true;
 };
 
 export const endEditText: any = createAsyncThunk(
@@ -44,10 +69,7 @@ export const endEditTextPending: DrawActionPending<string> = (
     throw new Error(`Cannot find drawing with ${id}`);
   }
 
-  // TODO: implement startEditText and capture previous state
-  const snapshot = Object.assign({}, drawing, {
-    text: '',
-  });
+  const snapshot = { ...drawing, text: state.editText.startingText };
 
   const undo = { actionCreatorName: 'safeUpdateDrawing', arg: snapshot };
   const redo = { actionCreatorName: 'safeUpdateDrawing', arg: drawing };

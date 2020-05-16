@@ -2,10 +2,10 @@ import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, OdysDispatch } from 'App';
 import debounce from 'lodash.debounce';
-import { editText } from 'modules/draw/draw.reducer';
+import { editText, startEditText } from 'modules/draw/draw.reducer';
 import { endEditText } from 'modules/draw/mixins/editText/editText.reducer';
 
-const debouncedSave = debounce((dispatch: OdysDispatch, id: string) => {
+const debouncedEndEditText = debounce((dispatch: OdysDispatch, id: string) => {
   dispatch(endEditText(id));
 }, 300);
 
@@ -27,9 +27,13 @@ const HiddenTextInput: React.FC = React.memo(() => {
     }
   });
 
+  useEffect(() => {
+    if (id) dispatch(startEditText());
+  }, [id, dispatch]);
+
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(editText(event.target.value));
-    if (id) debouncedSave(dispatch, id);
+    if (id) debouncedEndEditText(dispatch, id);
   };
 
   if (!id) return <></>;

@@ -3,7 +3,6 @@ import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 
 export interface SelectedDrawing {
   id: string;
-  isEditing: boolean;
 }
 
 export interface Selectable {
@@ -19,7 +18,6 @@ export const selectDrawingFn: DrawReducer<string> = (state, action) => {
 
   state.select = {
     id,
-    isEditing: false,
   };
   state.multiSelect = null;
   reorder(drawing, state);

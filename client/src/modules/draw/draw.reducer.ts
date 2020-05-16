@@ -49,6 +49,8 @@ import {
   editTextFn,
   endEditText,
   endEditTextPending,
+  EditTextState,
+  startEditTextFn,
 } from './mixins/editText/editText.reducer';
 import {
   getArrows,
@@ -118,6 +120,7 @@ export interface DrawState {
   shapes: ShapeData;
   arrows: ArrowData;
   drawOrder: string[];
+  editText: EditTextState;
   select: SelectedDrawing | null;
   drag: DragState | null;
   multiSelect: MultiSelectState | null;
@@ -131,6 +134,7 @@ const initialState: DrawState = {
   shapes: {},
   arrows: {},
   drawOrder: [],
+  editText: { startingText: '', isEditing: false },
   select: null,
   multiSelect: null,
   multiDrag: null,
@@ -178,6 +182,7 @@ const drawSlice = createSlice({
     updateDrawing: updateDrawingFn,
     syncDrawing: syncDrawingFn,
     // editText
+    startEditText: startEditTextFn,
     editText: editTextFn,
     // select
     selectDrawing: selectDrawingFn,
@@ -253,6 +258,7 @@ const drawSlice = createSlice({
 export const {
   updateDrawing,
   syncDrawing,
+  startEditText,
   editText,
   cancelSelect,
   selectDrawing,

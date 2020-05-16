@@ -19,9 +19,9 @@ export const keydown = createAsyncThunk(
   async (e: Keydown, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
 
-    const { select, multiSelect } = state.draw;
+    const { select, multiSelect, editText } = state.draw;
     if (e.code === 'Backspace') {
-      if (select?.id && select.isEditing === false) {
+      if (select?.id && editText.isEditing === false) {
         return thunkAPI.dispatch(deleteDrawing(select?.id));
       }
 

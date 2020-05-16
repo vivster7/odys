@@ -102,7 +102,6 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
 
   state.select = {
     id: rect.id,
-    isEditing: false,
   };
 
   const undo = { actionCreatorName: 'safeDeleteDrawing', arg: id };
