@@ -12,7 +12,6 @@ const debouncedSave = debounce((dispatch: OdysDispatch, id: string) => {
 const HiddenTextInput: React.FC = React.memo(() => {
   const dispatch = useDispatch();
   const id = useSelector((state: RootState) => state.draw.select?.id);
-  useSelector((state: RootState) => state.draw.select?.isEditing);
 
   // This selector will refresh this component whenver the resize
   // object changes. This will focus the hidden input.
