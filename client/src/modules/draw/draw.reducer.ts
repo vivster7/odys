@@ -45,7 +45,11 @@ import {
   MultiDragState,
   selectAllFn,
 } from 'modules/draw/mixins/multiSelect/multiSelect.reducer';
-import { editTextFn } from './mixins/editText/editText.reducer';
+import {
+  editTextFn,
+  endEditText,
+  endEditTextPending,
+} from './mixins/editText/editText.reducer';
 import {
   getArrows,
   getArrowsFulfilled,
@@ -139,6 +143,9 @@ const initialState: DrawState = {
 export type Drawing = Arrow | Shape;
 
 export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
+  // be wary of adding undo/redo buffer to this fn
+  // they sync changes from socket updates and need to be synchronous
+
   const { id } = action.payload;
   const existing = state.shapes[id] ?? state.arrows[id] ?? {};
   const drawing = Object.assign({}, existing, action.payload);
@@ -152,6 +159,8 @@ export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
 };
 
 export const syncDrawingFn: DrawReducer<Drawing> = (state, action) => {
+  // be wary of adding undo/redo buffer to this fn
+  // they sync changes from socket updates and need to be synchronous
   const synced = { ...action.payload, isLastUpdatedBySync: true };
 
   action = {
@@ -234,6 +243,10 @@ const drawSlice = createSlice({
     [safeDeleteDrawing.pending as any]: safeDeleteDrawingPending,
     [safeDeleteDrawing.fulfilled as any]: (state, action) => {},
     [safeDeleteDrawing.rejected as any]: (state, action) => {},
+    // editText
+    [endEditText.pending as any]: endEditTextPending,
+    [endEditText.fulfilled as any]: (state, action) => {},
+    [endEditText.rejected as any]: (state, action) => {},
   },
 });
 

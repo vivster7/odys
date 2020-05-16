@@ -4,9 +4,10 @@ import { RootState, OdysDispatch } from 'App';
 import debounce from 'lodash.debounce';
 import { save } from 'modules/draw/mixins/save/save.reducer';
 import { editText } from 'modules/draw/draw.reducer';
+import { endEditText } from 'modules/draw/mixins/editText/editText.reducer';
 
 const debouncedSave = debounce((dispatch: OdysDispatch, id: string) => {
-  dispatch(save(id));
+  dispatch(endEditText(id));
 }, 300);
 
 const HiddenTextInput: React.FC = React.memo(() => {
