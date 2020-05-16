@@ -48,7 +48,7 @@ export const editTextFn: DrawReducer<string> = (state, action) => {
 export const endEditText: any = createAsyncThunk(
   'draw/endEditText',
   async (id: string, thunkAPI) => {
-    thunkAPI.dispatch(save(id));
+    thunkAPI.dispatch(save([id]));
   }
 );
 

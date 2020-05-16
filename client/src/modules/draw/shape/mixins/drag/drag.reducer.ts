@@ -72,7 +72,7 @@ export const endDrag: any = createAsyncThunk(
   async ({ id, startX, startY, endX, endY }: EndDrag, thunkAPI) => {
     const hasMoved = startX !== endX || startY !== endY;
     if (hasMoved) {
-      thunkAPI.dispatch(save(id));
+      thunkAPI.dispatch(save([id]));
     }
   }
 );

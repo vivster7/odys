@@ -1,16 +1,17 @@
 import { useEffect, Dispatch } from 'react';
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'App';
-import { instanceOfArrow } from 'modules/draw/arrow/arrow.reducer';
-import { ShapeApi, Configuration, ArrowApi } from 'generated';
+import { instanceOfArrow, Arrow } from 'modules/draw/arrow/arrow.reducer';
+import { OdysArrowToJSON, OdysShapeToJSON } from 'generated';
 import {
   Drawing,
   DrawActionRejected,
   DrawActionFulfilled,
   syncDrawing,
-  getDrawing,
+  getDrawings,
 } from 'modules/draw/draw.reducer';
 import socket, { registerSocketListener } from 'socket/socket';
+import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 
 // Saveable is a mixin related to saving an object in a database.
 export interface Saveable {
@@ -18,46 +19,53 @@ export interface Saveable {
   isSavedInDB: boolean;
 }
 
-export const save: any = createAsyncThunk(
+export const save = createAsyncThunk(
   'draw/save',
-  async (id: string, thunkAPI) => {
+  async (ids: string[], thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
-    const drawing = state.draw.shapes[id] ?? state.draw.arrows[id];
-    if (!drawing) {
-      throw new Error(`Cannot find drawing with ${id}`);
-    }
+    const drawings = getDrawings(state.draw, ids);
 
-    if (instanceOfArrow(drawing)) {
-      const api = new ArrowApi(
-        new Configuration({
-          headers: { Prefer: 'resolution=merge-duplicates' },
-        })
-      );
-      await api.arrowPost({ arrow: drawing });
-    } else {
-      const api = new ShapeApi(
-        new Configuration({
-          headers: { Prefer: 'resolution=merge-duplicates' },
-        })
-      );
-      await api.shapePost({ shape: drawing });
-    }
+    const arrows = drawings.filter((d) => instanceOfArrow(d)) as Arrow[];
+    const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
 
-    socket.emit('drawingSaved', drawing);
+    const arrowUrl = 'http://localhost:3001/arrow';
+    const shapeUrl = 'http://localhost:3001/shape';
+
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Prefer', 'resolution=merge-duplicates');
+
+    // generated client missing support for bulk
+    const p1 = await fetch(arrowUrl, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(arrows.map((a) => OdysArrowToJSON(a))),
+    });
+
+    const p2 = await fetch(shapeUrl, {
+      headers: headers,
+      method: 'POST',
+      body: JSON.stringify(shapes.map((s) => OdysShapeToJSON(s))),
+    });
+
+    await Promise.all([p1, p2]);
+
+    // TODO: bulk socket
+    socket.emit('drawingSaved', drawings[0]);
   }
 );
 
-export const saveRejected: DrawActionRejected<string> = (state, action) => {
-  const id = action.meta.arg;
-  const drawing = getDrawing(state, id);
-  drawing.isSavedInDB = false;
+export const saveRejected: DrawActionRejected<string[]> = (state, action) => {
+  const ids = action.meta.arg;
+  const drawings = getDrawings(state, ids);
+  drawings.forEach((d) => (d.isSavedInDB = false));
   // TODO: schedule a future job to try and save?
 };
 
-export const saveFulfilled: DrawActionFulfilled<string> = (state, action) => {
-  const id = action.meta.arg;
-  const drawing = getDrawing(state, id);
-  drawing.isSavedInDB = true;
+export const saveFulfilled: DrawActionFulfilled<string[]> = (state, action) => {
+  const ids = action.meta.arg;
+  const drawings = getDrawings(state, ids);
+  drawings.forEach((d) => (d.isSavedInDB = true));
 };
 
 export function useDrawingSavedListener(

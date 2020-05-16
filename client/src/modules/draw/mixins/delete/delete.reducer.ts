@@ -14,7 +14,7 @@ export const deleteDrawing = createAsyncThunk(
   'draw/deleteDrawing',
   async (id: string, thunkAPI) => {
     socket.emit('drawingDeleted', id);
-    thunkAPI.dispatch(save(id));
+    thunkAPI.dispatch(save([id]));
   }
 );
 

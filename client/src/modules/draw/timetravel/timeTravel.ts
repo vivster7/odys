@@ -29,7 +29,7 @@ export interface TimeTravelState {
 export const safeUpdateDrawing: any = createAsyncThunk(
   'draw/safeUpdateDrawing',
   async ({ id }: Drawing, thunkAPI) => {
-    thunkAPI.dispatch(save(id));
+    thunkAPI.dispatch(save([id]));
   }
 );
 
@@ -54,7 +54,7 @@ export const safeDeleteDrawing: any = createAsyncThunk(
   'draw/safeDeleteDrawing',
   async (id: string, thunkAPI) => {
     socket.emit('drawingDeleted', id);
-    thunkAPI.dispatch(save(id));
+    thunkAPI.dispatch(save([id]));
   }
 );
 

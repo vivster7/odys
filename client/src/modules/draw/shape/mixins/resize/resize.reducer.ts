@@ -112,7 +112,7 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
 export const endResize: any = createAsyncThunk(
   'draw/endResize',
   async (id: string, thunkAPI) => {
-    thunkAPI.dispatch(save(id));
+    thunkAPI.dispatch(save([id]));
   }
 );
 

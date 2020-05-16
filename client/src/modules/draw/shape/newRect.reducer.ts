@@ -36,7 +36,7 @@ export const startNewRectFn: DrawReducer<NewRectState> = (state, action) => {
 export const endNewRectByClick = createAsyncThunk(
   'draw/endNewRectByClick',
   async ({ id }: NewRect, thunkAPI) => {
-    thunkAPI.dispatch(save(id));
+    thunkAPI.dispatch(save([id]));
   }
 );
 
