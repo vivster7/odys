@@ -17,6 +17,12 @@ export function instanceOfArrow(drawing: Drawing): drawing is Arrow {
   return 'fromShapeId' in drawing && 'toShapeId' in drawing;
 }
 
+export function getConnectedArrows(state: DrawState, ids: string[]): Arrow[] {
+  return Object.values(state.arrows).filter(
+    (a) => ids.includes(a.toShapeId) || ids.includes(a.fromShapeId)
+  );
+}
+
 export const getArrows = createAsyncThunk(
   'draw/getArrows',
   async (boardId: string, thunkAPI): Promise<OdysArrow[]> => {
@@ -90,8 +96,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
     );
   }
 
-  const arrow = {
-    type: 'arrow',
+  const arrow: Arrow = {
     id: id,
     fromShapeId: fromShapeId,
     toShapeId: toShapeId,

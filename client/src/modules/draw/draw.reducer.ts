@@ -13,8 +13,8 @@ import {
   endDragPending,
 } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import {
-  deleteDrawing,
-  deleteDrawingPending,
+  deleteDrawings,
+  deleteDrawingsPending,
 } from 'modules/draw/mixins/delete/delete.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import {
@@ -244,9 +244,9 @@ const drawSlice = createSlice({
     [endNewRectByClick.fulfilled as any]: (state, action) => {},
     [endNewRectByClick.rejected as any]: (state, action) => {},
     // delete
-    [deleteDrawing.pending as any]: deleteDrawingPending,
-    [deleteDrawing.fulfilled as any]: (state, action) => {},
-    [deleteDrawing.rejected as any]: (state, action) => {},
+    [deleteDrawings.pending as any]: deleteDrawingsPending,
+    [deleteDrawings.fulfilled as any]: (state, action) => {},
+    [deleteDrawings.rejected as any]: (state, action) => {},
     // timetravel
     [undo.pending as any]: (state, action) => {},
     [undo.fulfilled as any]: undoFulfilled,

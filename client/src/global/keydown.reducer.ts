@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'App';
-import { deleteDrawing } from 'modules/draw/mixins/delete/delete.reducer';
+import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
 import { selectAll, cancelSelect } from 'modules/draw/draw.reducer';
 import { undo } from 'modules/draw/timetravel/undo.reducer';
 import { redo } from 'modules/draw/timetravel/redo.reducer';
@@ -22,14 +22,12 @@ export const keydown = createAsyncThunk(
     const { select, multiSelect, editText } = state.draw;
     if (e.code === 'Backspace') {
       if (select?.id && editText.isEditing === false) {
-        return thunkAPI.dispatch(deleteDrawing(select?.id));
+        return thunkAPI.dispatch(deleteDrawings([select.id]));
       }
 
       if (multiSelect) {
         const ids = Object.keys(multiSelect.selectedShapeIds);
-        await Promise.all(
-          ids.map((id) => thunkAPI.dispatch(deleteDrawing(id)))
-        );
+        await thunkAPI.dispatch(deleteDrawings(ids));
         return thunkAPI.dispatch(cancelSelect());
       }
     }

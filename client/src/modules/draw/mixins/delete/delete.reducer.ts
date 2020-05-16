@@ -1,64 +1,64 @@
-import { useEffect, Dispatch } from 'react';
+import { useEffect } from 'react';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { DrawActionPending, getDrawing } from 'modules/draw/draw.reducer';
+import { DrawActionPending, getDrawings } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import socket, { registerSocketListener } from 'socket/socket';
 import { save } from '../save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
+import { OdysDispatch, RootState } from 'App';
+import { getConnectedArrows } from 'modules/draw/arrow/arrow.reducer';
 
 export interface Deleteable {
   id: string;
   isDeleted: boolean;
 }
 
-export const deleteDrawing = createAsyncThunk(
-  'draw/deleteDrawing',
-  async (id: string, thunkAPI) => {
-    socket.emit('drawingDeleted', id);
-    thunkAPI.dispatch(save([id]));
+export const deleteDrawings = createAsyncThunk(
+  'draw/deleteDrawings',
+  async (ids: string[], thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const arrows = getConnectedArrows(state.draw, ids);
+    const allIds = ids.concat(arrows.map((a) => a.id));
+
+    // TOOD: bulk socket
+    socket.emit('drawingDeleted', allIds[0]);
+    thunkAPI.dispatch(save(allIds));
   }
 );
 
-export const deleteDrawingPending: DrawActionPending<string> = (
+export const deleteDrawingsPending: DrawActionPending<string[]> = (
   state,
   action
 ) => {
-  const id = action.meta.arg;
-  const drawing = getDrawing(state, id);
-  const snapshot = Object.assign({}, drawing, {
-    isLastUpdatedBySync: false,
-    isSavedInDB: true, // optimistically assume this operation will succeed
+  const ids = action.meta.arg;
+  const drawings = getDrawings(state, ids).concat(
+    getConnectedArrows(state, ids)
+  );
+  const snapshots = drawings.map((d) => {
+    return { ...d, isLastUpdatedBySync: false, isSavedInDB: true };
   });
-  if (!drawing) {
-    throw new Error(`Cannot find drawing with ${id}`);
-  }
 
-  drawing.isDeleted = true;
-  reorder([drawing], state);
+  drawings.forEach((d) => (d.isDeleted = true));
+  reorder(drawings, state);
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: [snapshot],
+    arg: snapshots,
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',
-    arg: [id],
+    arg: drawings.map((d) => d.id),
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };
 
-export function useDrawingDeletedListener(
-  dispatch: Dispatch<{
-    type: string;
-    meta: { arg: any };
-  }>
-) {
+export function useDrawingDeletedListener(dispatch: OdysDispatch) {
   useEffect(() => {
     const onDrawingDeleted = (data: any) =>
       dispatch({
-        type: 'draw/deleteDrawing/pending',
-        meta: { arg: data },
+        type: 'draw/deleteDrawings/pending',
+        meta: { arg: [data] },
       });
     return registerSocketListener('drawingDeleted', onDrawingDeleted);
   }, [dispatch]);
