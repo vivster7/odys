@@ -8,6 +8,7 @@ import { RECT_WIDTH, RECT_HEIGHT } from './type/Rect';
 import { zoomLeveltoScaleMap } from '../../canvas/zoom/zoom.reducer';
 import { GroupingRect, Rect } from './shape.reducer';
 import { save } from '../mixins/save/save.reducer';
+import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 
 export interface NewRectState {
   clickX: number;
@@ -104,8 +105,14 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     id: rect.id,
   };
 
-  const undo = { actionCreatorName: 'safeDeleteDrawings', arg: [id] };
-  const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [rect] };
+  const undo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeDeleteDrawings',
+    arg: [id],
+  };
+  const redo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: [rect],
+  };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };

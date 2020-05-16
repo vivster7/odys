@@ -1,10 +1,5 @@
 import { createAsyncThunk, ActionCreatorsMapObject } from '@reduxjs/toolkit';
-import {
-  Drawing,
-  DrawActionPending,
-  getDrawing,
-  getDrawings,
-} from '../draw.reducer';
+import { Drawing, DrawActionPending, getDrawings } from '../draw.reducer';
 import { instanceOfArrow } from '../arrow/arrow.reducer';
 import { reorder } from '../mixins/drawOrder/drawOrder';
 import socket from 'socket/socket';
@@ -12,10 +7,9 @@ import { save } from '../mixins/save/save.reducer';
 
 // TimeTravelSafeAction promise not to modify the undo or redo buffer.
 // This is not enforced by types, so pretty please just follow the rules.
-interface TimeTravelSafeAction<T = any> {
-  actionCreatorName: string;
-  arg: T;
-}
+export type TimeTravelSafeAction =
+  | { actionCreatorName: 'safeDeleteDrawings'; arg: string[] }
+  | { actionCreatorName: 'safeUpdateDrawings'; arg: Drawing[] };
 
 // These travel together and cancel each other out.
 // If undo is called, the pair moves to `redos` state.

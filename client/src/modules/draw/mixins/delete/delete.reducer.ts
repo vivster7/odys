@@ -4,6 +4,7 @@ import { DrawActionPending, getDrawing } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import socket, { registerSocketListener } from 'socket/socket';
 import { save } from '../save/save.reducer';
+import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 
 export interface Deleteable {
   id: string;
@@ -35,8 +36,14 @@ export const deleteDrawingPending: DrawActionPending<string> = (
   drawing.isDeleted = true;
   reorder(drawing, state);
 
-  const undo = { actionCreatorName: 'safeUpdateDrawings', arg: [snapshot] };
-  const redo = { actionCreatorName: 'safeDeleteDrawings', arg: [id] };
+  const undo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: [snapshot],
+  };
+  const redo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeDeleteDrawings',
+    arg: [id],
+  };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };

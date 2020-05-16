@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawReducer, DrawActionPending, getDrawing } from '../../draw.reducer';
 import { save } from 'modules/draw/mixins/save/save.reducer';
+import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 
 export interface EditTextState {
   startingText: string;
@@ -61,8 +62,14 @@ export const endEditTextPending: DrawActionPending<string> = (
 
   const snapshot = { ...drawing, text: state.editText.startingText };
 
-  const undo = { actionCreatorName: 'safeUpdateDrawings', arg: [snapshot] };
-  const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [drawing] };
+  const undo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: [snapshot],
+  };
+  const redo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: [drawing],
+  };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };

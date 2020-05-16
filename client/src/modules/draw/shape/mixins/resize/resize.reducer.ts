@@ -1,6 +1,7 @@
 import { DrawReducer, DrawActionPending } from 'modules/draw/draw.reducer';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from 'modules/draw/mixins/save/save.reducer';
+import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -154,10 +155,13 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
   state.newRect = null;
   state.resize = null;
 
-  const undo = isNewRect
+  const undo: TimeTravelSafeAction = isNewRect
     ? { actionCreatorName: 'safeDeleteDrawings', arg: [id] }
     : { actionCreatorName: 'safeUpdateDrawings', arg: [snapshot] };
-  const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [shape] };
+  const redo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: [shape],
+  };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };

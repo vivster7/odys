@@ -8,6 +8,7 @@ import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { Saveable, save } from '../mixins/save/save.reducer';
+import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
 type ArrowMixins = Selectable & TextEditable & Syncable & Saveable & Deleteable;
@@ -106,8 +107,14 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   state.arrows[arrow.id] = arrow;
   reorder(arrow, state);
 
-  const undo = { actionCreatorName: 'safeDeleteDrawings', arg: [id] };
-  const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [arrow] };
+  const undo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeDeleteDrawings',
+    arg: [id],
+  };
+  const redo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: [arrow],
+  };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };

@@ -2,6 +2,7 @@ import { DrawReducer, DrawActionPending } from '../../../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from 'modules/draw/mixins/save/save.reducer';
+import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 
 export interface DragState {
   id: string;
@@ -111,8 +112,14 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   shape.isSavedInDB = true;
   reorder(shape, state);
 
-  const undo = { actionCreatorName: 'safeUpdateDrawings', arg: [snapshot] };
-  const redo = { actionCreatorName: 'safeUpdateDrawings', arg: [shape] };
+  const undo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: [snapshot],
+  };
+  const redo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: [shape],
+  };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };
