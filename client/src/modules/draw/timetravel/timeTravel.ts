@@ -2,7 +2,7 @@ import { createAsyncThunk, ActionCreatorsMapObject } from '@reduxjs/toolkit';
 import { Drawing, DrawActionPending, getDrawings } from '../draw.reducer';
 import { instanceOfArrow } from '../arrow/arrow.reducer';
 import { reorder } from '../mixins/drawOrder/drawOrder';
-import socket from 'socket/socket';
+import { emitEvent } from 'socket/socket';
 import { save } from '../mixins/save/save.reducer';
 
 // TimeTravelSafeAction promise not to modify the undo or redo buffer.
@@ -58,7 +58,7 @@ export const safeDeleteDrawings = createAsyncThunk(
   'draw/safeDeleteDrawings',
   async (ids: string[], thunkAPI) => {
     // TODO: bulk socket
-    socket.emit('drawingDeleted', ids[0]);
+    emitEvent('drawingDeleted', ids[0]);
     thunkAPI.dispatch(save(ids));
   }
 );

@@ -11,7 +11,6 @@ import drawReducer from './modules/draw/draw.reducer';
 import canvasReducer from './modules/canvas/canvas.reducer';
 
 import errorReducer from './modules/errors/errors.reducer';
-import socket from './socket/socket';
 import roomReducer from './modules/room/room.reducer';
 import boardReducer from './modules/board/board.reducer';
 
@@ -31,8 +30,6 @@ const store = configureStore({
 export type OdysDispatch = typeof store.dispatch;
 
 const App: React.FC = () => {
-  socket.emit('client connected');
-
   return (
     <Provider store={store}>
       <BrowserRouter>

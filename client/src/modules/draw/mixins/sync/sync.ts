@@ -1,6 +1,6 @@
 import { useState, useEffect, Dispatch } from 'react';
 import { PayloadAction } from '@reduxjs/toolkit';
-import socket, { registerSocketListener } from 'socket/socket';
+import { emitEvent, registerSocketListener } from 'socket/socket';
 import { syncDrawing, Drawing } from 'modules/draw/draw.reducer';
 
 export interface Syncable {
@@ -45,7 +45,7 @@ export function useDrawingChangedEmitter(subject?: Syncable) {
     if (!subject || subject?.isLastUpdatedBySync) {
       return;
     }
-    socket.emit('drawingChanged', { ...subject });
+    emitEvent('drawingChanged', { ...subject });
   }, [subject]);
 }
 

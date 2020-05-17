@@ -1,8 +1,12 @@
 import { useEffect, Dispatch } from 'react';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { DrawActionPending, DrawReducer, getDrawing } from 'modules/draw/draw.reducer';
+import {
+  DrawActionPending,
+  DrawReducer,
+  getDrawing,
+} from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import socket, { registerSocketListener } from 'socket/socket';
+import { emitEvent, registerSocketListener } from 'socket/socket';
 
 export interface SelectedDrawing {
   id: string;
@@ -15,7 +19,7 @@ export interface Selectable {
 export const selectDrawing = createAsyncThunk(
   'draw/selectDrawing',
   async (id: string, thunkAPI) => {
-    socket.emit('drawingSelected', id);
+    emitEvent('drawingSelected', id);
   }
 );
 

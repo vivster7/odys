@@ -10,7 +10,7 @@ import {
   syncDrawing,
   getDrawings,
 } from 'modules/draw/draw.reducer';
-import socket, { registerSocketListener } from 'socket/socket';
+import { emitEvent, registerSocketListener } from 'socket/socket';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 
 // Saveable is a mixin related to saving an object in a database.
@@ -51,7 +51,7 @@ export const save = createAsyncThunk(
     await Promise.all([p1, p2]);
 
     // TODO: bulk socket
-    socket.emit('drawingSaved', drawings[0]);
+    emitEvent('drawingSaved', drawings[0]);
   }
 );
 

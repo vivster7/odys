@@ -18,33 +18,47 @@ app.use(index);
 const server = require('http').createServer(app);
 const io = socket(server);
 
-io.on('connection', (socket: socket.Socket) => {
-  console.log('new client connected');
+io.use((socket, next) => {
+  const roomId = socket.handshake.query?.roomId;
+  if (roomId) {
+    return next();
+  }
+  return next(new Error('Handshake did not specify room to join'));
+});
 
-  socket.on('client connected', () => {
-    console.log(`client ${socket.client.id} emitted a connect event`);
-    socket.broadcast.emit('other client connect', { id: socket.client.id });
-  });
+io.on('connection', (socket: socket.Socket) => {
+  const query = socket.handshake.query;
+  const roomId = query.roomId;
+
+  console.log('client connected', socket.id);
+  socket.join(roomId);
+
+  const broadcastToRoom = (eventName: string, data: any) => {
+    console.log(`broadcast to room ${roomId}: ${eventName}`);
+    socket.to(roomId).broadcast.emit(eventName, data);
+  };
+
+  broadcastToRoom('clientConnected', { id: socket.id });
 
   socket.on('drawingChanged', (data) => {
-    socket.broadcast.volatile.emit('drawingChanged', data);
+    socket.to(roomId).broadcast.volatile.emit('drawingChanged', data);
   });
 
   socket.on('drawingSaved', (data) => {
-    // TODO timestamp against drawingChanged
-    socket.broadcast.emit('drawingSaved', data);
+    // TODO: potential race-condition with drawingChanged? (use timestamps)
+    broadcastToRoom('drawingSaved', data);
   });
 
   socket.on('drawingDeleted', (data) => {
-    socket.broadcast.volatile.emit('drawingDeleted', data);
+    broadcastToRoom('drawingDeleted', data);
   });
 
   socket.on('drawingSelected', (data) => {
-    socket.broadcast.volatile.emit('drawingSelected', data);
+    broadcastToRoom('drawingSelected', data);
   });
 
   socket.on('disconnect', () => {
-    console.log('client disconnected');
+    broadcastToRoom('clientDisconnected', { id: socket.id });
   });
 });
 

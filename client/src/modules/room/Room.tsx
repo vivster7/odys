@@ -9,6 +9,8 @@ import { useDrawingChangedListener } from 'modules/draw/mixins/sync/sync';
 import { useDrawingDeletedListener } from 'modules/draw/mixins/delete/delete.reducer';
 import { useDrawingSavedListener } from 'modules/draw/mixins/save/save.reducer';
 
+import { connect } from 'socket/socket';
+
 const Room: React.FC = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -27,14 +29,18 @@ const Room: React.FC = () => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(getOrCreateRoom(id));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    connect(id);
+  }, [id]);
+
   useDrawingChangedListener(dispatch);
   useDrawingSavedListener(dispatch);
   useDrawingDeletedListener(dispatch);
   useDrawingSelectedListener(dispatch);
-
-  useEffect(() => {
-    dispatch(getOrCreateRoom(id));
-  }, [dispatch, id]);
 
   return (
     <div

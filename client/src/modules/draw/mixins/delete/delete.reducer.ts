@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawActionPending, getDrawings } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import socket, { registerSocketListener } from 'socket/socket';
+import { emitEvent, registerSocketListener } from 'socket/socket';
 import { save } from '../save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { OdysDispatch, RootState } from 'App';
@@ -21,7 +21,7 @@ export const deleteDrawings = createAsyncThunk(
     const allIds = ids.concat(arrows.map((a) => a.id));
 
     // TOOD: bulk socket
-    socket.emit('drawingDeleted', allIds[0]);
+    emitEvent('drawingDeleted', allIds[0]);
     thunkAPI.dispatch(save(allIds));
   }
 );
