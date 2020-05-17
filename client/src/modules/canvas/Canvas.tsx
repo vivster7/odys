@@ -138,6 +138,16 @@ const Canvas: React.FC = () => {
     };
   });
 
+  useEffect(() => {
+    window.addEventListener('wheel', handleWheel, {
+      passive: false,
+      capture: true,
+    });
+    return () => {
+      window.removeEventListener('wheel', handleWheel, { capture: true });
+    };
+  });
+
   function handleMouseMove(e: React.MouseEvent) {
     if (newRect) {
       dispatch(
@@ -261,11 +271,28 @@ const Canvas: React.FC = () => {
     }
   }
 
-  function handleWheel(e: React.WheelEvent) {
+  function handleWheel(e: WheelEvent) {
+    // stops native pinch-to-zoom
+    e.preventDefault();
+
+    // browser sends ctrl key for pinch-to-zoom
+    const isPinchToZoom = e.ctrlKey;
+
     const invertX = (e.clientX - topLeftX) / scale;
     const invertY = (e.clientY - topLeftY) / scale;
-    const scaleFactor =
-      -e.deltaY * (e.deltaMode === 1 ? 0.05 : e.deltaMode ? 1 : 0.002);
+
+    let scaleFactor;
+    if (e.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
+      scaleFactor = 0.002 * -e.deltaY;
+    } else if (e.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+      scaleFactor = 0.05 * -e.deltaY;
+    } else {
+      scaleFactor = 1 * -e.deltaY;
+    }
+
+    if (isPinchToZoom) {
+      scaleFactor *= 7;
+    }
 
     const updatedScale = bound(
       scale * Math.pow(2, scaleFactor),
@@ -299,7 +326,7 @@ const Canvas: React.FC = () => {
       onMouseMove={(e) => handleMouseMove(e)}
       onMouseDown={(e) => handleMouseDown(e)}
       onMouseUp={(e) => handleMouseUp(e)}
-      onWheel={(e) => handleWheel(e)}
+      // onWheel={(e) => handleWheel(e)}
       cursor={cursor}
     >
       <g id="odys-zoomable-group" transform={transform}>
