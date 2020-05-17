@@ -13,6 +13,7 @@ import canvasReducer from './modules/canvas/canvas.reducer';
 import errorReducer from './modules/errors/errors.reducer';
 import roomReducer from './modules/room/room.reducer';
 import boardReducer from './modules/board/board.reducer';
+import playersReducer from './modules/players/players.reducer';
 
 const rootReducer = combineReducers({
   draw: drawReducer,
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   errors: errorReducer,
   room: roomReducer,
   board: boardReducer,
+  players: playersReducer,
 });
 export type RootState = ReturnType<typeof rootReducer>;
 

@@ -1,5 +1,4 @@
 import io from 'socket.io-client';
-import { noop } from 'lodash';
 
 let socket: SocketIOClient.Socket;
 
@@ -8,10 +7,6 @@ export function connect(roomId: string) {
 
   socket.on('connected', () => {
     console.log('i am connected', socket.connected);
-  });
-
-  socket.on('clientConnected', (data: any) => {
-    console.log('welcome friend: ', data.id);
   });
 }
 

@@ -38,7 +38,7 @@ io.on('connection', (socket: socket.Socket) => {
     socket.to(roomId).broadcast.emit(eventName, data);
   };
 
-  broadcastToRoom('clientConnected', { id: socket.id });
+  broadcastToRoom('playerConnected', { id: socket.id });
 
   socket.on('drawingChanged', (data) => {
     socket.to(roomId).broadcast.volatile.emit('drawingChanged', data);
@@ -58,7 +58,7 @@ io.on('connection', (socket: socket.Socket) => {
   });
 
   socket.on('disconnect', () => {
-    broadcastToRoom('clientDisconnected', { id: socket.id });
+    broadcastToRoom('playerDisconnected', { id: socket.id });
   });
 });
 
