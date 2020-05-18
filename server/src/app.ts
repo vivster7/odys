@@ -70,8 +70,8 @@ io.on('connection', (socket: socket.Socket) => {
     broadcastToRoom('drawingDeleted', data);
   });
 
-  socket.on('drawingSelected', (data) => {
-    broadcastToRoom('drawingSelected', data);
+  socket.on('drawingSelected', (id) => {
+    broadcastToRoom('drawingSelected', { id, playerId: socket.id });
   });
 
   socket.on('disconnect', () => {

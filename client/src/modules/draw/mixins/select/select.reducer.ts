@@ -1,4 +1,3 @@
-import { useEffect, Dispatch } from 'react';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   DrawActionPending,
@@ -6,7 +5,7 @@ import {
   getDrawing,
 } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import { emitEvent, registerSocketListener } from 'socket/socket';
+import { emitEvent } from 'socket/socket';
 
 export interface SelectedDrawing {
   id: string;
@@ -41,19 +40,3 @@ export const cancelSelectFn: DrawReducer = (state, action) => {
   state.select = null;
   state.multiSelect = null;
 };
-
-export function useDrawingSelectedListener(
-  dispatch: Dispatch<{
-    type: string;
-    meta: { arg: any };
-  }>
-) {
-  useEffect(() => {
-    const onDrawingSelected = (data: any) =>
-      dispatch({
-        type: 'draw/selectDrawing/pending',
-        meta: { arg: data },
-      });
-    return registerSocketListener('drawingSelected', onDrawingSelected);
-  }, [dispatch]);
-}

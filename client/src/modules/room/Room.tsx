@@ -4,11 +4,11 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
 import { keydown } from 'global/keydown.reducer';
-import { useDrawingSelectedListener } from 'modules/draw/mixins/select/select.reducer';
 import { useDrawingChangedListener } from 'modules/draw/mixins/sync/sync';
 import { useDrawingDeletedListener } from 'modules/draw/mixins/delete/delete.reducer';
 import { useDrawingSavedListener } from 'modules/draw/mixins/save/save.reducer';
 import { usePlayerConnectionListeners } from 'modules/players/players.reducer';
+import { useDrawingSelectedListener } from 'modules/players/mixins/selection/selection.reducer';
 
 import { connect } from 'socket/socket';
 
@@ -39,10 +39,10 @@ const Room: React.FC = () => {
   }, [id]);
 
   usePlayerConnectionListeners(dispatch);
+  useDrawingSelectedListener(dispatch);
   useDrawingChangedListener(dispatch);
   useDrawingSavedListener(dispatch);
   useDrawingDeletedListener(dispatch);
-  useDrawingSelectedListener(dispatch);
 
   return (
     <div

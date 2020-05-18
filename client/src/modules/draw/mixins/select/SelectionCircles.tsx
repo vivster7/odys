@@ -3,6 +3,7 @@ import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import { startResize } from 'modules/draw/draw.reducer';
 import { useDispatch } from 'react-redux';
 import { Anchor } from 'modules/draw/shape/mixins/resize/resize.reducer';
+import { COLORS } from 'modules/draw/mixins/colors/colors';
 
 interface SelectionCirclesProps {
   id: string;
@@ -13,7 +14,7 @@ interface SelectionCirclesProps {
 
 const SelectionCircles: React.FC<SelectionCirclesProps> = (props) => {
   const dispatch = useDispatch();
-  const radiusSize = 6 / zoomLeveltoScaleMap[props.createdAtZoomLevel];
+  const radiusSize = 4 / zoomLeveltoScaleMap[props.createdAtZoomLevel];
 
   function onMouseDown(e: React.MouseEvent, anchor: Anchor) {
     e.stopPropagation();
@@ -30,27 +31,27 @@ const SelectionCircles: React.FC<SelectionCirclesProps> = (props) => {
   return (
     <>
       <circle
-        fill="cornflowerblue"
+        fill={COLORS.selected}
         r={radiusSize + 'px'}
         cursor="nw-resize"
         onMouseDown={(e) => onMouseDown(e, 'NWAnchor')}
       ></circle>
       <circle
-        fill="cornflowerblue"
+        fill={COLORS.selected}
         r={radiusSize + 'px'}
         cursor="ne-resize"
         onMouseDown={(e) => onMouseDown(e, 'NEAnchor')}
         cx={props.width}
       ></circle>
       <circle
-        fill="cornflowerblue"
+        fill={COLORS.selected}
         r={radiusSize + 'px'}
         cursor="sw-resize"
         onMouseDown={(e) => onMouseDown(e, 'SWAnchor')}
         cy={props.height}
       ></circle>
       <circle
-        fill="cornflowerblue"
+        fill={COLORS.selected}
         r={radiusSize + 'px'}
         cursor="se-resize"
         onMouseDown={(e) => onMouseDown(e, 'SEAnchor')}

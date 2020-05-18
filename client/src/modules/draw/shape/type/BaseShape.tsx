@@ -2,6 +2,8 @@ import React from 'react';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
 import { Shape } from '../shape.reducer';
+import { Player } from 'modules/players/players.reducer';
+import { COLORS } from 'modules/draw/mixins/colors/colors';
 export const SHAPE_WIDTH = 150;
 export const SHAPE_HEIGHT = 75;
 
@@ -15,6 +17,7 @@ export interface BaseShapeProps {
   shape: Shape;
   isMultiSelected: boolean;
   isSelected: boolean;
+  playerSelected?: Player;
   onMouseDown: (e: React.MouseEvent) => void;
 }
 
@@ -29,6 +32,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     textY,
     isMultiSelected,
     isSelected,
+    playerSelected,
     onMouseDown,
   } = props;
 
@@ -51,10 +55,17 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
 
   const scale = zoomLeveltoScaleMap[createdAtZoomLevel];
   const fontSize = 14 / scale;
-  const radiusSize = 4 / scale;
-  const strokeWidth = 1 / scale;
-  const selectedStrokeDashArray = 5 / scale;
+  const radiusSize = 2 / scale;
+  const strokeWidth = 2 / scale;
+  const selectedStrokeDashArray = 4 / scale;
   const scaledStrokeDasharray = strokeDasharray / scale;
+
+  const selectColor =
+    isSelected || isMultiSelected
+      ? COLORS.selected
+      : playerSelected
+      ? playerSelected.color
+      : COLORS.default;
 
   if (!shape) return <></>;
   return (
@@ -72,7 +83,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         ry={radiusSize + 'px'}
         fill={fill}
         fillOpacity={fillOpacity}
-        stroke={isSelected || isMultiSelected ? 'cornflowerblue' : 'darkgray'}
+        stroke={selectColor}
         strokeWidth={strokeWidth + 'px'}
         strokeDasharray={
           isSelected || isMultiSelected

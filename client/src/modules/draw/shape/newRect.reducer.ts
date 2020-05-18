@@ -78,7 +78,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   const rect: Rect = {
     type: 'rect',
     id: id,
-    text: 'Concept',
+    text: 'box',
     x: x - width / 2,
     y: y - height / 2,
     width: width,

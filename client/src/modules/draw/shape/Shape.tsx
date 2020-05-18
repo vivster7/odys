@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { find } from 'lodash';
+
 import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
 
@@ -11,6 +13,7 @@ import { isOverlapping } from 'math/box';
 import { startDrag, startNewRect } from '../draw.reducer';
 import { selectDrawing } from 'modules/draw/mixins/select/select.reducer';
 import { Shape as ShapeType } from './shape.reducer';
+import { Player } from 'modules/players/players.reducer';
 import { drawArrow } from '../arrow/arrow.reducer';
 import * as uuid from 'uuid';
 
@@ -24,6 +27,7 @@ export interface ShapeTypeProps {
   isDragging: boolean;
   isMultiSelected: boolean;
   isSelected: boolean;
+  playerSelected?: Player;
   onMouseDown: (e: React.MouseEvent) => void;
 }
 
@@ -44,6 +48,11 @@ export const Shape: React.FC<ShapeId> = (props) => {
       !!state.draw.select?.id && state.draw.shapes[state.draw.select?.id]
   );
   const isSelected = selectedShape && selectedShape.id === id;
+
+  const playerSelected = useSelector((state: RootState) => {
+    const selected = find(state.players.selections, (s) => s.id === id);
+    return selected ? state.players.players[selected.playerId] : undefined;
+  });
 
   function onMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
@@ -97,6 +106,7 @@ export const Shape: React.FC<ShapeId> = (props) => {
     isDragging,
     isMultiSelected,
     isSelected,
+    playerSelected,
     onMouseDown,
   };
 
