@@ -16,14 +16,14 @@ psql -U postgres -c "create role $PG_USER noinherit login password '$PG_PASSWORD
 createdb "$DATABASE"
 
 # create api schema + tables
-psql -U postgres -d odys_dev < "$DIR"/../schema.ddl
+psql -U postgres -d "$DATABASE" < "$DIR"/../schema.ddl
 
 # anon grant can access everything in api schema
-psql -U postgres -d odys_dev -c "grant usage on schema $PG_SCHEMA to $PG_ANON_USER;"
-psql -U postgres -d odys_dev -c "grant select, insert, update, delete on all tables in schema $PG_SCHEMA to $PG_ANON_USER;"
+psql -U postgres -d "$DATABASE" -c "grant usage on schema $PG_SCHEMA to $PG_ANON_USER;"
+psql -U postgres -d "$DATABASE" -c "grant select, insert, update, delete on all tables in schema $PG_SCHEMA to $PG_ANON_USER;"
 
 # authenticator can become anon (cannot login as anon directly)
-psql -U postgres -d odys_dev -c "grant $PG_ANON_USER to $PG_USER;"
+psql -U postgres -d "$DATABASE" -c "grant $PG_ANON_USER to $PG_USER;"
 
 # create postgrest.dev.conf file
 cat >"$DIR"/../postgrest.dev.conf <<EOF

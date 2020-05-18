@@ -1,0 +1,41 @@
+{
+  "admin": {
+    "disabled": true
+  },
+  "apps": {
+    "http": {
+      "servers": {
+        "postgrest": {
+          "listen": [
+            "0.0.0.0:8080"
+          ],
+          "routes": [
+            {
+              "match": [
+                {
+                  "path": [
+                    "/*"
+                  ]
+                }
+              ],
+              "handle": [
+                {
+                  "handler": "reverse_proxy",
+                  "upstreams": [
+                    {
+                      "dial": "localhost:3001"
+                    }
+                  ]
+                }
+              ],
+              "terminal": true
+            }
+          ],
+          "automatic_https": {
+            "disable": true
+          }
+        }
+      }
+    }
+  }
+}
