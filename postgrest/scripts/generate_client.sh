@@ -6,6 +6,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # Import .env variables
 set -a
 [ -f "$DIR"/../.env ] && source "$DIR"/../.env
+[ -f "$DIR"/../.env.local ] && source "$DIR"/../.env.local
 set +a
 
 # start postgreset
