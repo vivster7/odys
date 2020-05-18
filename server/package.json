@@ -5,8 +5,9 @@
   "description": "Boxes and Arrows server",
   "main": "src/index.js",
   "scripts": {
+    "build-client": "cd ../client && yarn build && mv build ../server/build/client",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
-    "build-prod": "tsc",
+    "build-prod": "tsc && yarn build-client",
     "start": "node ./build/app.js"
   },
   "repository": {

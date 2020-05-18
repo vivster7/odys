@@ -4,16 +4,26 @@ import cors from 'cors';
 import express from 'express';
 import bodyParser from 'body-parser';
 import socket from 'socket.io';
+import path from 'path';
 
 const { PORT } = process.env;
 const index = require('./routes/index');
+const status = require('./routes/status');
 
 const app: express.Application = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, './../build/client')));
+
 app.use(index);
+app.use(status);
+
+// catch all
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname + './../build/client/index.html'));
+});
 
 const server = require('http').createServer(app);
 const io = socket(server);
@@ -30,13 +40,13 @@ const connectExistingPlayersToSender = (
   socket: socket.Socket,
   roomId: string
 ) => {
-  io.sockets.in(roomId).clients((err, clients) => {
-    clients = clients.filter((id) => id !== socket.id);
+  io.sockets.in(roomId).clients((err: any, clients: any) => {
+    clients = clients.filter((id: string) => id !== socket.id);
     if (clients.length) {
       console.log(`connecting existing players ${clients}`);
       socket.emit(
         'playersConnected',
-        clients.map((id) => ({ id: id }))
+        clients.map((id: string) => ({ id: id }))
       );
     }
   });
