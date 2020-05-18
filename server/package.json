@@ -5,9 +5,9 @@
   "description": "Boxes and Arrows server",
   "main": "src/index.js",
   "scripts": {
-    "start": "ts-node-dev --respawn --transpileOnly src/app.ts",
+    "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "build-prod": "tsc",
-    "start-prod": "build-prod && node ./build/app.js"
+    "start": "node ./build/app.js"
   },
   "repository": {
     "type": "git",
@@ -17,16 +17,17 @@
   "license": "ISC",
   "dependencies": {
     "@types/cors": "^2.8.6",
+    "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.6",
     "@types/socket.io": "^2.1.4",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "socket.io": "^2.3.0",
     "typescript": "^3.8.3"
   },
   "devDependencies": {
-    "dotenv": "^8.2.0",
     "nodemon": "^2.0.3",
     "ts-node-dev": "^1.0.0-pre.44"
   }
