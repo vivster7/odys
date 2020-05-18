@@ -26,6 +26,22 @@ io.use((socket, next) => {
   return next(new Error('Handshake did not specify room to join'));
 });
 
+const connectExistingPlayersToSender = (
+  socket: socket.Socket,
+  roomId: string
+) => {
+  io.sockets.in(roomId).clients((err, clients) => {
+    clients = clients.filter((id) => id !== socket.id);
+    if (clients.length) {
+      console.log(`connecting existing players ${clients}`);
+      socket.emit(
+        'playersConnected',
+        clients.map((id) => ({ id: id }))
+      );
+    }
+  });
+};
+
 io.on('connection', (socket: socket.Socket) => {
   const query = socket.handshake.query;
   const roomId = query.roomId;
@@ -38,7 +54,8 @@ io.on('connection', (socket: socket.Socket) => {
     socket.to(roomId).broadcast.emit(eventName, data);
   };
 
-  broadcastToRoom('playerConnected', { id: socket.id });
+  broadcastToRoom('playersConnected', [{ id: socket.id }]);
+  connectExistingPlayersToSender(socket, roomId);
 
   socket.on('drawingChanged', (data) => {
     socket.to(roomId).broadcast.volatile.emit('drawingChanged', data);

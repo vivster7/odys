@@ -12,11 +12,17 @@ export type PlayersReducer<T = void> = CaseReducer<
   PayloadAction<T>
 >;
 
-export const connectPlayerFn: PlayersReducer<Client> = (state, action) => {
-  const { id } = action.payload;
-  if (!state.players[id]) {
-    state.players[id] = { color: 'red' };
-  }
+interface Client {
+  id: string;
+}
+
+export const connectPlayersFn: PlayersReducer<Client[]> = (state, action) => {
+  const clients = action.payload;
+  map(clients, ({ id }, idx) => {
+    if (id && !state.players[id]) {
+      state.players[id] = { id, color: 'red' };
+    }
+  });
 };
 
 export const disconnectPlayerFn: PlayersReducer<Client> = (state, action) => {
@@ -25,18 +31,15 @@ export const disconnectPlayerFn: PlayersReducer<Client> = (state, action) => {
   state.selections.filter((s) => s.playerId !== id);
 };
 
-interface Client {
+export interface Player {
   id: string;
-}
-
-interface Players {
-  [id: string]: {
-    color: string;
-  };
+  color: string;
 }
 
 interface PlayersState {
-  players: Players;
+  players: {
+    [id: string]: Player;
+  };
   selections: {
     id: string;
     playerId: string;
@@ -56,25 +59,25 @@ const playersSlice = createSlice({
   name: 'players',
   initialState: initialState,
   reducers: {
-    connectPlayer: connectPlayerFn,
+    connectPlayers: connectPlayersFn,
     disconnectPlayer: disconnectPlayerFn,
   },
   extraReducers: {},
 });
 
-export const { connectPlayer, disconnectPlayer } = playersSlice.actions;
+export const { connectPlayers, disconnectPlayer } = playersSlice.actions;
 const playersReducer = playersSlice.reducer;
 export default playersReducer;
 
 export function usePlayerConnectionListeners(
-  dispatch: Dispatch<PayloadAction<Client>>
+  dispatch: Dispatch<PayloadAction<Client[] | Client>>
 ) {
   useEffect(() => {
-    const onPlayerConnected = (data: any) => {
-      console.log(`welcome friend ${data?.id}`);
-      dispatch(connectPlayer(data));
+    const onPlayersConnected = (data: any) => {
+      console.log(`welcome friends ${data}`);
+      dispatch(connectPlayers(data));
     };
-    return registerSocketListener('playerConnected', onPlayerConnected);
+    return registerSocketListener('playersConnected', onPlayersConnected);
   }, [dispatch]);
 
   useEffect(() => {
