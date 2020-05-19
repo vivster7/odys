@@ -1,5 +1,6 @@
 import { DrawReducer } from '../../draw.reducer';
 import Box, { isOverlapping, outline } from '../../../../math/box';
+import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 
 export interface MultiDragState {
   startX: number;
@@ -70,7 +71,6 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
   selectionRect.height = deltaHeight;
 
   const selectedShapeIds = Object.values(state.shapes)
-    .filter((s) => s.type === 'rect')
     .filter((s) => isOverlapping(s, selectionRect))
     .map((s) => [s.id, true]);
 
