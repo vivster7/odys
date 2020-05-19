@@ -5,6 +5,7 @@ import { RootState } from 'App';
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Canvas from 'modules/canvas/Canvas';
+import { COLORS } from 'modules/draw/mixins/colors/colors';
 
 import Cockpit from './cockpit/Cockpit';
 import { getOrCreateBoard } from './board.reducer';
@@ -14,7 +15,7 @@ const BoardLoading: React.FC = () => (
     style={{
       height: '100%',
       width: '100%',
-      background: 'var(--odys-background-gray)',
+      background: COLORS.appBg,
     }}
   ></div>
 );
@@ -24,7 +25,7 @@ const BoardFailed: React.FC = () => (
     style={{
       height: '100%',
       width: '100%',
-      background: 'rgba(180,160,160,0.6)',
+      background: COLORS.appBg,
     }}
   >
     <h1>Could not load</h1>

@@ -8,6 +8,9 @@ import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 
 import { ShapeId } from '../shape/Shape';
+import { COLORS } from 'modules/draw/mixins/colors/colors';
+
+const TEXT_PADDING = 5;
 
 const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;
@@ -27,7 +30,7 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
     (state: RootState) => state.draw.select?.id === id
   );
 
-  const color = isSelected ? 'cornflowerblue' : 'gray';
+  const color = isSelected ? COLORS.selected : COLORS.arrowDefault;
 
   if (!r1) {
     dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`));
@@ -39,8 +42,8 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   }
 
   const zoomLevel = r1.createdAtZoomLevel;
-  const fontSize = 14 / zoomLeveltoScaleMap[zoomLevel];
-  const strokeWidth = 1 / zoomLeveltoScaleMap[zoomLevel];
+  const fontSize = 12 / zoomLeveltoScaleMap[zoomLevel];
+  const strokeWidth = 3 / zoomLeveltoScaleMap[zoomLevel];
   const offset = 5 / zoomLeveltoScaleMap[zoomLevel];
 
   const r1X = r1.x + r1.translateX;
@@ -177,10 +180,12 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
       ></line>
       <text
         x={(x1 + x2) / 2}
-        y={(y1 + y2) / 2 - 3}
+        y={(y1 + y2) / 2 - TEXT_PADDING}
         textAnchor="middle"
         textRendering="optimizeSpeed"
+        dominantBaseline="baseline"
         fontSize={fontSize + 'px'}
+        fill={COLORS.text}
         onMouseDown={(e) => handleMouseDown(e)}
       >
         {arrow.text}

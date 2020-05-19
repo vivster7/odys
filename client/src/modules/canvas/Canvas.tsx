@@ -20,6 +20,7 @@ import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import * as uuid from 'uuid';
+import { COLORS } from 'modules/draw/mixins/colors/colors';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -321,7 +322,7 @@ const Canvas: React.FC = () => {
       style={{
         height: '100%',
         width: '100%',
-        background: 'var(--odys-background-gray)',
+        background: COLORS.canvas,
       }}
       onMouseMove={(e) => handleMouseMove(e)}
       onMouseDown={(e) => handleMouseDown(e)}

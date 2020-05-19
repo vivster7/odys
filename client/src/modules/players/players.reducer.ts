@@ -24,7 +24,10 @@ export const connectPlayersFn: PlayersReducer<Client[]> = (state, action) => {
 
   map(clients, ({ id }, idx) => {
     if (id && !state.players[id]) {
-      state.players[id] = { id, color: availableColors[idx] };
+      state.players[id] = {
+        id,
+        color: availableColors[idx % availableColors.length],
+      };
     }
   });
 };

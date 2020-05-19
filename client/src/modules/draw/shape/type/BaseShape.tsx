@@ -11,6 +11,7 @@ export interface BaseShapeProps {
   cursor: string;
   fill: string;
   fillOpacity: number;
+  strokeColor: string;
   strokeDasharray: number;
   textX: number;
   textY: number;
@@ -26,6 +27,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     cursor,
     fill,
     fillOpacity,
+    strokeColor,
     strokeDasharray,
     shape,
     textX,
@@ -54,10 +56,10 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
   const transform = `translate(${x + translateX}, ${y + translateY})`;
 
   const scale = zoomLeveltoScaleMap[createdAtZoomLevel];
-  const fontSize = 14 / scale;
+  const fontSize = 12 / scale;
   const radiusSize = 2 / scale;
-  const strokeWidth = 2 / scale;
-  const selectedStrokeDashArray = 4 / scale;
+  const strokeWidth = 4 / scale;
+  const selectedStrokeDashArray = 5 / scale;
   const scaledStrokeDasharray = strokeDasharray / scale;
 
   const selectColor =
@@ -65,7 +67,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
       ? COLORS.selected
       : playerSelected
       ? playerSelected.color
-      : COLORS.default;
+      : strokeColor;
 
   if (!shape) return <></>;
   return (
@@ -96,11 +98,13 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         y={textY}
         textAnchor="middle"
         textRendering="optimizeSpeed"
+        dominantBaseline="baseline"
         fontSize={fontSize + 'px'}
+        fill={COLORS.text}
       >
         {text}
       </text>
-      {isSelected && (
+      {(isSelected || isMultiSelected) && (
         <SelectionCircles
           id={id}
           createdAtZoomLevel={createdAtZoomLevel}
