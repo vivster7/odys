@@ -102,6 +102,13 @@ type OdysRequestInit = {
   headerOpts?: HeaderOpts;
 };
 
+type PostgrestError = {
+  code: string;
+  details: string | null;
+  hint: string | null;
+  message: string;
+};
+
 class OdysClient {
   private base_url: string;
   private defaultHeaders: string[][];
@@ -142,7 +149,17 @@ class OdysClient {
     }
 
     const p = await fetch(url, params);
-    const json = (await p.json()) as any[];
+    let json: any;
+    try {
+      json = await p.json();
+    } catch (err) {
+      // empty responses cannot be deserialized
+      json = [];
+    }
+
+    if ('code' in json && 'message' in json) {
+      throw new Error((json as PostgrestError).message);
+    }
     return json.map((j) => deserializer(j));
   }
 
