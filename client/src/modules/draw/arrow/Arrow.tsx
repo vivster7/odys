@@ -7,16 +7,11 @@ import { selectDrawing } from 'modules/draw/mixins/select/select.reducer';
 import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 
-import Arrowhead from './Arrowhead';
 import { ShapeId } from '../shape/Shape';
 
 const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const { id } = props;
   const dispatch = useDispatch();
-
-  function arrowheadRotation(x1: number, y1: number, x2: number, y2: number) {
-    return Math.atan2(y2 - y1, x2 - x1);
-  }
 
   const arrow = useSelector((state: RootState) => state.draw.arrows[id]);
 
@@ -151,10 +146,6 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
   const y1 = r1Offset.y;
   const x2 = r2Offset.x;
   const y2 = r2Offset.y;
-  const rotation = arrowheadRotation(x1, y1, x2, y2);
-
-  const left = false;
-  const right = true;
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
@@ -163,6 +154,18 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
 
   return (
     <g id={props.id} onMouseDown={(e) => handleMouseDown(e)}>
+      <defs>
+        <marker
+          id={`arrowhead.${props.id}`}
+          markerWidth="2"
+          markerHeight="4"
+          refX="1"
+          refY="2"
+          orient="auto"
+        >
+          <path d="M0,0 V4 L2,2 Z" fill={color} />
+        </marker>
+      </defs>
       <line
         x1={x1}
         y1={y1}
@@ -170,34 +173,11 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
         y2={y2}
         stroke={color}
         strokeWidth={strokeWidth + 'px'}
+        markerEnd={`url(#arrowhead.${props.id})`}
       ></line>
-      {left ? (
-        <Arrowhead
-          x={0}
-          y={0}
-          direction="left"
-          isSelected={isSelected}
-          rotationAngleFromXInRadians={rotation}
-          createdAtZoomLevel={zoomLevel}
-        ></Arrowhead>
-      ) : (
-        <></>
-      )}
-      {right ? (
-        <Arrowhead
-          x={x2}
-          y={y2}
-          direction="right"
-          isSelected={isSelected}
-          rotationAngleFromXInRadians={rotation}
-          createdAtZoomLevel={zoomLevel}
-        ></Arrowhead>
-      ) : (
-        <></>
-      )}
       <text
         x={(x1 + x2) / 2}
-        y={(y1 + y2) / 2}
+        y={(y1 + y2) / 2 - 3}
         textAnchor="middle"
         textRendering="optimizeSpeed"
         fontSize={fontSize + 'px'}
