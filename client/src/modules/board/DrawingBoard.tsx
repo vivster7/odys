@@ -2,15 +2,12 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from 'App';
-import { updateDrawing } from 'modules/draw/draw.reducer';
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
-import { RECT_HEIGHT, RECT_WIDTH } from 'modules/draw/shape/type/Rect';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Canvas from 'modules/canvas/Canvas';
 
 import Cockpit from './cockpit/Cockpit';
 import { getOrCreateBoard } from './board.reducer';
-import { Rect } from 'modules/draw/shape/shape.reducer';
 
 const BoardLoading: React.FC = () => (
   <div
@@ -38,7 +35,6 @@ const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
   const board = useSelector((state: RootState) => state.board);
   const room = useSelector((state: RootState) => state.room);
-  const shapes = useSelector((state: RootState) => state.draw);
 
   useEffect(() => {
     if (room.loaded !== 'success') return;
