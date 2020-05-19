@@ -1,7 +1,6 @@
 import { DrawState, DrawActionPending, Drawing } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysArrow } from 'generated';
-import { ArrowApi } from 'generated/apis/ArrowApi';
 import { Syncable } from '../mixins/sync/sync';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
@@ -9,6 +8,7 @@ import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { Saveable, save } from '../mixins/save/save.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
+import odysClient from 'global/odysClient';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
 type ArrowMixins = Selectable & TextEditable & Syncable & Saveable & Deleteable;
@@ -26,10 +26,8 @@ export function getConnectedArrows(state: DrawState, ids: string[]): Arrow[] {
 export const getArrows = createAsyncThunk(
   'draw/getArrows',
   async (boardId: string, thunkAPI): Promise<OdysArrow[]> => {
-    const api = new ArrowApi();
-    return api.arrowGet({
-      boardId: `eq.${boardId}`,
-      isDeleted: ('is.false' as any) as boolean,
+    return odysClient.request('GET', 'OdysArrow', {
+      query: `board_id=eq.${boardId}&is_deleted=is.false`,
     });
   }
 );

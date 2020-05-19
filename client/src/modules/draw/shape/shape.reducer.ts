@@ -2,7 +2,6 @@ import { DrawState, Drawing } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysShape } from 'generated';
-import { ShapeApi } from 'generated/apis/ShapeApi';
 import { Draggable } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { Resizable } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
@@ -10,6 +9,7 @@ import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { Syncable } from 'modules/draw/mixins/sync/sync';
 import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
 import { Saveable } from '../mixins/save/save.reducer';
+import odysClient from 'global/odysClient';
 
 export type Shape = Rect | GroupingRect | Text;
 type ShapeMixins = Draggable &
@@ -36,10 +36,8 @@ export function instanceOfShape(drawing: Drawing): drawing is Shape {
 export const getShapes = createAsyncThunk(
   'draw/getShapes',
   async (boardId: string, thunkAPI): Promise<OdysShape[]> => {
-    const api = new ShapeApi();
-    return api.shapeGet({
-      boardId: `eq.${boardId}`,
-      isDeleted: ('is.false' as any) as boolean,
+    return odysClient.request('GET', 'OdysShape', {
+      query: `board_id=eq.${boardId}&is_deleted=is.false`,
     });
   }
 );
