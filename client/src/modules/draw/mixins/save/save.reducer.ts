@@ -2,7 +2,6 @@ import { useEffect, Dispatch } from 'react';
 import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { instanceOfArrow, Arrow } from 'modules/draw/arrow/arrow.reducer';
-import { OdysArrowToJSON, OdysShapeToJSON } from 'generated';
 import {
   Drawing,
   DrawActionRejected,
@@ -12,6 +11,8 @@ import {
 } from 'modules/draw/draw.reducer';
 import { emitEvent, registerSocketListener } from 'socket/socket';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
+import odysClient from 'global/odysClient';
+import { OdysArrow, OdysShape } from 'generated';
 
 // Saveable is a mixin related to saving an object in a database.
 export interface Saveable {
@@ -28,25 +29,26 @@ export const save = createAsyncThunk(
     const arrows = drawings.filter((d) => instanceOfArrow(d)) as Arrow[];
     const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
 
-    const arrowUrl = 'http://localhost:3001/arrow';
-    const shapeUrl = 'http://localhost:3001/shape';
-
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Prefer', 'resolution=merge-duplicates');
-
     // generated client missing support for bulk
-    const p1 = await fetch(arrowUrl, {
-      headers: headers,
-      method: 'POST',
-      body: JSON.stringify(arrows.map((a) => OdysArrowToJSON(a))),
-    });
+    let p1: Promise<OdysArrow[]>;
+    if (arrows.length) {
+      p1 = odysClient.request('POST', 'OdysArrow', {
+        headerOpts: { mergeDuplicates: true },
+        body: arrows,
+      });
+    } else {
+      p1 = Promise.resolve([]);
+    }
 
-    const p2 = await fetch(shapeUrl, {
-      headers: headers,
-      method: 'POST',
-      body: JSON.stringify(shapes.map((s) => OdysShapeToJSON(s))),
-    });
+    let p2: Promise<OdysShape[]>;
+    if (shapes.length) {
+      p2 = odysClient.request('POST', 'OdysShape', {
+        headerOpts: { mergeDuplicates: true },
+        body: shapes,
+      });
+    } else {
+      p2 = Promise.resolve([]);
+    }
 
     await Promise.all([p1, p2]);
 

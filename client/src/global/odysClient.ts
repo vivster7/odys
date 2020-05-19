@@ -90,8 +90,8 @@ type QueryOpts = {
 };
 
 type HeaderOpts = {
-  mergeDuplicates: boolean;
-  returnRepresentation: boolean;
+  mergeDuplicates?: boolean;
+  returnRepresentation?: boolean;
 };
 
 type OdysRequestInit = {

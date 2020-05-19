@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { OdysRoom, OdysRoomFromJSON } from 'generated';
+import { OdysRoom } from 'generated';
+import odysClient from 'global/odysClient';
 
 type LoadStates = 'loading' | 'success' | 'failed';
 
@@ -11,23 +12,22 @@ interface RoomState {
 export const getOrCreateRoom = createAsyncThunk(
   'room/getOrCreateRoom',
   async (id: string, thunkAPI): Promise<OdysRoom> => {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Prefer', 'return=representation');
-    headers.append('Prefer', 'resolution=merge-duplicates');
-    headers.append('Accept', 'application/vnd.pgrst.object+json');
-
-    // not using generated client, missing support for on_conflict.
-    const url = 'http://localhost:3001/room?on_conflict=id&select=id';
-    const p = await fetch(url, {
-      headers: headers,
-      method: 'POST',
-      body: JSON.stringify({
-        id: id,
-      }),
+    const response = await odysClient.request('POST', 'OdysRoom', {
+      queryOpts: {
+        onConflict: ['id'],
+        select: ['id'],
+      },
+      headerOpts: {
+        mergeDuplicates: true,
+        returnRepresentation: true,
+      },
+      body: [{ id: id }],
     });
 
-    return OdysRoomFromJSON(await p.json());
+    if (response.length !== 1) {
+      throw new Error(`Could not getOrCreate one room. id: ${id}`);
+    }
+    return response[0];
   }
 );
 
