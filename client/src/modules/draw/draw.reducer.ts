@@ -82,6 +82,9 @@ import {
   pastePending,
   paste,
   pasteFulfilled,
+  cut,
+  cutPending,
+  cutFulfilled,
 } from './mixins/copypaste/copypaste.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
@@ -151,7 +154,13 @@ const initialState: DrawState = {
   resize: null,
   newRect: null,
   timetravel: { undos: [], redos: [] },
-  copyPaste: { copied: [], pasted: [], cut: [], numTimesPasted: 0 },
+  copyPaste: {
+    copied: [],
+    pasted: [],
+    cut: [],
+    numTimesPasted: 0,
+    isCut: false,
+  },
 };
 
 export type Drawing = Arrow | Shape;
@@ -283,6 +292,9 @@ const drawSlice = createSlice({
     [paste.pending as any]: pastePending,
     [paste.rejected as any]: (state, action) => {},
     [paste.fulfilled as any]: pasteFulfilled,
+    [cut.pending as any]: cutPending,
+    [cut.rejected as any]: (state, action) => {},
+    [cut.fulfilled as any]: cutFulfilled,
   },
 });
 

@@ -4,7 +4,7 @@ import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
 import { selectAll, cancelSelect, copy } from 'modules/draw/draw.reducer';
 import { undo } from 'modules/draw/timetravel/undo.reducer';
 import { redo } from 'modules/draw/timetravel/redo.reducer';
-import { paste } from 'modules/draw/mixins/copypaste/copypaste.reducer';
+import { paste, cut } from 'modules/draw/mixins/copypaste/copypaste.reducer';
 
 // Only keys in this list will trigger the keydown condition.
 const LISTEN_KEYS = ['Backspace', 'KeyA', 'KeyZ', 'KeyC', 'KeyV', 'KeyX'];
@@ -51,8 +51,8 @@ export const keydown = createAsyncThunk(
     if (e.code === 'KeyV' && e.metaKey) {
       return thunkAPI.dispatch(paste());
     }
-    if (e.code === 'KeyV' && e.metaKey) {
-      // return thunkAPI.dispatch(cut());
+    if (e.code === 'KeyX' && e.metaKey) {
+      return thunkAPI.dispatch(cut());
     }
   },
   { condition: (e: Keydown, thunkAPI) => LISTEN_KEYS.includes(e.code) }
