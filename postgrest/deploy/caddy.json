@@ -13,6 +13,24 @@
             {
               "match": [
                 {
+                  "method": [
+                    "DELETE",
+                    "PATCH"
+                  ]
+                }
+              ],
+              "handle": [
+                {
+                  "handler": "error",
+                  "error": "Needs query args to PATCH or DELETE",
+                  "status_code": "405"
+                }
+              ],
+              "terminal": true
+            },
+            {
+              "match": [
+                {
                   "path": [
                     "/*"
                   ]
