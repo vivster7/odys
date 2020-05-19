@@ -40,6 +40,8 @@ const HiddenTextInput: React.FC = React.memo(() => {
   return (
     <>
       <input
+        // TODO: want to support pasting text into an input
+        onPaste={(e) => e.preventDefault()}
         style={{ height: '0px', padding: '0px', border: '0px', opacity: 0 }}
         ref={inputEl}
         type="text"
