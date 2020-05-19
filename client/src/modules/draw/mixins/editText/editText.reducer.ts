@@ -61,6 +61,7 @@ export const endEditTextPending: DrawActionPending<string> = (
   const drawing = getDrawing(state, id);
 
   const snapshot = { ...drawing, text: state.editText.startingText };
+  state.editText.startingText = drawing.text;
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
