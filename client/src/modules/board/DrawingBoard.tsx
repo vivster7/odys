@@ -40,34 +40,6 @@ const DrawingBoard: React.FC = () => {
   const room = useSelector((state: RootState) => state.room);
   const shapes = useSelector((state: RootState) => state.draw);
 
-  // temp seed data
-  if (Object.entries(shapes.shapes).length === 0) {
-    const rect = (id: string, text: string, x: number, y: number): Rect => {
-      return {
-        type: 'rect',
-        id: id,
-        text: text,
-        x: x,
-        y: y,
-        translateX: 0,
-        translateY: 0,
-        width: RECT_WIDTH,
-        height: RECT_HEIGHT,
-        deltaWidth: 0,
-        deltaHeight: 0,
-        createdAtZoomLevel: 5,
-        isLastUpdatedBySync: false,
-        isSavedInDB: true,
-        boardId: '1', //TODO
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        isDeleted: false,
-      };
-    };
-    dispatch(updateDrawing(rect('1', 'A', 150, 100)));
-    dispatch(updateDrawing(rect('2', 'B', 400, 100)));
-  }
-
   useEffect(() => {
     if (room.loaded !== 'success') return;
     dispatch(getOrCreateBoard(room.id));
