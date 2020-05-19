@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { OdysBoard, OdysBoardFromJSON } from 'generated';
+import { OdysBoard } from 'generated';
+import odysClient from 'global/odysClient';
 
 type LoadStates = 'loading' | 'success' | 'failed';
 
@@ -12,24 +13,22 @@ interface BoardState {
 export const getOrCreateBoard = createAsyncThunk(
   'board/getOrCreateBoard',
   async (roomId: string, thunkAPI): Promise<OdysBoard> => {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/vnd.pgrst.object+json');
-    headers.append('Prefer', 'resolution=merge-duplicates');
-    headers.append('Prefer', 'return=representation');
-
-    // not using generated client, missing support for on_conflict.
-    const url =
-      'http://localhost:3001/board?on_conflict=room_id&select=id,room_id';
-    const p = await fetch(url, {
-      headers: headers,
-      method: 'POST',
-      body: JSON.stringify({
-        room_id: roomId,
-      }),
+    const response = await odysClient.request('POST', 'OdysBoard', {
+      queryOpts: {
+        onConflict: ['room_id'],
+        select: ['id', 'room_id'],
+      },
+      headerOpts: {
+        mergeDuplicates: true,
+        returnRepresentation: true,
+      },
+      body: [{ roomId: roomId }],
     });
 
-    return OdysBoardFromJSON(await p.json());
+    if (response.length !== 1) {
+      throw new Error(`Could not getOrCreate one board. roomId: ${roomId}`);
+    }
+    return response[0];
   }
 );
 
