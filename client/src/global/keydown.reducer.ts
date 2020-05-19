@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
-import { selectAll, cancelSelect } from 'modules/draw/draw.reducer';
+import { selectAll, cancelSelect, copy } from 'modules/draw/draw.reducer';
 import { undo } from 'modules/draw/timetravel/undo.reducer';
 import { redo } from 'modules/draw/timetravel/redo.reducer';
 
 // Only keys in this list will trigger the keydown condition.
-const LISTEN_KEYS = ['Backspace', 'KeyA', 'KeyZ'];
+const LISTEN_KEYS = ['Backspace', 'KeyA', 'KeyZ', 'KeyC', 'KeyV', 'KeyX'];
 
 interface Keydown {
   code: string;
@@ -42,6 +42,16 @@ export const keydown = createAsyncThunk(
       } else {
         return thunkAPI.dispatch(undo());
       }
+    }
+
+    if (e.code === 'KeyC' && e.metaKey) {
+      return thunkAPI.dispatch(copy());
+    }
+    if (e.code === 'KeyV' && e.metaKey) {
+      // return thunkAPI.dispatch(paste());
+    }
+    if (e.code === 'KeyV' && e.metaKey) {
+      // return thunkAPI.dispatch(cut());
     }
   },
   { condition: (e: Keydown, thunkAPI) => LISTEN_KEYS.includes(e.code) }

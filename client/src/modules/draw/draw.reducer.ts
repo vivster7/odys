@@ -76,6 +76,7 @@ import {
 } from 'modules/draw/timetravel/timeTravel';
 import { undo, undoFulfilled } from './timetravel/undo.reducer';
 import { redo, redoFulfilled } from './timetravel/redo.reducer';
+import { CopyPasteState, copyFn } from './mixins/copypaste/copypaste.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type ActionPending<T = void> = {
@@ -129,6 +130,7 @@ export interface DrawState {
   resize: ResizeState | null;
   newRect: NewRectState | null;
   timetravel: TimeTravelState;
+  copyPaste: CopyPasteState;
 }
 
 const initialState: DrawState = {
@@ -143,6 +145,7 @@ const initialState: DrawState = {
   resize: null,
   newRect: null,
   timetravel: { undos: [], redos: [] },
+  copyPaste: { ids: [] },
 };
 
 export type Drawing = Arrow | Shape;
@@ -214,6 +217,8 @@ const drawSlice = createSlice({
     endDragSelection: endDragSelectionFn,
     endMultiDrag: endMultiDragFn,
     selectAll: selectAllFn,
+    // copypaste
+    copy: copyFn,
   },
   extraReducers: {
     //save
@@ -288,6 +293,7 @@ export const {
   endDragSelection,
   endMultiDrag,
   selectAll,
+  copy,
 } = drawSlice.actions;
 const drawReducer = drawSlice.reducer;
 export default drawReducer;
