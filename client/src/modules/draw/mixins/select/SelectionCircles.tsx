@@ -14,7 +14,7 @@ interface SelectionCirclesProps {
 
 const SelectionCircles: React.FC<SelectionCirclesProps> = (props) => {
   const dispatch = useDispatch();
-  const radiusSize = 4 / zoomLeveltoScaleMap[props.createdAtZoomLevel];
+  const radiusSize = 5 / zoomLeveltoScaleMap[props.createdAtZoomLevel];
 
   function onMouseDown(e: React.MouseEvent, anchor: Anchor) {
     e.stopPropagation();
