@@ -7,7 +7,18 @@ import { redo } from 'modules/draw/timetravel/redo.reducer';
 import { paste, cut } from 'modules/draw/mixins/copypaste/copypaste.reducer';
 
 // Only keys in this list will trigger the keydown condition.
-const LISTEN_KEYS = ['Backspace', 'KeyA', 'KeyZ', 'KeyC', 'KeyV', 'KeyX'];
+const LISTEN_KEYS = [
+  'Backspace',
+  'KeyA',
+  'KeyZ',
+  'KeyC',
+  'KeyV',
+  'KeyX',
+  'AltLeft',
+  'AltRight',
+  'ShiftLeft',
+  'ShiftRight',
+];
 
 interface Keydown {
   code: string;

@@ -52,8 +52,8 @@ import {
   startEditTextFn,
 } from './mixins/editText/editText.reducer';
 import {
-  getArrows,
-  getArrowsFulfilled,
+  fetchArrows,
+  fetchArrowsFulfilled,
   Arrow,
   instanceOfArrow,
   drawArrow,
@@ -240,9 +240,9 @@ const drawSlice = createSlice({
     [fetchShapes.fulfilled as any]: fetchShapesFulfilled,
     [fetchShapes.rejected as any]: (state, action) => {},
     // arrow
-    [getArrows.pending as any]: (state, action) => {},
-    [getArrows.fulfilled as any]: getArrowsFulfilled,
-    [getArrows.rejected as any]: (state, action) => {},
+    [fetchArrows.pending as any]: (state, action) => {},
+    [fetchArrows.fulfilled as any]: fetchArrowsFulfilled,
+    [fetchArrows.rejected as any]: (state, action) => {},
     [drawArrow.pending as any]: drawArrowPending,
     [drawArrow.fulfilled as any]: (state, action) => {},
     [drawArrow.rejected as any]: (state, action) => {},

@@ -23,8 +23,8 @@ export function getConnectedArrows(state: DrawState, ids: string[]): Arrow[] {
   );
 }
 
-export const getArrows = createAsyncThunk(
-  'draw/getArrows',
+export const fetchArrows = createAsyncThunk(
+  'draw/fetchArrows',
   async (boardId: string, thunkAPI): Promise<OdysArrow[]> => {
     return odysClient.request('GET', 'OdysArrow', {
       query: `board_id=eq.${boardId}&is_deleted=is.false`,
@@ -32,7 +32,7 @@ export const getArrows = createAsyncThunk(
   }
 );
 
-export const getArrowsFulfilled = (
+export const fetchArrowsFulfilled = (
   state: DrawState,
   action: PayloadAction<OdysArrow[]>
 ) => {
