@@ -128,6 +128,18 @@ export const endMultiDragFn: DrawReducer<EndMultiDrag> = (state, action) => {
   state.timetravel.redos = [];
 };
 
+export const selectAllFn: DrawReducer = (state, action) => {
+  const shapeIds = Object.keys(state.shapes);
+  const shapes = Object.values(state.shapes);
+
+  state.select = null;
+  state.multiSelect = {
+    selectionRect: null,
+    selectedShapeIds: Object.fromEntries(shapeIds.map((id) => [id, true])),
+    outline: outline(...shapes),
+  };
+};
+
 export const applySelect = (state: DrawState, drawings: Drawing[]) => {
   const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
   if (drawings.length === 0) {
@@ -150,14 +162,16 @@ export const applySelect = (state: DrawState, drawings: Drawing[]) => {
   }
 };
 
-export const selectAllFn: DrawReducer = (state, action) => {
-  const shapeIds = Object.keys(state.shapes);
-  const shapes = Object.values(state.shapes);
+export const isSelected = (state: DrawState, ids: string[]) => {
+  if (state.select) {
+    return ids.includes(state.select?.id);
+  }
 
-  state.select = null;
-  state.multiSelect = {
-    selectionRect: null,
-    selectedShapeIds: Object.fromEntries(shapeIds.map((id) => [id, true])),
-    outline: outline(...shapes),
-  };
+  if (state.multiSelect) {
+    return Object.keys(state.multiSelect.selectedShapeIds).some((id) =>
+      ids.includes(id)
+    );
+  }
+
+  return false;
 };

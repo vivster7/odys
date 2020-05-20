@@ -9,7 +9,11 @@ import { instanceOfArrow } from '../arrow/arrow.reducer';
 import { reorder } from '../mixins/drawOrder/drawOrder';
 import { emitEvent } from 'socket/socket';
 import { save } from '../mixins/save/save.reducer';
-import { applySelect } from '../mixins/multiSelect/multiSelect.reducer';
+import {
+  applySelect,
+  isSelected,
+} from '../mixins/multiSelect/multiSelect.reducer';
+import { RootState } from 'App';
 
 // TimeTravelSafeAction promise not to modify the undo or redo buffer.
 // This is not enforced by types, so pretty please just follow the rules.
@@ -67,6 +71,11 @@ export const safeDeleteDrawings = createAsyncThunk(
     // TODO: bulk socket
     emitEvent('drawingDeleted', ids[0]);
     thunkAPI.dispatch(save(ids));
+
+    const state = thunkAPI.getState() as RootState;
+    if (isSelected(state.draw, ids)) {
+      thunkAPI.dispatch(cancelSelect());
+    }
   }
 );
 
