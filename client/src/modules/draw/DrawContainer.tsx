@@ -1,20 +1,24 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { shallowEqual, useSelector, useDispatch } from 'react-redux';
+import { find } from 'lodash';
+
 import { RootState } from '../../App';
+import Arrow from './arrow/Arrow';
 import { Shape } from './shape/Shape';
 import { addError } from 'modules/errors/errors.reducer';
-import Arrow from './arrow/Arrow';
+import { Player } from 'modules/players/players.reducer';
 import {
   useDebounce,
   useDrawingChangedEmitter,
 } from 'modules/draw/mixins/sync/sync';
 import { fetchDrawings } from './draw.reducer';
 
-interface DrawId {
+export interface DrawingProps {
   id: string;
+  playerSelected?: Player;
 }
 
-const Drawing: React.FC<DrawId> = (props) => {
+const Drawing: React.FC<DrawingProps> = (props) => {
   const { id } = props;
   const dispatch = useDispatch();
   const shape = useSelector((state: RootState) => state.draw.shapes[id]);
@@ -25,8 +29,18 @@ const Drawing: React.FC<DrawId> = (props) => {
   const debouncedArrow = useDebounce(arrow, 0);
   useDrawingChangedEmitter(debouncedArrow);
 
-  if (shape) return <Shape id={id}></Shape>;
-  if (arrow) return <Arrow id={id}></Arrow>;
+  const playerSelected = useSelector((state: RootState) => {
+    const playerSelection = find(
+      state.players.selections,
+      (s) => s.select === id
+    );
+    return playerSelection
+      ? state.players.players[playerSelection.id]
+      : undefined;
+  }, shallowEqual);
+
+  if (shape) return <Shape id={id} playerSelected={playerSelected}></Shape>;
+  if (arrow) return <Arrow id={id} playerSelected={playerSelected}></Arrow>;
 
   dispatch(addError(`Cannot draw ${id}`));
   return <></>;

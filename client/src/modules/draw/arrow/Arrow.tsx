@@ -7,13 +7,13 @@ import { selectDrawing } from 'modules/draw/mixins/select/select.reducer';
 import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 
-import { ShapeId } from '../shape/Shape';
+import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'modules/draw/mixins/colors/colors';
 
 const TEXT_PADDING = 5;
 
-const Arrow: React.FC<ShapeId> = React.memo((props) => {
-  const { id } = props;
+const Arrow: React.FC<DrawingProps> = React.memo((props) => {
+  const { id, playerSelected } = props;
   const dispatch = useDispatch();
 
   const arrow = useSelector((state: RootState) => state.draw.arrows[id]);
@@ -30,7 +30,11 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
     (state: RootState) => state.draw.select?.id === id
   );
 
-  const color = isSelected ? COLORS.select : COLORS.arrowDefault;
+  const color = isSelected
+    ? COLORS.select
+    : playerSelected
+    ? playerSelected.color
+    : COLORS.arrowDefault;
 
   if (!r1) {
     dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`));

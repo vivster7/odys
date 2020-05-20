@@ -1,8 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { find } from 'lodash';
-
 import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
 
@@ -11,15 +9,12 @@ import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
 import { isOverlapping } from 'math/box';
 import { startDrag, startNewRect } from '../draw.reducer';
+import { DrawingProps } from '../DrawContainer';
 import { selectDrawing } from 'modules/draw/mixins/select/select.reducer';
 import { Shape as ShapeType } from './shape.reducer';
 import { Player } from 'modules/players/players.reducer';
 import { drawArrow } from '../arrow/arrow.reducer';
 import * as uuid from 'uuid';
-
-export interface ShapeId {
-  id: string;
-}
 
 // ShapeTypeProps are passed to shape types: rect, text, grouping_rect
 export interface ShapeTypeProps {
@@ -31,8 +26,8 @@ export interface ShapeTypeProps {
   onMouseDown: (e: React.MouseEvent) => void;
 }
 
-export const Shape: React.FC<ShapeId> = (props) => {
-  const { id } = props;
+export const Shape: React.FC<DrawingProps> = (props) => {
+  const { id, playerSelected } = props;
   const dispatch = useDispatch();
 
   const board = useSelector((state: RootState) => state.board);
@@ -48,16 +43,6 @@ export const Shape: React.FC<ShapeId> = (props) => {
       !!state.draw.select?.id && state.draw.shapes[state.draw.select?.id]
   );
   const isSelected = selectedShape && selectedShape.id === id;
-
-  const playerSelected = useSelector((state: RootState) => {
-    const playerSelection = find(
-      state.players.selections,
-      (s) => s.select === id
-    );
-    return playerSelection
-      ? state.players.players[playerSelection.id]
-      : undefined;
-  });
 
   function onMouseDown(e: React.MouseEvent) {
     e.stopPropagation();

@@ -55,11 +55,19 @@ export function useDrawingChangedEmitter(subject?: Syncable) {
 }
 
 export function useDrawingChangedListener(
-  dispatch: Dispatch<PayloadAction<Drawing>>
+  dispatch: Dispatch<PayloadAction<Drawing | PlayerSelection>>
 ) {
   useEffect(() => {
     const onDrawingChanged = (event: ClientEvent) => {
       dispatch(syncDrawing(event.data));
+      if (!instanceOfArrow(event.data)) {
+        dispatch(
+          updatePlayerSelection({
+            select: event.data.id,
+            id: event.clientId,
+          })
+        );
+      }
     };
     return registerSocketListener('drawingChanged', onDrawingChanged);
   }, [dispatch]);
