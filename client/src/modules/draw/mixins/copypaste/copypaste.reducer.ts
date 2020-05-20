@@ -14,7 +14,6 @@ import uuid from 'uuid';
 import { instanceOfArrow, Arrow } from 'modules/draw/arrow/arrow.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { reorder } from '../drawOrder/drawOrder';
-import { outline } from 'math/box';
 import { applySelect } from '../multiSelect/multiSelect.reducer';
 
 export interface CopyPasteState {

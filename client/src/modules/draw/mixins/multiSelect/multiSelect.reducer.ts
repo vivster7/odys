@@ -87,7 +87,6 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
   state.multiSelect.selectionRect = null;
   const { selectedShapeIds } = state.multiSelect;
 
-  const keys = Object.keys(selectedShapeIds);
   const shapes = Object.keys(selectedShapeIds).map((id) => state.shapes[id]);
   applySelect(state, shapes);
 };
