@@ -41,9 +41,7 @@ import {
   startDragSelectionFn,
   resizeDragSelectionFn,
   endDragSelectionFn,
-  endMultiDragFn,
   MultiSelectState,
-  MultiDragState,
   selectAllFn,
 } from 'modules/draw/mixins/multiSelect/multiSelect.reducer';
 import {
@@ -86,6 +84,10 @@ import {
   cutPending,
   cutFulfilled,
 } from './mixins/copypaste/copypaste.reducer';
+import {
+  endMultiDrag,
+  endMultiDragPending,
+} from './mixins/multiDrag/multiDrag.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type ActionPending<T = void> = {
@@ -135,7 +137,6 @@ export interface DrawState {
   select: SelectedDrawing | null;
   drag: DragState | null;
   multiSelect: MultiSelectState | null;
-  multiDrag: MultiDragState | null;
   resize: ResizeState | null;
   newRect: NewRectState | null;
   timetravel: TimeTravelState;
@@ -149,7 +150,6 @@ const initialState: DrawState = {
   editText: { startingText: '', isEditing: false },
   select: null,
   multiSelect: null,
-  multiDrag: null,
   drag: null,
   resize: null,
   newRect: null,
@@ -230,7 +230,6 @@ const drawSlice = createSlice({
     startDragSelection: startDragSelectionFn,
     resizeDragSelection: resizeDragSelectionFn,
     endDragSelection: endDragSelectionFn,
-    endMultiDrag: endMultiDragFn,
     selectAll: selectAllFn,
     // copypaste
     copy: copyFn,
@@ -267,6 +266,10 @@ const drawSlice = createSlice({
     [deleteDrawings.pending as any]: deleteDrawingsPending,
     [deleteDrawings.fulfilled as any]: (state, action) => {},
     [deleteDrawings.rejected as any]: (state, action) => {},
+    // endMultiDrag
+    [endMultiDrag.pending as any]: endMultiDragPending,
+    [endMultiDrag.fulfilled as any]: (state, action) => {},
+    [endMultiDrag.rejected as any]: (state, action) => {},
     // timetravel
     [undo.pending as any]: (state, action) => {},
     [undo.fulfilled as any]: undoFulfilled,
@@ -313,7 +316,6 @@ export const {
   startDragSelection,
   resizeDragSelection,
   endDragSelection,
-  endMultiDrag,
   selectAll,
   copy,
 } = drawSlice.actions;

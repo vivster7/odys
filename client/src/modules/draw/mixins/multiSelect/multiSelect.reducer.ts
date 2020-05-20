@@ -1,12 +1,6 @@
 import { DrawReducer, Drawing, DrawState } from '../../draw.reducer';
 import Box, { isOverlapping, outline } from '../../../../math/box';
-import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
-
-export interface MultiDragState {
-  startX: number;
-  startY: number;
-}
 
 interface startDragSelection {
   x: number;
@@ -90,42 +84,6 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
 
   const shapes = Object.keys(selectedShapeIds).map((id) => state.shapes[id]);
   applySelect(state, shapes);
-};
-
-interface EndMultiDrag {
-  translateX: number;
-  translateY: number;
-}
-export const endMultiDragFn: DrawReducer<EndMultiDrag> = (state, action) => {
-  state.multiDrag = null;
-  if (!state.multiSelect) return;
-
-  const { translateX, translateY } = action.payload;
-
-  const selectedShapes = Object.keys(state.multiSelect.selectedShapeIds).map(
-    (id) => state.shapes[id]
-  );
-
-  const selectedShapesSnapshot = selectedShapes.map((s) =>
-    Object.assign({}, s)
-  );
-  selectedShapes.forEach((s) => {
-    s.x += translateX;
-    s.y += translateY;
-  });
-  state.multiSelect.outline.x += translateX;
-  state.multiSelect.outline.y += translateY;
-
-  const undo: TimeTravelSafeAction = {
-    actionCreatorName: 'safeUpdateDrawings',
-    arg: selectedShapesSnapshot,
-  };
-  const redo: TimeTravelSafeAction = {
-    actionCreatorName: 'safeUpdateDrawings',
-    arg: selectedShapes,
-  };
-  state.timetravel.undos.push({ undo, redo });
-  state.timetravel.redos = [];
 };
 
 export const selectAllFn: DrawReducer = (state, action) => {
