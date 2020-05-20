@@ -7,7 +7,7 @@ import { keydown } from 'global/keydown.reducer';
 import { useDrawingChangedListener } from 'modules/draw/mixins/sync/sync';
 import { useDrawingDeletedListener } from 'modules/draw/mixins/delete/delete.reducer';
 import { useDrawingSavedListener } from 'modules/draw/mixins/save/save.reducer';
-import { usePlayerConnectionListeners } from 'modules/players/players.reducer';
+import { usePlayerConnectionListeners } from 'modules/players/mixins/connection/connection.reducer';
 import { useDrawingSelectedListener } from 'modules/players/mixins/selection/selection.reducer';
 
 import { connect } from 'socket/socket';

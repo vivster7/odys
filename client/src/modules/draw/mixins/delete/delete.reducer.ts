@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawActionPending, getDrawings } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import { emitEvent, registerSocketListener } from 'socket/socket';
+import { emitEvent, registerSocketListener, ClientEvent } from 'socket/socket';
 import { save } from '../save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { OdysDispatch, RootState } from 'App';
@@ -55,10 +55,10 @@ export const deleteDrawingsPending: DrawActionPending<string[]> = (
 
 export function useDrawingDeletedListener(dispatch: OdysDispatch) {
   useEffect(() => {
-    const onDrawingDeleted = (data: any) =>
+    const onDrawingDeleted = (event: ClientEvent) =>
       dispatch({
         type: 'draw/deleteDrawings/pending',
-        meta: { arg: [data] },
+        meta: { arg: [event.data] },
       });
     return registerSocketListener('drawingDeleted', onDrawingDeleted);
   }, [dispatch]);

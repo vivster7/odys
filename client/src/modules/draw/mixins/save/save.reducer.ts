@@ -9,7 +9,7 @@ import {
   syncDrawing,
   getDrawings,
 } from 'modules/draw/draw.reducer';
-import { emitEvent, registerSocketListener } from 'socket/socket';
+import { emitEvent, registerSocketListener, ClientEvent } from 'socket/socket';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 import odysClient from 'global/odysClient';
 import { OdysArrow, OdysShape } from 'generated';
@@ -74,7 +74,8 @@ export function useDrawingSavedListener(
   dispatch: Dispatch<PayloadAction<Drawing>>
 ) {
   useEffect(() => {
-    const onDrawingSaved = (data: any) => dispatch(syncDrawing(data));
+    const onDrawingSaved = (event: ClientEvent) =>
+      dispatch(syncDrawing(event.data));
     return registerSocketListener('drawingSaved', onDrawingSaved);
   }, [dispatch]);
 }

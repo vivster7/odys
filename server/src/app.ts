@@ -46,7 +46,7 @@ const connectExistingPlayersToSender = (
       console.log(`connecting existing players ${clients}`);
       socket.emit(
         'playersConnected',
-        clients.map((id: string) => ({ id: id }))
+        clients.map((id: string) => id)
       );
     }
   });
@@ -64,29 +64,42 @@ io.on('connection', (socket: socket.Socket) => {
     socket.to(roomId).broadcast.emit(eventName, data);
   };
 
-  broadcastToRoom('playersConnected', [{ id: socket.id }]);
+  broadcastToRoom('playersConnected', [socket.id]);
   connectExistingPlayersToSender(socket, roomId);
 
-  socket.on('drawingChanged', (data) => {
-    socket.to(roomId).broadcast.volatile.emit('drawingChanged', data);
-  });
-
-  socket.on('drawingSaved', (data) => {
-    // TODO: potential race-condition with drawingChanged? (use timestamps)
-    broadcastToRoom('drawingSaved', data);
-  });
-
-  socket.on('drawingDeleted', (data) => {
-    broadcastToRoom('drawingDeleted', data);
-  });
-
-  socket.on('drawingSelected', (id) => {
-    broadcastToRoom('drawingSelected', { id, playerId: socket.id });
-  });
-
   socket.on('disconnect', () => {
-    broadcastToRoom('playerDisconnected', { id: socket.id });
+    broadcastToRoom('playerDisconnected', socket.id);
   });
+
+  const registerClientEvents = () => {
+    /**
+      drawing events emitted from client pass through this middleware that restructures
+      packet of data sent to include `clientId`.
+    */
+    socket.use((packet, next) => {
+      packet[1] = { data: packet[1], clientId: socket.id };
+      next();
+    });
+
+    socket.on('drawingChanged', (data) => {
+      socket.to(roomId).broadcast.volatile.emit('drawingChanged', data);
+    });
+
+    socket.on('drawingSaved', (data) => {
+      // TODO: potential race-condition with drawingChanged? (use timestamps)
+      broadcastToRoom('drawingSaved', data);
+    });
+
+    socket.on('drawingDeleted', (data) => {
+      broadcastToRoom('drawingDeleted', data);
+    });
+
+    socket.on('drawingSelected', (data) => {
+      broadcastToRoom('drawingSelected', data);
+    });
+  };
+
+  registerClientEvents(socket);
 });
 
 server.listen(PORT, () => {

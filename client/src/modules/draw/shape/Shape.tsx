@@ -50,8 +50,13 @@ export const Shape: React.FC<ShapeId> = (props) => {
   const isSelected = selectedShape && selectedShape.id === id;
 
   const playerSelected = useSelector((state: RootState) => {
-    const selected = find(state.players.selections, (s) => s.id === id);
-    return selected ? state.players.players[selected.playerId] : undefined;
+    const playerSelection = find(
+      state.players.selections,
+      (s) => s.select === id
+    );
+    return playerSelection
+      ? state.players.players[playerSelection.id]
+      : undefined;
   });
 
   function onMouseDown(e: React.MouseEvent) {

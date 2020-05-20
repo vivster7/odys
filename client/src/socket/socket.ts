@@ -1,5 +1,10 @@
 import io from 'socket.io-client';
 
+export interface ClientEvent {
+  clientId: string;
+  data: any;
+}
+
 let socket: SocketIOClient.Socket;
 
 export function connect(roomId: string) {
