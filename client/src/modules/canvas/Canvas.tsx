@@ -108,7 +108,8 @@ const Canvas: React.FC = () => {
   const [pan, setPan] = useState<PanState | null>(null);
 
   const [selectMode, setSelectMode] = useState(false);
-  const cursor = selectMode ? 'crosshair' : 'grab';
+  const [insertMode, setInsertMode] = useState(false);
+  const cursor = insertMode ? 'pointer' : selectMode ? 'crosshair' : 'grab';
 
   const transform = `translate(${topLeftX + translateX}, ${
     topLeftY + translateY
@@ -126,11 +127,17 @@ const Canvas: React.FC = () => {
     if (e.key === 'Shift') {
       setSelectMode(true);
     }
+    if (e.key === 'Alt') {
+      setInsertMode(true);
+    }
   }
 
   function onKeyUpHandler(e: KeyboardEvent) {
     if (e.key === 'Shift') {
       setSelectMode(false);
+    }
+    if (e.key === 'Alt') {
+      setInsertMode(false);
     }
   }
 
