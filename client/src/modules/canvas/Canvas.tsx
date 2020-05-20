@@ -276,14 +276,13 @@ const Canvas: React.FC = () => {
     if (dragState) {
       dispatch(
         endDrag({
-          id: dragState.id,
-          startX: dragState.clickX,
-          startY: dragState.clickY,
-          endX: e.clientX,
-          endY: e.clientY,
+          ids: dragState.encompassedIds.concat([dragState.id]),
+          translateX: (e.clientX - dragState.clickX) / canvasState.scale,
+          translateY: (e.clientY - dragState.clickY) / canvasState.scale,
         })
       );
     }
+
     if (isMultiSelecting) {
       dispatch(endDragSelection());
     }

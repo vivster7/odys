@@ -60,8 +60,8 @@ import {
   drawArrowPending,
 } from 'modules/draw/arrow/arrow.reducer';
 import {
-  getShapes,
-  getShapesFulfilled,
+  fetchShapes,
+  fetchShapesFulfilled,
   Shape,
 } from 'modules/draw/shape/shape.reducer';
 import { save, saveFulfilled, saveRejected } from './mixins/save/save.reducer';
@@ -84,10 +84,6 @@ import {
   cutPending,
   cutFulfilled,
 } from './mixins/copypaste/copypaste.reducer';
-import {
-  endMultiDrag,
-  endMultiDragPending,
-} from './mixins/multiDrag/multiDrag.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type ActionPending<T = void> = {
@@ -240,9 +236,9 @@ const drawSlice = createSlice({
     [save.fulfilled as any]: saveFulfilled,
     [save.rejected as any]: saveRejected,
     // shape
-    [getShapes.pending as any]: (state, action) => {},
-    [getShapes.fulfilled as any]: getShapesFulfilled,
-    [getShapes.rejected as any]: (state, action) => {},
+    [fetchShapes.pending as any]: (state, action) => {},
+    [fetchShapes.fulfilled as any]: fetchShapesFulfilled,
+    [fetchShapes.rejected as any]: (state, action) => {},
     // arrow
     [getArrows.pending as any]: (state, action) => {},
     [getArrows.fulfilled as any]: getArrowsFulfilled,
@@ -266,10 +262,6 @@ const drawSlice = createSlice({
     [deleteDrawings.pending as any]: deleteDrawingsPending,
     [deleteDrawings.fulfilled as any]: (state, action) => {},
     [deleteDrawings.rejected as any]: (state, action) => {},
-    // endMultiDrag
-    [endMultiDrag.pending as any]: endMultiDragPending,
-    [endMultiDrag.fulfilled as any]: (state, action) => {},
-    [endMultiDrag.rejected as any]: (state, action) => {},
     // timetravel
     [undo.pending as any]: (state, action) => {},
     [undo.fulfilled as any]: undoFulfilled,

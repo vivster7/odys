@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../App';
 import { COLORS } from 'modules/draw/mixins/colors/colors';
-import { endMultiDrag } from '../multiDrag/multiDrag.reducer';
+import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 
 interface MultiDragState {
   startX: number;
@@ -46,10 +46,10 @@ const MultiSelect: React.FC = () => {
   function handleMouseUp(e: MouseEvent) {
     if (multiDrag && selectedShapeIds) {
       dispatch(
-        endMultiDrag({
+        endDrag({
           ids: Object.keys(selectedShapeIds),
-          translateX: (multiDrag && multiDrag.x) || 0,
-          translateY: (multiDrag && multiDrag.y) || 0,
+          translateX: multiDrag.x,
+          translateY: multiDrag.y,
         })
       );
     }

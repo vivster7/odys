@@ -71,7 +71,14 @@ export const Shape: React.FC<ShapeId> = (props) => {
         })
       );
     } else {
-      dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
+      dispatch(
+        startDrag({
+          id: id,
+          encompassedIds: [],
+          clickX: e.clientX,
+          clickY: e.clientY,
+        })
+      );
       dispatch(selectDrawing(id));
     }
   }
@@ -97,7 +104,14 @@ export const Shape: React.FC<ShapeId> = (props) => {
       dispatch(startNewRect({ clickX: e.clientX, clickY: e.clientY }));
     } else {
       dispatch(selectDrawing(id));
-      dispatch(startDrag({ id: id, clickX: e.clientX, clickY: e.clientY }));
+      dispatch(
+        startDrag({
+          id: id,
+          encompassedIds: [],
+          clickX: e.clientX,
+          clickY: e.clientY,
+        })
+      );
     }
   }
 

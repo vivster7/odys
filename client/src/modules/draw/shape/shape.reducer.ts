@@ -33,8 +33,20 @@ export function instanceOfShape(drawing: Drawing): drawing is Shape {
   return 'type' in drawing;
 }
 
-export const getShapes = createAsyncThunk(
-  'draw/getShapes',
+export function getShape(state: DrawState, id: string): Shape {
+  const shape = state.shapes[id];
+  if (!shape) {
+    throw new Error(`Cannot find shape with ${id}`);
+  }
+  return shape;
+}
+
+export function getShapes(state: DrawState, ids: string[]): Shape[] {
+  return ids.map((id) => getShape(state, id));
+}
+
+export const fetchShapes = createAsyncThunk(
+  'draw/fetchShapes',
   async (boardId: string, thunkAPI): Promise<OdysShape[]> => {
     return odysClient.request('GET', 'OdysShape', {
       query: `board_id=eq.${boardId}&is_deleted=is.false`,
@@ -42,7 +54,7 @@ export const getShapes = createAsyncThunk(
   }
 );
 
-export const getShapesFulfilled = (
+export const fetchShapesFulfilled = (
   state: DrawState,
   action: PayloadAction<OdysShape[]>
 ) => {

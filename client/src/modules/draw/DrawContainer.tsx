@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../App';
 import { Shape } from './shape/Shape';
 import { getArrows } from './arrow/arrow.reducer';
-import { getShapes } from './shape/shape.reducer';
+import { fetchShapes } from './shape/shape.reducer';
 import { addError } from 'modules/errors/errors.reducer';
 import Arrow from './arrow/Arrow';
 import {
@@ -40,7 +40,7 @@ const DrawContainer: React.FC = React.memo(() => {
 
   useEffect(() => {
     if (board.loaded !== 'success') return;
-    dispatch(getShapes(board.id));
+    dispatch(fetchShapes(board.id));
     dispatch(getArrows(board.id));
   }, [board, dispatch]);
 
