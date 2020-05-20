@@ -108,7 +108,7 @@ const Canvas: React.FC = () => {
   const [pan, setPan] = useState<PanState | null>(null);
 
   const [selectMode, setSelectMode] = useState(false);
-  const cursor = selectMode ? 'crosshair' : 'auto';
+  const cursor = selectMode ? 'crosshair' : 'grab';
 
   const transform = `translate(${topLeftX + translateX}, ${
     topLeftY + translateY
