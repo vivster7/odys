@@ -14,7 +14,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../App';
 import { wheelEnd, endPan, cleanCanvas } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
-import { endNewRectByClick } from '../draw/shape/newRect.reducer';
+import {
+  endNewRectByClick,
+  validCursorPositions,
+  cursorWithinClickRange,
+} from '../draw/shape/newRect.reducer';
 import MultiSelect from '../draw/mixins/multiSelect/MultiSelect';
 import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
@@ -150,7 +154,22 @@ const Canvas: React.FC = () => {
   });
 
   function handleMouseMove(e: React.MouseEvent) {
-    if (newRect) {
+    if (
+      newRect &&
+      validCursorPositions(
+        newRect.clickX,
+        newRect.clickY,
+        e.clientX,
+        e.clientY
+      ) &&
+      !cursorWithinClickRange(
+        newRect.clickX,
+        newRect.clickY,
+        e.clientX,
+        e.clientY,
+        canvasState.scale
+      )
+    ) {
       dispatch(
         endNewRectByDrag({
           id: uuid.v4(),
@@ -226,8 +245,19 @@ const Canvas: React.FC = () => {
   function handleMouseUp(e: React.MouseEvent) {
     if (
       newRect &&
-      newRect.clickX === e.clientX &&
-      newRect.clickY === e.clientY
+      validCursorPositions(
+        newRect.clickX,
+        newRect.clickY,
+        e.clientX,
+        e.clientY
+      ) &&
+      cursorWithinClickRange(
+        newRect.clickX,
+        newRect.clickY,
+        e.clientX,
+        e.clientY,
+        canvasState.scale
+      )
     ) {
       dispatch(
         endNewRectByClick({

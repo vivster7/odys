@@ -26,6 +26,27 @@ export interface NewRect {
   boardId: string;
 }
 
+const CLICK_EPSILON = 5;
+export function cursorWithinClickRange(
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number,
+  canvasScale: number
+) {
+  const eps = CLICK_EPSILON / canvasScale;
+  return endX - startX < eps && endY - startY < eps;
+}
+
+export function validCursorPositions(
+  startX: number,
+  startY: number,
+  endX: number,
+  endY: number
+) {
+  return endX - startX >= 0 && endY - startY >= 0;
+}
+
 export const startNewRectFn: DrawReducer<NewRectState> = (state, action) => {
   state.newRect = {
     clickX: action.payload.clickX,
@@ -66,7 +87,21 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   // cancel this event if we've started dragging
   // TODO: need to cancel the async dispatch after
   // https://redux-toolkit.js.org/api/createAsyncThunk#cancellation
-  if (state.newRect.clickX !== clickX || state.newRect.clickY !== clickY)
+  if (
+    !validCursorPositions(
+      state.newRect.clickX,
+      state.newRect.clickY,
+      clickX,
+      clickY
+    ) ||
+    !cursorWithinClickRange(
+      state.newRect.clickX,
+      state.newRect.clickY,
+      clickX,
+      clickY,
+      canvasScale
+    )
+  )
     return;
 
   const x = (clickX - canvasTopLeftX) / canvasScale;
