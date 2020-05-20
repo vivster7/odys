@@ -1,6 +1,7 @@
-import { DrawReducer } from '../../draw.reducer';
+import { DrawReducer, Drawing, DrawState } from '../../draw.reducer';
 import Box, { isOverlapping, outline } from '../../../../math/box';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
+import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 
 export interface MultiDragState {
   startX: number;
@@ -87,17 +88,8 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
   const { selectedShapeIds } = state.multiSelect;
 
   const keys = Object.keys(selectedShapeIds);
-  if (keys.length === 0) {
-    return;
-  } else if (keys.length === 1) {
-    state.select = {
-      id: keys[0],
-    };
-    state.multiSelect.selectedShapeIds = {};
-  } else {
-    const rects = Object.keys(selectedShapeIds).map((id) => state.shapes[id]);
-    state.multiSelect.outline = outline(...rects);
-  }
+  const shapes = Object.keys(selectedShapeIds).map((id) => state.shapes[id]);
+  applySelect(state, shapes);
 };
 
 interface EndMultiDrag {
@@ -114,6 +106,28 @@ export const endMultiDragFn: DrawReducer<EndMultiDrag> = (state, action) => {
   });
   state.multiSelect.outline.x += action.payload.translateX;
   state.multiSelect.outline.y += action.payload.translateY;
+};
+
+export const applySelect = (state: DrawState, drawings: Drawing[]) => {
+  const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
+  if (drawings.length === 0) {
+    state.select = null;
+    state.multiSelect = null;
+  } else if (drawings.length === 1) {
+    state.select = { id: drawings[0].id };
+    state.multiSelect = null;
+  } else if (shapes.length === 1) {
+    state.select = { id: shapes[0].id };
+    state.multiSelect = null;
+  } else {
+    state.select = null;
+    const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
+    state.multiSelect = {
+      selectionRect: null,
+      selectedShapeIds: Object.fromEntries(shapes.map((s) => [s.id, true])),
+      outline: outline(...shapes),
+    };
+  }
 };
 
 export const selectAllFn: DrawReducer = (state, action) => {

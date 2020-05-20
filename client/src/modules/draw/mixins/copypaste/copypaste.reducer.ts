@@ -15,6 +15,7 @@ import { instanceOfArrow, Arrow } from 'modules/draw/arrow/arrow.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { reorder } from '../drawOrder/drawOrder';
 import { outline } from 'math/box';
+import { applySelect } from '../multiSelect/multiSelect.reducer';
 
 export interface CopyPasteState {
   // Ids of copied shapes.
@@ -91,19 +92,7 @@ export const pastePending: DrawActionPending = (state, action) => {
 
   const pasted: Drawing[] = [...clonedShapes, ...clonedArrows];
   reorder(pasted, state);
-
-  // TODO: share logic better with endDragSelectionFn
-  if (pasted.length === 1) {
-    state.select = { id: pasted[0].id };
-  } else {
-    state.multiSelect = {
-      selectionRect: null,
-      selectedShapeIds: Object.fromEntries(
-        clonedShapes.map((s) => [s.id, true])
-      ),
-      outline: outline(...clonedShapes),
-    };
-  }
+  applySelect(state, pasted);
 
   state.copyPaste.numTimesPasted += 1;
   state.copyPaste.pasted = pasted.map((p) => p.id);

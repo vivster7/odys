@@ -1,9 +1,15 @@
 import { createAsyncThunk, ActionCreatorsMapObject } from '@reduxjs/toolkit';
-import { Drawing, DrawActionPending, getDrawings } from '../draw.reducer';
+import {
+  Drawing,
+  DrawActionPending,
+  getDrawings,
+  cancelSelect,
+} from '../draw.reducer';
 import { instanceOfArrow } from '../arrow/arrow.reducer';
 import { reorder } from '../mixins/drawOrder/drawOrder';
 import { emitEvent } from 'socket/socket';
 import { save } from '../mixins/save/save.reducer';
+import { applySelect } from '../mixins/multiSelect/multiSelect.reducer';
 
 // TimeTravelSafeAction promise not to modify the undo or redo buffer.
 // This is not enforced by types, so pretty please just follow the rules.
@@ -51,6 +57,7 @@ export const safeUpdateDrawingsPending: DrawActionPending<Drawing[]> = (
     }
   });
   reorder(drawings, state);
+  applySelect(state, drawings);
 };
 
 // just like draw/deleteDrawing, except this will NEVER update the undo/redo buffer
