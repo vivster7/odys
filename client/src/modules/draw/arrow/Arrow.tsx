@@ -30,7 +30,7 @@ const Arrow: React.FC<ShapeId> = React.memo((props) => {
     (state: RootState) => state.draw.select?.id === id
   );
 
-  const color = isSelected ? COLORS.selected : COLORS.arrowDefault;
+  const color = isSelected ? COLORS.select : COLORS.arrowDefault;
 
   if (!r1) {
     dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`));

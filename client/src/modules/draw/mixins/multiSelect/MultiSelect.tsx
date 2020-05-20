@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../App';
 import { endMultiDrag } from '../../draw.reducer';
+import { COLORS } from 'modules/draw/mixins/colors/colors';
 
 interface MultiDragState {
   startX: number;
@@ -21,6 +22,7 @@ const MultiSelect: React.FC = () => {
   const canvasScale = useSelector((state: RootState) => state.canvas.scale);
   const borderPadding = 20 / canvasScale;
   const dashArray = 5 / canvasScale;
+  const borderWidth = 2 / canvasScale;
 
   const [multiDrag, setMultiDrag] = useState<MultiDragState | null>(null);
 
@@ -68,8 +70,10 @@ const MultiSelect: React.FC = () => {
         y={selectionRect.y}
         width={selectionRect.width}
         height={selectionRect.height}
-        fill="#b3d4fc30"
-        stroke="blue"
+        fill={COLORS.selectionArea}
+        fillOpacity="0.1"
+        stroke={COLORS.selectionInProgress}
+        strokeWidth={borderWidth + 'px'}
       ></rect>
     );
   } else if (selectionOutline) {
@@ -85,8 +89,9 @@ const MultiSelect: React.FC = () => {
         height={selectionOutline.height + borderPadding + borderPadding}
         fill="white"
         fillOpacity="0"
-        stroke="black"
+        stroke={COLORS.selectionArea}
         strokeDasharray={dashArray + 'px'}
+        strokeWidth={borderWidth + 'px'}
         cursor="grab"
         onMouseDown={(e) => handleMouseDown(e)}
       ></rect>

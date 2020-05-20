@@ -66,7 +66,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
 
   const selectColor =
     isSelected || isMultiSelected
-      ? COLORS.selected
+      ? COLORS.select
       : playerSelected
       ? playerSelected.color
       : strokeColor;

@@ -31,27 +31,27 @@ const SelectionCircles: React.FC<SelectionCirclesProps> = (props) => {
   return (
     <>
       <circle
-        fill={COLORS.selected}
+        fill={COLORS.select}
         r={radiusSize + 'px'}
         cursor="nw-resize"
         onMouseDown={(e) => onMouseDown(e, 'NWAnchor')}
       ></circle>
       <circle
-        fill={COLORS.selected}
+        fill={COLORS.select}
         r={radiusSize + 'px'}
         cursor="ne-resize"
         onMouseDown={(e) => onMouseDown(e, 'NEAnchor')}
         cx={props.width}
       ></circle>
       <circle
-        fill={COLORS.selected}
+        fill={COLORS.select}
         r={radiusSize + 'px'}
         cursor="sw-resize"
         onMouseDown={(e) => onMouseDown(e, 'SWAnchor')}
         cy={props.height}
       ></circle>
       <circle
-        fill={COLORS.selected}
+        fill={COLORS.select}
         r={radiusSize + 'px'}
         cursor="se-resize"
         onMouseDown={(e) => onMouseDown(e, 'SEAnchor')}

@@ -1,21 +1,18 @@
 /**
-  https://flatuicolors.com/palette/cn
+  https://flatuicolors.com
 */
 const ANTI_FLASH_WHITE = '#f1f2f6';
 const CITY_LIGHTS = '#dfe4ea';
 const TWINKLE_BLUE = '#ced6e0';
-
-/**
-  https://flatuicolors.com/palette/au
-*/
 const HINT_OF_ICE_PACK = '#c7ecee';
 const BLURPLE = '#4834d4';
 const MIDDLE_BLUE = '#7ed6df';
 const PRESTIGE_BLUE = '#2f3542';
 const PEACE = '#a4b0be';
+const STORM_PETREL = '#8395a7';
 
 export const COLORS = {
-  selected: BLURPLE,
+  select: BLURPLE,
   groupingRectBG: HINT_OF_ICE_PACK,
   groupingRectDefault: CITY_LIGHTS,
   rectBg: ANTI_FLASH_WHITE,
@@ -24,6 +21,8 @@ export const COLORS = {
   canvas: TWINKLE_BLUE,
   appBg: PRESTIGE_BLUE,
   text: PRESTIGE_BLUE,
+  selectionArea: STORM_PETREL,
+  selectionInProgress: PEACE,
 };
 
 const BRUSCHETTA_TOMATO = '#ff6348';
