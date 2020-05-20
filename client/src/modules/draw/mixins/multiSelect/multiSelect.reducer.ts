@@ -99,13 +99,33 @@ interface EndMultiDrag {
 export const endMultiDragFn: DrawReducer<EndMultiDrag> = (state, action) => {
   state.multiDrag = null;
   if (!state.multiSelect) return;
-  Object.keys(state.multiSelect.selectedShapeIds).forEach((id) => {
-    const rect = state.shapes[id];
-    rect.x += action.payload.translateX;
-    rect.y += action.payload.translateY;
+
+  const { translateX, translateY } = action.payload;
+
+  const selectedShapes = Object.keys(state.multiSelect.selectedShapeIds).map(
+    (id) => state.shapes[id]
+  );
+
+  const selectedShapesSnapshot = selectedShapes.map((s) =>
+    Object.assign({}, s)
+  );
+  selectedShapes.forEach((s) => {
+    s.x += translateX;
+    s.y += translateY;
   });
-  state.multiSelect.outline.x += action.payload.translateX;
-  state.multiSelect.outline.y += action.payload.translateY;
+  state.multiSelect.outline.x += translateX;
+  state.multiSelect.outline.y += translateY;
+
+  const undo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: selectedShapesSnapshot,
+  };
+  const redo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: selectedShapes,
+  };
+  state.timetravel.undos.push({ undo, redo });
+  state.timetravel.redos = [];
 };
 
 export const applySelect = (state: DrawState, drawings: Drawing[]) => {
