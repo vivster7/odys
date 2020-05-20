@@ -72,6 +72,7 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
   selectionRect.height = deltaHeight;
 
   const selectedShapeIds = Object.values(state.shapes)
+    .filter((s) => !s.isDeleted)
     .filter((s) => isOverlapping(s, selectionRect))
     .map((s) => [s.id, true]);
 
