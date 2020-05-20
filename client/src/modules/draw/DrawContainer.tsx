@@ -2,14 +2,13 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../App';
 import { Shape } from './shape/Shape';
-import { fetchArrows } from './arrow/arrow.reducer';
-import { fetchShapes } from './shape/shape.reducer';
 import { addError } from 'modules/errors/errors.reducer';
 import Arrow from './arrow/Arrow';
 import {
   useDebounce,
   useDrawingChangedEmitter,
 } from 'modules/draw/mixins/sync/sync';
+import { fetchDrawings } from './draw.reducer';
 
 interface DrawId {
   id: string;
@@ -40,8 +39,7 @@ const DrawContainer: React.FC = React.memo(() => {
 
   useEffect(() => {
     if (board.loaded !== 'success') return;
-    dispatch(fetchShapes(board.id));
-    dispatch(fetchArrows(board.id));
+    dispatch(fetchDrawings(board.id));
   }, [board, dispatch]);
 
   return (

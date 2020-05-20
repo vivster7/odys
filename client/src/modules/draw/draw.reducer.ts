@@ -3,6 +3,7 @@ import {
   CaseReducer,
   PayloadAction,
   SerializedError,
+  createAsyncThunk,
 } from '@reduxjs/toolkit';
 
 import {
@@ -173,6 +174,14 @@ export function getDrawings(state: DrawState, ids: string[]): Drawing[] {
   return ids.map((id) => getDrawing(state, id));
 }
 
+export const fetchDrawings = createAsyncThunk(
+  'draw/fetchDrawings',
+  async (boardId: string, thunkAPI) => {
+    await thunkAPI.dispatch(fetchShapes(boardId));
+    await thunkAPI.dispatch(fetchArrows(boardId));
+  }
+);
+
 export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
   // be wary of adding undo/redo buffer to this fn
   // they sync changes from socket updates and need to be synchronous
@@ -231,6 +240,10 @@ const drawSlice = createSlice({
     copy: copyFn,
   },
   extraReducers: {
+    // drawing
+    [fetchDrawings.pending as any]: (state, action) => {},
+    [fetchDrawings.fulfilled as any]: (state, action) => {},
+    [fetchDrawings.rejected as any]: (state, action) => {},
     //save
     [save.pending as any]: (state, action) => {},
     [save.fulfilled as any]: saveFulfilled,
