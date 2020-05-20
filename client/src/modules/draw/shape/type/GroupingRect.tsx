@@ -1,7 +1,6 @@
 import React from 'react';
-import { ShapeTypeProps } from '../Shape';
 import BaseShape from './BaseShape';
-import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
+import { ShapeTypeProps } from '../Shape';
 import { COLORS } from 'modules/draw/mixins/colors/colors';
 
 const GroupingRect: React.FC<ShapeTypeProps> = (props) => {
@@ -12,7 +11,7 @@ const GroupingRect: React.FC<ShapeTypeProps> = (props) => {
   const strokeDasharray = 0;
   const strokeColor = COLORS.groupingRectDefault;
   const textX = (props.shape.width + props.shape.deltaWidth) / 2;
-  const textY = 20 / zoomLeveltoScaleMap[props.shape.createdAtZoomLevel];
+  const textY = 0;
   const childProps = {
     ...props,
     cursor,

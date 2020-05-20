@@ -19,7 +19,7 @@ const HiddenTextInput: React.FC = React.memo(() => {
   // the hidden input to lose focus and typing won't edit the selected rect.
   useSelector((state: RootState) => state.draw.resize);
 
-  const inputEl = useRef<HTMLInputElement>(null);
+  const inputEl = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
     if (inputEl && inputEl.current) {
       inputEl.current.focus();
@@ -31,7 +31,7 @@ const HiddenTextInput: React.FC = React.memo(() => {
     if (id) dispatch(startEditText());
   }, [id, dispatch]);
 
-  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     dispatch(editText(event.target.value));
     if (id) debouncedEndEditText(dispatch, id);
   };
@@ -39,12 +39,10 @@ const HiddenTextInput: React.FC = React.memo(() => {
   if (!id) return <></>;
   return (
     <>
-      <input
-        // TODO: want to support pasting text into an input
+      <textarea
         onPaste={(e) => e.preventDefault()}
         style={{ height: '0px', padding: '0px', border: '0px', opacity: 0 }}
         ref={inputEl}
-        type="text"
         onChange={onInputChange}
       />
     </>

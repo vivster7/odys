@@ -1,9 +1,11 @@
 import React from 'react';
-import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
-import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
 import { Shape } from '../shape.reducer';
-import { Player } from 'modules/players/players.reducer';
+import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import { COLORS } from 'modules/draw/mixins/colors/colors';
+import TextBlock from 'modules/draw/mixins/editText/TextBlock';
+import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
+import { Player } from 'modules/players/players.reducer';
+
 export const SHAPE_WIDTH = 150;
 export const SHAPE_HEIGHT = 75;
 
@@ -93,17 +95,13 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
             : scaledStrokeDasharray + 'px'
         }
       ></rect>
-      <text
+      <TextBlock
         x={textX}
         y={textY}
-        textAnchor="middle"
-        textRendering="optimizeSpeed"
-        dominantBaseline="baseline"
-        fontSize={fontSize + 'px'}
-        fill={COLORS.text}
-      >
-        {text}
-      </text>
+        fontSize={fontSize}
+        text={text}
+        createdAtZoomLevel={createdAtZoomLevel}
+      />
       {(isSelected || isMultiSelected) && (
         <SelectionCircles
           id={id}
