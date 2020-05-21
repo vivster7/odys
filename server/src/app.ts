@@ -97,6 +97,10 @@ io.on('connection', (socket: socket.Socket) => {
     socket.on('drawingSelected', (data) => {
       broadcastToRoom('drawingSelected', data);
     });
+
+    socket.on('cursorMoved', (data) => {
+      broadcastToRoom('cursorMoved', data);
+    });
   };
 
   registerClientEvents(socket);

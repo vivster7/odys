@@ -127,3 +127,5 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   dispatch(addError(`unknown shape ${id}`));
   return <></>;
 };
+
+export default Shape;

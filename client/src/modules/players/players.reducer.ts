@@ -4,6 +4,8 @@ import {
   connectPlayersFn,
   disconnectPlayerFn,
 } from './mixins/connection/connection.reducer';
+import { syncCursorFn } from './mixins/cursor/cursor.reducer';
+import { Cursor } from 'modules/canvas/cursor/cursor';
 
 export type PlayersReducer<T = void> = CaseReducer<
   PlayersState,
@@ -13,6 +15,7 @@ export type PlayersReducer<T = void> = CaseReducer<
 export interface Player {
   id: string;
   color: string;
+  cursor?: Cursor;
 }
 
 export interface PlayerSelection {
@@ -32,9 +35,6 @@ const initialState: PlayersState = {
   selections: [],
 };
 
-// playerLeft
-// playerCursorMoved
-
 const playersSlice = createSlice({
   name: 'players',
   initialState: initialState,
@@ -42,6 +42,7 @@ const playersSlice = createSlice({
     connectPlayers: connectPlayersFn,
     disconnectPlayer: disconnectPlayerFn,
     updatePlayerSelection: updatePlayerSelectionFn,
+    syncCursor: syncCursorFn,
   },
   extraReducers: {},
 });
@@ -50,6 +51,7 @@ export const {
   connectPlayers,
   disconnectPlayer,
   updatePlayerSelection,
+  syncCursor,
 } = playersSlice.actions;
 const playersReducer = playersSlice.reducer;
 export default playersReducer;

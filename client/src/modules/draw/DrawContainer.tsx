@@ -3,14 +3,12 @@ import { shallowEqual, useSelector, useDispatch } from 'react-redux';
 import { find } from 'lodash';
 
 import { RootState } from '../../App';
+import { useDebounce } from 'global/debounce';
 import Arrow from './arrow/Arrow';
-import { Shape } from './shape/Shape';
+import Shape from './shape/Shape';
 import { addError } from 'modules/errors/errors.reducer';
 import { Player } from 'modules/players/players.reducer';
-import {
-  useDebounce,
-  useDrawingChangedEmitter,
-} from 'modules/draw/mixins/sync/sync';
+import { useDrawingChangedEmitter } from 'modules/draw/mixins/sync/sync';
 import { fetchDrawings } from './draw.reducer';
 
 export interface DrawingProps {

@@ -25,6 +25,7 @@ import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import * as uuid from 'uuid';
 import { COLORS } from 'modules/draw/mixins/colors/colors';
+import Cursors from './cursor/Cursors';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -369,6 +370,7 @@ const Canvas: React.FC = () => {
       <g id="odys-zoomable-group" transform={transform}>
         <DrawContainer></DrawContainer>
         <MultiSelect></MultiSelect>
+        <Cursors></Cursors>
       </g>
     </svg>
   );

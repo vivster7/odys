@@ -9,6 +9,7 @@ import { useDrawingDeletedListener } from 'modules/draw/mixins/delete/delete.red
 import { useDrawingSavedListener } from 'modules/draw/mixins/save/save.reducer';
 import { usePlayerConnectionListeners } from 'modules/players/mixins/connection/connection.reducer';
 import { useDrawingSelectedListener } from 'modules/players/mixins/selection/selection.reducer';
+import { useCursorMovedListener } from 'modules/players/mixins/cursor/cursor.reducer';
 
 import { connect } from 'socket/socket';
 
@@ -43,6 +44,7 @@ const Room: React.FC = () => {
   useDrawingChangedListener(dispatch);
   useDrawingSavedListener(dispatch);
   useDrawingDeletedListener(dispatch);
+  useCursorMovedListener(dispatch);
 
   return (
     <div

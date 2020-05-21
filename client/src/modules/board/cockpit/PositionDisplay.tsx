@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-
-interface Cursor {
-  x: number;
-  y: number;
-}
+import { useDebounce } from 'global/debounce';
+import { useCursorMovedEmitter } from 'modules/players/mixins/cursor/cursor.reducer';
+import { Cursor } from 'modules/canvas/cursor/cursor';
 
 interface PositionDisplayProps {
   topLeftX: number;
@@ -33,6 +31,9 @@ const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
     window.addEventListener('mousemove', mouseMoveFn);
     return () => window.removeEventListener('mousemove', mouseMoveFn);
   }, [topLeftX, topLeftY, scale, setCursor]);
+
+  const debouncedCursor = useDebounce(cursor, 10);
+  useCursorMovedEmitter(debouncedCursor);
 
   return (
     <div
