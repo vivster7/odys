@@ -14,10 +14,7 @@ const LISTEN_KEYS = [
   'KeyC',
   'KeyV',
   'KeyX',
-  'AltLeft',
-  'AltRight',
-  'ShiftLeft',
-  'ShiftRight',
+  'Escape',
 ];
 
 interface Keydown {
@@ -30,41 +27,46 @@ export const keydown = createAsyncThunk(
   'global/keydown',
   async (e: Keydown, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
+    const dispatch = thunkAPI.dispatch;
 
     const { select, multiSelect, editText } = state.draw;
     if (e.code === 'Backspace') {
       if (select?.id && editText.isEditing === false) {
-        await thunkAPI.dispatch(deleteDrawings([select.id]));
-        return thunkAPI.dispatch(cancelSelect());
+        await dispatch(deleteDrawings([select.id]));
+        return dispatch(cancelSelect());
       }
 
       if (multiSelect) {
         const ids = Object.keys(multiSelect.selectedShapeIds);
-        await thunkAPI.dispatch(deleteDrawings(ids));
-        return thunkAPI.dispatch(cancelSelect());
+        await dispatch(deleteDrawings(ids));
+        return dispatch(cancelSelect());
       }
     }
 
     if (e.code === 'KeyA' && e.metaKey) {
-      return thunkAPI.dispatch(selectAll());
+      return dispatch(selectAll());
     }
 
     if (e.code === 'KeyZ' && e.metaKey) {
       if (e.shiftKey) {
-        return thunkAPI.dispatch(redo());
+        return dispatch(redo());
       } else {
-        return thunkAPI.dispatch(undo());
+        return dispatch(undo());
       }
     }
 
     if (e.code === 'KeyC' && e.metaKey) {
-      return thunkAPI.dispatch(copy());
+      return dispatch(copy());
     }
     if (e.code === 'KeyV' && e.metaKey) {
-      return thunkAPI.dispatch(paste());
+      return dispatch(paste());
     }
     if (e.code === 'KeyX' && e.metaKey) {
-      return thunkAPI.dispatch(cut());
+      return dispatch(cut());
+    }
+
+    if (e.code === 'Escape') {
+      return dispatch(cancelSelect());
     }
   },
   { condition: (e: Keydown, thunkAPI) => LISTEN_KEYS.includes(e.code) }
