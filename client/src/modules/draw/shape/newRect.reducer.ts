@@ -113,7 +113,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   const rect: Rect = {
     type: 'rect',
     id: id,
-    text: 'box',
+    text: '',
     x: x - width / 2,
     y: y - height / 2,
     width: width,
@@ -187,7 +187,7 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
   const rect: GroupingRect = {
     type: 'grouping_rect',
     id: id,
-    text: 'Group',
+    text: '',
     x: x,
     y: y,
     translateX: 0,

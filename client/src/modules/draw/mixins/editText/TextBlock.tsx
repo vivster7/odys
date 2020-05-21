@@ -1,8 +1,10 @@
 import React from 'react';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { isEmpty } from 'lodash';
 
 export const TEXT_LINE_HEIGHT = 16;
+const PLACEHOLDER_TEXT = 'Type to enter text';
 
 export function getTextBlocks(text: string) {
   return text.split('\n');
@@ -14,13 +16,16 @@ interface TextBlockProps {
   fontSize: number;
   text: string;
   createdAtZoomLevel: number;
+  isSelected: boolean;
 }
 
 const TextBlock: React.FC<TextBlockProps> = (props) => {
-  const { x, y, fontSize, text, createdAtZoomLevel } = props;
+  const { x, y, fontSize, text, createdAtZoomLevel, isSelected } = props;
 
+  const usePlaceholder = isSelected && isEmpty(text);
   const textBlocks = getTextBlocks(text);
   const scale = zoomLeveltoScaleMap[createdAtZoomLevel];
+  const dy = TEXT_LINE_HEIGHT / scale;
 
   return (
     <text
@@ -30,20 +35,21 @@ const TextBlock: React.FC<TextBlockProps> = (props) => {
       textRendering="optimizeSpeed"
       dominantBaseline="baseline"
       fontSize={fontSize + 'px'}
-      fill={COLORS.text}
+      fill={usePlaceholder ? COLORS.placeholderText : COLORS.text}
     >
-      {textBlocks.map((text, idx) => {
-        return (
-          <tspan
-            key={idx}
-            x={x}
-            dy={TEXT_LINE_HEIGHT / scale + 'px'}
-            dominantBaseline="middle"
-          >
-            {text}
-          </tspan>
-        );
-      })}
+      {usePlaceholder ? (
+        <tspan key="placeholder" x={x} dy={dy + 'px'} dominantBaseline="middle">
+          {PLACEHOLDER_TEXT}
+        </tspan>
+      ) : (
+        textBlocks.map((text, idx) => {
+          return (
+            <tspan key={idx} x={x} dy={dy + 'px'} dominantBaseline="middle">
+              {text}
+            </tspan>
+          );
+        })
+      )}
     </text>
   );
 };

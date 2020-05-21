@@ -96,6 +96,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         }
       ></rect>
       <TextBlock
+        isSelected={isSelected}
         x={textX}
         y={textY}
         fontSize={fontSize}

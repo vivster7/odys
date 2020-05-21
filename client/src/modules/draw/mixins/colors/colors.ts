@@ -22,6 +22,7 @@ export const COLORS = {
   canvas: TWINKLE_BLUE,
   appBg: PRESTIGE_BLUE,
   text: PRESTIGE_BLUE,
+  placeholderText: PEACE,
   selectionArea: STORM_PETREL,
   selectionInProgress: PEACE,
   cockpitUnselectedBg: WHITE_WHITE_WHITE,
