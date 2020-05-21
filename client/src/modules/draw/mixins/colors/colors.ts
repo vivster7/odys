@@ -1,6 +1,8 @@
 /**
   https://flatuicolors.com
 */
+const WHITE_WHITE_WHITE = '#ffffff';
+const BLACK_BLACK_BLACK = '#000000';
 const ANTI_FLASH_WHITE = '#f1f2f6';
 const CITY_LIGHTS = '#dfe4ea';
 const TWINKLE_BLUE = '#ced6e0';
@@ -23,6 +25,8 @@ export const COLORS = {
   text: PRESTIGE_BLUE,
   selectionArea: STORM_PETREL,
   selectionInProgress: PEACE,
+  cockpitUnselectedBg: WHITE_WHITE_WHITE,
+  cockpitSelectedBg: ANTI_FLASH_WHITE,
 };
 
 const BRUSCHETTA_TOMATO = '#ff6348';
