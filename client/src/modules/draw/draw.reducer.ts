@@ -27,9 +27,9 @@ import {
 } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import {
   cancelSelectFn,
-  SelectedDrawing,
   selectDrawing,
   selectDrawingPending,
+  SelectedState,
 } from 'modules/draw/mixins/select/select.reducer';
 import {
   endNewRectByClick,
@@ -131,7 +131,7 @@ export interface DrawState {
   arrows: ArrowData;
   drawOrder: string[];
   editText: EditTextState;
-  select: SelectedDrawing | null;
+  select: SelectedState | null;
   drag: DragState | null;
   multiSelect: MultiSelectState | null;
   resize: ResizeState | null;

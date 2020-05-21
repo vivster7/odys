@@ -156,7 +156,7 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
-    dispatch(selectDrawing(id));
+    dispatch(selectDrawing({ id, shiftKey: e.shiftKey }));
   }
 
   return (

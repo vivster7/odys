@@ -15,6 +15,7 @@ import { Shape as ShapeType } from './shape.reducer';
 import { Player } from 'modules/players/players.reducer';
 import { drawArrow } from '../arrow/arrow.reducer';
 import * as uuid from 'uuid';
+import { AnyAction } from 'redux';
 
 // ShapeTypeProps are passed to shape types: rect, text, grouping_rect
 export interface ShapeTypeProps {
@@ -44,8 +45,12 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   );
   const isSelected = selectedShape && selectedShape.id === id;
 
-  function onMouseDown(e: React.MouseEvent) {
+  function sharedOnMouseDown(
+    e: React.MouseEvent,
+    onAltClick?: (a: any) => AnyAction
+  ) {
     e.stopPropagation();
+
     if (
       e.altKey &&
       !!selectedShape &&
@@ -60,7 +65,10 @@ export const Shape: React.FC<DrawingProps> = (props) => {
           boardId: board.id,
         })
       );
+    } else if (e.altKey && onAltClick) {
+      dispatch(onAltClick({ clickX: e.clientX, clickY: e.clientY }));
     } else {
+      dispatch(selectDrawing({ id, shiftKey: e.shiftKey }));
       dispatch(
         startDrag({
           id: id,
@@ -69,40 +77,17 @@ export const Shape: React.FC<DrawingProps> = (props) => {
           clickY: e.clientY,
         })
       );
-      dispatch(selectDrawing(id));
     }
   }
 
-  function handleMouseDownInGroupingRect(e: React.MouseEvent) {
-    e.stopPropagation();
+  function onMouseDown(e: React.MouseEvent) {
+    sharedOnMouseDown(e);
+  }
 
-    if (
-      e.altKey &&
-      !!selectedShape &&
-      !isOverlapping(shape, selectedShape) &&
-      !isSelected
-    ) {
-      dispatch(
-        drawArrow({
-          id: uuid.v4(),
-          fromShapeId: selectedShape.id,
-          toShapeId: id,
-          boardId: board.id,
-        })
-      );
-    } else if (e.altKey) {
-      dispatch(startNewRect({ clickX: e.clientX, clickY: e.clientY }));
-    } else {
-      dispatch(selectDrawing(id));
-      dispatch(
-        startDrag({
-          id: id,
-          encompassedIds: [],
-          clickX: e.clientX,
-          clickY: e.clientY,
-        })
-      );
-    }
+  function handleMouseDownInGroupingRect(e: React.MouseEvent) {
+    sharedOnMouseDown(e, () =>
+      startNewRect({ clickX: e.clientX, clickY: e.clientY })
+    );
   }
 
   const childProps = {

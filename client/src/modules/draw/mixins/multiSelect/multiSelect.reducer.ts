@@ -1,6 +1,14 @@
-import { DrawReducer, Drawing, DrawState } from '../../draw.reducer';
+import {
+  DrawReducer,
+  Drawing,
+  DrawState,
+  DrawActionPending,
+  getDrawing,
+} from '../../draw.reducer';
 import Box, { isOverlapping, outline } from '../../../../math/box';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { emitEvent } from 'socket/socket';
 
 interface startDragSelection {
   x: number;
@@ -85,6 +93,14 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
   const shapes = Object.keys(selectedShapeIds).map((id) => state.shapes[id]);
   applySelect(state, shapes);
 };
+
+export const multiSelect = createAsyncThunk(
+  'draw/multiSelect',
+  async (id: string[], thunkAPI) => {
+    // TODO: bulk sync (multiselect)
+    emitEvent('drawingSelected', id[0]);
+  }
+);
 
 export const selectAllFn: DrawReducer = (state, action) => {
   const shapeIds = Object.keys(state.shapes);
