@@ -103,7 +103,7 @@ io.on('connection', (socket: socket.Socket) => {
     });
   };
 
-  registerClientEvents(socket);
+  registerClientEvents();
 });
 
 server.listen(PORT, () => {
