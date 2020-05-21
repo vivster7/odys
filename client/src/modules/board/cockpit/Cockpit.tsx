@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../App';
 import ZoomLevelDisplay from './ZoomLevelDisplay';
 import PositionDisplay from './PositionDisplay';
-import { prependOnceListener } from 'cluster';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
 import KeyToggle from './KeyToggle';
 
 const Cockpit: React.FC = () => {
