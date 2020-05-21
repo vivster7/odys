@@ -1,10 +1,4 @@
-import {
-  DrawReducer,
-  Drawing,
-  DrawState,
-  DrawActionPending,
-  getDrawing,
-} from '../../draw.reducer';
+import { DrawReducer, Drawing, DrawState } from '../../draw.reducer';
 import Box, { isOverlapping, outline } from '../../../../math/box';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 import { createAsyncThunk } from '@reduxjs/toolkit';
