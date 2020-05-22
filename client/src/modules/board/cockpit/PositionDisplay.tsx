@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDebounce } from 'global/debounce';
 import { useCursorMovedEmitter } from 'modules/players/mixins/cursor/cursor.reducer';
 import { Cursor } from 'modules/canvas/cursor/cursor';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 
 interface PositionDisplayProps {
   topLeftX: number;

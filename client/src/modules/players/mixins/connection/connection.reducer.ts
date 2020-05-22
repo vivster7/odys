@@ -6,7 +6,7 @@ import {
   disconnectPlayer,
 } from 'modules/players/players.reducer';
 import { registerSocketListener } from 'socket/socket';
-import { PALETTE } from 'modules/draw/mixins/colors/colors';
+import { PALETTE } from 'global/colors';
 import { difference, map } from 'lodash';
 
 export const connectPlayersFn: PlayersReducer<string[]> = (state, action) => {

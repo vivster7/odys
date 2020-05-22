@@ -1,7 +1,7 @@
 import React from 'react';
 import BaseShape from './BaseShape';
 import { ShapeTypeProps } from '../Shape';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 
 const GroupingRect: React.FC<ShapeTypeProps> = (props) => {
   const { isSelected, isDragging } = props;

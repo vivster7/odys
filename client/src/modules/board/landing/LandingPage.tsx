@@ -2,7 +2,7 @@ import React from 'react';
 import { isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import { RootState } from 'App';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 
 const LandingPage: React.FC = () => {
   const showEmptyState = useSelector(

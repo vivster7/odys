@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../App';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 
 interface MultiDragState {

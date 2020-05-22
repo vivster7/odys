@@ -7,7 +7,7 @@ import ToastContainer from 'modules/errors/ToastContainer';
 import Canvas from 'modules/canvas/Canvas';
 import LandingPage from './landing/LandingPage';
 import KeyTooltips from './tooltip/KeyTooltips';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 
 import Cockpit from './cockpit/Cockpit';
 import { getOrCreateBoard } from './board.reducer';

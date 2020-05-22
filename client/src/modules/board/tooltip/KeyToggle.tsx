@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 
 interface KeyToggle {
   isToggled: boolean;
-  popupText: string;
   tips: string[];
 }
 
 interface KeyTogglePopup {
-  shouldDisplay: boolean;
   fitToContent?: boolean;
 }
 
 const KeyToggle: React.FC<KeyToggle> = (props) => {
-  const { isToggled, popupText, tips } = props;
+  const { isToggled, tips } = props;
   const color = isToggled ? COLORS.textContrast : COLORS.secondaryText;
   const backgroundColor = isToggled
     ? COLORS.cockpitSelectedBg
@@ -23,7 +21,6 @@ const KeyToggle: React.FC<KeyToggle> = (props) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const KeyTogglePopup: React.FC<KeyTogglePopup> = (props) => {
-    if (!props.shouldDisplay) return <></>;
     return (
       <div
         style={{
@@ -45,17 +42,7 @@ const KeyToggle: React.FC<KeyToggle> = (props) => {
   };
 
   const renderActionTips = () => {
-    return tips.map((tip, idx) => {
-      return (
-        <KeyTogglePopup key={idx} shouldDisplay={true}>
-          {tip}
-        </KeyTogglePopup>
-      );
-    });
-  };
-
-  return (
-    <>
+    return (
       <div
         style={{
           position: 'absolute',
@@ -65,14 +52,16 @@ const KeyToggle: React.FC<KeyToggle> = (props) => {
           width: '400px',
         }}
       >
-        {isToggled ? renderActionTips() : <></>}
-        <KeyTogglePopup
-          shouldDisplay={isHovered && !isToggled}
-          fitToContent={true}
-        >
-          {popupText}
-        </KeyTogglePopup>
+        {tips.map((tip, idx) => {
+          return <KeyTogglePopup key={idx}>{tip}</KeyTogglePopup>;
+        })}
       </div>
+    );
+  };
+
+  return (
+    <>
+      {isHovered ? renderActionTips() : <></>}
       <div style={{ position: 'relative' }}>
         <div
           onPointerOver={(_) => setIsHovered(true)}

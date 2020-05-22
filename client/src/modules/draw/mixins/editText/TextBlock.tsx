@@ -1,6 +1,6 @@
 import React from 'react';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 import { isEmpty } from 'lodash';
 
 export const TEXT_LINE_HEIGHT = 16;

@@ -8,7 +8,7 @@ import { addError } from 'modules/errors/errors.reducer';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 
 import { DrawingProps } from '../DrawContainer';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 
 const TEXT_PADDING = 5;
 

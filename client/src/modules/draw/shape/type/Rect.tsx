@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShapeTypeProps } from '../Shape';
 import BaseShape from './BaseShape';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 import { Shape } from '../shape.reducer';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import {

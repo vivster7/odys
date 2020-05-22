@@ -1,7 +1,7 @@
 import React from 'react';
 import { Shape } from '../shape.reducer';
 import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 import TextBlock from 'modules/draw/mixins/editText/TextBlock';
 import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
 import { Player } from 'modules/players/players.reducer';

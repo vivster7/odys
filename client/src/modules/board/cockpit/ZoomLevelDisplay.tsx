@@ -3,6 +3,7 @@ import plus from './plus.svg';
 import minus from './minus.svg';
 import { useDispatch } from 'react-redux';
 import { changeZoomLevel, dirtyCanvas } from '../../canvas/canvas.reducer';
+import { COLORS } from 'global/colors';
 
 interface ZoomLevelDisplayProps {
   zoomLevel: number;
@@ -29,8 +30,7 @@ const ZoomLevelDisplay: React.FC<ZoomLevelDisplayProps> = (props) => {
         flexFlow: 'column nowrap',
         backgroundColor: 'white',
         borderRadius: '8px',
-        boxShadow: '0px 4px 2px -2px grey',
-        border: '1px rgba(204,204,204,0.5) solid',
+        boxShadow: `0px 4px 2px -2px ${COLORS.dropShadow}`,
         padding: '6px',
         justifyContent: 'space-around',
         fontSize: '18px',

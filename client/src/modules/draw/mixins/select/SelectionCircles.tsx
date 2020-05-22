@@ -3,7 +3,7 @@ import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import { startResize } from 'modules/draw/draw.reducer';
 import { useDispatch } from 'react-redux';
 import { Anchor } from 'modules/draw/shape/mixins/resize/resize.reducer';
-import { COLORS } from 'modules/draw/mixins/colors/colors';
+import { COLORS } from 'global/colors';
 
 interface SelectionCirclesProps {
   id: string;

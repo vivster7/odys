@@ -35,7 +35,6 @@ const KeyTooltips: React.FC = () => {
       <div style={{ display: 'flex', flexFlow: 'row nowrap' }}>
         <KeyToggle
           isToggled={isAltPressed}
-          popupText="Insert Mode"
           tips={[
             '⌥ + Click to draw a box',
             '⌥ + Drag to draw a grouping box',
@@ -46,7 +45,6 @@ const KeyTooltips: React.FC = () => {
         </KeyToggle>
         <KeyToggle
           isToggled={isShiftPressed}
-          popupText="Select Mode"
           tips={[
             '⇧ + Click to select multiple boxes',
             '⇧ + Drag to select multiple boxes',
