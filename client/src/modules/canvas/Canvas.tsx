@@ -296,12 +296,14 @@ const Canvas: React.FC = () => {
     }
 
     if (pan !== null) {
+      const newTopLeftX = topLeftX + translateX;
+      const newTopLeftY = topLeftY + translateY;
       setPan(null);
-      setTopLeftX(topLeftX + translateX);
-      setTopLeftY(topLeftY + translateY);
+      setTopLeftX(newTopLeftX);
+      setTopLeftY(newTopLeftY);
       setTranslateX(0);
       setTranslateY(0);
-      dispatch(endPan({ topLeftX, topLeftY }));
+      dispatch(endPan({ topLeftX: newTopLeftX, topLeftY: newTopLeftY }));
     }
 
     if (resizingId) {
