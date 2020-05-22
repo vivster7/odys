@@ -9,6 +9,7 @@ import { GroupingRect, Rect } from './shape.reducer';
 import { save } from '../mixins/save/save.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import { DEFAULT_ZOOM_LEVEL } from 'modules/canvas/zoom/zoom.reducer';
+import { cursorWithinEpsilon } from 'global/cursor';
 
 export interface NewRectState {
   clickX: number;
@@ -24,18 +25,6 @@ export interface NewRect {
   canvasScale: number;
   canvasZoomLevel: number;
   boardId: string;
-}
-
-const CLICK_EPSILON = 5;
-export function cursorWithinClickRange(
-  startX: number,
-  startY: number,
-  endX: number,
-  endY: number,
-  canvasScale: number
-) {
-  const eps = CLICK_EPSILON / canvasScale;
-  return endX - startX < eps && endY - startY < eps;
 }
 
 export function validCursorPositions(
@@ -93,7 +82,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
       clickX,
       clickY
     ) ||
-    !cursorWithinClickRange(
+    !cursorWithinEpsilon(
       state.newRect.clickX,
       state.newRect.clickY,
       clickX,

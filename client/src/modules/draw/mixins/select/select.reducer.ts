@@ -1,4 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { findLast } from 'lodash';
+import { isWithinBounds } from 'math/box';
 import {
   DrawActionPending,
   DrawReducer,
@@ -6,7 +8,7 @@ import {
 } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { emitEvent } from 'socket/socket';
-import { applySelect } from '../multiSelect/multiSelect.reducer';
+import { applySelectOrDeselect } from '../multiSelect/multiSelect.reducer';
 
 export interface SelectedState {
   id: string;
@@ -34,21 +36,28 @@ export const selectDrawingPending: DrawActionPending<SelectedDrawing> = (
   action
 ) => {
   const { id, shiftKey } = action.meta.arg;
-  let ids: Set<string> = new Set([id]);
-  if (shiftKey) {
-    if (state.select) {
-      ids.add(state.select.id);
-    }
-    if (state.multiSelect) {
-      Object.keys(state.multiSelect.selectedShapeIds).forEach((id) =>
-        ids.add(id)
-      );
-    }
-  }
+  applySelectOrDeselect(state, id, shiftKey);
+};
 
-  const drawings = getDrawings(state, Array.from(ids));
-  applySelect(state, drawings);
-  reorder(drawings, state);
+interface clickPosition {
+  x: number;
+  y: number;
+  shiftKey: boolean;
+}
+
+export const selectClickTargetFn: DrawReducer<clickPosition> = (
+  state,
+  action
+) => {
+  const { x, y, shiftKey } = action.payload;
+
+  const clickTargetId = findLast(state.drawOrder, (id) =>
+    state.shapes[id] ? isWithinBounds(x, y, state.shapes[id]) : false
+  );
+
+  if (clickTargetId) {
+    applySelectOrDeselect(state, clickTargetId, shiftKey);
+  }
 };
 
 export const cancelSelectFn: DrawReducer = (state, action) => {

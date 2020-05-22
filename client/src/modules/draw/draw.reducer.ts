@@ -30,6 +30,7 @@ import {
   selectDrawing,
   selectDrawingPending,
   SelectedState,
+  selectClickTargetFn,
 } from 'modules/draw/mixins/select/select.reducer';
 import {
   endNewRectByClick,
@@ -222,6 +223,7 @@ const drawSlice = createSlice({
     editText: editTextFn,
     // select
     cancelSelect: cancelSelectFn,
+    selectClickTarget: selectClickTargetFn,
     // drag
     startDrag: startDragFn,
     drag: dragFn,
@@ -322,6 +324,7 @@ export const {
   resizeDragSelection,
   endDragSelection,
   selectAll,
+  selectClickTarget,
   copy,
 } = drawSlice.actions;
 const drawReducer = drawSlice.reducer;

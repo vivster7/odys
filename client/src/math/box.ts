@@ -14,6 +14,15 @@ export function isOverlapping(r1: Box, r2: Box): boolean {
   );
 }
 
+export function isWithinBounds(x: number, y: number, box: Box): boolean {
+  return (
+    x >= box.x &&
+    x <= box.x + box.width &&
+    y >= box.y &&
+    y <= box.y + box.height
+  );
+}
+
 // Return rectangle that surrounds all input `rects`.
 export function outline(...rects: Box[]): Box {
   if (rects.length === 0) throw new Error('`outline` needs >0 input `rects`');

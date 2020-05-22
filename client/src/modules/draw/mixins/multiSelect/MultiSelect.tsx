@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../../../App';
 import { COLORS } from 'global/colors';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
+import { selectClickTarget } from 'modules/draw/draw.reducer';
+import { cursorWithinEpsilon } from 'global/cursor';
 
 interface MultiDragState {
   startX: number;
@@ -45,14 +47,33 @@ const MultiSelect: React.FC = () => {
 
   function handleMouseUp(e: MouseEvent) {
     if (multiDrag && selectedShapeIds) {
-      dispatch(
-        endDrag({
-          ids: Object.keys(selectedShapeIds),
-          translateX: multiDrag.x,
-          translateY: multiDrag.y,
-        })
-      );
+      if (
+        cursorWithinEpsilon(
+          multiDrag.startX,
+          multiDrag.startY,
+          e.clientX,
+          e.clientY,
+          canvasScale
+        )
+      ) {
+        dispatch(
+          selectClickTarget({
+            x: e.clientX,
+            y: e.clientY,
+            shiftKey: e.shiftKey,
+          })
+        );
+      } else {
+        dispatch(
+          endDrag({
+            ids: Object.keys(selectedShapeIds),
+            translateX: multiDrag.x,
+            translateY: multiDrag.y,
+          })
+        );
+      }
     }
+
     setMultiDrag(null);
   }
 

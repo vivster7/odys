@@ -12,12 +12,12 @@ import {
 } from '../draw/draw.reducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../App';
+import { cursorWithinEpsilon } from 'global/cursor';
 import { wheelEnd, endPan, cleanCanvas } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
 import {
   endNewRectByClick,
   validCursorPositions,
-  cursorWithinClickRange,
 } from '../draw/shape/newRect.reducer';
 import MultiSelect from '../draw/mixins/multiSelect/MultiSelect';
 import {
@@ -174,7 +174,7 @@ const Canvas: React.FC = () => {
         e.clientX,
         e.clientY
       ) &&
-      !cursorWithinClickRange(
+      !cursorWithinEpsilon(
         newRect.clickX,
         newRect.clickY,
         e.clientX,
@@ -263,7 +263,7 @@ const Canvas: React.FC = () => {
         e.clientX,
         e.clientY
       ) &&
-      cursorWithinClickRange(
+      cursorWithinEpsilon(
         newRect.clickX,
         newRect.clickY,
         e.clientX,

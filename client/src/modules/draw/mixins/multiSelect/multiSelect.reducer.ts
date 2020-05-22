@@ -1,8 +1,14 @@
-import { DrawReducer, Drawing, DrawState } from '../../draw.reducer';
-import Box, { isOverlapping, outline } from '../../../../math/box';
+import {
+  DrawReducer,
+  Drawing,
+  DrawState,
+  getDrawings,
+} from '../../draw.reducer';
+import Box, { isOverlapping, outline } from 'math/box';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { emitEvent } from 'socket/socket';
+import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 
 export interface MultiSelectState {
   // resizeble rect used to multiselect
@@ -150,3 +156,34 @@ export const isSelected = (state: DrawState, ids: string[]) => {
 
   return false;
 };
+
+function getSelectedIdSet(state: DrawState): Set<string> {
+  const ids: Set<string> = new Set(
+    Object.keys(state.multiSelect?.selectedShapeIds ?? {})
+  );
+  if (state.select) {
+    ids.add(state.select.id);
+  }
+  return ids;
+}
+
+export function applySelectOrDeselect(
+  state: DrawState,
+  id: string,
+  shiftKey: boolean
+) {
+  let ids: Set<string> = new Set([id]);
+  if (shiftKey) {
+    ids = getSelectedIdSet(state);
+
+    if (isSelected(state, [id])) {
+      ids.delete(id);
+    } else {
+      ids.add(id);
+    }
+  }
+
+  const drawings = getDrawings(state, Array.from(ids));
+  applySelect(state, drawings);
+  reorder(drawings, state);
+}
