@@ -98,7 +98,7 @@ export const multiSelect = createAsyncThunk(
 
 export const selectAllFn: DrawReducer = (state, action) => {
   const shapeIds = Object.keys(state.shapes);
-  const shapes = Object.values(state.shapes);
+  const shapes = Object.values(state.shapes).filter((s) => !s.isDeleted);
 
   state.select = null;
   state.multiSelect = {
