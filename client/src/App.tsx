@@ -1,7 +1,15 @@
 import React from 'react';
 import { Route, Redirect, BrowserRouter, Switch } from 'react-router-dom';
 
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  combineReducers,
+  StoreEnhancer,
+  StoreEnhancerStoreCreator,
+  AnyAction,
+  createAction,
+  Action,
+} from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import * as uuid from 'uuid';
 
@@ -14,6 +22,7 @@ import errorReducer from './modules/errors/errors.reducer';
 import roomReducer from './modules/room/room.reducer';
 import boardReducer from './modules/board/board.reducer';
 import playersReducer from './modules/players/players.reducer';
+import { emitEvent } from 'socket/socket';
 
 const rootReducer = combineReducers({
   draw: drawReducer,
@@ -25,8 +34,26 @@ const rootReducer = combineReducers({
 });
 export type RootState = ReturnType<typeof rootReducer>;
 
+const syncEnhancer: StoreEnhancer = (createStore) => (
+  reducer,
+  initialState
+) => {
+  const syncedRootReducer = (state: any, action: any) => {
+    const newState = reducer(state, action);
+    if (action.type !== 'global/syncState' && newState != state) {
+      emitEvent('updatedState', newState);
+    }
+    return newState;
+  };
+
+  return createStore(syncedRootReducer, initialState);
+};
+
+export const syncState = createAction<RootState>('global/syncState');
+
 const store = configureStore({
   reducer: rootReducer,
+  enhancers: [syncEnhancer],
 });
 
 export type OdysDispatch = typeof store.dispatch;

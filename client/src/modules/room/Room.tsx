@@ -11,7 +11,8 @@ import { usePlayerConnectionListeners } from 'modules/players/mixins/connection/
 import { useDrawingSelectedListener } from 'modules/players/mixins/selection/selection.reducer';
 import { useCursorMovedListener } from 'modules/players/mixins/cursor/cursor.reducer';
 
-import { connect } from 'socket/socket';
+import { connect, registerSocketListener } from 'socket/socket';
+import { syncState, RootState } from 'App';
 
 const Room: React.FC = () => {
   const { id } = useParams();
@@ -39,11 +40,18 @@ const Room: React.FC = () => {
     connect(id);
   }, [id]);
 
+  useEffect(() => {
+    const onSyncState = (data: RootState) => {
+      dispatch(syncState(data));
+    };
+    return registerSocketListener('updatedState', onSyncState);
+  }, [dispatch]);
+
   usePlayerConnectionListeners(dispatch);
-  useDrawingSelectedListener(dispatch);
-  useDrawingChangedListener(dispatch);
-  useDrawingSavedListener(dispatch);
-  useDrawingDeletedListener(dispatch);
+  // useDrawingSelectedListener(dispatch);
+  // useDrawingChangedListener(dispatch);
+  // useDrawingSavedListener(dispatch);
+  // useDrawingDeletedListener(dispatch);
   useCursorMovedListener(dispatch);
 
   return (

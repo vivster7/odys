@@ -22,6 +22,8 @@ const Drawing: React.FC<DrawingProps> = (props) => {
   const shape = useSelector((state: RootState) => state.draw.shapes[id]);
   const arrow = useSelector((state: RootState) => state.draw.arrows[id]);
 
+  debugger;
+
   const debouncedShape = useDebounce(shape, 0);
   useDrawingChangedEmitter(debouncedShape);
   const debouncedArrow = useDebounce(arrow, 0);

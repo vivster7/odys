@@ -86,6 +86,7 @@ import {
   cutPending,
   cutFulfilled,
 } from './mixins/copypaste/copypaste.reducer';
+import { RootState } from 'App';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type ActionPending<T = void> = {
@@ -305,6 +306,17 @@ const drawSlice = createSlice({
     [cut.pending as any]: cutPending,
     [cut.rejected as any]: (state, action) => {},
     [cut.fulfilled as any]: cutFulfilled,
+    //global
+    'global/syncState': (state, action: any) => {
+      const rootState = action.payload.data as RootState;
+      const drawState = rootState.draw;
+      state.arrows = drawState.arrows;
+      state.drag = drawState.drag;
+      state.multiSelect = drawState.multiSelect;
+      state.resize = drawState.resize;
+      state.select = drawState.select;
+      state.shapes = drawState.shapes;
+    },
   },
 });
 
