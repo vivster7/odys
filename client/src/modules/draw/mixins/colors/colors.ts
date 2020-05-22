@@ -23,6 +23,7 @@ export const COLORS = {
   appBg: PRESTIGE_BLUE,
   text: PRESTIGE_BLUE,
   placeholderText: PEACE,
+  tooltipText: STORM_PETREL,
   selectionArea: STORM_PETREL,
   selectionInProgress: PEACE,
   cockpitUnselectedBg: WHITE_WHITE_WHITE,

@@ -5,6 +5,7 @@ import { RootState } from 'App';
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Canvas from 'modules/canvas/Canvas';
+import LandingPage from './landing/LandingPage';
 import { COLORS } from 'modules/draw/mixins/colors/colors';
 
 import Cockpit from './cockpit/Cockpit';
@@ -48,6 +49,7 @@ const DrawingBoard: React.FC = () => {
   return (
     <>
       <Canvas></Canvas>
+      <LandingPage></LandingPage>
       <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
         <HiddenTextInput></HiddenTextInput>
       </div>
