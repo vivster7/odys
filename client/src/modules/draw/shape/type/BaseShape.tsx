@@ -1,6 +1,5 @@
 import React from 'react';
 import { Shape } from '../shape.reducer';
-import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import { COLORS } from 'global/colors';
 import TextBlock from 'modules/draw/mixins/editText/TextBlock';
 import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
@@ -57,12 +56,11 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
 
   const transform = `translate(${x + translateX}, ${y + translateY})`;
 
-  const scale = zoomLeveltoScaleMap[createdAtZoomLevel];
-  const fontSize = 12 / scale;
-  const radiusSize = 2 / scale;
-  const strokeWidth = 4 / scale;
-  const selectedStrokeDashArray = 5 / scale;
-  const scaledStrokeDasharray = strokeDasharray / scale;
+  const fontSize = 12;
+  const radiusSize = 2;
+  const strokeWidth = 4;
+  const selectedStrokeDashArray = 5;
+  const scaledStrokeDasharray = strokeDasharray;
 
   const selectColor =
     isSelected || isMultiSelected

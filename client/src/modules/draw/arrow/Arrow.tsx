@@ -5,7 +5,6 @@ import { RootState } from 'App';
 import Line, { intersects } from 'math/line';
 import { selectDrawing } from 'modules/draw/mixins/select/select.reducer';
 import { addError } from 'modules/errors/errors.reducer';
-import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 
 import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
@@ -36,8 +35,6 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
     ? playerSelected.color
     : COLORS.arrowDefault;
 
-  const selectionTargetWidth = 20;
-
   if (!r1) {
     dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`));
     return <></>;
@@ -47,10 +44,10 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
     return <></>;
   }
 
-  const zoomLevel = r1.createdAtZoomLevel;
-  const fontSize = 12 / zoomLeveltoScaleMap[zoomLevel];
-  const strokeWidth = 3 / zoomLeveltoScaleMap[zoomLevel];
-  const offset = 5 / zoomLeveltoScaleMap[zoomLevel];
+  const fontSize = 12;
+  const strokeWidth = 3;
+  const offset = 5;
+  const selectionTargetWidth = 20;
 
   const r1X = r1.x + r1.translateX;
   const r1Y = r1.y + r1.translateY;

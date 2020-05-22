@@ -1,5 +1,4 @@
 import React from 'react';
-import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import { COLORS } from 'global/colors';
 import { isEmpty } from 'lodash';
 
@@ -20,12 +19,11 @@ interface TextBlockProps {
 }
 
 const TextBlock: React.FC<TextBlockProps> = (props) => {
-  const { x, y, fontSize, text, createdAtZoomLevel, isSelected } = props;
+  const { x, y, fontSize, text, isSelected } = props;
 
   const usePlaceholder = isSelected && isEmpty(text);
   const textBlocks = getTextBlocks(text);
-  const scale = zoomLeveltoScaleMap[createdAtZoomLevel];
-  const dy = TEXT_LINE_HEIGHT / scale;
+  const dy = TEXT_LINE_HEIGHT;
 
   return (
     <text

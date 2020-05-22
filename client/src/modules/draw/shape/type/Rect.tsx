@@ -3,7 +3,6 @@ import { ShapeTypeProps } from '../Shape';
 import BaseShape from './BaseShape';
 import { COLORS } from 'global/colors';
 import { Shape } from '../shape.reducer';
-import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import {
   TEXT_LINE_HEIGHT,
   getTextBlocks,
@@ -13,8 +12,7 @@ export const RECT_WIDTH = 150;
 export const RECT_HEIGHT = 75;
 
 function computeTextYPosition(shape: Shape): number {
-  const scaledLineHeight =
-    TEXT_LINE_HEIGHT / zoomLeveltoScaleMap[shape.createdAtZoomLevel];
+  const scaledLineHeight = TEXT_LINE_HEIGHT;
   const startPosition =
     (shape.height + shape.deltaHeight) / 2 - scaledLineHeight;
   const numLines = getTextBlocks(shape.text).length;

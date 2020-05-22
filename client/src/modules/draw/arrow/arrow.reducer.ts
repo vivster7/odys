@@ -90,13 +90,9 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   // cannot draw arrow across zoomLevels
   const fromShape = state.shapes[fromShapeId];
   const toShape = state.shapes[toShapeId];
+
   if (!fromShape) throw new Error(`Cannot find shape (${fromShapeId})`);
   if (!toShape) throw new Error(`Cannot find shape (${toShapeId})`);
-  if (fromShape.createdAtZoomLevel !== toShape.createdAtZoomLevel) {
-    throw new Error(
-      `Cannot draw arrow across zoomLevel (createdAtZoomLevels dont match)`
-    );
-  }
 
   const arrow: Arrow = {
     id: id,

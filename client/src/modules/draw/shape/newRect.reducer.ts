@@ -5,10 +5,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawReducer, DrawActionPending } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { RECT_WIDTH, RECT_HEIGHT } from './type/Rect';
-import { zoomLeveltoScaleMap } from '../../canvas/zoom/zoom.reducer';
 import { GroupingRect, Rect } from './shape.reducer';
 import { save } from '../mixins/save/save.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
+import { DEFAULT_ZOOM_LEVEL } from 'modules/canvas/zoom/zoom.reducer';
 
 export interface NewRectState {
   clickX: number;
@@ -80,7 +80,6 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     canvasTopLeftX,
     canvasTopLeftY,
     canvasScale,
-    canvasZoomLevel,
     boardId,
   } = action.meta.arg;
 
@@ -107,8 +106,8 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   const x = (clickX - canvasTopLeftX) / canvasScale;
   const y = (clickY - canvasTopLeftY) / canvasScale;
 
-  const width = RECT_WIDTH / zoomLeveltoScaleMap[canvasZoomLevel];
-  const height = RECT_HEIGHT / zoomLeveltoScaleMap[canvasZoomLevel];
+  const width = RECT_WIDTH;
+  const height = RECT_HEIGHT;
 
   const rect: Rect = {
     type: 'rect',
@@ -118,7 +117,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     y: y - height / 2,
     width: width,
     height: height,
-    createdAtZoomLevel: canvasZoomLevel,
+    createdAtZoomLevel: DEFAULT_ZOOM_LEVEL,
     boardId: boardId,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -196,7 +195,7 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
     height: height,
     deltaWidth: 0,
     deltaHeight: 0,
-    createdAtZoomLevel: canvasZoomLevel,
+    createdAtZoomLevel: DEFAULT_ZOOM_LEVEL,
     isLastUpdatedBySync: false,
     isSavedInDB: false,
     boardId: boardId,

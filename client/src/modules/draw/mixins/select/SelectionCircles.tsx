@@ -1,5 +1,4 @@
 import React from 'react';
-import { zoomLeveltoScaleMap } from 'modules/canvas/zoom/zoom.reducer';
 import { startResize } from 'modules/draw/draw.reducer';
 import { useDispatch } from 'react-redux';
 import { Anchor } from 'modules/draw/shape/mixins/resize/resize.reducer';
@@ -14,7 +13,7 @@ interface SelectionCirclesProps {
 
 const SelectionCircles: React.FC<SelectionCirclesProps> = (props) => {
   const dispatch = useDispatch();
-  const radiusSize = 5 / zoomLeveltoScaleMap[props.createdAtZoomLevel];
+  const radiusSize = 5;
 
   function onMouseDown(e: React.MouseEvent, anchor: Anchor) {
     e.stopPropagation();

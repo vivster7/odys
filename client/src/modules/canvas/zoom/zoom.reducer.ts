@@ -4,16 +4,20 @@ import { CanvasState } from '../canvas.reducer';
 export const zoomLeveltoScaleMap: {
   [key: number]: number;
 } = {
-  1: 1 * 8 ** -4,
-  2: 1 * 8 ** -3,
-  3: 1 * 8 ** -2,
-  4: 1 * 8 ** -1,
-  5: 1 * 8 ** 0,
-  6: 1 * 8 ** 1,
-  7: 1 * 8 ** 2,
-  8: 1 * 8 ** 3,
-  9: 1 * 8 ** 4,
+  1: 1 * 2 ** -4,
+  2: 1 * 2 ** -3,
+  3: 1 * 2 ** -2,
+  4: 1 * 2 ** -1,
+  5: 1 * 2 ** 0,
+  6: 1 * 2 ** 1,
+  7: 1 * 2 ** 2,
+  8: 1 * 2 ** 3,
+  9: 1 * 2 ** 4,
 };
+
+export const DEFAULT_ZOOM_LEVEL = 5;
+export const MIN_ZOOM_LEVEL = 1;
+export const MAX_ZOOM_LEVEL = 9;
 
 interface ChangeZoomLevel {
   zoomLevel: number;
@@ -26,7 +30,11 @@ export const changeZoomLevelFn: CaseReducer<
   // TODO: grab (x,y) as center of viewport
   const x = 640;
   const y = 360;
-  const zoomLevel = bound(action.payload.zoomLevel, 1, 9);
+  const zoomLevel = bound(
+    action.payload.zoomLevel,
+    MIN_ZOOM_LEVEL,
+    MAX_ZOOM_LEVEL
+  );
 
   const invertX = (x - state.topLeftX) / state.scale;
   const invertY = (y - state.topLeftY) / state.scale;

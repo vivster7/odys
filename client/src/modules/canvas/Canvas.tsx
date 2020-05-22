@@ -20,7 +20,11 @@ import {
   cursorWithinClickRange,
 } from '../draw/shape/newRect.reducer';
 import MultiSelect from '../draw/mixins/multiSelect/MultiSelect';
-import { zoomLeveltoScaleMap } from './zoom/zoom.reducer';
+import {
+  zoomLeveltoScaleMap,
+  MIN_ZOOM_LEVEL,
+  MAX_ZOOM_LEVEL,
+} from './zoom/zoom.reducer';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import * as uuid from 'uuid';
@@ -336,8 +340,8 @@ const Canvas: React.FC = () => {
 
     const updatedScale = bound(
       scale * Math.pow(2, scaleFactor),
-      1 * 8 ** -4,
-      1 * 8 ** 4
+      zoomLeveltoScaleMap[MIN_ZOOM_LEVEL],
+      zoomLeveltoScaleMap[MAX_ZOOM_LEVEL]
     );
     const updatedTopLeftX = e.clientX - invertX * updatedScale;
     const updatedTopLeftY = e.clientY - invertY * updatedScale;
