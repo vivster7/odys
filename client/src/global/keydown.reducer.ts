@@ -9,6 +9,7 @@ import { paste, cut } from 'modules/draw/mixins/copypaste/copypaste.reducer';
 // Only keys in this list will trigger the keydown condition.
 const LISTEN_KEYS = [
   'Backspace',
+  'Delete',
   'KeyA',
   'KeyZ',
   'KeyC',
@@ -30,7 +31,7 @@ export const keydown = createAsyncThunk(
     const dispatch = thunkAPI.dispatch;
 
     const { select, multiSelect, editText } = state.draw;
-    if (e.code === 'Backspace') {
+    if (e.code === 'Backspace' || e.code === 'Delete') {
       if (select?.id && editText.isEditing === false) {
         await dispatch(deleteDrawings([select.id]));
         return dispatch(cancelSelect());
