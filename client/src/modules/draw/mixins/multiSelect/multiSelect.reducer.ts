@@ -4,6 +4,17 @@ import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { emitEvent } from 'socket/socket';
 
+export interface MultiSelectState {
+  // resizeble rect used to multiselect
+  selectionRect: Box | null;
+
+  // shapes selected by the resizeable rect
+  selectedShapeIds: { [key: string]: boolean };
+
+  // outline around all selected shapes
+  outline: Box;
+}
+
 interface startDragSelection {
   x: number;
   y: number;
@@ -29,11 +40,6 @@ export const startDragSelectionFn: DrawReducer<startDragSelection> = (
   };
 };
 
-export interface MultiSelectState {
-  selectionRect: Box | null;
-  selectedShapeIds: { [key: string]: boolean };
-  outline: Box;
-}
 interface resizeDragSelection {
   clickX: number;
   clickY: number;
@@ -60,6 +66,7 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
     canvasTopLeftY,
     canvasScale,
   } = action.payload;
+
   const { x, y } = selectionRect;
   const deltaWidth = (clickX - canvasTopLeftX) / canvasScale - x;
   const deltaHeight = (clickY - canvasTopLeftY) / canvasScale - y;
