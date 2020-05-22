@@ -1,12 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { findLast } from 'lodash';
 import { isWithinBounds } from 'math/box';
-import {
-  DrawActionPending,
-  DrawReducer,
-  getDrawings,
-} from 'modules/draw/draw.reducer';
-import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
+import { DrawActionPending, DrawReducer } from 'modules/draw/draw.reducer';
 import { emitEvent } from 'socket/socket';
 import { applySelectOrDeselect } from '../multiSelect/multiSelect.reducer';
 

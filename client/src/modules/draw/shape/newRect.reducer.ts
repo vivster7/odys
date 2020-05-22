@@ -154,7 +154,6 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
     canvasTopLeftX,
     canvasTopLeftY,
     canvasScale,
-    canvasZoomLevel,
     boardId,
   } = action.payload;
 
