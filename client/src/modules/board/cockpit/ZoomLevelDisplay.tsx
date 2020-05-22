@@ -29,13 +29,13 @@ const ZoomLevelDisplay: React.FC<ZoomLevelDisplayProps> = (props) => {
         display: 'flex',
         flexFlow: 'column nowrap',
         backgroundColor: 'white',
-        borderRadius: '8px',
+        borderRadius: '4px',
         boxShadow: `0px 4px 2px -2px ${COLORS.dropShadow}`,
         padding: '6px',
         justifyContent: 'space-around',
-        fontSize: '18px',
         alignSelf: 'flex-end',
         marginBottom: '5px',
+        /*color: COLORS.secondaryText,*/
       }}
     >
       <img
@@ -50,7 +50,8 @@ const ZoomLevelDisplay: React.FC<ZoomLevelDisplayProps> = (props) => {
           borderBottom: '1px rgba(204, 204, 204, 0.5) solid',
           padding: '6px',
           margin: '3px -1px',
-          fontSize: '14px',
+          fontSize: '12px',
+          fontWeight: 600,
         }}
       >
         {zoomLevel}
