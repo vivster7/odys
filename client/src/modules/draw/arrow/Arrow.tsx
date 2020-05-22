@@ -36,6 +36,8 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
     ? playerSelected.color
     : COLORS.arrowDefault;
 
+  const selectionTargetWidth = 20;
+
   if (!r1) {
     dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`));
     return <></>;
@@ -181,6 +183,15 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
         stroke={color}
         strokeWidth={strokeWidth + 'px'}
         markerEnd={`url(#arrowhead.${props.id})`}
+      ></line>
+      <line
+        x1={x1}
+        y1={y1}
+        x2={x2}
+        y2={y2}
+        stroke={color}
+        strokeWidth={selectionTargetWidth + 'px'}
+        strokeOpacity="0"
       ></line>
       <text
         x={(x1 + x2) / 2}
