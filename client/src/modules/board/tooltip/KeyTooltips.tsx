@@ -5,6 +5,9 @@ const KeyTooltips: React.FC = () => {
   const [isAltPressed, setAltPressed] = useState(false);
   const [isShiftPressed, setShiftPressed] = useState(false);
 
+  const platform = window.navigator.platform;
+  const optionOrAlt = platform.includes('Mac') ? 'Option' : 'Alt';
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'AltLeft' || e.code === 'AltRight') {
@@ -41,7 +44,7 @@ const KeyTooltips: React.FC = () => {
             'With a selected box, ⌥ + Click to draw arrow to another box',
           ]}
         >
-          ⌥ [Option]
+          ⌥ [{optionOrAlt}]
         </KeyToggle>
         <KeyToggle
           isToggled={isShiftPressed}

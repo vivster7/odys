@@ -5,6 +5,9 @@ import { RootState } from 'App';
 import { COLORS } from 'global/colors';
 
 const LandingPage: React.FC = () => {
+  const platform = window.navigator.platform;
+  const optionOrAlt = platform.includes('Mac') ? 'Option' : 'Alt';
+
   const showEmptyState = useSelector(
     (state: RootState) =>
       isEmpty(state.draw.shapes) && isEmpty(state.draw.arrows)
@@ -24,7 +27,7 @@ const LandingPage: React.FC = () => {
             fontWeight: 500,
           }}
         >
-          ⌥ [Option] + Click to draw your first box
+          ⌥ [{optionOrAlt}] + Click to draw your first box
         </div>
       ) : (
         <></>
