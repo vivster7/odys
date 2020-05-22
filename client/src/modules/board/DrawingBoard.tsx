@@ -6,6 +6,7 @@ import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Canvas from 'modules/canvas/Canvas';
 import LandingPage from './landing/LandingPage';
+import KeyTooltips from './tooltip/KeyTooltips';
 import { COLORS } from 'modules/draw/mixins/colors/colors';
 
 import Cockpit from './cockpit/Cockpit';
@@ -61,6 +62,15 @@ const DrawingBoard: React.FC = () => {
         }}
       >
         <Cockpit></Cockpit>
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          left: '15px',
+          bottom: '10px',
+        }}
+      >
+        <KeyTooltips />
       </div>
       <div
         style={{

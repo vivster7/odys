@@ -21,9 +21,10 @@ const LandingPage: React.FC = () => {
             width: '100%',
             color: COLORS.tooltipText,
             fontSize: '14px',
+            fontWeight: 500,
           }}
         >
-          alt + click to make your first box
+          ⌥ [Option] + Click to draw your first box
         </div>
       ) : (
         <></>

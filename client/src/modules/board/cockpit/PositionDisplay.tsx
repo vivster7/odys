@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDebounce } from 'global/debounce';
 import { useCursorMovedEmitter } from 'modules/players/mixins/cursor/cursor.reducer';
 import { Cursor } from 'modules/canvas/cursor/cursor';
+import { COLORS } from 'modules/draw/mixins/colors/colors';
 
 interface PositionDisplayProps {
   topLeftX: number;
@@ -41,14 +42,15 @@ const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
         display: 'flex',
         flexFlow: 'row nowrap',
         backgroundColor: 'white',
-        borderRadius: '8px',
-        boxShadow: '0px 4px 2px -2px grey',
-        border: '1px rgba(204,204,204,0.5) solid',
+        borderRadius: '4px',
+        boxShadow: `0px 4px 2px -2px ${COLORS.dropShadow}`,
         padding: '12px',
         minWidth: '100px',
         maxWidth: '200px',
         justifyContent: 'space-around',
         fontSize: '12px',
+        color: COLORS.secondaryText,
+        fontWeight: 600,
       }}
     >
       <p

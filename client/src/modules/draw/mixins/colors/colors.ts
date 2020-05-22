@@ -22,12 +22,15 @@ export const COLORS = {
   canvas: TWINKLE_BLUE,
   appBg: PRESTIGE_BLUE,
   text: PRESTIGE_BLUE,
+  textContrast: WHITE_WHITE_WHITE,
   placeholderText: PEACE,
+  secondaryText: PEACE,
   tooltipText: STORM_PETREL,
   selectionArea: STORM_PETREL,
   selectionInProgress: PEACE,
   cockpitUnselectedBg: WHITE_WHITE_WHITE,
-  cockpitSelectedBg: ANTI_FLASH_WHITE,
+  cockpitSelectedBg: PEACE,
+  dropShadow: PEACE,
 };
 
 const BRUSCHETTA_TOMATO = '#ff6348';
