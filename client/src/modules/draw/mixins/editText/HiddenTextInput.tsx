@@ -11,7 +11,9 @@ const debouncedEndEditText = debounce((dispatch: OdysDispatch, id: string) => {
 
 const HiddenTextInput: React.FC = React.memo(() => {
   const dispatch = useDispatch();
-  const id = useSelector((state: RootState) => state.draw.select?.id);
+
+  // Same as below -- need to keep re-rendering this object on select.
+  const select = useSelector((state: RootState) => state.draw.select);
 
   // This selector will refresh this component whenver the resize
   // object changes. This will focus the hidden input.
@@ -28,15 +30,15 @@ const HiddenTextInput: React.FC = React.memo(() => {
   });
 
   useEffect(() => {
-    if (id) dispatch(startEditText());
-  }, [id, dispatch]);
+    if (select) dispatch(startEditText());
+  }, [select, dispatch]);
 
   const onInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     dispatch(editText(event.target.value));
-    if (id) debouncedEndEditText(dispatch, id);
+    if (select) debouncedEndEditText(dispatch, select.id);
   };
 
-  if (!id) return <></>;
+  if (!select) return <></>;
   return (
     <>
       <textarea
