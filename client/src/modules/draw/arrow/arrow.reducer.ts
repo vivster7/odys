@@ -76,9 +76,13 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   }
 
   // cannot duplicate existing arrow.
-  const existing = Object.values(state.arrows).find(
-    (a) => a.fromShapeId === fromShapeId && a.toShapeId === toShapeId
-  );
+  const existing = Object.values(state.arrows).find((a) => {
+    return (
+      a.fromShapeId === fromShapeId &&
+      a.toShapeId === toShapeId &&
+      a.isDeleted === false
+    );
+  });
   if (existing) {
     return;
   }
