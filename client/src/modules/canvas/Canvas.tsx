@@ -228,6 +228,8 @@ const Canvas: React.FC = () => {
         resize({
           clickX: e.clientX,
           clickY: e.clientY,
+          canvasTopLeftX: canvasState.topLeftX,
+          canvasTopLeftY: canvasState.topLeftY,
           canvasScale: canvasState.scale,
         })
       );

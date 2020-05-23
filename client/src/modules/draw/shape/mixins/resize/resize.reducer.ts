@@ -2,6 +2,7 @@ import { DrawReducer, DrawActionPending } from 'modules/draw/draw.reducer';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from 'modules/draw/mixins/save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
+import { getShape } from '../../shape.reducer';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -42,6 +43,8 @@ interface StartResize {
 interface Resize {
   clickX: number;
   clickY: number;
+  canvasTopLeftX: number;
+  canvasTopLeftY: number;
   canvasScale: number;
 }
 
@@ -65,43 +68,116 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
   }
 
   const { id } = state.resize;
-  if (!state.shapes[id]) {
-    throw new Error(`Cannot find shape with ${id}`);
-  }
+  const shape = getShape(state, id);
 
-  const { clickX, clickY, canvasScale } = action.payload;
+  const {
+    clickX,
+    clickY,
+    canvasTopLeftX,
+    canvasTopLeftY,
+    canvasScale,
+  } = action.payload;
   const { originalX, originalY } = state.resize;
 
+  // scaled click is where the pointer currently is on the canvas
+  const scaledClickX = (clickX - canvasTopLeftX) / canvasScale;
+  const scaledClickY = (clickY - canvasTopLeftY) / canvasScale;
+
+  // scaled original is where the resizing event began on the canvas
+  const scaledOriginalX = (originalX - canvasTopLeftX) / canvasScale;
+  const scaledOriginalY = (originalY - canvasTopLeftY) / canvasScale;
+
   let translateX = 0;
-  let translateY = 0;
   let deltaWidth = 0;
+  let translateY = 0;
   let deltaHeight = 0;
+
+  // BEWARE: This code is quite hard to follow. The translate's and the delta's
+  // do not play well together. Came together via trial and error instead of
+  // logic. Consider rewriting like multiselect (commit 39aa589dd)
+
+  function southY() {
+    let [translateY, deltaHeight] = [0, 0];
+    if (scaledClickY >= shape.y) {
+      translateY = 0;
+      deltaHeight = scaledClickY - scaledOriginalY;
+    } else {
+      translateY = scaledClickY - shape.y;
+      deltaHeight = shape.y - scaledClickY - (scaledOriginalY - shape.y);
+    }
+    return { translateY, deltaHeight };
+  }
+
+  function eastX() {
+    let [translateX, deltaWidth] = [0, 0];
+    if (scaledClickX >= shape.x) {
+      translateX = 0;
+      deltaWidth = scaledClickX - scaledOriginalX;
+    } else {
+      translateX = scaledClickX - shape.x;
+      deltaWidth = shape.x - scaledClickX - (scaledOriginalX - shape.x);
+    }
+    return { translateX, deltaWidth };
+  }
+
+  function northY() {
+    let [translateY, deltaHeight] = [0, 0];
+    if (scaledClickY >= shape.y + shape.height) {
+      translateY = shape.height;
+      deltaHeight =
+        scaledClickY - (scaledOriginalY + shape.height + shape.height);
+    } else {
+      translateY = scaledClickY - shape.y;
+      deltaHeight = shape.y - scaledClickY - (scaledOriginalY - shape.y);
+    }
+    return { translateY, deltaHeight };
+  }
+
+  function westX() {
+    let [translateX, deltaWidth] = [0, 0];
+    if (scaledClickX <= shape.x + shape.width) {
+      translateX = scaledClickX - scaledOriginalX;
+      deltaWidth = shape.x - scaledClickX;
+    } else {
+      translateX = shape.width;
+      deltaWidth = scaledClickX - (scaledOriginalX + shape.width + shape.width);
+    }
+    return { translateX, deltaWidth };
+  }
+
   switch (state.resize.anchor) {
     case 'SEAnchor':
-      deltaWidth = (clickX - originalX) / canvasScale;
-      deltaHeight = (clickY - originalY) / canvasScale;
+      let [SESouth, SEEast] = [southY(), eastX()];
+      translateX = SEEast.translateX;
+      deltaWidth = SEEast.deltaWidth;
+      translateY = SESouth.translateY;
+      deltaHeight = SESouth.deltaHeight;
       break;
     case 'SWAnchor':
-      translateX = (clickX - originalX) / canvasScale;
-      deltaWidth = (originalX - clickX) / canvasScale;
-      deltaHeight = (clickY - originalY) / canvasScale;
+      let [SWSouth, SWWest] = [southY(), westX()];
+      translateX = SWWest.translateX;
+      deltaWidth = SWWest.deltaWidth;
+      translateY = SWSouth.translateY;
+      deltaHeight = SWSouth.deltaHeight;
       break;
     case 'NEAnchor':
-      translateY = (clickY - originalY) / canvasScale;
-      deltaWidth = (clickX - originalX) / canvasScale;
-      deltaHeight = (originalY - clickY) / canvasScale;
+      let [NENorth, NEEast] = [northY(), eastX()];
+      translateX = NEEast.translateX;
+      deltaWidth = NEEast.deltaWidth;
+      translateY = NENorth.translateY;
+      deltaHeight = NENorth.deltaHeight;
       break;
     case 'NWAnchor':
-      translateX = (clickX - originalX) / canvasScale;
-      translateY = (clickY - originalY) / canvasScale;
-      deltaWidth = (originalX - clickX) / canvasScale;
-      deltaHeight = (originalY - clickY) / canvasScale;
+      let [NWNorth, NWWest] = [northY(), westX()];
+      translateX = NWWest.translateX;
+      deltaWidth = NWWest.deltaWidth;
+      translateY = NWNorth.translateY;
+      deltaHeight = NWNorth.deltaHeight;
       break;
     default:
       throw new Error(`Unknown anchor point ${state.resize.anchor}`);
   }
 
-  const shape = state.shapes[id];
   shape.translateX = translateX;
   shape.translateY = translateY;
   shape.deltaWidth = deltaWidth;
