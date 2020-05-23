@@ -9,8 +9,12 @@ import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { emitEvent } from 'socket/socket';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
+import Point from 'math/point';
 
 export interface MultiSelectState {
+  // origin where selectionRect begins
+  origin: Point | null;
+
   // resizeble rect used to multiselect
   selectionRect: Box | null;
 
@@ -34,10 +38,16 @@ export const startDragSelectionFn: DrawReducer<startDragSelection> = (
   action
 ) => {
   const { x, y, canvasTopLeftX, canvasTopLeftY, canvasScale } = action.payload;
+  const scaledX = (x - canvasTopLeftX) / canvasScale;
+  const scaledY = (y - canvasTopLeftY) / canvasScale;
   state.multiSelect = {
+    origin: {
+      x: scaledX,
+      y: scaledY,
+    },
     selectionRect: {
-      x: (x - canvasTopLeftX) / canvasScale,
-      y: (y - canvasTopLeftY) / canvasScale,
+      x: scaledX,
+      y: scaledY,
       width: 0,
       height: 0,
     },
@@ -58,12 +68,17 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
   state,
   action
 ) => {
-  if (!state.multiSelect || !state.multiSelect.selectionRect)
+  if (!state.multiSelect) {
     throw new Error(
       `draw/startDragSelection must be called before draw/resizeDragSelection`
     );
-
-  const { selectionRect } = state.multiSelect;
+  }
+  const { origin, selectionRect } = state.multiSelect;
+  if (!origin || !selectionRect) {
+    throw new Error(
+      'Missing `origin` or `selectionRect` on state.draw.mulitSelect'
+    );
+  }
 
   const {
     clickX,
@@ -73,12 +88,31 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
     canvasScale,
   } = action.payload;
 
-  const { x, y } = selectionRect;
-  const deltaWidth = (clickX - canvasTopLeftX) / canvasScale - x;
-  const deltaHeight = (clickY - canvasTopLeftY) / canvasScale - y;
+  const scaledClickX = (clickX - canvasTopLeftX) / canvasScale;
+  const scaledClickY = (clickY - canvasTopLeftY) / canvasScale;
 
-  selectionRect.width = deltaWidth;
-  selectionRect.height = deltaHeight;
+  let [newX, newWidth] = [0, 0];
+  if (scaledClickX >= origin.x) {
+    newX = origin.x;
+    newWidth = scaledClickX - origin.x;
+  } else {
+    newX = scaledClickX;
+    newWidth = origin.x - scaledClickX;
+  }
+
+  let [newY, newHeight] = [0, 0];
+  if (scaledClickY >= origin.y) {
+    newY = origin.y;
+    newHeight = scaledClickY - origin.y;
+  } else {
+    newY = scaledClickY;
+    newHeight = origin.y - scaledClickY;
+  }
+
+  selectionRect.x = newX;
+  selectionRect.y = newY;
+  selectionRect.width = newWidth;
+  selectionRect.height = newHeight;
 
   const selectedShapeIds = Object.values(state.shapes)
     .filter((s) => !s.isDeleted)
@@ -115,6 +149,7 @@ export const selectAllFn: DrawReducer = (state, action) => {
 
   state.select = null;
   state.multiSelect = {
+    origin: null,
     selectionRect: null,
     selectedShapeIds: Object.fromEntries(shapeIds.map((id) => [id, true])),
     outline: outline(...shapes),
@@ -136,6 +171,7 @@ export const applySelect = (state: DrawState, drawings: Drawing[]) => {
     state.select = null;
     const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
     state.multiSelect = {
+      origin: null,
       selectionRect: null,
       selectedShapeIds: Object.fromEntries(shapes.map((s) => [s.id, true])),
       outline: outline(...shapes),
