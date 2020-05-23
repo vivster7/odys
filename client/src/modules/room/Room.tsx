@@ -32,12 +32,12 @@ const Room: React.FC = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getOrCreateRoom(id));
+    connect(dispatch, id);
   }, [dispatch, id]);
 
   useEffect(() => {
-    connect(id);
-  }, [id]);
+    dispatch(getOrCreateRoom(id));
+  }, [dispatch, id]);
 
   usePlayerConnectionListeners(dispatch);
   useDrawingSelectedListener(dispatch);

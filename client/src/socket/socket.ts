@@ -1,4 +1,6 @@
 import io from 'socket.io-client';
+import { registerSelf } from 'modules/players/players.reducer';
+import { OdysDispatch } from 'App';
 
 export interface ClientEvent {
   clientId: string;
@@ -7,11 +9,11 @@ export interface ClientEvent {
 
 let socket: SocketIOClient.Socket;
 
-export function connect(roomId: string) {
+export function connect(dispatch: OdysDispatch, roomId: string) {
   socket = io({ query: { roomId: roomId } });
 
-  socket.on('connected', () => {
-    console.log('i am connected', socket.connected);
+  socket.on('connect', () => {
+    dispatch(registerSelf(socket.id));
   });
 }
 

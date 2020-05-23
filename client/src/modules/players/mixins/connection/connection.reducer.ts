@@ -9,6 +9,16 @@ import { registerSocketListener } from 'socket/socket';
 import { PALETTE } from 'global/colors';
 import { difference, map } from 'lodash';
 
+export const registerSelfFn: PlayersReducer<string> = (state, action) => {
+  const id = action.payload;
+  state.self = id;
+  const connectPlayerAction = {
+    type: 'players/connectPlayers',
+    payload: [id],
+  };
+  connectPlayersFn(state, connectPlayerAction);
+};
+
 export const connectPlayersFn: PlayersReducer<string[]> = (state, action) => {
   const playerIds = action.payload;
 

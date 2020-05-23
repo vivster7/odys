@@ -3,6 +3,7 @@ import { updatePlayerSelectionFn } from './mixins/selection/selection.reducer';
 import {
   connectPlayersFn,
   disconnectPlayerFn,
+  registerSelfFn,
 } from './mixins/connection/connection.reducer';
 import { syncCursorFn } from './mixins/cursor/cursor.reducer';
 import { Cursor } from 'modules/canvas/cursor/cursor';
@@ -24,6 +25,7 @@ export interface PlayerSelection {
 }
 
 interface PlayersState {
+  self: string;
   players: {
     [id: string]: Player;
   };
@@ -31,6 +33,7 @@ interface PlayersState {
 }
 
 const initialState: PlayersState = {
+  self: '',
   players: {},
   selections: [],
 };
@@ -39,6 +42,7 @@ const playersSlice = createSlice({
   name: 'players',
   initialState: initialState,
   reducers: {
+    registerSelf: registerSelfFn,
     connectPlayers: connectPlayersFn,
     disconnectPlayer: disconnectPlayerFn,
     updatePlayerSelection: updatePlayerSelectionFn,
@@ -48,6 +52,7 @@ const playersSlice = createSlice({
 });
 
 export const {
+  registerSelf,
   connectPlayers,
   disconnectPlayer,
   updatePlayerSelection,
