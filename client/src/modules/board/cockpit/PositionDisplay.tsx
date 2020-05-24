@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useDebounce } from 'global/debounce';
-import { useCursorMovedEmitter } from 'modules/players/mixins/cursor/cursor.reducer';
 import { Cursor } from 'modules/canvas/cursor/cursor';
 import { COLORS } from 'global/colors';
+import { useDispatch, useSelector } from 'react-redux';
+import { syncCursor } from 'modules/players/players.reducer';
+import { RootState, OdysDispatch } from 'App';
 
 interface PositionDisplayProps {
   topLeftX: number;
@@ -11,6 +12,8 @@ interface PositionDisplayProps {
 }
 
 function onMouseMove(
+  dispatch: OdysDispatch,
+  playerId: string,
   topLeftX: number,
   topLeftY: number,
   scale: number,
@@ -20,21 +23,28 @@ function onMouseMove(
     const x = (e.clientX - topLeftX) / scale;
     const y = (e.clientY - topLeftY) / scale;
     setCursor({ x, y });
+    dispatch(syncCursor({ id: playerId, cursor: { x, y } }));
   };
 }
 
 const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
+  const dispatch = useDispatch();
+  const playerId = useSelector((state: RootState) => state.players.self);
   const [cursor, setCursor] = useState<Cursor>({ x: 0, y: 0 });
   const { topLeftX, topLeftY, scale } = props;
 
   useEffect(() => {
-    const mouseMoveFn = onMouseMove(topLeftX, topLeftY, scale, setCursor);
+    const mouseMoveFn = onMouseMove(
+      dispatch,
+      playerId,
+      topLeftX,
+      topLeftY,
+      scale,
+      setCursor
+    );
     window.addEventListener('mousemove', mouseMoveFn);
     return () => window.removeEventListener('mousemove', mouseMoveFn);
-  }, [topLeftX, topLeftY, scale, setCursor]);
-
-  const debouncedCursor = useDebounce(cursor, 10);
-  useCursorMovedEmitter(debouncedCursor);
+  }, [dispatch, playerId, topLeftX, topLeftY, scale]);
 
   return (
     <div

@@ -5,9 +5,12 @@ import { RootState } from 'App';
 
 const Cursors: React.FC = () => {
   const players = useSelector((state: RootState) => state.players.players);
+  const playerId = useSelector((state: RootState) => state.players.self);
 
   function renderCursors() {
-    const playerCursors = Object.values(players).filter((p) => p.cursor);
+    const playerCursors = Object.values(players)
+      .filter((p) => p.cursor)
+      .filter((p) => p.id !== playerId);
     if (isEmpty(playerCursors)) return <></>;
 
     return playerCursors.map((player) => (

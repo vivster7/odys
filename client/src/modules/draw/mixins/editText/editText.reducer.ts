@@ -42,22 +42,26 @@ export const editTextFn: DrawReducer<string> = (state, action) => {
   const drawing = getDrawing(state, id);
 
   drawing.text = action.payload;
-  drawing.isLastUpdatedBySync = false;
   state.editText.isEditing = true;
 };
 
-export const endEditText: any = createAsyncThunk(
+export const endEditText = createAsyncThunk(
   'draw/endEditText',
-  async (id: string, thunkAPI) => {
+  async ({ id }: EndEditText, thunkAPI) => {
     thunkAPI.dispatch(save([id]));
   }
 );
 
-export const endEditTextPending: DrawActionPending<string> = (
+interface EndEditText {
+  id: string;
+  playerId: string;
+}
+
+export const endEditTextPending: DrawActionPending<EndEditText> = (
   state,
   action
 ) => {
-  const id = action.meta.arg;
+  const { id, playerId } = action.meta.arg;
   const drawing = getDrawing(state, id);
 
   const snapshot = { ...drawing, text: state.editText.startingText };
@@ -65,11 +69,11 @@ export const endEditTextPending: DrawActionPending<string> = (
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: [snapshot],
+    arg: { playerId: playerId, drawings: [snapshot] },
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: [drawing],
+    arg: { playerId: playerId, drawings: [drawing] },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

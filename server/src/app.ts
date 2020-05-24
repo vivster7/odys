@@ -81,25 +81,8 @@ io.on('connection', (socket: socket.Socket) => {
       next();
     });
 
-    socket.on('drawingChanged', (data) => {
-      socket.to(roomId).broadcast.volatile.emit('drawingChanged', data);
-    });
-
-    socket.on('drawingSaved', (data) => {
-      // TODO: potential race-condition with drawingChanged? (use timestamps)
-      broadcastToRoom('drawingSaved', data);
-    });
-
-    socket.on('drawingDeleted', (data) => {
-      broadcastToRoom('drawingDeleted', data);
-    });
-
-    socket.on('drawingSelected', (data) => {
-      broadcastToRoom('drawingSelected', data);
-    });
-
-    socket.on('cursorMoved', (data) => {
-      broadcastToRoom('cursorMoved', data);
+    socket.on('updatedState', (data) => {
+      socket.to(roomId).broadcast.volatile.emit('updatedState', data);
     });
   };
 

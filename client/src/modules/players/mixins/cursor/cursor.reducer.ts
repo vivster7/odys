@@ -1,7 +1,4 @@
-import { useEffect, Dispatch } from 'react';
-import { PayloadAction } from '@reduxjs/toolkit';
-import { PlayersReducer, syncCursor } from 'modules/players/players.reducer';
-import { emitEvent, registerSocketListener, ClientEvent } from 'socket/socket';
+import { PlayersReducer } from 'modules/players/players.reducer';
 import { Cursor } from 'modules/canvas/cursor/cursor';
 
 interface PlayerCursor {
@@ -15,25 +12,3 @@ export const syncCursorFn: PlayersReducer<PlayerCursor> = (state, action) => {
     state.players[id].cursor = cursor;
   }
 };
-
-export function useCursorMovedListener(
-  dispatch: Dispatch<PayloadAction<PlayerCursor>>
-) {
-  useEffect(() => {
-    const onPlayersConnected = (event: ClientEvent) => {
-      dispatch(
-        syncCursor({
-          id: event.clientId,
-          cursor: event.data,
-        })
-      );
-    };
-    return registerSocketListener('cursorMoved', onPlayersConnected);
-  }, [dispatch]);
-}
-
-export function useCursorMovedEmitter(cursor: Cursor) {
-  useEffect(() => {
-    emitEvent('cursorMoved', { ...cursor });
-  }, [cursor]);
-}

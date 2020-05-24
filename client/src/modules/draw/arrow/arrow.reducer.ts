@@ -1,7 +1,6 @@
 import { DrawState, DrawActionPending, Drawing } from '../draw.reducer';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysArrow } from 'generated';
-import { Syncable } from '../mixins/sync/sync';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
@@ -11,7 +10,7 @@ import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import odysClient from 'global/odysClient';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
-type ArrowMixins = Selectable & TextEditable & Syncable & Saveable & Deleteable;
+type ArrowMixins = Selectable & TextEditable & Saveable & Deleteable;
 
 export function instanceOfArrow(drawing: Drawing): drawing is Arrow {
   return 'fromShapeId' in drawing && 'toShapeId' in drawing;
@@ -40,7 +39,6 @@ export const fetchArrowsFulfilled = (
   arrows.forEach((a) => {
     const arrow: Arrow = {
       ...a,
-      isLastUpdatedBySync: true,
       isSavedInDB: true,
       isDeleted: false,
     };
@@ -51,6 +49,7 @@ export const fetchArrowsFulfilled = (
 };
 
 interface DrawArrow {
+  playerId: string;
   id: string;
   fromShapeId: string;
   toShapeId: string;
@@ -68,7 +67,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   state,
   action
 ) => {
-  const { id, fromShapeId, toShapeId, boardId } = action.meta.arg;
+  const { playerId, id, fromShapeId, toShapeId, boardId } = action.meta.arg;
 
   // cannot draw arrow to self.
   if (fromShapeId === toShapeId) {
@@ -99,7 +98,6 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
     fromShapeId: fromShapeId,
     toShapeId: toShapeId,
     text: '',
-    isLastUpdatedBySync: false,
     isSavedInDB: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -116,7 +114,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: [arrow],
+    arg: { playerId: playerId, drawings: [arrow] },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

@@ -1,21 +1,18 @@
 import React, { useEffect } from 'react';
 import DrawingBoard from '../board/DrawingBoard';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
 import { keydown } from 'global/keydown.reducer';
-import { useDrawingChangedListener } from 'modules/draw/mixins/sync/sync';
-import { useDrawingDeletedListener } from 'modules/draw/mixins/delete/delete.reducer';
-import { useDrawingSavedListener } from 'modules/draw/mixins/save/save.reducer';
 import { usePlayerConnectionListeners } from 'modules/players/mixins/connection/connection.reducer';
-import { useDrawingSelectedListener } from 'modules/players/mixins/selection/selection.reducer';
-import { useCursorMovedListener } from 'modules/players/mixins/cursor/cursor.reducer';
 
-import { connect } from 'socket/socket';
+import { connect, registerSocketListener } from 'socket/socket';
+import { syncState, RootState } from 'App';
 
 const Room: React.FC = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const selfClientId = useSelector((state: RootState) => state.players.self);
 
   // listen to keydown events and fire events
   // kinda want this at app level, but app doesn't have access to dispatch yet.
@@ -39,12 +36,16 @@ const Room: React.FC = () => {
     dispatch(getOrCreateRoom(id));
   }, [dispatch, id]);
 
+  useEffect(() => {
+    const onSyncState = (data: any) => {
+      if (data.clientId !== selfClientId) {
+        dispatch(syncState(data));
+      }
+    };
+    return registerSocketListener('updatedState', onSyncState);
+  }, [dispatch, selfClientId]);
+
   usePlayerConnectionListeners(dispatch);
-  useDrawingSelectedListener(dispatch);
-  useDrawingChangedListener(dispatch);
-  useDrawingSavedListener(dispatch);
-  useDrawingDeletedListener(dispatch);
-  useCursorMovedListener(dispatch);
 
   return (
     <div

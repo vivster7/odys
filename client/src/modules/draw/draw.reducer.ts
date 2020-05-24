@@ -27,8 +27,7 @@ import {
 } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import {
   cancelSelectFn,
-  selectDrawing,
-  selectDrawingPending,
+  selectDrawingFn,
   SelectedState,
   selectClickTargetFn,
 } from 'modules/draw/mixins/select/select.reducer';
@@ -86,6 +85,7 @@ import {
   cutPending,
   cutFulfilled,
 } from './mixins/copypaste/copypaste.reducer';
+import { RootState } from 'App';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type ActionPending<T = void> = {
@@ -224,6 +224,7 @@ const drawSlice = createSlice({
     // select
     cancelSelect: cancelSelectFn,
     selectClickTarget: selectClickTargetFn,
+    selectDrawing: selectDrawingFn,
     // drag
     startDrag: startDragFn,
     drag: dragFn,
@@ -294,10 +295,6 @@ const drawSlice = createSlice({
     [endEditText.pending as any]: endEditTextPending,
     [endEditText.fulfilled as any]: (state, action) => {},
     [endEditText.rejected as any]: (state, action) => {},
-    // select
-    [selectDrawing.pending as any]: selectDrawingPending,
-    [selectDrawing.rejected as any]: (state, action) => {},
-    [selectDrawing.fulfilled as any]: (state, action) => {},
     // copypaste
     [paste.pending as any]: pastePending,
     [paste.rejected as any]: (state, action) => {},
@@ -305,6 +302,22 @@ const drawSlice = createSlice({
     [cut.pending as any]: cutPending,
     [cut.rejected as any]: (state, action) => {},
     [cut.fulfilled as any]: cutFulfilled,
+    //global
+    'global/syncState': (state, action: any) => {
+      const rootState = action.payload.data as Partial<RootState>;
+      if (rootState.draw) {
+        const drawState = rootState.draw as Partial<DrawState>;
+        if (drawState.arrows) {
+          state.arrows = drawState.arrows;
+        }
+        if (drawState.shapes) {
+          state.shapes = drawState.shapes;
+        }
+        if (drawState.drawOrder) {
+          state.drawOrder = drawState.drawOrder;
+        }
+      }
+    },
   },
 });
 
@@ -313,6 +326,7 @@ export const {
   syncDrawing,
   startEditText,
   editText,
+  selectDrawing,
   cancelSelect,
   startDrag,
   drag,

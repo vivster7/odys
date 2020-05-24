@@ -31,17 +31,15 @@ interface Drag {
 }
 
 export const startDragFn: DrawReducer<DragState> = (state, action) => {
-  const id = action.payload.id;
+  const { id, clickX, clickY } = action.payload;
   const shape = getShape(state, id);
 
   state.drag = {
     id: id,
     encompassedIds: findEncompassed(state, shape).map((s) => s.id),
-    clickX: action.payload.clickX,
-    clickY: action.payload.clickY,
+    clickX: clickX,
+    clickY: clickY,
   };
-
-  state.shapes[id].isLastUpdatedBySync = false;
 };
 
 export const dragFn: DrawReducer<Drag> = (state, action) => {
@@ -61,18 +59,18 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
   shapes.forEach((s) => {
     s.translateX = (clickX - startX) / scale;
     s.translateY = (clickY - startY) / scale;
-    s.isLastUpdatedBySync = false;
   });
 };
 
 interface EndDrag {
+  playerId: string;
   ids: string[];
   translateX: number;
   translateY: number;
 }
 
 // endDrag saves the optimistic update to the DB.
-export const endDrag: any = createAsyncThunk(
+export const endDrag = createAsyncThunk(
   'draw/endDrag',
   async (endDrag: EndDrag, thunkAPI) => {
     const { ids, translateX, translateY } = endDrag;
@@ -87,7 +85,7 @@ export const endDrag: any = createAsyncThunk(
 export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   state.drag = null;
 
-  const { ids, translateX, translateY } = action.meta.arg;
+  const { playerId, ids, translateX, translateY } = action.meta.arg;
   const hasMoved = translateX !== 0 || translateY !== 0;
   if (!hasMoved) {
     return;
@@ -109,7 +107,6 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
     s.y += translateY;
     s.translateX = 0;
     s.translateY = 0;
-    s.isLastUpdatedBySync = false;
     s.isSavedInDB = true;
   });
   reorder(shapes, state);
@@ -121,11 +118,11 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: shapeSnapshots,
+    arg: { playerId: playerId, drawings: shapeSnapshots },
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: shapes,
+    arg: { playerId: playerId, drawings: shapes },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

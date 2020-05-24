@@ -6,7 +6,6 @@ import { Draggable } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { Resizable } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import { TextEditable } from 'modules/draw/mixins/editText/editText.reducer';
 import { Selectable } from 'modules/draw/mixins/select/select.reducer';
-import { Syncable } from 'modules/draw/mixins/sync/sync';
 import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
 import { Saveable } from '../mixins/save/save.reducer';
 import odysClient from 'global/odysClient';
@@ -16,7 +15,6 @@ type ShapeMixins = Draggable &
   Resizable &
   Selectable &
   TextEditable &
-  Syncable &
   Saveable &
   Deleteable;
 export interface Rect extends OdysShape, ShapeMixins {
@@ -65,7 +63,6 @@ export const fetchShapesFulfilled = (
     const shape: Shape = {
       ...s,
       type: type,
-      isLastUpdatedBySync: true,
       isSavedInDB: true,
       isDeleted: false,
       translateX: 0,

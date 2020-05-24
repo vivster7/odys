@@ -28,24 +28,25 @@ export const keydown = createAsyncThunk(
   'global/keydown',
   async (e: Keydown, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
+    const playerId = state.players.self;
     const dispatch = thunkAPI.dispatch;
 
     const { select, multiSelect, editText } = state.draw;
     if (e.code === 'Backspace' || e.code === 'Delete') {
       if (select?.id && editText.isEditing === false) {
-        await dispatch(deleteDrawings([select.id]));
+        await dispatch(deleteDrawings({ ids: [select.id], playerId }));
         return dispatch(cancelSelect());
       }
 
       if (multiSelect) {
         const ids = Object.keys(multiSelect.selectedShapeIds);
-        await dispatch(deleteDrawings(ids));
+        await dispatch(deleteDrawings({ ids, playerId }));
         return dispatch(cancelSelect());
       }
     }
 
     if (e.code === 'KeyA' && e.metaKey) {
-      return dispatch(selectAll());
+      return dispatch(selectAll(state.players.self));
     }
 
     if (e.code === 'KeyZ' && e.metaKey) {
@@ -60,7 +61,7 @@ export const keydown = createAsyncThunk(
       return dispatch(copy());
     }
     if (e.code === 'KeyV' && e.metaKey) {
-      return dispatch(paste());
+      return dispatch(paste(playerId));
     }
     if (e.code === 'KeyX' && e.metaKey) {
       return dispatch(cut());

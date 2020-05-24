@@ -12,6 +12,7 @@ import { difference, map } from 'lodash';
 export const registerSelfFn: PlayersReducer<string> = (state, action) => {
   const id = action.payload;
   state.self = id;
+
   const connectPlayerAction = {
     type: 'players/connectPlayers',
     payload: [id],

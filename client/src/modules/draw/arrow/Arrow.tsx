@@ -3,11 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from 'App';
 import Line, { intersects } from 'math/line';
-import { selectDrawing } from 'modules/draw/mixins/select/select.reducer';
 import { addError } from 'modules/errors/errors.reducer';
 
 import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
+import { selectDrawing } from '../draw.reducer';
 
 const TEXT_PADDING = 5;
 
@@ -16,6 +16,7 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const dispatch = useDispatch();
 
   const arrow = useSelector((state: RootState) => state.draw.arrows[id]);
+  const playerId = useSelector((state: RootState) => state.players.self);
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = useSelector(
@@ -155,7 +156,7 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
-    dispatch(selectDrawing({ id, shiftKey: e.shiftKey }));
+    dispatch(selectDrawing({ id, shiftKey: e.shiftKey, playerId: playerId }));
   }
 
   return (

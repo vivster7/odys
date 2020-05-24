@@ -7,7 +7,6 @@ import {
 } from '../draw.reducer';
 import { instanceOfArrow } from '../arrow/arrow.reducer';
 import { reorder } from '../mixins/drawOrder/drawOrder';
-import { emitEvent } from 'socket/socket';
 import { save } from '../mixins/save/save.reducer';
 import {
   applySelect,
@@ -19,7 +18,7 @@ import { RootState } from 'App';
 // This is not enforced by types, so pretty please just follow the rules.
 export type TimeTravelSafeAction =
   | { actionCreatorName: 'safeDeleteDrawings'; arg: string[] }
-  | { actionCreatorName: 'safeUpdateDrawings'; arg: Drawing[] };
+  | { actionCreatorName: 'safeUpdateDrawings'; arg: SafeUpdateDrawings };
 
 // These travel together and cancel each other out.
 // If undo is called, the pair moves to `redos` state.
@@ -35,18 +34,24 @@ export interface TimeTravelState {
 }
 
 // just like draw/updateDrawing, except this will NEVER update the undo/redo buffer
-export const safeUpdateDrawings: any = createAsyncThunk(
+export const safeUpdateDrawings = createAsyncThunk(
   'draw/safeUpdateDrawings',
-  async (ds: Drawing[], thunkAPI) => {
-    thunkAPI.dispatch(save(ds.map((d) => d.id)));
+  async ({ drawings }: SafeUpdateDrawings, thunkAPI) => {
+    thunkAPI.dispatch(save(drawings.map((d) => d.id)));
   }
 );
 
-export const safeUpdateDrawingsPending: DrawActionPending<Drawing[]> = (
+interface SafeUpdateDrawings {
+  playerId: string;
+  drawings: Drawing[];
+}
+
+export const safeUpdateDrawingsPending: DrawActionPending<SafeUpdateDrawings> = (
   state,
   action
 ) => {
-  const updates: Drawing[] = action.meta.arg;
+  const playerId = action.meta.arg.playerId;
+  const updates: Drawing[] = action.meta.arg.drawings;
   const drawings = updates.map((update) => {
     const existing: Drawing =
       state.shapes[update.id] ?? state.arrows[update.id] ?? {};
@@ -61,15 +66,13 @@ export const safeUpdateDrawingsPending: DrawActionPending<Drawing[]> = (
     }
   });
   reorder(drawings, state);
-  applySelect(state, drawings);
+  applySelect(state, drawings, playerId);
 };
 
 // just like draw/deleteDrawing, except this will NEVER update the undo/redo buffer
 export const safeDeleteDrawings = createAsyncThunk(
   'draw/safeDeleteDrawings',
   async (ids: string[], thunkAPI) => {
-    // TODO: bulk socket
-    emitEvent('drawingDeleted', ids[0]);
     thunkAPI.dispatch(save(ids));
 
     const state = thunkAPI.getState() as RootState;

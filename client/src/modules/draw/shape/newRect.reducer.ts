@@ -17,6 +17,7 @@ export interface NewRectState {
 }
 
 export interface NewRect {
+  playerId: string;
   id: string;
   clickX: number;
   clickY: number;
@@ -63,6 +64,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   }
 
   const {
+    playerId,
     id,
     clickX,
     clickY,
@@ -115,7 +117,6 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
     translateY: 0,
     deltaWidth: 0,
     deltaHeight: 0,
-    isLastUpdatedBySync: false,
     isSavedInDB: true,
   };
 
@@ -126,6 +127,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
 
   state.select = {
     id: rect.id,
+    playerId: playerId,
   };
 
   const undo: TimeTravelSafeAction = {
@@ -134,7 +136,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: [rect],
+    arg: { playerId: playerId, drawings: [rect] },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
@@ -184,7 +186,6 @@ export const endNewRectByDragFn: DrawReducer<NewRect> = (state, action) => {
     deltaWidth: 0,
     deltaHeight: 0,
     createdAtZoomLevel: DEFAULT_ZOOM_LEVEL,
-    isLastUpdatedBySync: false,
     isSavedInDB: false,
     boardId: boardId,
     createdAt: new Date().toISOString(),

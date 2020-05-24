@@ -49,11 +49,12 @@ interface Resize {
 }
 
 export const startResizeFn: DrawReducer<StartResize> = (state, action) => {
+  const { id, anchor, originalX, originalY } = action.payload;
   state.resize = {
-    id: action.payload.id,
-    anchor: action.payload.anchor,
-    originalX: action.payload.originalX,
-    originalY: action.payload.originalY,
+    id: id,
+    anchor: anchor,
+    originalX: originalX,
+    originalY: originalY,
     clickX: 0,
     clickY: 0,
     isNewRect: false,
@@ -182,26 +183,34 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
   shape.translateY = translateY;
   shape.deltaWidth = deltaWidth;
   shape.deltaHeight = deltaHeight;
-  shape.isLastUpdatedBySync = false;
 };
 
+interface EndResize {
+  id: string;
+  playerId: string;
+}
+
 // endResize saves the optimistic update to the DB.
-export const endResize: any = createAsyncThunk(
+export const endResize = createAsyncThunk(
   'draw/endResize',
-  async (id: string, thunkAPI) => {
+  async ({ id }: EndResize, thunkAPI) => {
     thunkAPI.dispatch(save([id]));
   }
 );
 
 // endResizePending optimistically updates the shape
-export const endResizePending: DrawActionPending<string> = (state, action) => {
+export const endResizePending: DrawActionPending<EndResize> = (
+  state,
+  action
+) => {
   if (!state.resize) {
     throw new Error(
       'Could not end resize shape action. Was it started with ODYS_START_RESIZE_ACTION?'
     );
   }
 
-  const { id, isNewRect } = state.resize;
+  const { id, playerId } = action.meta.arg;
+  const { isNewRect } = state.resize;
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
   }
@@ -224,7 +233,6 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
   shape.height = shape.height + shape.deltaHeight;
   shape.deltaWidth = 0;
   shape.deltaHeight = 0;
-  shape.isLastUpdatedBySync = false;
   shape.isSavedInDB = true;
 
   state.drag = null;
@@ -232,15 +240,18 @@ export const endResizePending: DrawActionPending<string> = (state, action) => {
   state.resize = null;
 
   if (isNewRect) {
-    state.select = { id: id };
+    state.select = { id: id, playerId: playerId };
   }
 
   const undo: TimeTravelSafeAction = isNewRect
     ? { actionCreatorName: 'safeDeleteDrawings', arg: [id] }
-    : { actionCreatorName: 'safeUpdateDrawings', arg: [snapshot] };
+    : {
+        actionCreatorName: 'safeUpdateDrawings',
+        arg: { playerId: playerId, drawings: [snapshot] },
+      };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: [shape],
+    arg: { playerId: playerId, drawings: [shape] },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

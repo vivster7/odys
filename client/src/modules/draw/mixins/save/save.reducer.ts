@@ -1,15 +1,11 @@
-import { useEffect, Dispatch } from 'react';
-import { createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { instanceOfArrow, Arrow } from 'modules/draw/arrow/arrow.reducer';
 import {
-  Drawing,
   DrawActionRejected,
   DrawActionFulfilled,
-  syncDrawing,
   getDrawings,
 } from 'modules/draw/draw.reducer';
-import { emitEvent, registerSocketListener, ClientEvent } from 'socket/socket';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 import odysClient from 'global/odysClient';
 import { OdysArrow, OdysShape } from 'generated';
@@ -51,9 +47,6 @@ export const save = createAsyncThunk(
     }
 
     await Promise.all([p1, p2]);
-
-    // TODO: bulk socket
-    emitEvent('drawingSaved', drawings[0]);
   }
 );
 
@@ -69,13 +62,3 @@ export const saveFulfilled: DrawActionFulfilled<string[]> = (state, action) => {
   const drawings = getDrawings(state, ids);
   drawings.forEach((d) => (d.isSavedInDB = true));
 };
-
-export function useDrawingSavedListener(
-  dispatch: Dispatch<PayloadAction<Drawing>>
-) {
-  useEffect(() => {
-    const onDrawingSaved = (event: ClientEvent) =>
-      dispatch(syncDrawing(event.data));
-    return registerSocketListener('drawingSaved', onDrawingSaved);
-  }, [dispatch]);
-}

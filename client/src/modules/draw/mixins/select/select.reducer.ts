@@ -1,57 +1,50 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
 import { findLast } from 'lodash';
 import { isWithinBounds } from 'math/box';
-import { DrawActionPending, DrawReducer } from 'modules/draw/draw.reducer';
-import { emitEvent } from 'socket/socket';
+import { DrawReducer } from 'modules/draw/draw.reducer';
 import { applySelectOrDeselect } from '../multiSelect/multiSelect.reducer';
 
 export interface SelectedState {
+  playerId: string;
   id: string;
 }
 
 export interface SelectedDrawing {
   id: string;
   shiftKey: boolean;
+  playerId: string;
 }
 
 export interface Selectable {
   id: string;
 }
 
-export const selectDrawing = createAsyncThunk(
-  'draw/selectDrawing',
-  async ({ id }: SelectedDrawing, thunkAPI) => {
-    // TODO: bulk sync (multiselect)
-    emitEvent('drawingSelected', id);
-  }
-);
-
-export const selectDrawingPending: DrawActionPending<SelectedDrawing> = (
+export const selectDrawingFn: DrawReducer<SelectedDrawing> = (
   state,
   action
 ) => {
-  const { id, shiftKey } = action.meta.arg;
-  applySelectOrDeselect(state, id, shiftKey);
+  const { id, shiftKey, playerId } = action.payload;
+  applySelectOrDeselect(state, id, shiftKey, playerId);
 };
 
-interface clickPosition {
+interface ClickPosition {
   x: number;
   y: number;
   shiftKey: boolean;
+  playerId: string;
 }
 
-export const selectClickTargetFn: DrawReducer<clickPosition> = (
+export const selectClickTargetFn: DrawReducer<ClickPosition> = (
   state,
   action
 ) => {
-  const { x, y, shiftKey } = action.payload;
+  const { x, y, shiftKey, playerId } = action.payload;
 
   const clickTargetId = findLast(state.drawOrder, (id) =>
     state.shapes[id] ? isWithinBounds(x, y, state.shapes[id]) : false
   );
 
   if (clickTargetId) {
-    applySelectOrDeselect(state, clickTargetId, shiftKey);
+    applySelectOrDeselect(state, clickTargetId, shiftKey, playerId);
   }
 };
 

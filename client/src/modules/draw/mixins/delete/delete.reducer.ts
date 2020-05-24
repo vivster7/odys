@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawActionPending, getDrawings } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import { emitEvent, registerSocketListener, ClientEvent } from 'socket/socket';
 import { save } from '../save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
-import { OdysDispatch, RootState } from 'App';
+import { RootState } from 'App';
 import { getConnectedArrows } from 'modules/draw/arrow/arrow.reducer';
 
 export interface Deleteable {
@@ -15,22 +13,25 @@ export interface Deleteable {
 
 export const deleteDrawings = createAsyncThunk(
   'draw/deleteDrawings',
-  async (ids: string[], thunkAPI) => {
+  async ({ ids }: DeleteDrawings, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const arrows = getConnectedArrows(state.draw, ids);
     const allIds = ids.concat(arrows.map((a) => a.id));
 
-    // TOOD: bulk socket
-    emitEvent('drawingDeleted', allIds[0]);
     thunkAPI.dispatch(save(allIds));
   }
 );
 
-export const deleteDrawingsPending: DrawActionPending<string[]> = (
+interface DeleteDrawings {
+  ids: string[];
+  playerId: string;
+}
+
+export const deleteDrawingsPending: DrawActionPending<DeleteDrawings> = (
   state,
   action
 ) => {
-  const ids = action.meta.arg;
+  const { ids, playerId } = action.meta.arg;
   const drawings = getDrawings(state, ids).concat(
     getConnectedArrows(state, ids)
   );
@@ -43,7 +44,7 @@ export const deleteDrawingsPending: DrawActionPending<string[]> = (
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: snapshots,
+    arg: { playerId: playerId, drawings: snapshots },
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',
@@ -52,14 +53,3 @@ export const deleteDrawingsPending: DrawActionPending<string[]> = (
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };
-
-export function useDrawingDeletedListener(dispatch: OdysDispatch) {
-  useEffect(() => {
-    const onDrawingDeleted = (event: ClientEvent) =>
-      dispatch({
-        type: 'draw/deleteDrawings/pending',
-        meta: { arg: [event.data] },
-      });
-    return registerSocketListener('drawingDeleted', onDrawingDeleted);
-  }, [dispatch]);
-}
