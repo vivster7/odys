@@ -54,15 +54,78 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const r1Y = r1.y + r1.translateY;
   const r1Height = r1.height + r1.deltaHeight;
   const r1Width = r1.width + r1.deltaWidth;
-  const r1XMid = (r1X + (r1X + r1Width)) / 2;
-  const r1YMid = (r1Y + (r1Y + r1Height)) / 2;
+  const r1XEdge = r1X + r1Width;
+  const r1YEdge = r1Y + r1Height;
+  const r1XMid = (r1X + r1XEdge) / 2;
+  const r1YMid = (r1Y + r1YEdge) / 2;
 
   const r2X = r2.x + r2.translateX;
   const r2Y = r2.y + r2.translateY;
   const r2Height = r2.height + r2.deltaHeight;
   const r2Width = r2.width + r2.deltaWidth;
-  const r2XMid = (r2X + (r2X + r2Width)) / 2;
-  const r2YMid = (r2Y + (r2Y + r2Height)) / 2;
+  const r2XEdge = r2X + r2Width;
+  const r2YEdge = r2Y + r2Height;
+  const r2XMid = (r2X + r2XEdge) / 2;
+  const r2YMid = (r2Y + r2YEdge) / 2;
+
+  let path;
+  const OFFSET = 5;
+  const controlPointOffset = (start: number, end: number) => (end - start) / 2;
+  /**
+    if x-diff is greater than y-diff, so draw arrows primarily along x-axis as the anchor
+    else draw arrows primarily along y-axis as the anchor
+  */
+  if (Math.abs(r2XMid - r1XMid) > Math.abs(r2YMid - r1YMid)) {
+    /**
+      if r1-x position is greater than r2-x position, then arrow is traveling in the negative-x direction (left),
+      else arrow is traveling in the positive x-direction (right)
+    */
+    const yStart = r1YMid;
+    const yEnd = r2YMid;
+
+    if (r1XMid > r2XMid) {
+      const cp = controlPointOffset(r2XEdge, r1X);
+      const xStart = r1X - OFFSET;
+      const xEnd = r2XEdge + OFFSET;
+
+      path = `M ${xStart} ${yStart} C ${xStart - cp} ${yStart} ${
+        xEnd + cp
+      } ${yEnd}, ${xEnd} ${yEnd}`;
+    } else {
+      const cp = controlPointOffset(r1XEdge, r2X);
+      const xStart = r1XEdge + OFFSET;
+      const xEnd = r2X - OFFSET;
+
+      path = `M ${xStart} ${yStart} C ${xStart + cp} ${yStart} ${
+        xEnd - cp
+      } ${yEnd}, ${xEnd} ${yEnd}`;
+    }
+  } else {
+    /**
+      if r1-y position is greater than r2-y position, then arrow is traveling in the negative-y direction (up),
+      else arrow is traveling in the positive y-direction (down)
+    */
+    const xStart = r1XMid;
+    const xEnd = r2XMid;
+
+    if (r1YMid > r2YMid) {
+      const cp = controlPointOffset(r2YEdge, r1Y);
+      const yStart = r1Y - OFFSET;
+      const yEnd = r2YEdge + OFFSET;
+
+      path = `M ${xStart} ${yStart} C ${xStart} ${yStart - cp} ${xEnd} ${
+        yEnd + cp
+      }, ${xEnd} ${yEnd}`;
+    } else {
+      const cp = controlPointOffset(r1YEdge, r2Y);
+      const yStart = r1YEdge + OFFSET;
+      const yEnd = r2Y - OFFSET;
+
+      path = `M ${xStart} ${yStart} C ${xStart} ${yStart + cp} ${xEnd} ${
+        yEnd - cp
+      }, ${xEnd} ${yEnd}`;
+    }
+  }
 
   // get angle (in radians) of line from (0, 0) r2 (x, y).
   // will be between 0 and 2 PI
@@ -173,7 +236,21 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
           <path d="M0,0 V4 L2,2 Z" fill={color} />
         </marker>
       </defs>
-      <line
+      <path
+        stroke={color}
+        strokeWidth={strokeWidth + 'px'}
+        fill="transparent"
+        d={path}
+        markerEnd={`url(#arrowhead.${props.id})`}
+      />
+      <path
+        stroke={color}
+        strokeOpacity="0"
+        strokeWidth={selectionTargetWidth + 'px'}
+        fill="transparent"
+        d={path}
+      />
+      {/*<line
         x1={x1}
         y1={y1}
         x2={x2}
@@ -190,7 +267,7 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
         stroke={color}
         strokeWidth={selectionTargetWidth + 'px'}
         strokeOpacity="0"
-      ></line>
+      ></line>*/}
       <text
         x={(x1 + x2) / 2}
         y={(y1 + y2) / 2 - TEXT_PADDING}
