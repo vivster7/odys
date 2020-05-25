@@ -82,7 +82,7 @@ io.on('connection', (socket: socket.Socket) => {
     });
 
     socket.on('updatedState', (data) => {
-      socket.to(roomId).broadcast.volatile.emit('updatedState', data);
+      socket.to(roomId).broadcast.emit('updatedState', data);
     });
   };
 

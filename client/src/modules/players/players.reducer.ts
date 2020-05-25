@@ -6,7 +6,7 @@ import {
 } from './mixins/connection/connection.reducer';
 import { syncCursorFn } from './mixins/cursor/cursor.reducer';
 import { Cursor } from 'modules/canvas/cursor/cursor';
-import { RootState } from 'App';
+import { syncStateFn } from './mixins/sync/sync.reducer';
 
 export type PlayersReducer<T = void> = CaseReducer<
   PlayersState,
@@ -24,7 +24,7 @@ export interface PlayerSelection {
   select: string[];
 }
 
-interface PlayersState {
+export interface PlayersState {
   self: string;
   players: { [id: string]: Player };
   selections: PlayerSelection[];
@@ -45,33 +45,7 @@ const playersSlice = createSlice({
     disconnectPlayer: disconnectPlayerFn,
     syncCursor: syncCursorFn,
   },
-  extraReducers: {
-    'global/syncState': (state, action: any) => {
-      const clientId = action.payload.clientId;
-      const rootState = action.payload.data as Partial<RootState>;
-
-      const playerState = rootState.players;
-      const drawState = rootState.draw;
-      const selected = drawState && drawState.select;
-      const multiSelected = drawState && drawState.multiSelect;
-
-      if (playerState && playerState.players) {
-        state.players = playerState.players;
-      }
-
-      const selections = state.selections.filter((s) => s.id !== clientId);
-      if (!selected && !multiSelected) {
-        state.selections = selections;
-      } else if (selected) {
-        selections.push({ id: clientId, select: [selected.id] });
-        state.selections = selections;
-      } else if (multiSelected) {
-        const multiSelectedIds = Object.keys(multiSelected.selectedShapeIds);
-        selections.push({ id: clientId, select: multiSelectedIds });
-        state.selections = selections;
-      }
-    },
-  },
+  extraReducers: { 'global/syncState': syncStateFn },
 });
 
 export const {

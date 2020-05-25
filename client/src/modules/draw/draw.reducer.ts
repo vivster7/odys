@@ -5,6 +5,7 @@ import {
   SerializedError,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
+import * as jdp from 'jsondiffpatch';
 
 import {
   startDragFn,
@@ -86,6 +87,7 @@ import {
   cutFulfilled,
 } from './mixins/copypaste/copypaste.reducer';
 import { RootState } from 'App';
+import { uniq } from 'lodash';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type ActionPending<T = void> = {
@@ -304,17 +306,20 @@ const drawSlice = createSlice({
     [cut.fulfilled as any]: cutFulfilled,
     //global
     'global/syncState': (state, action: any) => {
-      const rootState = action.payload.data as Partial<RootState>;
-      if (rootState.draw) {
-        const drawState = rootState.draw as Partial<DrawState>;
-        if (drawState.arrows) {
-          state.arrows = drawState.arrows;
+      const stateDiff = action.payload.data as Partial<RootState>;
+
+      if (stateDiff.draw) {
+        const drawDiff = stateDiff.draw as Partial<DrawState>;
+        if (drawDiff.arrows) {
+          jdp.patch(state.arrows, drawDiff.arrows);
         }
-        if (drawState.shapes) {
-          state.shapes = drawState.shapes;
+        if (drawDiff.shapes) {
+          jdp.patch(state.shapes, drawDiff.shapes);
         }
-        if (drawState.drawOrder) {
-          state.drawOrder = drawState.drawOrder;
+        if (drawDiff.drawOrder) {
+          jdp.patch(state.drawOrder, drawDiff.drawOrder);
+          // BUG: patch can add a duplicate
+          state.drawOrder = uniq(state.drawOrder);
         }
       }
     },

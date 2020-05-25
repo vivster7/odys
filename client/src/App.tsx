@@ -9,6 +9,7 @@ import {
 } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import * as uuid from 'uuid';
+import * as jdp from 'jsondiffpatch';
 
 import Room from './modules/room/Room';
 
@@ -37,8 +38,11 @@ const syncEnhancer: StoreEnhancer = (createStore) => (
 ) => {
   const syncedRootReducer = (state: any, action: any) => {
     const newState = reducer(state, action);
-    if (action.type !== 'global/syncState') {
-      emitEvent('updatedState', newState);
+    const diffPatch = jdp.create({ objectHash: (o: any) => o.id });
+    const diff = diffPatch.diff(state, newState);
+
+    if (action.type !== 'global/syncState' && diff) {
+      emitEvent('updatedState', diff);
     }
     return newState;
   };

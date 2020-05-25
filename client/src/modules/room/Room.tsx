@@ -38,7 +38,7 @@ const Room: React.FC = () => {
 
   useEffect(() => {
     const onSyncState = (data: any) => {
-      if (data.clientId !== selfClientId) {
+      if (data.clientId !== selfClientId && data.data) {
         dispatch(syncState(data));
       }
     };
