@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+// import { find } from 'lodash';
 
 import { RootState } from 'App';
 import Line, { intersects } from 'math/line';
@@ -25,6 +26,14 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const r2 = useSelector(
     (state: RootState) => state.draw.shapes[arrow.toShapeId]
   );
+
+  // const counterArrow = useSelector((state: RootState) => {
+  //   return find(state.draw.arrows, a =>
+  //     a.id !== id && a.fromShapeId === r2.id && a.toShapeId === r1.id
+  //   );
+  // });
+  // if counterArrow's "ordinal" is the same (y/x anchor && up/down/left/right direction),
+  // then offset based on width / 3 and add this bidirectionalOffset along the right axis
 
   const isSelected = useSelector(
     (state: RootState) => state.draw.select?.id === id
