@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import DrawingBoard from '../board/DrawingBoard';
+import DrawingBoard from '../board/Board';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
