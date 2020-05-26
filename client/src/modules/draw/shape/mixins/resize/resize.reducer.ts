@@ -220,7 +220,6 @@ export const endResizePending: DrawActionPending<EndResize> = (
     translateY: 0,
     deltaWidth: 0,
     deltaHeight: 0,
-    isLastUpdatedBySync: false,
     isSavedInDB: true,
   });
 

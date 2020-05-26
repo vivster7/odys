@@ -36,7 +36,7 @@ export const deleteDrawingsPending: DrawActionPending<DeleteDrawings> = (
     getConnectedArrows(state, ids)
   );
   const snapshots = drawings.map((d) => {
-    return { ...d, isLastUpdatedBySync: false, isSavedInDB: true };
+    return { ...d, isSavedInDB: true };
   });
 
   drawings.forEach((d) => (d.isDeleted = true));

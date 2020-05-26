@@ -97,7 +97,6 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
       ...s,
       translateX: 0,
       translateY: 0,
-      isLastUpdatedBySync: false,
       isSavedInDB: true,
     };
   });

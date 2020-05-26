@@ -201,25 +201,12 @@ export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
   reorder([drawing], state);
 };
 
-export const syncDrawingFn: DrawReducer<Drawing> = (state, action) => {
-  // be wary of adding undo/redo buffer to this fn
-  // they sync changes from socket updates and need to be synchronous
-  const synced = { ...action.payload, isLastUpdatedBySync: true };
-
-  action = {
-    type: 'draw/updateDrawing',
-    payload: synced,
-  };
-  return updateDrawingFn(state, action);
-};
-
 const drawSlice = createSlice({
   name: 'draw',
   initialState: initialState,
   reducers: {
     // shape
     updateDrawing: updateDrawingFn,
-    syncDrawing: syncDrawingFn,
     // editText
     startEditText: startEditTextFn,
     editText: editTextFn,
@@ -328,7 +315,6 @@ const drawSlice = createSlice({
 
 export const {
   updateDrawing,
-  syncDrawing,
   startEditText,
   editText,
   selectDrawing,
