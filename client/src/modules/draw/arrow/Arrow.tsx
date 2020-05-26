@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from 'App';
-import Line, { intersects } from 'math/line';
 import { addError } from 'modules/errors/errors.reducer';
 
 import { DrawingProps } from '../DrawContainer';
@@ -69,8 +68,12 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const r2YMid = (r2Y + r2YEdge) / 2;
 
   let path;
-  const OFFSET = 5;
   const controlPointOffset = (start: number, end: number) => (end - start) / 2;
+
+  let x1: number;
+  let x2: number;
+  let y1: number;
+  let y2: number;
   /**
     if x-diff is greater than y-diff, so draw arrows primarily along x-axis as the anchor
     else draw arrows primarily along y-axis as the anchor
@@ -80,142 +83,44 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
       if r1-x position is greater than r2-x position, then arrow is traveling in the negative-x direction (left),
       else arrow is traveling in the positive x-direction (right)
     */
-    const yStart = r1YMid;
-    const yEnd = r2YMid;
+    y1 = r1YMid;
+    y2 = r2YMid;
 
     if (r1XMid > r2XMid) {
       const cp = controlPointOffset(r2XEdge, r1X);
-      const xStart = r1X - OFFSET;
-      const xEnd = r2XEdge + OFFSET;
+      x1 = r1X - offset;
+      x2 = r2XEdge + offset;
 
-      path = `M ${xStart} ${yStart} C ${xStart - cp} ${yStart} ${
-        xEnd + cp
-      } ${yEnd}, ${xEnd} ${yEnd}`;
+      path = `M ${x1} ${y1} C ${x1 - cp} ${y1} ${x2 + cp} ${y2}, ${x2} ${y2}`;
     } else {
       const cp = controlPointOffset(r1XEdge, r2X);
-      const xStart = r1XEdge + OFFSET;
-      const xEnd = r2X - OFFSET;
+      x1 = r1XEdge + offset;
+      x2 = r2X - offset;
 
-      path = `M ${xStart} ${yStart} C ${xStart + cp} ${yStart} ${
-        xEnd - cp
-      } ${yEnd}, ${xEnd} ${yEnd}`;
+      path = `M ${x1} ${y1} C ${x1 + cp} ${y1} ${x2 - cp} ${y2}, ${x2} ${y2}`;
     }
   } else {
     /**
       if r1-y position is greater than r2-y position, then arrow is traveling in the negative-y direction (up),
       else arrow is traveling in the positive y-direction (down)
     */
-    const xStart = r1XMid;
-    const xEnd = r2XMid;
+    x1 = r1XMid;
+    x2 = r2XMid;
 
     if (r1YMid > r2YMid) {
       const cp = controlPointOffset(r2YEdge, r1Y);
-      const yStart = r1Y - OFFSET;
-      const yEnd = r2YEdge + OFFSET;
+      y1 = r1Y - offset;
+      y2 = r2YEdge + offset;
 
-      path = `M ${xStart} ${yStart} C ${xStart} ${yStart - cp} ${xEnd} ${
-        yEnd + cp
-      }, ${xEnd} ${yEnd}`;
+      path = `M ${x1} ${y1} C ${x1} ${y1 - cp} ${x2} ${y2 + cp}, ${x2} ${y2}`;
     } else {
       const cp = controlPointOffset(r1YEdge, r2Y);
-      const yStart = r1YEdge + OFFSET;
-      const yEnd = r2Y - OFFSET;
+      y1 = r1YEdge + offset;
+      y2 = r2Y - offset;
 
-      path = `M ${xStart} ${yStart} C ${xStart} ${yStart + cp} ${xEnd} ${
-        yEnd - cp
-      }, ${xEnd} ${yEnd}`;
+      path = `M ${x1} ${y1} C ${x1} ${y1 + cp} ${x2} ${y2 - cp}, ${x2} ${y2}`;
     }
   }
-
-  // get angle (in radians) of line from (0, 0) r2 (x, y).
-  // will be between 0 and 2 PI
-  const angle = (y: number, x: number): number => {
-    return Math.atan2(y, x) + Math.PI;
-  };
-
-  const r1NW = angle(r1Y - r1YMid, r1X - r1XMid);
-  const r1NE = angle(r1Y - r1YMid, r1X + r1Width - r1XMid);
-  const r1SW = angle(r1Y + r1Height - r1YMid, r1X - r1XMid);
-  const r1SE = angle(r1Y + r1Height - r1YMid, r1X + r1Width - r1XMid);
-  const r2NW = angle(r2Y - r2YMid, r2X - r2XMid);
-  const r2NE = angle(r2Y - r2YMid, r2X + r2Width - r2XMid);
-  const r2SW = angle(r2Y + r2Height - r2YMid, r2X - r2XMid);
-  const r2SE = angle(r2Y + r2Height - r2YMid, r2X + r2Width - r2XMid);
-
-  const r1Below = {
-    p: { x: r1X, y: r1Y + r1Height + offset },
-    q: { x: r1X + r1Width, y: r1Y + r1Height + offset },
-  };
-  const r1Above = {
-    p: { x: r1X, y: r1Y - offset },
-    q: { x: r1X + r1Width, y: r1Y - offset },
-  };
-  const r1Left = {
-    p: { x: r1X - offset, y: r1Y },
-    q: { x: r1X - offset, y: r1Y + r1Height },
-  };
-  const r1Right = {
-    p: { x: r1X + r1Width + offset, y: r1Y },
-    q: { x: r1X + r1Width + offset, y: r1Y + r1Height },
-  };
-
-  const r2Below = {
-    p: { x: r2X, y: r2Y + r2Height + offset },
-    q: { x: r2X + r2Width, y: r2Y + r2Height + offset },
-  };
-  const r2Above = {
-    p: { x: r2X, y: r2Y - offset },
-    q: { x: r2X + r2Width, y: r2Y - offset },
-  };
-  const r2Left = {
-    p: { x: r2X - offset, y: r2Y },
-    q: { x: r2X - offset, y: r2Y + r2Height },
-  };
-  const r2Right = {
-    p: { x: r2X + r2Width + offset, y: r2Y },
-    q: { x: r2X + r2Width + offset, y: r2Y + r2Height },
-  };
-
-  const slopeTheta = angle(r2YMid - r1YMid, r2XMid - r1XMid);
-  let r1Line: Line;
-  if (slopeTheta >= r1NW && slopeTheta < r1NE) {
-    r1Line = r1Above;
-  } else if (slopeTheta >= r1NE && slopeTheta < r1SE) {
-    r1Line = r1Right;
-  } else if (slopeTheta >= r1SE && slopeTheta < r1SW) {
-    r1Line = r1Below;
-  } else if (slopeTheta >= r1SW || slopeTheta < r1NW) {
-    r1Line = r1Left;
-  } else {
-    dispatch(addError('Could not determine r1Line for arrow offset'));
-    return <></>;
-  }
-
-  let r2Line: Line;
-  if (slopeTheta >= r2NW && slopeTheta < r2NE) {
-    r2Line = r2Below;
-  } else if (slopeTheta >= r2NE && slopeTheta < r2SE) {
-    r2Line = r2Left;
-  } else if (slopeTheta >= r2SE && slopeTheta < r2SW) {
-    r2Line = r2Above;
-  } else if (slopeTheta >= r2SW || slopeTheta < r2NW) {
-    r2Line = r2Right;
-  } else {
-    dispatch(addError('Could not determine r2Line for arrow offset'));
-    return <></>;
-  }
-
-  const slopeLine = {
-    p: { x: r1XMid, y: r1YMid },
-    q: { x: r2XMid, y: r2YMid },
-  };
-  const r1Offset = intersects(slopeLine, r1Line);
-  const r2Offset = intersects(slopeLine, r2Line);
-
-  const x1 = r1Offset.x;
-  const y1 = r1Offset.y;
-  const x2 = r2Offset.x;
-  const y2 = r2Offset.y;
 
   function handleMouseDown(e: React.MouseEvent) {
     e.stopPropagation();
