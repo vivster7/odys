@@ -122,13 +122,14 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
     }
   }
 
-  function handleMouseDown(e: React.MouseEvent) {
+  function handlePointerDown(e: React.PointerEvent) {
     e.stopPropagation();
+    e.preventDefault();
     dispatch(selectDrawing({ id, shiftKey: e.shiftKey, playerId: playerId }));
   }
 
   return (
-    <g id={props.id} onMouseDown={(e) => handleMouseDown(e)}>
+    <g id={props.id} onPointerDown={(e) => handlePointerDown(e)}>
       <defs>
         <marker
           id={`arrowhead.${props.id}`}
@@ -181,7 +182,7 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
         dominantBaseline="baseline"
         fontSize={fontSize + 'px'}
         fill={COLORS.text}
-        onMouseDown={(e) => handleMouseDown(e)}
+        onPointerDown={(e) => handlePointerDown(e)}
       >
         {arrow.text}
       </text>

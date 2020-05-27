@@ -11,7 +11,7 @@ interface PositionDisplayProps {
   scale: number;
 }
 
-function onMouseMove(
+function onPointerMove(
   dispatch: OdysDispatch,
   playerId: string,
   topLeftX: number,
@@ -19,7 +19,8 @@ function onMouseMove(
   scale: number,
   setCursor: React.Dispatch<React.SetStateAction<Cursor>>
 ) {
-  return (e: MouseEvent) => {
+  return (e: PointerEvent) => {
+    e.preventDefault();
     const x = (e.clientX - topLeftX) / scale;
     const y = (e.clientY - topLeftY) / scale;
     setCursor({ x, y });
@@ -34,7 +35,7 @@ const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
   const { topLeftX, topLeftY, scale } = props;
 
   useEffect(() => {
-    const mouseMoveFn = onMouseMove(
+    const pointerMoveFn = onPointerMove(
       dispatch,
       playerId,
       topLeftX,
@@ -42,8 +43,8 @@ const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
       scale,
       setCursor
     );
-    window.addEventListener('mousemove', mouseMoveFn);
-    return () => window.removeEventListener('mousemove', mouseMoveFn);
+    window.addEventListener('pointermove', pointerMoveFn);
+    return () => window.removeEventListener('pointermove', pointerMoveFn);
   }, [dispatch, playerId, topLeftX, topLeftY, scale]);
 
   return (

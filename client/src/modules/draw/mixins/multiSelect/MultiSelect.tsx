@@ -32,12 +32,14 @@ const MultiSelect: React.FC = () => {
 
   const [multiDrag, setMultiDrag] = useState<MultiDragState | null>(null);
 
-  function handleMouseDown(e: React.MouseEvent) {
+  function handlePointerDown(e: React.PointerEvent) {
     e.stopPropagation();
+    e.preventDefault();
     setMultiDrag({ startX: e.clientX, startY: e.clientY, x: 0, y: 0 });
   }
 
-  function handleMouseMove(e: MouseEvent) {
+  function handlePointerMove(e: PointerEvent) {
+    e.preventDefault();
     if (!multiDrag) return;
     setMultiDrag({
       ...multiDrag,
@@ -46,7 +48,8 @@ const MultiSelect: React.FC = () => {
     });
   }
 
-  function handleMouseUp(e: MouseEvent) {
+  function handlePointerUp(e: PointerEvent) {
+    e.preventDefault();
     if (multiDrag && selectedShapeIds) {
       if (
         cursorWithinEpsilon(
@@ -83,13 +86,17 @@ const MultiSelect: React.FC = () => {
   useEffect(() => {
     if (!multiDrag) return;
 
-    window.addEventListener('mousemove', handleMouseMove, { capture: true });
-    window.addEventListener('mouseup', handleMouseUp, { capture: true });
+    window.addEventListener('pointermove', handlePointerMove, {
+      capture: true,
+    });
+    window.addEventListener('pointerup', handlePointerUp, { capture: true });
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove, {
+      window.removeEventListener('pointermove', handlePointerMove, {
         capture: true,
       });
-      window.removeEventListener('mouseup', handleMouseUp, { capture: true });
+      window.removeEventListener('pointerup', handlePointerUp, {
+        capture: true,
+      });
     };
   });
 
@@ -123,7 +130,7 @@ const MultiSelect: React.FC = () => {
         strokeDasharray={dashArray + 'px'}
         strokeWidth={borderWidth + 'px'}
         cursor="grab"
-        onMouseDown={(e) => handleMouseDown(e)}
+        onPointerDown={(e) => handlePointerDown(e)}
       ></rect>
     );
   }

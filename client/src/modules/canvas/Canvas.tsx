@@ -166,7 +166,8 @@ const Canvas: React.FC = () => {
     };
   });
 
-  function handleMouseMove(e: React.MouseEvent) {
+  function handlePointerMove(e: React.PointerEvent) {
+    e.preventDefault();
     if (
       newRect &&
       validCursorPositions(
@@ -238,7 +239,8 @@ const Canvas: React.FC = () => {
     }
   }
 
-  function handleMouseDown(e: React.MouseEvent) {
+  function handlePointerDown(e: React.PointerEvent) {
+    e.preventDefault();
     dispatch(cancelSelect());
 
     if (e.altKey) {
@@ -259,7 +261,8 @@ const Canvas: React.FC = () => {
     }
   }
 
-  function handleMouseUp(e: React.MouseEvent) {
+  function handlePointerUp(e: React.PointerEvent) {
+    e.preventDefault();
     if (
       newRect &&
       validCursorPositions(
@@ -374,9 +377,9 @@ const Canvas: React.FC = () => {
         width: '100%',
         background: COLORS.canvas,
       }}
-      onMouseMove={(e) => handleMouseMove(e)}
-      onMouseDown={(e) => handleMouseDown(e)}
-      onMouseUp={(e) => handleMouseUp(e)}
+      onPointerMove={(e) => handlePointerMove(e)}
+      onPointerDown={(e) => handlePointerDown(e)}
+      onPointerUp={(e) => handlePointerUp(e)}
       // onWheel={(e) => handleWheel(e)}
       cursor={cursor}
     >

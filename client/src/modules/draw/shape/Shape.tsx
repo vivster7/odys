@@ -23,7 +23,7 @@ export interface ShapeTypeProps {
   isMultiSelected: boolean;
   isSelected: boolean;
   playerSelected?: Player;
-  onMouseDown: (e: React.MouseEvent) => void;
+  onPointerDown: (e: React.PointerEvent) => void;
 }
 
 export const Shape: React.FC<DrawingProps> = (props) => {
@@ -45,11 +45,12 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   );
   const isSelected = selectedShape && selectedShape.id === id;
 
-  function sharedOnMouseDown(
-    e: React.MouseEvent,
+  function sharedOnPointerDown(
+    e: React.PointerEvent,
     onAltClick?: (a: any) => AnyAction
   ) {
     e.stopPropagation();
+    e.preventDefault();
 
     if (
       e.altKey &&
@@ -81,12 +82,12 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     }
   }
 
-  function onMouseDown(e: React.MouseEvent) {
-    sharedOnMouseDown(e);
+  function onPointerDown(e: React.PointerEvent) {
+    sharedOnPointerDown(e);
   }
 
-  function handleMouseDownInGroupingRect(e: React.MouseEvent) {
-    sharedOnMouseDown(e, () =>
+  function handlePointerDownInGroupingRect(e: React.PointerEvent) {
+    sharedOnPointerDown(e, () =>
       startNewRect({ clickX: e.clientX, clickY: e.clientY })
     );
   }
@@ -97,7 +98,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     isMultiSelected,
     isSelected,
     playerSelected,
-    onMouseDown,
+    onPointerDown,
   };
 
   if (shape?.isDeleted) return <></>;
@@ -105,7 +106,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   if (shape?.type === 'text') return <Text {...childProps}></Text>;
   if (shape?.type === 'grouping_rect') {
     const groupingChildProps = Object.assign({}, childProps, {
-      onMouseDown: handleMouseDownInGroupingRect,
+      onPointerDown: handlePointerDownInGroupingRect,
     });
     return <GroupingRect {...groupingChildProps}></GroupingRect>;
   }

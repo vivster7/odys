@@ -20,7 +20,7 @@ export interface BaseShapeProps {
   isMultiSelected: boolean;
   isSelected: boolean;
   playerSelected?: Player;
-  onMouseDown: (e: React.MouseEvent) => void;
+  onPointerDown: (e: React.PointerEvent) => void;
 }
 
 const BaseShape: React.FC<BaseShapeProps> = (props) => {
@@ -36,7 +36,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     isMultiSelected,
     isSelected,
     playerSelected,
-    onMouseDown,
+    onPointerDown,
   } = props;
 
   const {
@@ -76,7 +76,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
       transform={transform}
       cursor={cursor}
       opacity={isSavedInDB ? 1 : 0.5}
-      onMouseDown={(e) => onMouseDown(e)}
+      onPointerDown={(e) => onPointerDown(e)}
     >
       <rect
         width={width + deltaWidth}

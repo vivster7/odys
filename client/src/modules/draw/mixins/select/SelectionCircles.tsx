@@ -15,8 +15,9 @@ const SelectionCircles: React.FC<SelectionCirclesProps> = (props) => {
   const dispatch = useDispatch();
   const radiusSize = 5;
 
-  function onMouseDown(e: React.MouseEvent, anchor: Anchor) {
+  function onPointerDown(e: React.PointerEvent, anchor: Anchor) {
     e.stopPropagation();
+    e.preventDefault();
     dispatch(
       startResize({
         id: props.id,
@@ -33,27 +34,27 @@ const SelectionCircles: React.FC<SelectionCirclesProps> = (props) => {
         fill={COLORS.select}
         r={radiusSize + 'px'}
         cursor="nw-resize"
-        onMouseDown={(e) => onMouseDown(e, 'NWAnchor')}
+        onPointerDown={(e) => onPointerDown(e, 'NWAnchor')}
       ></circle>
       <circle
         fill={COLORS.select}
         r={radiusSize + 'px'}
         cursor="ne-resize"
-        onMouseDown={(e) => onMouseDown(e, 'NEAnchor')}
+        onPointerDown={(e) => onPointerDown(e, 'NEAnchor')}
         cx={props.width}
       ></circle>
       <circle
         fill={COLORS.select}
         r={radiusSize + 'px'}
         cursor="sw-resize"
-        onMouseDown={(e) => onMouseDown(e, 'SWAnchor')}
+        onPointerDown={(e) => onPointerDown(e, 'SWAnchor')}
         cy={props.height}
       ></circle>
       <circle
         fill={COLORS.select}
         r={radiusSize + 'px'}
         cursor="se-resize"
-        onMouseDown={(e) => onMouseDown(e, 'SEAnchor')}
+        onPointerDown={(e) => onPointerDown(e, 'SEAnchor')}
         cx={props.width}
         cy={props.height}
       ></circle>
