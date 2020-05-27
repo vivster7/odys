@@ -32,13 +32,34 @@ const rootReducer = combineReducers({
 });
 export type RootState = ReturnType<typeof rootReducer>;
 
+// These bits of state won't be emitted on the socket.
+const syncBlacklist = new Set([
+  'canvas',
+  'errors',
+  'room',
+  'board',
+  // draw
+  'editText',
+  'drag',
+  'resize',
+  'newRect',
+  'timetravel',
+  'copyPaste',
+  // players
+  'self',
+]);
+
+const diffPatch = jdp.create({
+  objectHash: (o: any) => o.id,
+  propertyFilter: (name: string) => !syncBlacklist.has(name),
+});
+
 const syncEnhancer: StoreEnhancer = (createStore) => (
   reducer,
   initialState
 ) => {
   const syncedRootReducer = (state: any, action: any) => {
     const newState = reducer(state, action);
-    const diffPatch = jdp.create({ objectHash: (o: any) => o.id });
     const diff = diffPatch.diff(state, newState);
 
     if (action.type !== 'global/syncState' && diff) {
