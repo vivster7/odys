@@ -1,6 +1,6 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../App';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'global/redux';
 import { clearErrors } from './errors.reducer';
 
 interface ToastContent {
@@ -41,7 +41,7 @@ const Toast: React.FC<ToastContent> = (props) => {
 };
 
 const ToastContainer: React.FC = () => {
-  const errors = useSelector((state: RootState) => state.errors);
+  const errors = useSelector((s) => s.errors);
 
   return (
     <div style={{ display: 'flex', flexFlow: 'column nowrap' }}>

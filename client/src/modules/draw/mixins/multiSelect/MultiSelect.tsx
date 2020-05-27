@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'global/redux';
 import { RootState } from '../../../../App';
 import { COLORS } from 'global/colors';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
@@ -15,7 +16,7 @@ interface MultiDragState {
 
 const MultiSelect: React.FC = () => {
   const dispatch = useDispatch();
-  const playerId = useSelector((state: RootState) => state.players.self);
+  const playerId = useSelector((s) => s.players.self);
   const selectedShapeIds = useSelector(
     (state: RootState) => state.draw.multiSelect?.selectedShapeIds
   );
@@ -25,7 +26,7 @@ const MultiSelect: React.FC = () => {
   const selectionOutline = useSelector(
     (state: RootState) => state.draw.multiSelect?.outline
   );
-  const canvasScale = useSelector((state: RootState) => state.canvas.scale);
+  const canvasScale = useSelector((s) => s.canvas.scale);
   const borderPadding = 20 / canvasScale;
   const dashArray = 5 / canvasScale;
   const borderWidth = 2 / canvasScale;

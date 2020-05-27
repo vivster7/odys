@@ -10,7 +10,8 @@ import {
   startNewRect,
   endNewRectByDrag,
 } from '../draw/draw.reducer';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'global/redux';
 import { RootState } from '../../App';
 import { cursorWithinEpsilon } from 'global/cursor';
 import { wheelEnd, endPan, cleanCanvas } from './canvas.reducer';
@@ -89,16 +90,16 @@ interface PanState {
 const Canvas: React.FC = () => {
   const dispatch = useDispatch();
 
-  const playerId = useSelector((state: RootState) => state.players.self);
-  const boardId = useSelector((state: RootState) => state.board.id);
-  const dragState = useSelector((state: RootState) => state.draw.drag);
+  const playerId = useSelector((s) => s.players.self);
+  const boardId = useSelector((s) => s.board.id);
+  const dragState = useSelector((s) => s.draw.drag);
   const isMultiSelecting = useSelector(
     (state: RootState) => !!state.draw.multiSelect?.selectionRect
   );
 
-  const newRect = useSelector((state: RootState) => state.draw.newRect);
+  const newRect = useSelector((s) => s.draw.newRect);
 
-  const canvasState = useSelector((state: RootState) => state.canvas);
+  const canvasState = useSelector((s) => s.canvas);
   const resizingId = useSelector(
     (state: RootState) => state.draw.resize && state.draw.resize.id
   );
@@ -106,7 +107,7 @@ const Canvas: React.FC = () => {
   const isShiftPressed = useSelector(
     (state: RootState) => state.keyboard.shiftKey
   );
-  const isAltPressed = useSelector((state: RootState) => state.keyboard.altKey);
+  const isAltPressed = useSelector((s) => s.keyboard.altKey);
 
   // using local variable to make scale / pan fast!
   const [topLeftX, setTopLeftX] = useState(canvasState.topLeftX);

@@ -1,13 +1,10 @@
 import React from 'react';
 import KeyToggle from './KeyToggle';
-import { useSelector } from 'react-redux';
-import { RootState } from 'App';
+import { useSelector } from 'global/redux';
 
 const KeyTooltips: React.FC = () => {
-  const isAltPressed = useSelector((state: RootState) => state.keyboard.altKey);
-  const isShiftPressed = useSelector(
-    (state: RootState) => state.keyboard.shiftKey
-  );
+  const isAltPressed = useSelector((s) => s.keyboard.altKey);
+  const isShiftPressed = useSelector((s) => s.keyboard.shiftKey);
 
   const platform = window.navigator.platform;
   const optionOrAlt = platform.includes('Mac') ? 'Option' : 'Alt';

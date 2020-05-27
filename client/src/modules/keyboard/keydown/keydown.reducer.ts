@@ -1,5 +1,4 @@
-import { createAsyncThunk, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from 'App';
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
 import {
   selectAll,

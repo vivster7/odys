@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, OdysDispatch } from 'App';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'global/redux';
+import { OdysDispatch } from 'App';
 import debounce from 'lodash.debounce';
 import { editText, startEditText } from 'modules/draw/draw.reducer';
 import { endEditText } from 'modules/draw/mixins/editText/editText.reducer';
@@ -16,14 +17,14 @@ const HiddenTextInput: React.FC = React.memo(() => {
   const dispatch = useDispatch();
 
   // Same as below -- need to keep re-rendering this object on select.
-  const select = useSelector((state: RootState) => state.draw.select);
-  const playerId = useSelector((state: RootState) => state.players.self);
+  const select = useSelector((s) => s.draw.select);
+  const playerId = useSelector((s) => s.players.self);
 
   // This selector will refresh this component whenver the resize
   // object changes. This will focus the hidden input.
   // Without this selector, clicking the selection circles causes
   // the hidden input to lose focus and typing won't edit the selected rect.
-  useSelector((state: RootState) => state.draw.resize);
+  useSelector((s) => s.draw.resize);
 
   const inputEl = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Cursor } from 'modules/canvas/cursor/cursor';
 import { COLORS } from 'global/colors';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'global/redux';
 import { syncCursor } from 'modules/players/players.reducer';
-import { RootState, OdysDispatch } from 'App';
+import { OdysDispatch } from 'App';
 
 interface PositionDisplayProps {
   topLeftX: number;
@@ -30,7 +31,7 @@ function onPointerMove(
 
 const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
   const dispatch = useDispatch();
-  const playerId = useSelector((state: RootState) => state.players.self);
+  const playerId = useSelector((s) => s.players.self);
   const [cursor, setCursor] = useState<Cursor>({ x: 0, y: 0 });
   const { topLeftX, topLeftY, scale } = props;
 

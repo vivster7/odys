@@ -1,7 +1,6 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
-import { useSelector } from 'react-redux';
-import { RootState } from 'App';
+import { useSelector } from 'global/redux';
 import { COLORS } from 'global/colors';
 
 const LandingPage: React.FC = () => {
@@ -9,8 +8,7 @@ const LandingPage: React.FC = () => {
   const optionOrAlt = platform.includes('Mac') ? 'Option' : 'Alt';
 
   const showEmptyState = useSelector(
-    (state: RootState) =>
-      isEmpty(state.draw.shapes) && isEmpty(state.draw.arrows)
+    (s) => isEmpty(s.draw.shapes) && isEmpty(s.draw.arrows)
   );
 
   return (

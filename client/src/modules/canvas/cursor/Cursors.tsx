@@ -1,11 +1,10 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector } from 'global/redux';
 import { isEmpty } from 'lodash';
-import { RootState } from 'App';
 
 const Cursors: React.FC = () => {
-  const players = useSelector((state: RootState) => state.players.players);
-  const playerId = useSelector((state: RootState) => state.players.self);
+  const players = useSelector((s) => s.players.players);
+  const playerId = useSelector((s) => s.players.self);
 
   function renderCursors() {
     const playerCursors = Object.values(players)

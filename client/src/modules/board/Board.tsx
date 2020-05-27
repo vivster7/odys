@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'global/redux';
 
-import { RootState } from 'App';
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Canvas from 'modules/canvas/Canvas';
@@ -36,8 +36,8 @@ const BoardFailed: React.FC = () => (
 
 const DrawingBoard: React.FC = () => {
   const dispatch = useDispatch();
-  const board = useSelector((state: RootState) => state.board);
-  const room = useSelector((state: RootState) => state.room);
+  const board = useSelector((s) => s.board);
+  const room = useSelector((s) => s.room);
 
   useEffect(() => {
     if (room.loaded !== 'success') return;

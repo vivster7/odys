@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
@@ -7,6 +7,7 @@ import { addError } from 'modules/errors/errors.reducer';
 import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
 import { selectDrawing } from '../draw.reducer';
+import { useSelector } from 'global/redux';
 
 const TEXT_PADDING = 5;
 
@@ -14,8 +15,8 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const { id, playerSelected } = props;
   const dispatch = useDispatch();
 
-  const arrow = useSelector((state: RootState) => state.draw.arrows[id]);
-  const playerId = useSelector((state: RootState) => state.players.self);
+  const arrow = useSelector((s) => s.draw.arrows[id]);
+  const playerId = useSelector((s) => s.players.self);
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = useSelector(

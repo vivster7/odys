@@ -1,5 +1,6 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'global/redux';
 
 import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
@@ -30,9 +31,9 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   const { id, playerSelected } = props;
   const dispatch = useDispatch();
 
-  const playerId = useSelector((state: RootState) => state.players.self);
-  const board = useSelector((state: RootState) => state.board);
-  const shape = useSelector((state: RootState) => state.draw.shapes[id]);
+  const playerId = useSelector((s) => s.players.self);
+  const board = useSelector((s) => s.board);
+  const shape = useSelector((s) => s.draw.shapes[id]);
   const isDragging = useSelector(
     (state: RootState) => state.draw.drag?.id === id
   );
