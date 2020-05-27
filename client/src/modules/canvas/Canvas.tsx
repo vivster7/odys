@@ -12,7 +12,6 @@ import {
 } from '../draw/draw.reducer';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
-import { RootState } from '../../App';
 import { cursorWithinEpsilon } from 'global/cursor';
 import { wheelEnd, endPan, cleanCanvas } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
@@ -94,19 +93,15 @@ const Canvas: React.FC = () => {
   const boardId = useSelector((s) => s.board.id);
   const dragState = useSelector((s) => s.draw.drag);
   const isMultiSelecting = useSelector(
-    (state: RootState) => !!state.draw.multiSelect?.selectionRect
+    (s) => !!s.draw.multiSelect?.selectionRect
   );
 
   const newRect = useSelector((s) => s.draw.newRect);
 
   const canvasState = useSelector((s) => s.canvas);
-  const resizingId = useSelector(
-    (state: RootState) => state.draw.resize && state.draw.resize.id
-  );
+  const resizingId = useSelector((s) => s.draw.resize && s.draw.resize.id);
 
-  const isShiftPressed = useSelector(
-    (state: RootState) => state.keyboard.shiftKey
-  );
+  const isShiftPressed = useSelector((s) => s.keyboard.shiftKey);
   const isAltPressed = useSelector((s) => s.keyboard.altKey);
 
   // using local variable to make scale / pan fast!

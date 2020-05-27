@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
 
 import { DrawingProps } from '../DrawContainer';
@@ -19,16 +18,10 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const playerId = useSelector((s) => s.players.self);
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
-  const r1 = useSelector(
-    (state: RootState) => state.draw.shapes[arrow.fromShapeId]
-  );
-  const r2 = useSelector(
-    (state: RootState) => state.draw.shapes[arrow.toShapeId]
-  );
+  const r1 = useSelector((s) => s.draw.shapes[arrow.fromShapeId]);
+  const r2 = useSelector((s) => s.draw.shapes[arrow.toShapeId]);
 
-  const isSelected = useSelector(
-    (state: RootState) => state.draw.select?.id === id
-  );
+  const isSelected = useSelector((s) => s.draw.select?.id === id);
 
   const color = isSelected
     ? COLORS.select

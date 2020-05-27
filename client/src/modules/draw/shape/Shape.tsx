@@ -2,7 +2,6 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
 
-import { RootState } from 'App';
 import { addError } from 'modules/errors/errors.reducer';
 
 import Text from './type/Text';
@@ -34,15 +33,12 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   const playerId = useSelector((s) => s.players.self);
   const board = useSelector((s) => s.board);
   const shape = useSelector((s) => s.draw.shapes[id]);
-  const isDragging = useSelector(
-    (state: RootState) => state.draw.drag?.id === id
-  );
+  const isDragging = useSelector((s) => s.draw.drag?.id === id);
   const isMultiSelected = useSelector(
-    (state: RootState) => !!state.draw.multiSelect?.selectedShapeIds[id]
+    (s) => !!s.draw.multiSelect?.selectedShapeIds[id]
   );
   const selectedShape = useSelector(
-    (state: RootState) =>
-      !!state.draw.select?.id && state.draw.shapes[state.draw.select?.id]
+    (s) => !!s.draw.select?.id && s.draw.shapes[s.draw.select?.id]
   );
   const isSelected = selectedShape && selectedShape.id === id;
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
-import { RootState } from '../../../../App';
 import { COLORS } from 'global/colors';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { selectClickTarget } from 'modules/draw/draw.reducer';
@@ -18,14 +17,10 @@ const MultiSelect: React.FC = () => {
   const dispatch = useDispatch();
   const playerId = useSelector((s) => s.players.self);
   const selectedShapeIds = useSelector(
-    (state: RootState) => state.draw.multiSelect?.selectedShapeIds
+    (s) => s.draw.multiSelect?.selectedShapeIds
   );
-  const selectionRect = useSelector(
-    (state: RootState) => state.draw.multiSelect?.selectionRect
-  );
-  const selectionOutline = useSelector(
-    (state: RootState) => state.draw.multiSelect?.outline
-  );
+  const selectionRect = useSelector((s) => s.draw.multiSelect?.selectionRect);
+  const selectionOutline = useSelector((s) => s.draw.multiSelect?.outline);
   const canvasScale = useSelector((s) => s.canvas.scale);
   const borderPadding = 20 / canvasScale;
   const dashArray = 5 / canvasScale;
