@@ -115,7 +115,13 @@ const Canvas: React.FC = () => {
 
   const [selectMode, setSelectMode] = useState(false);
   const [insertMode, setInsertMode] = useState(false);
-  const cursor = insertMode ? 'pointer' : selectMode ? 'crosshair' : 'grab';
+  const cursor = insertMode
+    ? 'pointer'
+    : selectMode
+    ? 'crosshair'
+    : pan
+    ? 'grabbing'
+    : 'grab';
 
   const transform = `translate(${topLeftX + translateX}, ${
     topLeftY + translateY

@@ -129,7 +129,11 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   }
 
   return (
-    <g id={props.id} onPointerDown={(e) => handlePointerDown(e)}>
+    <g
+      id={props.id}
+      onPointerDown={(e) => handlePointerDown(e)}
+      cursor="pointer"
+    >
       <defs>
         <marker
           id={`arrowhead.${props.id}`}

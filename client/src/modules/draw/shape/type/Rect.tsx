@@ -22,13 +22,14 @@ function computeTextYPosition(shape: Shape): number {
 }
 
 const Rect: React.FC<ShapeTypeProps> = (props) => {
-  const cursor = props.isDragging ? 'grabbing' : 'grab';
+  const { isSelected, isDragging, shape } = props;
+  const cursor = isSelected ? (isDragging ? 'grabbing' : 'grab') : 'pointer';
   const fill = COLORS.rectBg;
   const fillOpacity = 1;
   const strokeColor = COLORS.rectDefault;
   const strokeDasharray = 0;
-  const textX = (props.shape.width + props.shape.deltaWidth) / 2;
-  const textY = computeTextYPosition(props.shape);
+  const textX = (shape.width + shape.deltaWidth) / 2;
+  const textY = computeTextYPosition(shape);
   const childProps = {
     ...props,
     cursor,
