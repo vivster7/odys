@@ -121,7 +121,10 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: shapes },
+    arg: {
+      playerId: playerId,
+      drawings: shapes.map((s) => Object.assign({}, s)),
+    },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
