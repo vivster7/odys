@@ -3,28 +3,44 @@ import DrawingBoard from '../board/Board';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
-import { keydown } from 'global/keydown.reducer';
+import { keydown } from 'modules/keyboard/keydown/keydown.reducer';
 import { usePlayerConnectionListeners } from 'modules/players/mixins/connection/connection.reducer';
 
 import { connect, registerSocketListener } from 'socket/socket';
 import { syncState, RootState } from 'App';
+import { keyup } from 'modules/keyboard/keyboard.reducer';
 
 const Room: React.FC = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const selfClientId = useSelector((state: RootState) => state.players.self);
 
-  // listen to keydown events and fire events
+  // listen to keydown/keyup events and fire events
   // kinda want this at app level, but app doesn't have access to dispatch yet.
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      dispatch(
-        keydown({ code: e.code, metaKey: e.metaKey, shiftKey: e.shiftKey })
-      );
+    const downHandler = (e: KeyboardEvent) => {
+      const payload = {
+        code: e.code,
+        metaKey: e.metaKey,
+        shiftKey: e.shiftKey,
+      };
+      dispatch(keydown(payload));
     };
-    window.addEventListener('keydown', handler, { capture: true });
+
+    const upHandler = (e: KeyboardEvent) => {
+      const payload = {
+        code: e.code,
+        metaKey: e.metaKey,
+        shiftKey: e.shiftKey,
+      };
+      dispatch(keyup(payload));
+    };
+
+    window.addEventListener('keydown', downHandler, { capture: true });
+    window.addEventListener('keyup', upHandler, { capture: true });
     return () => {
-      window.removeEventListener('keydown', handler, { capture: true });
+      window.removeEventListener('keydown', downHandler, { capture: true });
+      window.removeEventListener('keyup', upHandler, { capture: true });
     };
   }, [dispatch]);
 

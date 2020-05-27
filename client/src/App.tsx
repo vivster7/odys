@@ -17,6 +17,7 @@ import drawReducer from './modules/draw/draw.reducer';
 import canvasReducer from './modules/canvas/canvas.reducer';
 
 import errorReducer from './modules/errors/errors.reducer';
+import keyboardReducer from './modules/keyboard/keyboard.reducer';
 import roomReducer from './modules/room/room.reducer';
 import boardReducer from './modules/board/board.reducer';
 import playersReducer from './modules/players/players.reducer';
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   draw: drawReducer,
   canvas: canvasReducer,
   errors: errorReducer,
+  keyboard: keyboardReducer,
   room: roomReducer,
   board: boardReducer,
   players: playersReducer,

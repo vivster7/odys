@@ -1,37 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import KeyToggle from './KeyToggle';
+import { useSelector } from 'react-redux';
+import { RootState } from 'App';
 
 const KeyTooltips: React.FC = () => {
-  const [isAltPressed, setAltPressed] = useState(false);
-  const [isShiftPressed, setShiftPressed] = useState(false);
+  const isAltPressed = useSelector((state: RootState) => state.keyboard.altKey);
+  const isShiftPressed = useSelector(
+    (state: RootState) => state.keyboard.shiftKey
+  );
 
   const platform = window.navigator.platform;
   const optionOrAlt = platform.includes('Mac') ? 'Option' : 'Alt';
-
-  useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'AltLeft' || e.code === 'AltRight') {
-        setAltPressed(true);
-      } else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        setShiftPressed(true);
-      }
-    };
-
-    const onKeyUp = (e: KeyboardEvent) => {
-      if (e.code === 'AltLeft' || e.code === 'AltRight') {
-        setAltPressed(false);
-      } else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        setShiftPressed(false);
-      }
-    };
-
-    window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('keyup', onKeyUp);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('keyup', onKeyUp);
-    };
-  });
 
   return (
     <>

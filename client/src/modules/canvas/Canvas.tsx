@@ -103,6 +103,11 @@ const Canvas: React.FC = () => {
     (state: RootState) => state.draw.resize && state.draw.resize.id
   );
 
+  const isShiftPressed = useSelector(
+    (state: RootState) => state.keyboard.shiftKey
+  );
+  const isAltPressed = useSelector((state: RootState) => state.keyboard.altKey);
+
   // using local variable to make scale / pan fast!
   const [topLeftX, setTopLeftX] = useState(canvasState.topLeftX);
   const [topLeftY, setTopLeftY] = useState(canvasState.topLeftY);
@@ -113,8 +118,9 @@ const Canvas: React.FC = () => {
 
   const [pan, setPan] = useState<PanState | null>(null);
 
-  const [selectMode, setSelectMode] = useState(false);
-  const [insertMode, setInsertMode] = useState(false);
+  const selectMode = isShiftPressed;
+  const insertMode = isAltPressed;
+
   const cursor = insertMode
     ? 'pointer'
     : selectMode
@@ -134,33 +140,6 @@ const Canvas: React.FC = () => {
     setZoomLevel(canvasState.zoomLevel);
     dispatch(cleanCanvas());
   }
-
-  function onKeyDownHandler(e: KeyboardEvent) {
-    if (e.key === 'Shift') {
-      setSelectMode(true);
-    }
-    if (e.key === 'Alt') {
-      setInsertMode(true);
-    }
-  }
-
-  function onKeyUpHandler(e: KeyboardEvent) {
-    if (e.key === 'Shift') {
-      setSelectMode(false);
-    }
-    if (e.key === 'Alt') {
-      setInsertMode(false);
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('keydown', onKeyDownHandler);
-    window.addEventListener('keyup', onKeyUpHandler);
-    return () => {
-      window.removeEventListener('keydown', onKeyDownHandler);
-      window.addEventListener('keyup', onKeyUpHandler);
-    };
-  });
 
   useEffect(() => {
     window.addEventListener('wheel', handleWheel, {

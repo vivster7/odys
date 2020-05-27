@@ -1,10 +1,16 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createAsyncThunk, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
-import { selectAll, cancelSelect, copy } from 'modules/draw/draw.reducer';
+import {
+  selectAll,
+  cancelSelect,
+  copy,
+  ActionPending,
+} from 'modules/draw/draw.reducer';
 import { undo } from 'modules/draw/timetravel/undo.reducer';
 import { redo } from 'modules/draw/timetravel/redo.reducer';
 import { paste, cut } from 'modules/draw/mixins/copypaste/copypaste.reducer';
+import { KeyboardState, KeyEvent } from 'modules/keyboard/keyboard.reducer';
 
 // Only keys in this list will trigger the keydown condition.
 const LISTEN_KEYS = [
@@ -16,18 +22,16 @@ const LISTEN_KEYS = [
   'KeyV',
   'KeyX',
   'Escape',
+  'AltLeft',
+  'AltRight',
+  'ShiftLeft',
+  'ShiftRight',
 ];
 
-interface Keydown {
-  code: string;
-  metaKey: boolean;
-  shiftKey: boolean;
-}
-
 export const keydown = createAsyncThunk(
-  'global/keydown',
-  async (e: Keydown, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
+  'keyboard/keydown',
+  async (e: KeyEvent, thunkAPI) => {
+    const state = thunkAPI.getState() as any;
     const playerId = state.players.self;
     const dispatch = thunkAPI.dispatch;
 
@@ -71,5 +75,19 @@ export const keydown = createAsyncThunk(
       return dispatch(cancelSelect());
     }
   },
-  { condition: (e: Keydown, thunkAPI) => LISTEN_KEYS.includes(e.code) }
+  { condition: (e: KeyEvent, thunkAPI) => LISTEN_KEYS.includes(e.code) }
 );
+
+export const keydownPendingFn = (
+  state: KeyboardState,
+  action: ActionPending<KeyEvent>
+) => {
+  const { code } = action.meta.arg;
+  if (code === 'AltLeft' || code === 'AltRight') {
+    state.altKey = true;
+  }
+
+  if (code === 'ShiftLeft' || code === 'ShiftRight') {
+    state.shiftKey = true;
+  }
+};
