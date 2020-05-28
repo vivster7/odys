@@ -15,6 +15,7 @@ import { Player } from 'modules/players/players.reducer';
 import { drawArrow } from '../arrow/arrow.reducer';
 import * as uuid from 'uuid';
 import { AnyAction } from 'redux';
+import { setCursorOver } from 'modules/canvas/canvas.reducer';
 
 // ShapeTypeProps are passed to shape types: rect, text, grouping_rect
 export interface ShapeTypeProps {
@@ -24,6 +25,7 @@ export interface ShapeTypeProps {
   isSelected: boolean;
   playerSelected?: Player;
   onPointerDown: (e: React.PointerEvent) => void;
+  onPointerOver: (e: React.PointerEvent) => void;
 }
 
 export const Shape: React.FC<DrawingProps> = (props) => {
@@ -89,6 +91,12 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     );
   }
 
+  function onPointerOver(e: React.PointerEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+    dispatch(setCursorOver({ type: shape.type, id }));
+  }
+
   const childProps = {
     shape,
     isDragging,
@@ -96,6 +104,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     isSelected,
     playerSelected,
     onPointerDown,
+    onPointerOver,
   };
 
   if (shape?.isDeleted) return <></>;

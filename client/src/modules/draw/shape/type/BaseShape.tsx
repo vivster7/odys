@@ -4,7 +4,6 @@ import { COLORS } from 'global/colors';
 import TextBlock from 'modules/draw/mixins/editText/TextBlock';
 import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
 import { Player } from 'modules/players/players.reducer';
-
 export const SHAPE_WIDTH = 150;
 export const SHAPE_HEIGHT = 75;
 
@@ -21,6 +20,7 @@ export interface BaseShapeProps {
   isSelected: boolean;
   playerSelected?: Player;
   onPointerDown: (e: React.PointerEvent) => void;
+  onPointerOver: (e: React.PointerEvent) => void;
 }
 
 const BaseShape: React.FC<BaseShapeProps> = (props) => {
@@ -37,6 +37,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     isSelected,
     playerSelected,
     onPointerDown,
+    onPointerOver,
   } = props;
 
   const {
@@ -77,6 +78,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
       cursor={cursor}
       opacity={isSavedInDB ? 1 : 0.5}
       onPointerDown={(e) => onPointerDown(e)}
+      onPointerOver={(e) => onPointerOver(e)}
     >
       <rect
         width={width + deltaWidth}

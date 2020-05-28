@@ -7,6 +7,7 @@ import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
 import { selectDrawing } from '../draw.reducer';
 import { useSelector } from 'global/redux';
+import { setCursorOver } from 'modules/canvas/canvas.reducer';
 
 const TEXT_PADDING = 5;
 
@@ -122,10 +123,17 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
     dispatch(selectDrawing({ id, shiftKey: e.shiftKey, playerId: playerId }));
   }
 
+  function handlePointerOver(e: React.PointerEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+    dispatch(setCursorOver({ type: 'arrow', id }));
+  }
+
   return (
     <g
       id={props.id}
       onPointerDown={(e) => handlePointerDown(e)}
+      onPointerOver={(e) => handlePointerOver(e)}
       cursor="pointer"
     >
       <defs>

@@ -13,7 +13,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
 import { cursorWithinEpsilon } from 'global/cursor';
-import { wheelEnd, endPan, cleanCanvas } from './canvas.reducer';
+import { wheelEnd, endPan, cleanCanvas, setCursorOver } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
 import {
   endNewRectByClick,
@@ -30,6 +30,7 @@ import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import * as uuid from 'uuid';
 import { COLORS } from 'global/colors';
 import Cursors from './cursor/Cursors';
+import Ghosts from './ghosts/Ghosts';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -104,6 +105,9 @@ const Canvas: React.FC = () => {
   const isShiftPressed = useSelector((s) => s.keyboard.shiftKey);
   const isAltPressed = useSelector((s) => s.keyboard.altKey);
 
+  const selectMode = isShiftPressed;
+  const insertMode = isAltPressed;
+
   // using local variable to make scale / pan fast!
   const [topLeftX, setTopLeftX] = useState(canvasState.topLeftX);
   const [topLeftY, setTopLeftY] = useState(canvasState.topLeftY);
@@ -113,9 +117,6 @@ const Canvas: React.FC = () => {
   const [zoomLevel, setZoomLevel] = useState(canvasState.zoomLevel);
 
   const [pan, setPan] = useState<PanState | null>(null);
-
-  const selectMode = isShiftPressed;
-  const insertMode = isAltPressed;
 
   const cursor = insertMode
     ? 'pointer'
@@ -149,6 +150,7 @@ const Canvas: React.FC = () => {
 
   function handlePointerMove(e: React.PointerEvent) {
     e.preventDefault();
+
     if (
       newRect &&
       validCursorPositions(
@@ -306,6 +308,12 @@ const Canvas: React.FC = () => {
     }
   }
 
+  function handlePointerOver(e: React.PointerEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+    dispatch(setCursorOver({ type: 'background' }));
+  }
+
   function handleWheel(e: WheelEvent) {
     // stops native pinch-to-zoom
     e.preventDefault();
@@ -361,13 +369,26 @@ const Canvas: React.FC = () => {
       onPointerMove={(e) => handlePointerMove(e)}
       onPointerDown={(e) => handlePointerDown(e)}
       onPointerUp={(e) => handlePointerUp(e)}
-      // onWheel={(e) => handleWheel(e)}
       cursor={cursor}
     >
       <g id="odys-zoomable-group" transform={transform}>
+        {/* This canvas-background is a sibling to the drawings.
+            This is useful for pointer enter/leave events.
+            It scales to the size of the canvas */}
+        <g
+          className="canvas-background"
+          transform={`translate(${topLeftX * (1 / scale) * -1}, ${
+            topLeftY * (1 / scale) * -1
+          }) scale(${1 / scale})`}
+          onPointerOver={(e) => handlePointerOver(e)}
+        >
+          {/* TODO: 2000 magic number should equal screen width/height on initial load */}
+          <rect height="2000" width="2000" opacity="0"></rect>
+        </g>
         <DrawContainer></DrawContainer>
         <MultiSelect></MultiSelect>
         <Cursors></Cursors>
+        <Ghosts></Ghosts>
       </g>
     </svg>
   );
