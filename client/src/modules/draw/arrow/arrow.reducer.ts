@@ -8,6 +8,7 @@ import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { Saveable, save } from '../mixins/save/save.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import odysClient from 'global/odysClient';
+import { RootState } from 'App';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
 type ArrowMixins = Selectable & TextEditable & Saveable & Deleteable;
@@ -59,7 +60,12 @@ interface DrawArrow {
 export const drawArrow = createAsyncThunk(
   'draw/drawArrow',
   async ({ id }: DrawArrow, thunkAPI) => {
-    thunkAPI.dispatch(save([id]));
+    const state = thunkAPI.getState() as RootState;
+    // if the arrow already existed, then this new `id`
+    // wont exist in `state.draw.arrows`
+    if (state.draw.arrows[id]) {
+      thunkAPI.dispatch(save([id]));
+    }
   }
 );
 
