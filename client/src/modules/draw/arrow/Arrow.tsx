@@ -41,7 +41,8 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
 
   const fontSize = 12;
   const strokeWidth = 3;
-  const offset = 5;
+  const edgeOffset = 5;
+  const ioOffset = 10;
   const selectionTargetWidth = 20;
 
   const r1X = r1.x + r1.translateX;
@@ -78,19 +79,21 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
       if r1-x position is greater than r2-x position, then arrow is traveling in the negative-x direction (left),
       else arrow is traveling in the positive x-direction (right)
     */
-    y1 = r1YMid;
-    y2 = r2YMid;
 
     if (r1XMid > r2XMid) {
       const cp = controlPointOffset(r2XEdge, r1X);
-      x1 = r1X - offset;
-      x2 = r2XEdge + offset;
+      x1 = r1X - edgeOffset;
+      x2 = r2XEdge + edgeOffset;
+      y1 = r1YMid - ioOffset;
+      y2 = r2YMid - ioOffset;
 
       path = `M ${x1} ${y1} C ${x1 - cp} ${y1} ${x2 + cp} ${y2}, ${x2} ${y2}`;
     } else {
       const cp = controlPointOffset(r1XEdge, r2X);
-      x1 = r1XEdge + offset;
-      x2 = r2X - offset;
+      x1 = r1XEdge + edgeOffset;
+      x2 = r2X - edgeOffset;
+      y1 = r1YMid + ioOffset;
+      y2 = r2YMid + ioOffset;
 
       path = `M ${x1} ${y1} C ${x1 + cp} ${y1} ${x2 - cp} ${y2}, ${x2} ${y2}`;
     }
@@ -99,19 +102,21 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
       if r1-y position is greater than r2-y position, then arrow is traveling in the negative-y direction (up),
       else arrow is traveling in the positive y-direction (down)
     */
-    x1 = r1XMid;
-    x2 = r2XMid;
 
     if (r1YMid > r2YMid) {
       const cp = controlPointOffset(r2YEdge, r1Y);
-      y1 = r1Y - offset;
-      y2 = r2YEdge + offset;
+      y1 = r1Y - edgeOffset;
+      y2 = r2YEdge + edgeOffset;
+      x1 = r1XMid - ioOffset;
+      x2 = r2XMid - ioOffset;
 
       path = `M ${x1} ${y1} C ${x1} ${y1 - cp} ${x2} ${y2 + cp}, ${x2} ${y2}`;
     } else {
       const cp = controlPointOffset(r1YEdge, r2Y);
-      y1 = r1YEdge + offset;
-      y2 = r2Y - offset;
+      y1 = r1YEdge + edgeOffset;
+      y2 = r2Y - edgeOffset;
+      x1 = r1XMid + ioOffset;
+      x2 = r2XMid + ioOffset;
 
       path = `M ${x1} ${y1} C ${x1} ${y1 + cp} ${x2} ${y2 - cp}, ${x2} ${y2}`;
     }
