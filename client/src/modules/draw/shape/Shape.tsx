@@ -39,10 +39,11 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   const isMultiSelected = useSelector(
     (s) => !!s.draw.multiSelect?.selectedShapeIds[id]
   );
+  const selectedShapeId = useSelector((s) => s.draw.select?.id);
   const selectedShape = useSelector(
-    (s) => !!s.draw.select?.id && s.draw.shapes[s.draw.select?.id]
+    (s) => selectedShapeId && s.draw.shapes[selectedShapeId]
   );
-  const isSelected = selectedShape && selectedShape.id === id;
+  const isSelected = selectedShapeId === id;
 
   function sharedOnPointerDown(
     e: React.PointerEvent,
@@ -87,7 +88,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
 
   function handlePointerDownInGroupingRect(e: React.PointerEvent) {
     sharedOnPointerDown(e, () =>
-      startNewRect({ clickX: e.clientX, clickY: e.clientY })
+      startNewRect({ clickX: e.clientX, clickY: e.clientY, selectedShapeId })
     );
   }
 
