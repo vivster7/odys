@@ -89,6 +89,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
     );
   });
   if (existing) {
+    reorder([existing], state);
     return;
   }
 
