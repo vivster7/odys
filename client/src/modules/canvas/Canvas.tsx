@@ -15,10 +15,7 @@ import { useSelector } from 'global/redux';
 import { cursorWithinEpsilon } from 'global/cursor';
 import { wheelEnd, endPan, cleanCanvas, setCursorOver } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
-import {
-  endNewRectByClick,
-  validCursorPositions,
-} from '../draw/shape/newRect.reducer';
+import { endNewRectByClick } from '../draw/shape/newRect.reducer';
 import MultiSelect from '../draw/mixins/multiSelect/MultiSelect';
 import {
   zoomLeveltoScaleMap,
@@ -153,12 +150,6 @@ const Canvas: React.FC = () => {
 
     if (
       newRect &&
-      validCursorPositions(
-        newRect.clickX,
-        newRect.clickY,
-        e.clientX,
-        e.clientY
-      ) &&
       !cursorWithinEpsilon(
         newRect.clickX,
         newRect.clickY,
@@ -248,12 +239,6 @@ const Canvas: React.FC = () => {
     e.preventDefault();
     if (
       newRect &&
-      validCursorPositions(
-        newRect.clickX,
-        newRect.clickY,
-        e.clientX,
-        e.clientY
-      ) &&
       cursorWithinEpsilon(
         newRect.clickX,
         newRect.clickY,
