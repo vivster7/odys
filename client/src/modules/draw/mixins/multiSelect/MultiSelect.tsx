@@ -21,7 +21,12 @@ const MultiSelect: React.FC = () => {
   );
   const selectionRect = useSelector((s) => s.draw.multiSelect?.selectionRect);
   const selectionOutline = useSelector((s) => s.draw.multiSelect?.outline);
-  const canvasScale = useSelector((s) => s.canvas.scale);
+  const [canvasScale, canvasTopLeftX, canvasTopLeftY] = useSelector((s) => [
+    s.canvas.scale,
+    s.canvas.topLeftX,
+    s.canvas.topLeftY,
+  ]);
+  const cursorOver = useSelector((s) => s.canvas.cursorOver);
   const borderPadding = 20 / canvasScale;
   const dashArray = 5 / canvasScale;
   const borderWidth = 2 / canvasScale;
@@ -58,8 +63,8 @@ const MultiSelect: React.FC = () => {
       ) {
         dispatch(
           selectClickTarget({
-            x: e.clientX,
-            y: e.clientY,
+            x: (e.clientX - canvasTopLeftX) / canvasScale,
+            y: (e.clientY - canvasTopLeftY) / canvasScale,
             shiftKey: e.shiftKey,
             playerId: playerId,
           })
