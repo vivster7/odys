@@ -43,7 +43,9 @@ export const syncStateFn = (
   const stateDiff = action.payload.data as any;
 
   if (stateDiff.players && stateDiff.players.players) {
-    jdp.patch(state.players, stateDiff.players.players);
+    try {
+      jdp.patch(state.players, stateDiff.players.players);
+    } catch (err) {}
   }
 
   const drawDiff = stateDiff.draw;
