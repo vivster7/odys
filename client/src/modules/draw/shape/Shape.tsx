@@ -118,7 +118,12 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     return <GroupingRect {...groupingChildProps}></GroupingRect>;
   }
 
-  dispatch(addError(`unknown shape ${id}`));
+  console.error(`unknown shape ${id}`);
+  dispatch(
+    addError(
+      "We're having issues syncing this diagram. Try refreshing this page."
+    )
+  );
   return <></>;
 };
 

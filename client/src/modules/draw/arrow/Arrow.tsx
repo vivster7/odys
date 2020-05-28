@@ -30,12 +30,16 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
     ? playerSelected.color
     : COLORS.arrowDefault;
 
-  if (!r1) {
-    dispatch(addError(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`));
-    return <></>;
-  }
-  if (!r2) {
-    dispatch(addError(`[r2Arrow] Could not find shape$ ${arrow.toShapeId}`));
+  if (!r1 || !r2) {
+    if (!r1)
+      console.error(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`);
+    if (!r2)
+      console.error(`[r2Arrow] Could not find shape$ ${arrow.toShapeId}`);
+    dispatch(
+      addError(
+        "We're having issues syncing this diagram. Try refreshing this page."
+      )
+    );
     return <></>;
   }
 

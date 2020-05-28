@@ -30,7 +30,12 @@ const Drawing: React.FC<DrawingProps> = (props) => {
   if (shape) return <Shape id={id} playerSelected={playerSelected}></Shape>;
   if (arrow) return <Arrow id={id} playerSelected={playerSelected}></Arrow>;
 
-  dispatch(addError(`Cannot draw ${id}`));
+  console.error(`Cannot draw ${id}`);
+  dispatch(
+    addError(
+      "We're having issues syncing this diagram. Try refreshing this page."
+    )
+  );
   return <></>;
 };
 
