@@ -3,7 +3,7 @@ import { COLORS } from 'global/colors';
 import { isEmpty } from 'lodash';
 
 export const TEXT_LINE_HEIGHT = 16;
-const PLACEHOLDER_TEXT = 'Type to enter text';
+const DEFAULT_PLACEHOLDER_TEXT = 'Type to enter text';
 
 export function getTextBlocks(text: string) {
   return text.split('\n');
@@ -16,10 +16,18 @@ interface TextBlockProps {
   text: string;
   createdAtZoomLevel: number;
   isSelected: boolean;
+  placeholderText?: string;
 }
 
 const TextBlock: React.FC<TextBlockProps> = (props) => {
-  const { x, y, fontSize, text, isSelected } = props;
+  const {
+    x,
+    y,
+    fontSize,
+    text,
+    placeholderText = DEFAULT_PLACEHOLDER_TEXT,
+    isSelected,
+  } = props;
 
   const usePlaceholder = isSelected && isEmpty(text);
   const textBlocks = getTextBlocks(text);
@@ -37,7 +45,7 @@ const TextBlock: React.FC<TextBlockProps> = (props) => {
     >
       {usePlaceholder ? (
         <tspan key="placeholder" x={x} dy={dy + 'px'} dominantBaseline="middle">
-          {PLACEHOLDER_TEXT}
+          {placeholderText}
         </tspan>
       ) : (
         textBlocks.map((text, idx) => {

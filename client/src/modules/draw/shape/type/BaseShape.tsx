@@ -15,6 +15,7 @@ export interface BaseShapeProps {
   strokeDasharray: number;
   textX: number;
   textY: number;
+  placeholderText?: string;
   shape: Shape;
   isMultiSelected: boolean;
   isSelected: boolean;
@@ -33,6 +34,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     shape,
     textX,
     textY,
+    placeholderText,
     isMultiSelected,
     isSelected,
     playerSelected,
@@ -108,6 +110,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         y={textY}
         fontSize={fontSize}
         text={text}
+        placeholderText={placeholderText}
         createdAtZoomLevel={createdAtZoomLevel}
       />
       {(isSelected || isMultiSelected || isGhost) && (
