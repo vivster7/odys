@@ -7,6 +7,7 @@ import TempPresentationalArrow, {
   ArrowProps,
 } from 'modules/draw/arrow/TempPresentationalArrow';
 import { isOverlapping } from 'math/box';
+import { ShapeTypeProps } from 'modules/draw/shape/Shape';
 
 const Ghosts: React.FC = () => {
   const playerId = useSelector((s) => s.players.self);
@@ -36,53 +37,26 @@ const Ghosts: React.FC = () => {
       selectedShape.id !== cursorOver.id &&
       !isOverlapping(selectedShape, cursorOverShape)
     ) {
-      const arrowProps: ArrowProps = {
-        id: '',
-        fromShapeId: selectedShape.id,
-        toShapeId: cursorOverShape.id,
-        text: '',
-        playerId: '',
-        isSavedInDB: false,
-      };
-
-      return (
-        <TempPresentationalArrow {...arrowProps}></TempPresentationalArrow>
-      );
+      const props = ghostArrowProps(selectedShape, cursorOverShape);
+      return <TempPresentationalArrow {...props}></TempPresentationalArrow>;
     }
 
     if (
       playerCursor &&
       (cursorOver.type === 'background' || cursorOver.type === 'grouping_rect')
     ) {
-      const shape: Shape = {
-        type: 'rect',
-        x: playerCursor.x - RECT_WIDTH / 2,
-        y: playerCursor.y - RECT_HEIGHT / 2,
-        id: '',
-        text: '',
-        width: RECT_WIDTH,
-        height: RECT_HEIGHT,
-        createdAtZoomLevel: DEFAULT_ZOOM_LEVEL,
-        boardId: '',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        isDeleted: false,
-        translateX: 0,
-        translateY: 0,
-        deltaWidth: 0,
-        deltaHeight: 0,
-        isSavedInDB: false,
-      };
+      const rectProps = ghostRectProps(playerCursor.x, playerCursor.y);
+      if (!selectedShape) {
+        return <Rect {...rectProps}></Rect>;
+      }
 
-      const rectProps = {
-        shape: shape,
-        isDragging: false,
-        isMultiSelected: false,
-        isSelected: false,
-        onPointerDown: () => {},
-        onPointerOver: () => {},
-      };
-      return <Rect {...rectProps}></Rect>;
+      const arrowProps = ghostArrowProps(selectedShape, rectProps.shape);
+      return (
+        <>
+          <Rect {...rectProps}></Rect>;
+          <TempPresentationalArrow {...arrowProps}></TempPresentationalArrow>
+        </>
+      );
     }
     return <></>;
   }
@@ -91,3 +65,48 @@ const Ghosts: React.FC = () => {
 };
 
 export default Ghosts;
+
+function ghostArrowProps(fromShape: Shape, toShape: Shape) {
+  const arrowProps: ArrowProps = {
+    id: '',
+    fromShape: fromShape,
+    toShape: toShape,
+    text: '',
+    playerId: '',
+    isSavedInDB: false,
+  };
+  return arrowProps;
+}
+
+function ghostRectProps(x: number, y: number) {
+  const shape: Shape = {
+    type: 'rect',
+    x: x - RECT_WIDTH / 2,
+    y: y - RECT_HEIGHT / 2,
+    id: '',
+    text: '',
+    width: RECT_WIDTH,
+    height: RECT_HEIGHT,
+    createdAtZoomLevel: DEFAULT_ZOOM_LEVEL,
+    boardId: '',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isDeleted: false,
+    translateX: 0,
+    translateY: 0,
+    deltaWidth: 0,
+    deltaHeight: 0,
+    isSavedInDB: false,
+  };
+
+  const shapeProps: ShapeTypeProps = {
+    shape: shape,
+    isDragging: false,
+    isMultiSelected: false,
+    isSelected: false,
+    onPointerDown: () => {},
+    onPointerOver: () => {},
+  };
+
+  return shapeProps;
+}

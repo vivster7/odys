@@ -25,28 +25,30 @@ export const save = createAsyncThunk(
     const arrows = drawings.filter((d) => instanceOfArrow(d)) as Arrow[];
     const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
 
-    // generated client missing support for bulk
-    let p1: Promise<OdysArrow[]>;
-    if (arrows.length) {
-      p1 = odysClient.request('POST', 'OdysArrow', {
+    let p1: Promise<OdysShape[]>;
+    if (shapes.length) {
+      p1 = odysClient.request('POST', 'OdysShape', {
         headerOpts: { mergeDuplicates: true },
-        body: arrows,
+        body: shapes,
       });
     } else {
       p1 = Promise.resolve([]);
     }
 
-    let p2: Promise<OdysShape[]>;
-    if (shapes.length) {
-      p2 = odysClient.request('POST', 'OdysShape', {
+    // save shapes before arrows
+    await p1;
+
+    let p2: Promise<OdysArrow[]>;
+    if (arrows.length) {
+      p2 = odysClient.request('POST', 'OdysArrow', {
         headerOpts: { mergeDuplicates: true },
-        body: shapes,
+        body: arrows,
       });
     } else {
       p2 = Promise.resolve([]);
     }
 
-    await Promise.all([p1, p2]);
+    await p2;
   }
 );
 

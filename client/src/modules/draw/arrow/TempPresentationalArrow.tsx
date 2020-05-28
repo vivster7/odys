@@ -8,20 +8,19 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { addError } from 'modules/errors/errors.reducer';
-
 import { COLORS } from 'global/colors';
 import { selectDrawing } from '../draw.reducer';
 import { useSelector } from 'global/redux';
 import { setCursorOver } from 'modules/canvas/canvas.reducer';
 import { Player } from 'modules/players/players.reducer';
+import { Shape } from '../shape/shape.reducer';
 
 const TEXT_PADDING = 5;
 
 export interface ArrowProps {
   id: string;
-  fromShapeId: string;
-  toShapeId: string;
+  fromShape: Shape;
+  toShape: Shape;
   text: string;
   playerSelected?: Player;
   playerId: string;
@@ -31,8 +30,8 @@ export interface ArrowProps {
 const TempPresentationalArrow: React.FC<ArrowProps> = React.memo((props) => {
   const {
     id,
-    fromShapeId,
-    toShapeId,
+    fromShape,
+    toShape,
     text,
     playerId,
     playerSelected,
@@ -41,8 +40,8 @@ const TempPresentationalArrow: React.FC<ArrowProps> = React.memo((props) => {
   const dispatch = useDispatch();
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
-  const r1 = useSelector((s) => s.draw.shapes[fromShapeId]);
-  const r2 = useSelector((s) => s.draw.shapes[toShapeId]);
+  const r1 = fromShape;
+  const r2 = toShape;
 
   const isSelected = useSelector((s) => s.draw.select?.id === id);
 
@@ -51,15 +50,6 @@ const TempPresentationalArrow: React.FC<ArrowProps> = React.memo((props) => {
     : playerSelected
     ? playerSelected.color
     : COLORS.arrowDefault;
-
-  if (!r1) {
-    dispatch(addError(`[r1Arrow] Could not find shape$ ${fromShapeId}`));
-    return <></>;
-  }
-  if (!r2) {
-    dispatch(addError(`[r2Arrow] Could not find shape$ ${toShapeId}`));
-    return <></>;
-  }
 
   const fontSize = 12;
   const strokeWidth = 3;

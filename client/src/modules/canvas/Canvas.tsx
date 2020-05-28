@@ -15,7 +15,10 @@ import { useSelector } from 'global/redux';
 import { cursorWithinEpsilon } from 'global/cursor';
 import { wheelEnd, endPan, cleanCanvas, setCursorOver } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
-import { endNewRectByClick } from '../draw/shape/newRect.reducer';
+import {
+  endNewRectByClick,
+  endNewRectByClickWithArrow,
+} from '../draw/shape/newRect.reducer';
 import MultiSelect from '../draw/mixins/multiSelect/MultiSelect';
 import {
   zoomLeveltoScaleMap,
@@ -101,6 +104,7 @@ const Canvas: React.FC = () => {
 
   const isShiftPressed = useSelector((s) => s.keyboard.shiftKey);
   const isAltPressed = useSelector((s) => s.keyboard.altKey);
+  const selectedShapeId = useSelector((s) => s.draw.select?.id);
 
   const selectMode = isShiftPressed;
   const insertMode = isAltPressed;
@@ -218,7 +222,9 @@ const Canvas: React.FC = () => {
     dispatch(cancelSelect());
 
     if (e.altKey) {
-      dispatch(startNewRect({ clickX: e.clientX, clickY: e.clientY }));
+      dispatch(
+        startNewRect({ clickX: e.clientX, clickY: e.clientY, selectedShapeId })
+      );
     } else if (selectMode) {
       dispatch(
         startDragSelection({
@@ -247,19 +253,27 @@ const Canvas: React.FC = () => {
         canvasState.scale
       )
     ) {
-      dispatch(
-        endNewRectByClick({
-          playerId: playerId,
-          id: uuid.v4(),
-          clickX: e.clientX,
-          clickY: e.clientY,
-          canvasTopLeftX: canvasState.topLeftX,
-          canvasTopLeftY: canvasState.topLeftY,
-          canvasScale: canvasState.scale,
-          canvasZoomLevel: canvasState.zoomLevel,
-          boardId: boardId,
-        })
-      );
+      const newRectArgs = {
+        playerId: playerId,
+        id: uuid.v4(),
+        clickX: e.clientX,
+        clickY: e.clientY,
+        canvasTopLeftX: canvasState.topLeftX,
+        canvasTopLeftY: canvasState.topLeftY,
+        canvasScale: canvasState.scale,
+        canvasZoomLevel: canvasState.zoomLevel,
+        boardId: boardId,
+      };
+      if (newRect.selectedShapeId) {
+        const withArrowArgs = {
+          ...newRectArgs,
+          arrowId: uuid.v4(),
+          selectedShapeId: newRect.selectedShapeId,
+        };
+        dispatch(endNewRectByClickWithArrow(withArrowArgs));
+      } else {
+        dispatch(endNewRectByClick(newRectArgs));
+      }
     }
 
     if (dragState) {

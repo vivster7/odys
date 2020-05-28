@@ -38,6 +38,8 @@ import {
   startNewRectFn,
   endNewRectByDragFn,
   endNewRectByClickPending,
+  endNewRectByClickWithArrow,
+  endNewRectByClickWithArrowPending,
 } from 'modules/draw/shape/newRect.reducer';
 import {
   startDragSelectionFn,
@@ -263,6 +265,9 @@ const drawSlice = createSlice({
     [endNewRectByClick.pending as any]: endNewRectByClickPending,
     [endNewRectByClick.fulfilled as any]: (state, action) => {},
     [endNewRectByClick.rejected as any]: (state, action) => {},
+    [endNewRectByClickWithArrow.pending as any]: endNewRectByClickWithArrowPending,
+    [endNewRectByClickWithArrow.fulfilled as any]: (state, action) => {},
+    [endNewRectByClickWithArrow.rejected as any]: (state, action) => {},
     // delete
     [deleteDrawings.pending as any]: deleteDrawingsPending,
     [deleteDrawings.fulfilled as any]: (state, action) => {},
