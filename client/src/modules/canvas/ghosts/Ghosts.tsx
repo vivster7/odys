@@ -3,7 +3,10 @@ import Rect, { RECT_WIDTH, RECT_HEIGHT } from 'modules/draw/shape/type/Rect';
 import { useSelector } from 'global/redux';
 import { DEFAULT_ZOOM_LEVEL } from '../zoom/zoom.reducer';
 import { Shape } from 'modules/draw/shape/shape.reducer';
-import { Arrow } from 'modules/draw/arrow/arrow.reducer';
+import TempPresentationalArrow, {
+  ArrowProps,
+} from 'modules/draw/arrow/TempPresentationalArrow';
+import { isOverlapping } from 'math/box';
 
 const Ghosts: React.FC = () => {
   const playerId = useSelector((s) => s.players.self);
@@ -13,8 +16,11 @@ const Ghosts: React.FC = () => {
   const selectedShape = useSelector(
     (s) => !!s.draw.select?.id && s.draw.shapes[s.draw.select.id]
   );
-  const isAltPressed = useSelector((s) => s.keyboard.altKey);
   const cursorOver = useSelector((s) => s.canvas.cursorOver);
+  const cursorOverShape = useSelector(
+    (s) => s.canvas.cursorOver.id && s.draw.shapes[s.canvas.cursorOver.id]
+  );
+  const isAltPressed = useSelector((s) => s.keyboard.altKey);
   const isDragging = useSelector((s) => s.draw.drag !== null);
   const isResizing = useSelector((s) => s.draw.resize !== null);
 
@@ -24,25 +30,24 @@ const Ghosts: React.FC = () => {
     }
 
     if (
-      selectedShape &&
       (cursorOver.type === 'rect' || cursorOver.type === 'grouping_rect') &&
-      cursorOver.id
+      selectedShape &&
+      cursorOverShape &&
+      selectedShape.id !== cursorOver.id &&
+      !isOverlapping(selectedShape, cursorOverShape)
     ) {
-      const arrow: Arrow = {
+      const arrowProps: ArrowProps = {
         id: '',
         fromShapeId: selectedShape.id,
-        toShapeId: cursorOver.id,
+        toShapeId: cursorOverShape.id,
         text: '',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        boardId: '',
-        isDeleted: false,
+        playerId: '',
         isSavedInDB: false,
       };
-      // TODO: convert Arrow to presentational component and then
-      // return an Arrow instance here
 
-      return <></>;
+      return (
+        <TempPresentationalArrow {...arrowProps}></TempPresentationalArrow>
+      );
     }
 
     if (
