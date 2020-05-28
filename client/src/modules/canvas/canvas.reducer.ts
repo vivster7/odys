@@ -15,6 +15,19 @@ export interface CanvasState {
   zoomLevel: number;
   pan: PanState | null;
   dirty: boolean;
+  // TODO: consider moving `cursorOver` state somewhere else
+  cursorOver: CursorOver;
+}
+
+type CursorOverType =
+  | 'background'
+  | 'rect'
+  | 'grouping_rect'
+  | 'text'
+  | 'arrow';
+interface CursorOver {
+  type: CursorOverType;
+  id?: string;
 }
 
 interface PanState {
@@ -45,6 +58,7 @@ const initialState: CanvasState = {
   zoomLevel: 5,
   pan: null,
   dirty: false,
+  cursorOver: { type: 'background' },
 };
 
 const canvasSlice = createSlice({
@@ -56,6 +70,9 @@ const canvasSlice = createSlice({
     endPan: endPanFn,
     dirtyCanvas: dirtyCanvasFn,
     cleanCanvas: cleanCanvasFn,
+    setCursorOver: (state, action: PayloadAction<CursorOver>) => {
+      state.cursorOver = action.payload;
+    },
   },
 });
 
@@ -65,6 +82,7 @@ export const {
   endPan,
   dirtyCanvas,
   cleanCanvas,
+  setCursorOver,
 } = canvasSlice.actions;
 const canvasReducer = canvasSlice.reducer;
 export default canvasReducer;
