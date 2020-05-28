@@ -61,14 +61,25 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
   const radiusSize = 2;
   const strokeWidth = 4;
   const selectedStrokeDashArray = 5;
-  const scaledStrokeDasharray = strokeDasharray;
+  const ghostStrokeDashArray = 5;
 
-  const selectColor =
+  const isGhost = id === '';
+
+  const borderColor =
     isSelected || isMultiSelected
       ? COLORS.select
       : playerSelected
       ? playerSelected.color
+      : isGhost
+      ? COLORS.ghost
       : strokeColor;
+
+  const borderStrokeDash =
+    isSelected || isMultiSelected
+      ? selectedStrokeDashArray + 'px'
+      : isGhost
+      ? ghostStrokeDashArray + 'px'
+      : strokeDasharray + 'px';
 
   if (!shape) return <></>;
   return (
@@ -87,13 +98,9 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         ry={radiusSize + 'px'}
         fill={fill}
         fillOpacity={fillOpacity}
-        stroke={selectColor}
+        stroke={borderColor}
         strokeWidth={strokeWidth + 'px'}
-        strokeDasharray={
-          isSelected || isMultiSelected
-            ? selectedStrokeDashArray + 'px'
-            : scaledStrokeDasharray + 'px'
-        }
+        strokeDasharray={borderStrokeDash}
       ></rect>
       <TextBlock
         isSelected={isSelected}
@@ -103,7 +110,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         text={text}
         createdAtZoomLevel={createdAtZoomLevel}
       />
-      {(isSelected || isMultiSelected) && (
+      {(isSelected || isMultiSelected || isGhost) && (
         <SelectionCircles
           id={id}
           createdAtZoomLevel={createdAtZoomLevel}

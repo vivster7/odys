@@ -31,6 +31,7 @@ export const COLORS = {
   cockpitUnselectedBg: WHITE_WHITE_WHITE,
   cockpitSelectedBg: PEACE,
   dropShadow: PEACE,
+  ghost: PEACE,
 };
 
 const BRUSCHETTA_TOMATO = '#ff6348';
