@@ -9,7 +9,6 @@ import { GroupingRect, Rect } from './shape.reducer';
 import { save } from '../mixins/save/save.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import { DEFAULT_ZOOM_LEVEL } from 'modules/canvas/zoom/zoom.reducer';
-import { cursorWithinEpsilon } from 'global/cursor';
 
 export interface NewRectState {
   clickX: number;
