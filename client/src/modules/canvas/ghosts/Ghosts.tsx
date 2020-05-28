@@ -26,7 +26,7 @@ const Ghosts: React.FC = () => {
   const isResizing = useSelector((s) => s.draw.resize !== null);
 
   function getGhost() {
-    if (!isAltPressed || isResizing || isDragging) {
+    if (!isAltPressed || isResizing || isDragging || !playerCursor) {
       return <></>;
     }
 
@@ -41,15 +41,17 @@ const Ghosts: React.FC = () => {
       return <TempPresentationalArrow {...props}></TempPresentationalArrow>;
     }
 
+    const rectProps = ghostRectProps(playerCursor.x, playerCursor.y);
     if (
-      playerCursor &&
-      (cursorOver.type === 'background' || cursorOver.type === 'grouping_rect')
+      (cursorOver.type === 'background' ||
+        cursorOver.type === 'grouping_rect') &&
+      (!selectedShape ||
+        (selectedShape && isOverlapping(selectedShape, rectProps.shape)))
     ) {
-      const rectProps = ghostRectProps(playerCursor.x, playerCursor.y);
-      if (!selectedShape) {
-        return <Rect {...rectProps}></Rect>;
-      }
+      return <Rect {...rectProps}></Rect>;
+    }
 
+    if (selectedShape) {
       const arrowProps = ghostArrowProps(selectedShape, rectProps.shape);
       return (
         <>
