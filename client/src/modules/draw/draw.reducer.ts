@@ -87,7 +87,7 @@ import {
   cutFulfilled,
 } from './mixins/copypaste/copypaste.reducer';
 import { RootState } from 'App';
-import { uniq } from 'lodash';
+import { uniq, compact } from 'lodash';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type ActionPending<T = void> = {
@@ -306,7 +306,8 @@ const drawSlice = createSlice({
         if (drawDiff.drawOrder) {
           jdp.patch(state.drawOrder, drawDiff.drawOrder);
           // BUG: patch can add a duplicate
-          state.drawOrder = uniq(state.drawOrder);
+          // BUG: patch can add `null`
+          state.drawOrder = compact(uniq(state.drawOrder));
         }
       }
     },
