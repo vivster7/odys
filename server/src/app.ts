@@ -60,7 +60,7 @@ io.on('connection', (socket: socket.Socket) => {
   socket.join(roomId);
 
   const broadcastToRoom = (eventName: string, data: any) => {
-    console.log(`broadcast to room ${roomId}: ${eventName}`);
+    // console.log(`broadcast to room ${roomId}: ${eventName}`);
     socket.to(roomId).broadcast.emit(eventName, data);
   };
 
