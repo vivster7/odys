@@ -47,7 +47,7 @@ const syncBlacklist = new Set([
   'newRect',
   'timetravel',
   'copyPaste',
-  // players
+  'players',
   'self',
 ]);
 
@@ -62,11 +62,14 @@ const syncEnhancer: StoreEnhancer = (createStore) => (
 ) => {
   const syncedRootReducer = (state: any, action: any) => {
     const newState = reducer(state, action);
-    const diff = diffPatch.diff(state, newState);
 
-    if (action.type !== 'global/syncState' && diff) {
-      emitEvent('updatedState', diff);
+    if (action.type.startsWith('draw/')) {
+      const diff = diffPatch.diff(state, newState);
+      if (diff) {
+        emitEvent('updatedState', diff);
+      }
     }
+
     return newState;
   };
 

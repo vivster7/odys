@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Cursor } from 'modules/canvas/cursor/cursor';
+import { Cursor, translateCursorPosition } from 'modules/canvas/cursor/cursor';
 import { COLORS } from 'global/colors';
-import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
-import { syncCursor } from 'modules/players/players.reducer';
-import { OdysDispatch } from 'App';
+import { useDebounce } from 'global/debounce';
+import { useCursorMovedEmitter } from 'modules/players/mixins/cursor/cursor.reducer';
 
 interface PositionDisplayProps {
   topLeftX: number;
@@ -13,8 +12,6 @@ interface PositionDisplayProps {
 }
 
 function onPointerMove(
-  dispatch: OdysDispatch,
-  playerId: string,
   topLeftX: number,
   topLeftY: number,
   scale: number,
@@ -22,31 +19,31 @@ function onPointerMove(
 ) {
   return (e: PointerEvent) => {
     e.preventDefault();
-    const x = (e.clientX - topLeftX) / scale;
-    const y = (e.clientY - topLeftY) / scale;
+    const { x, y } = translateCursorPosition(
+      e.clientX,
+      e.clientY,
+      topLeftX,
+      topLeftY,
+      scale
+    );
     setCursor({ x, y });
-    dispatch(syncCursor({ id: playerId, cursor: { x, y } }));
+    dispatch(setCursorPosition({ x, y }));
   };
 }
 
 const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
   const dispatch = useDispatch();
-  const playerId = useSelector((s) => s.players.self);
   const [cursor, setCursor] = useState<Cursor>({ x: 0, y: 0 });
   const { topLeftX, topLeftY, scale } = props;
 
   useEffect(() => {
-    const pointerMoveFn = onPointerMove(
-      dispatch,
-      playerId,
-      topLeftX,
-      topLeftY,
-      scale,
-      setCursor
-    );
+    const pointerMoveFn = onPointerMove(topLeftX, topLeftY, scale, setCursor);
     window.addEventListener('pointermove', pointerMoveFn);
     return () => window.removeEventListener('pointermove', pointerMoveFn);
-  }, [dispatch, playerId, topLeftX, topLeftY, scale]);
+  }, [topLeftX, topLeftY, scale]);
+
+  const debouncedCursor = useDebounce(cursor, 10);
+  useCursorMovedEmitter(debouncedCursor);
 
   return (
     <div

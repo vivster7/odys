@@ -82,7 +82,11 @@ io.on('connection', (socket: socket.Socket) => {
     });
 
     socket.on('updatedState', (data) => {
-      socket.to(roomId).broadcast.emit('updatedState', data);
+      broadcastToRoom('updatedState', data);
+    });
+
+    socket.on('cursorMoved', (data) => {
+      broadcastToRoom('cursorMoved', data);
     });
   };
 

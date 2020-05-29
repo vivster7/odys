@@ -1,16 +1,11 @@
 import React from 'react';
 import { useSelector } from 'global/redux';
-import { isEmpty } from 'lodash';
 
 const Cursors: React.FC = () => {
   const players = useSelector((s) => s.players.players);
-  const playerId = useSelector((s) => s.players.self);
 
   function renderCursors() {
-    const playerCursors = Object.values(players)
-      .filter((p) => p.cursor)
-      .filter((p) => p.id !== playerId);
-    if (isEmpty(playerCursors)) return <></>;
+    const playerCursors = Object.values(players).filter((p) => p.cursor);
 
     return playerCursors.map((player) => (
       <use

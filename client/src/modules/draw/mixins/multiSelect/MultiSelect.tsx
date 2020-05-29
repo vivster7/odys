@@ -4,7 +4,10 @@ import { useSelector } from 'global/redux';
 import { COLORS } from 'global/colors';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { selectClickTarget } from 'modules/draw/draw.reducer';
-import { cursorWithinEpsilon } from 'global/cursor';
+import {
+  cursorWithinEpsilon,
+  translateCursorPosition,
+} from 'modules/canvas/cursor/cursor';
 
 interface MultiDragState {
   startX: number;
@@ -60,10 +63,17 @@ const MultiSelect: React.FC = () => {
           canvasScale
         )
       ) {
+        const { x, y } = translateCursorPosition(
+          e.clientX,
+          e.clientY,
+          canvasTopLeftX,
+          canvasTopLeftY,
+          canvasScale
+        );
         dispatch(
           selectClickTarget({
-            x: (e.clientX - canvasTopLeftX) / canvasScale,
-            y: (e.clientY - canvasTopLeftY) / canvasScale,
+            x: x,
+            y: y,
             shiftKey: e.shiftKey,
             playerId: playerId,
           })

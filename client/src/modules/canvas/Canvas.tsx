@@ -12,7 +12,6 @@ import {
 } from '../draw/draw.reducer';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
-import { cursorWithinEpsilon } from 'global/cursor';
 import { wheelEnd, endPan, cleanCanvas, setCursorOver } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
 import {
@@ -30,6 +29,7 @@ import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
 import * as uuid from 'uuid';
 import { COLORS } from 'global/colors';
 import Cursors from './cursor/Cursors';
+import { cursorWithinEpsilon } from './cursor/cursor';
 import Ghosts from './ghosts/Ghosts';
 
 const debouncedOnWheelEnd = debounce(

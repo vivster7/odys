@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { getOrCreateRoom } from './room.reducer';
 import { keydown } from 'modules/keyboard/keydown/keydown.reducer';
 import { usePlayerConnectionListeners } from 'modules/players/mixins/connection/connection.reducer';
+import { useCursorMovedListener } from 'modules/players/mixins/cursor/cursor.reducer';
 
 import { connect, registerSocketListener } from 'socket/socket';
 import { syncState } from 'App';
@@ -63,6 +64,7 @@ const Room: React.FC = () => {
   }, [dispatch, selfClientId]);
 
   usePlayerConnectionListeners(dispatch);
+  useCursorMovedListener(dispatch);
 
   return (
     <div

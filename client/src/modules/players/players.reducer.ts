@@ -4,9 +4,9 @@ import {
   disconnectPlayerFn,
   registerSelfFn,
 } from './mixins/connection/connection.reducer';
-import { syncCursorFn } from './mixins/cursor/cursor.reducer';
-import { Cursor } from 'modules/canvas/cursor/cursor';
 import { syncStateFn } from './mixins/sync/sync.reducer';
+import { syncCursorFn } from './mixins/cursor/sync.reducer';
+import { Cursor } from 'modules/canvas/cursor/cursor';
 
 export type PlayersReducer<T = void> = CaseReducer<
   PlayersState,
