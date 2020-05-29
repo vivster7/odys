@@ -257,7 +257,7 @@ const Canvas: React.FC = () => {
         canvasZoomLevel: canvasState.zoomLevel,
         boardId: boardId,
         arrowId: uuid.v4(),
-        selectedShapeId,
+        selectedShapeId: newRect.selectedShapeId,
       };
       dispatch(endNewRectByClick(newRectArgs));
     }
