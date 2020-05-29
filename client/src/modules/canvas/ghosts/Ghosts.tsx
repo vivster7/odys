@@ -48,7 +48,7 @@ const Ghosts: React.FC = () => {
       return <Rect {...rectProps}></Rect>;
     }
 
-    if (selectedShape) {
+    if (selectedShape && selectedShape.id !== cursorOver.id) {
       const arrowProps = ghostArrowProps(selectedShape, rectProps.shape);
       return (
         <>
