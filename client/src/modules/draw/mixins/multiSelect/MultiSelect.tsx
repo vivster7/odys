@@ -26,7 +26,6 @@ const MultiSelect: React.FC = () => {
     s.canvas.topLeftX,
     s.canvas.topLeftY,
   ]);
-  const cursorOver = useSelector((s) => s.canvas.cursorOver);
   const borderPadding = 20 / canvasScale;
   const dashArray = 5 / canvasScale;
   const borderWidth = 2 / canvasScale;
