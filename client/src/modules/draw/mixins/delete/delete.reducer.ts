@@ -24,14 +24,13 @@ export const deleteDrawings = createAsyncThunk(
 
 interface DeleteDrawings {
   ids: string[];
-  playerId: string;
 }
 
 export const deleteDrawingsPending: DrawActionPending<DeleteDrawings> = (
   state,
   action
 ) => {
-  const { ids, playerId } = action.meta.arg;
+  const { ids } = action.meta.arg;
   const drawings = getDrawings(state, ids).concat(
     getConnectedArrows(state, ids)
   );
@@ -44,7 +43,7 @@ export const deleteDrawingsPending: DrawActionPending<DeleteDrawings> = (
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: snapshots },
+    arg: { drawings: snapshots },
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',

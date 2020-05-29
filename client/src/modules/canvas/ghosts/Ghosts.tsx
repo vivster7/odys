@@ -74,7 +74,6 @@ function ghostArrowProps(fromShape: Shape, toShape: Shape) {
     fromShape: fromShape,
     toShape: toShape,
     text: '',
-    playerId: '',
     isSavedInDB: false,
   };
   return arrowProps;

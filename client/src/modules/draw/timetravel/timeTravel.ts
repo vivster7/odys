@@ -42,7 +42,6 @@ export const safeUpdateDrawings = createAsyncThunk(
 );
 
 interface SafeUpdateDrawings {
-  playerId: string;
   drawings: Drawing[];
 }
 
@@ -50,7 +49,6 @@ export const safeUpdateDrawingsPending: DrawActionPending<SafeUpdateDrawings> = 
   state,
   action
 ) => {
-  const playerId = action.meta.arg.playerId;
   const updates: Drawing[] = action.meta.arg.drawings;
   const drawings = updates.map((update) => {
     const existing: Drawing =
@@ -66,7 +64,7 @@ export const safeUpdateDrawingsPending: DrawActionPending<SafeUpdateDrawings> = 
     }
   });
   reorder(drawings, state);
-  applySelect(state, drawings, playerId);
+  applySelect(state, drawings);
 };
 
 // just like draw/deleteDrawing, except this will NEVER update the undo/redo buffer

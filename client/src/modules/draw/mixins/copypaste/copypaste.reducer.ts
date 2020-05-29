@@ -55,7 +55,7 @@ export const copyFn: DrawReducer = (state, action) => {
 
 export const paste = createAsyncThunk(
   'draw/paste',
-  async (arg: string, thunkAPI) => {
+  async (arg: undefined, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     if (state.draw.copyPaste.pasted.length > 0) {
       thunkAPI.dispatch(save(state.draw.copyPaste.pasted));
@@ -63,12 +63,11 @@ export const paste = createAsyncThunk(
   }
 );
 
-export const pastePending: DrawActionPending<string> = (state, action) => {
+export const pastePending: DrawActionPending = (state, action) => {
   if (state.copyPaste.copied.length === 0) return;
   // TODO: Dont paste is clipboard buffer doesn't match state.copyPaste.copied
   // this means they hit ctrl+c somewhere else. Instead we should clear our copied.
 
-  const playerId = action.meta.arg;
   const { copied, numTimesPasted, isCut } = state.copyPaste;
 
   const drawings = getDrawings(state, copied);
@@ -92,7 +91,7 @@ export const pastePending: DrawActionPending<string> = (state, action) => {
 
   const pasted: Drawing[] = [...clonedShapes, ...clonedArrows];
   reorder(pasted, state);
-  applySelect(state, pasted, playerId);
+  applySelect(state, pasted);
 
   state.copyPaste.numTimesPasted += 1;
   state.copyPaste.pasted = pasted.map((p) => p.id);
@@ -103,7 +102,7 @@ export const pastePending: DrawActionPending<string> = (state, action) => {
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: pasted },
+    arg: { drawings: pasted },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
@@ -115,11 +114,8 @@ export const pasteFulfilled: DrawActionFulfilled = (state, action) => {
 
 export const cut = createAsyncThunk('draw/cut', async (arg: void, thunkAPI) => {
   const state = thunkAPI.getState() as RootState;
-  const playerId = state.players.self;
   if (state.draw.copyPaste.cut.length > 0) {
-    thunkAPI.dispatch(
-      deleteDrawings({ ids: state.draw.copyPaste.cut, playerId })
-    );
+    thunkAPI.dispatch(deleteDrawings({ ids: state.draw.copyPaste.cut }));
   }
 });
 

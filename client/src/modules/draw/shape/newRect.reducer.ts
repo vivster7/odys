@@ -26,7 +26,6 @@ export const startNewRectFn: DrawReducer<NewRectState> = (state, action) => {
 };
 
 export interface NewRect {
-  playerId: string;
   id: string;
   clickX: number;
   clickY: number;
@@ -57,7 +56,6 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   }
 
   const {
-    playerId,
     id,
     clickX,
     clickY,
@@ -100,7 +98,6 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
 
   state.select = {
     id: rect.id,
-    playerId: playerId,
   };
 
   const undo: TimeTravelSafeAction = {
@@ -109,7 +106,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRect> = (
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: [rect] },
+    arg: { drawings: [rect] },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
@@ -206,7 +203,6 @@ export const endNewRectByClickWithArrowPending: DrawActionPending<NewRectWithArr
   }
 
   const {
-    playerId,
     id,
     clickX,
     clickY,
@@ -251,7 +247,6 @@ export const endNewRectByClickWithArrowPending: DrawActionPending<NewRectWithArr
 
   state.select = {
     id: rect.id,
-    playerId: playerId,
   };
 
   const arrow: Arrow = {
@@ -275,7 +270,7 @@ export const endNewRectByClickWithArrowPending: DrawActionPending<NewRectWithArr
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: [rect, arrow] },
+    arg: { drawings: [rect, arrow] },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

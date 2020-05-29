@@ -10,8 +10,6 @@ import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import Point from 'math/point';
 
 export interface MultiSelectState {
-  playerId: string;
-
   // origin where selectionRect begins
   origin: Point | null;
 
@@ -26,7 +24,6 @@ export interface MultiSelectState {
 }
 
 interface StartDragSelection {
-  playerId: string;
   x: number;
   y: number;
   canvasTopLeftX: number;
@@ -38,18 +35,10 @@ export const startDragSelectionFn: DrawReducer<StartDragSelection> = (
   state,
   action
 ) => {
-  const {
-    playerId,
-    x,
-    y,
-    canvasTopLeftX,
-    canvasTopLeftY,
-    canvasScale,
-  } = action.payload;
+  const { x, y, canvasTopLeftX, canvasTopLeftY, canvasScale } = action.payload;
   const scaledX = (x - canvasTopLeftX) / canvasScale;
   const scaledY = (y - canvasTopLeftY) / canvasScale;
   state.multiSelect = {
-    playerId: playerId,
     origin: {
       x: scaledX,
       y: scaledY,
@@ -131,28 +120,25 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
   state.multiSelect.selectedShapeIds = Object.fromEntries(selectedShapeIds);
 };
 
-export const endDragSelectionFn: DrawReducer<string> = (state, action) => {
+export const endDragSelectionFn: DrawReducer = (state, action) => {
   if (!state.multiSelect || !state.multiSelect.selectionRect)
     throw new Error(
       `draw/startDragSelection must be called before draw/endDragSelection`
     );
 
-  const playerId = action.payload;
   state.multiSelect.selectionRect = null;
   const { selectedShapeIds } = state.multiSelect;
 
   const shapes = Object.keys(selectedShapeIds).map((id) => state.shapes[id]);
-  applySelect(state, shapes, playerId);
+  applySelect(state, shapes);
 };
 
 export const selectAllFn: DrawReducer<string> = (state, action) => {
-  const playerId = action.payload;
   const shapeIds = Object.keys(state.shapes);
   const shapes = Object.values(state.shapes).filter((s) => !s.isDeleted);
 
   state.select = null;
   state.multiSelect = {
-    playerId: playerId,
     origin: null,
     selectionRect: null,
     selectedShapeIds: Object.fromEntries(shapeIds.map((id) => [id, true])),
@@ -160,26 +146,21 @@ export const selectAllFn: DrawReducer<string> = (state, action) => {
   };
 };
 
-export const applySelect = (
-  state: DrawState,
-  drawings: Drawing[],
-  playerId: string
-) => {
+export const applySelect = (state: DrawState, drawings: Drawing[]) => {
   const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
   if (drawings.length === 0) {
     state.select = null;
     state.multiSelect = null;
   } else if (drawings.length === 1) {
-    state.select = { playerId, id: drawings[0].id };
+    state.select = { id: drawings[0].id };
     state.multiSelect = null;
   } else if (shapes.length === 1) {
-    state.select = { playerId, id: shapes[0].id };
+    state.select = { id: shapes[0].id };
     state.multiSelect = null;
   } else {
     state.select = null;
     const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
     state.multiSelect = {
-      playerId,
       origin: null,
       selectionRect: null,
       selectedShapeIds: Object.fromEntries(shapes.map((s) => [s.id, true])),
@@ -215,8 +196,7 @@ function getSelectedIdSet(state: DrawState): Set<string> {
 export function applySelectOrDeselect(
   state: DrawState,
   id: string,
-  shiftKey: boolean,
-  playerId: string
+  shiftKey: boolean
 ) {
   let ids: Set<string> = new Set([id]);
   if (shiftKey) {
@@ -230,6 +210,6 @@ export function applySelectOrDeselect(
   }
 
   const drawings = getDrawings(state, Array.from(ids));
-  applySelect(state, drawings, playerId);
+  applySelect(state, drawings);
   reorder(drawings, state);
 }

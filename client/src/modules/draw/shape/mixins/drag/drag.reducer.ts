@@ -63,7 +63,6 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
 };
 
 interface EndDrag {
-  playerId: string;
   ids: string[];
   translateX: number;
   translateY: number;
@@ -85,7 +84,7 @@ export const endDrag = createAsyncThunk(
 export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   state.drag = null;
 
-  const { playerId, ids, translateX, translateY } = action.meta.arg;
+  const { ids, translateX, translateY } = action.meta.arg;
   const hasMoved = translateX !== 0 || translateY !== 0;
   if (!hasMoved) {
     return;
@@ -117,12 +116,11 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: shapeSnapshots },
+    arg: { drawings: shapeSnapshots },
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
     arg: {
-      playerId: playerId,
       drawings: shapes.map((s) => Object.assign({}, s)),
     },
   };

@@ -4,14 +4,12 @@ import { DrawReducer } from 'modules/draw/draw.reducer';
 import { applySelectOrDeselect } from '../multiSelect/multiSelect.reducer';
 
 export interface SelectedState {
-  playerId: string;
   id: string;
 }
 
 export interface SelectedDrawing {
   id: string;
   shiftKey: boolean;
-  playerId: string;
 }
 
 export interface Selectable {
@@ -22,29 +20,28 @@ export const selectDrawingFn: DrawReducer<SelectedDrawing> = (
   state,
   action
 ) => {
-  const { id, shiftKey, playerId } = action.payload;
-  applySelectOrDeselect(state, id, shiftKey, playerId);
+  const { id, shiftKey } = action.payload;
+  applySelectOrDeselect(state, id, shiftKey);
 };
 
 interface ClickPosition {
   x: number;
   y: number;
   shiftKey: boolean;
-  playerId: string;
 }
 
 export const selectClickTargetFn: DrawReducer<ClickPosition> = (
   state,
   action
 ) => {
-  const { x, y, shiftKey, playerId } = action.payload;
+  const { x, y, shiftKey } = action.payload;
 
   const clickTargetId = findLast(state.drawOrder, (id) =>
     state.shapes[id] ? isWithinBounds(x, y, state.shapes[id]) : false
   );
 
   if (clickTargetId) {
-    applySelectOrDeselect(state, clickTargetId, shiftKey, playerId);
+    applySelectOrDeselect(state, clickTargetId, shiftKey);
   }
 };
 

@@ -50,7 +50,6 @@ export const fetchArrowsFulfilled = (
 };
 
 interface DrawArrow {
-  playerId: string;
   id: string;
   fromShapeId: string;
   toShapeId: string;
@@ -73,7 +72,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   state,
   action
 ) => {
-  const { playerId, id, fromShapeId, toShapeId, boardId } = action.meta.arg;
+  const { id, fromShapeId, toShapeId, boardId } = action.meta.arg;
 
   // cannot draw arrow to self.
   if (fromShapeId === toShapeId) {
@@ -121,7 +120,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: [arrow] },
+    arg: { drawings: [arrow] },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

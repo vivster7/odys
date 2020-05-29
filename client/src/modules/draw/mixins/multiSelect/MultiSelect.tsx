@@ -18,7 +18,6 @@ interface MultiDragState {
 
 const MultiSelect: React.FC = () => {
   const dispatch = useDispatch();
-  const playerId = useSelector((s) => s.players.self);
   const selectedShapeIds = useSelector(
     (s) => s.draw.multiSelect?.selectedShapeIds
   );
@@ -75,13 +74,11 @@ const MultiSelect: React.FC = () => {
             x: x,
             y: y,
             shiftKey: e.shiftKey,
-            playerId: playerId,
           })
         );
       } else {
         dispatch(
           endDrag({
-            playerId,
             ids: Object.keys(selectedShapeIds),
             translateX: multiDrag.x,
             translateY: multiDrag.y,

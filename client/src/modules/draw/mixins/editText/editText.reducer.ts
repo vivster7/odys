@@ -54,14 +54,13 @@ export const endEditText = createAsyncThunk(
 
 interface EndEditText {
   id: string;
-  playerId: string;
 }
 
 export const endEditTextPending: DrawActionPending<EndEditText> = (
   state,
   action
 ) => {
-  const { id, playerId } = action.meta.arg;
+  const { id } = action.meta.arg;
   const drawing = getDrawing(state, id);
 
   const snapshot = { ...drawing, text: state.editText.startingText };
@@ -69,11 +68,11 @@ export const endEditTextPending: DrawActionPending<EndEditText> = (
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: [snapshot] },
+    arg: { drawings: [snapshot] },
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: [drawing] },
+    arg: { drawings: [drawing] },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

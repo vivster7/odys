@@ -187,7 +187,6 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
 
 interface EndResize {
   id: string;
-  playerId: string;
 }
 
 // endResize saves the optimistic update to the DB.
@@ -209,7 +208,7 @@ export const endResizePending: DrawActionPending<EndResize> = (
     );
   }
 
-  const { id, playerId } = action.meta.arg;
+  const { id } = action.meta.arg;
   const { isNewRect } = state.resize;
   if (!state.shapes[id]) {
     throw new Error(`Cannot find shape with ${id}`);
@@ -239,18 +238,18 @@ export const endResizePending: DrawActionPending<EndResize> = (
   state.resize = null;
 
   if (isNewRect) {
-    state.select = { id: id, playerId: playerId };
+    state.select = { id: id };
   }
 
   const undo: TimeTravelSafeAction = isNewRect
     ? { actionCreatorName: 'safeDeleteDrawings', arg: [id] }
     : {
         actionCreatorName: 'safeUpdateDrawings',
-        arg: { playerId: playerId, drawings: [snapshot] },
+        arg: { drawings: [snapshot] },
       };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { playerId: playerId, drawings: [shape] },
+    arg: { drawings: [shape] },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];

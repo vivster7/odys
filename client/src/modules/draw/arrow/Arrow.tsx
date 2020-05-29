@@ -16,7 +16,6 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const dispatch = useDispatch();
 
   const arrow = useSelector((s) => s.draw.arrows[id]);
-  const playerId = useSelector((s) => s.players.self);
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = useSelector((s) => s.draw.shapes[arrow.fromShapeId]);
@@ -129,7 +128,7 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   function handlePointerDown(e: React.PointerEvent) {
     e.stopPropagation();
     e.preventDefault();
-    dispatch(selectDrawing({ id, shiftKey: e.shiftKey, playerId: playerId }));
+    dispatch(selectDrawing({ id, shiftKey: e.shiftKey }));
   }
 
   function handlePointerOver(e: React.PointerEvent) {

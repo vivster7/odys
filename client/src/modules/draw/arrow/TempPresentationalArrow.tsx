@@ -23,20 +23,11 @@ export interface ArrowProps {
   toShape: Shape;
   text: string;
   playerSelected?: Player;
-  playerId: string;
   isSavedInDB: boolean;
 }
 
 const TempPresentationalArrow: React.FC<ArrowProps> = React.memo((props) => {
-  const {
-    id,
-    fromShape,
-    toShape,
-    text,
-    playerId,
-    playerSelected,
-    isSavedInDB,
-  } = props;
+  const { id, fromShape, toShape, text, playerSelected, isSavedInDB } = props;
   const dispatch = useDispatch();
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
@@ -137,7 +128,7 @@ const TempPresentationalArrow: React.FC<ArrowProps> = React.memo((props) => {
   function handlePointerDown(e: React.PointerEvent) {
     e.stopPropagation();
     e.preventDefault();
-    dispatch(selectDrawing({ id, shiftKey: e.shiftKey, playerId: playerId }));
+    dispatch(selectDrawing({ id, shiftKey: e.shiftKey }));
   }
 
   function handlePointerOver(e: React.PointerEvent) {

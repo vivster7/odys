@@ -90,7 +90,6 @@ interface PanState {
 const Canvas: React.FC = () => {
   const dispatch = useDispatch();
 
-  const playerId = useSelector((s) => s.players.self);
   const boardId = useSelector((s) => s.board.id);
   const dragState = useSelector((s) => s.draw.drag);
   const isMultiSelecting = useSelector(
@@ -164,7 +163,6 @@ const Canvas: React.FC = () => {
     ) {
       dispatch(
         endNewRectByDrag({
-          playerId: playerId,
           id: uuid.v4(),
           clickX: e.clientX,
           clickY: e.clientY,
@@ -228,7 +226,6 @@ const Canvas: React.FC = () => {
     } else if (selectMode) {
       dispatch(
         startDragSelection({
-          playerId: playerId,
           x: e.clientX,
           y: e.clientY,
           canvasTopLeftX: topLeftX,
@@ -254,7 +251,6 @@ const Canvas: React.FC = () => {
       )
     ) {
       const newRectArgs = {
-        playerId: playerId,
         id: uuid.v4(),
         clickX: e.clientX,
         clickY: e.clientY,
@@ -279,7 +275,6 @@ const Canvas: React.FC = () => {
     if (dragState) {
       dispatch(
         endDrag({
-          playerId,
           ids: dragState.encompassedIds.concat([dragState.id]),
           translateX: (e.clientX - dragState.clickX) / canvasState.scale,
           translateY: (e.clientY - dragState.clickY) / canvasState.scale,
@@ -288,7 +283,7 @@ const Canvas: React.FC = () => {
     }
 
     if (isMultiSelecting) {
-      dispatch(endDragSelection(playerId));
+      dispatch(endDragSelection());
     }
 
     if (pan !== null) {
@@ -303,7 +298,7 @@ const Canvas: React.FC = () => {
     }
 
     if (resizingId) {
-      dispatch(endResize({ id: resizingId, playerId }));
+      dispatch(endResize({ id: resizingId }));
     }
   }
 

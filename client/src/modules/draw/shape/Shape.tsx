@@ -32,7 +32,6 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   const { id, playerSelected } = props;
   const dispatch = useDispatch();
 
-  const playerId = useSelector((s) => s.players.self);
   const board = useSelector((s) => s.board);
   const shape = useSelector((s) => s.draw.shapes[id]);
   const isDragging = useSelector((s) => s.draw.drag?.id === id);
@@ -60,7 +59,6 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     ) {
       dispatch(
         drawArrow({
-          playerId: playerId,
           id: uuid.v4(),
           fromShapeId: selectedShape.id,
           toShapeId: id,
@@ -70,7 +68,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     } else if (e.altKey && onAltClick) {
       dispatch(onAltClick({ clickX: e.clientX, clickY: e.clientY }));
     } else {
-      dispatch(selectDrawing({ id, shiftKey: e.shiftKey, playerId: playerId }));
+      dispatch(selectDrawing({ id, shiftKey: e.shiftKey }));
       dispatch(
         startDrag({
           id: id,
