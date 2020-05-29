@@ -14,10 +14,7 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
 import { wheelEnd, endPan, cleanCanvas, setCursorOver } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
-import {
-  endNewRectByClick,
-  endNewRectByClickWithArrow,
-} from '../draw/shape/newRect.reducer';
+import { endNewRectByClick } from '../draw/shape/newRect.reducer';
 import MultiSelect from '../draw/mixins/multiSelect/MultiSelect';
 import {
   zoomLeveltoScaleMap,
@@ -259,17 +256,10 @@ const Canvas: React.FC = () => {
         canvasScale: canvasState.scale,
         canvasZoomLevel: canvasState.zoomLevel,
         boardId: boardId,
+        arrowId: uuid.v4(),
+        selectedShapeId,
       };
-      if (newRect.selectedShapeId) {
-        const withArrowArgs = {
-          ...newRectArgs,
-          arrowId: uuid.v4(),
-          selectedShapeId: newRect.selectedShapeId,
-        };
-        dispatch(endNewRectByClickWithArrow(withArrowArgs));
-      } else {
-        dispatch(endNewRectByClick(newRectArgs));
-      }
+      dispatch(endNewRectByClick(newRectArgs));
     }
 
     if (dragState) {
