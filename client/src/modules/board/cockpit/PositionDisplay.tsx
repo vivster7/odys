@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { Cursor, translateCursorPosition } from 'modules/canvas/cursor/cursor';
 import { COLORS } from 'global/colors';
-import { useSelector } from 'global/redux';
 import { useDebounce } from 'global/debounce';
-import { useCursorMovedEmitter } from 'modules/players/mixins/cursor/cursor.reducer';
+import { useCursorMovedEmitter } from 'modules/players/mixins/cursor/cursor';
+import { setCursorPosition } from 'modules/canvas/canvas.reducer';
+import { OdysDispatch } from 'App';
 
 interface PositionDisplayProps {
   topLeftX: number;
@@ -12,6 +14,7 @@ interface PositionDisplayProps {
 }
 
 function onPointerMove(
+  dispatch: OdysDispatch,
   topLeftX: number,
   topLeftY: number,
   scale: number,
@@ -37,10 +40,16 @@ const PositionDisplay: React.FC<PositionDisplayProps> = (props) => {
   const { topLeftX, topLeftY, scale } = props;
 
   useEffect(() => {
-    const pointerMoveFn = onPointerMove(topLeftX, topLeftY, scale, setCursor);
+    const pointerMoveFn = onPointerMove(
+      dispatch,
+      topLeftX,
+      topLeftY,
+      scale,
+      setCursor
+    );
     window.addEventListener('pointermove', pointerMoveFn);
     return () => window.removeEventListener('pointermove', pointerMoveFn);
-  }, [topLeftX, topLeftY, scale]);
+  }, [dispatch, topLeftX, topLeftY, scale]);
 
   const debouncedCursor = useDebounce(cursor, 10);
   useCursorMovedEmitter(debouncedCursor);

@@ -5,6 +5,7 @@ import {
   wheelEndFn,
 } from './zoom/zoom.reducer';
 import { endPanFn } from './pan/pan.reducer';
+import { Cursor } from './cursor/cursor';
 
 export interface CanvasState {
   topLeftX: number;
@@ -17,6 +18,7 @@ export interface CanvasState {
   dirty: boolean;
   // TODO: consider moving `cursorOver` state somewhere else
   cursorOver: CursorOver;
+  cursor?: Cursor;
 }
 
 type CursorOverType =
@@ -59,6 +61,7 @@ const initialState: CanvasState = {
   pan: null,
   dirty: false,
   cursorOver: { type: 'background' },
+  cursor: undefined,
 };
 
 const canvasSlice = createSlice({
@@ -73,6 +76,9 @@ const canvasSlice = createSlice({
     setCursorOver: (state, action: PayloadAction<CursorOver>) => {
       state.cursorOver = action.payload;
     },
+    setCursorPosition: (state, action: PayloadAction<Cursor>) => {
+      state.cursor = action.payload;
+    },
   },
 });
 
@@ -83,6 +89,7 @@ export const {
   dirtyCanvas,
   cleanCanvas,
   setCursorOver,
+  setCursorPosition,
 } = canvasSlice.actions;
 const canvasReducer = canvasSlice.reducer;
 export default canvasReducer;

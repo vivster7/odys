@@ -10,10 +10,7 @@ import { isOverlapping } from 'math/box';
 import { ShapeTypeProps } from 'modules/draw/shape/Shape';
 
 const Ghosts: React.FC = () => {
-  const playerId = useSelector((s) => s.players.self);
-  const playerCursor = useSelector(
-    (s) => s.players.players[playerId] && s.players.players[playerId].cursor
-  );
+  const cursorPosition = useSelector((s) => s.canvas.cursor);
   const selectedShape = useSelector(
     (s) => !!s.draw.select?.id && s.draw.shapes[s.draw.select.id]
   );
@@ -26,7 +23,7 @@ const Ghosts: React.FC = () => {
   const isResizing = useSelector((s) => s.draw.resize !== null);
 
   function getGhost() {
-    if (!isAltPressed || isResizing || isDragging || !playerCursor) {
+    if (!isAltPressed || isResizing || isDragging || !cursorPosition) {
       return <></>;
     }
 
@@ -41,7 +38,7 @@ const Ghosts: React.FC = () => {
       return <TempPresentationalArrow {...props}></TempPresentationalArrow>;
     }
 
-    const rectProps = ghostRectProps(playerCursor.x, playerCursor.y);
+    const rectProps = ghostRectProps(cursorPosition.x, cursorPosition.y);
     if (
       (cursorOver.type === 'background' ||
         cursorOver.type === 'grouping_rect') &&
