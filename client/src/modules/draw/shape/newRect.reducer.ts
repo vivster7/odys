@@ -45,8 +45,9 @@ export interface NewRectWithArrow extends NewRect {
 // endNewRectByClick saves the optimistic update to the DB.
 export const endNewRectByClick = createAsyncThunk(
   'draw/endNewRectByClick',
-  async ({ id }: NewRectWithArrow, thunkAPI) => {
-    thunkAPI.dispatch(save([id]));
+  async ({ id, arrowId, selectedShapeId }: NewRectWithArrow, thunkAPI) => {
+    const toSave = selectedShapeId === undefined ? [id] : [id, arrowId];
+    thunkAPI.dispatch(save(toSave));
   }
 );
 
