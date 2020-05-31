@@ -3,11 +3,10 @@ import Rect, { RECT_WIDTH, RECT_HEIGHT } from 'modules/draw/shape/type/Rect';
 import { useSelector } from 'global/redux';
 import { DEFAULT_ZOOM_LEVEL } from '../zoom/zoom.reducer';
 import { Shape } from 'modules/draw/shape/shape.reducer';
-import TempPresentationalArrow, {
-  ArrowProps,
-} from 'modules/draw/arrow/TempPresentationalArrow';
+import { Path, ArrowTypeProps } from 'modules/draw/arrow/Arrow';
 import { isOverlapping } from 'math/box';
 import { ShapeTypeProps } from 'modules/draw/shape/Shape';
+import { COLORS } from 'global/colors';
 
 const Ghosts: React.FC = () => {
   const cursorPosition = useSelector((s) => s.canvas.cursor);
@@ -35,7 +34,7 @@ const Ghosts: React.FC = () => {
       !isOverlapping(selectedShape, cursorOverShape)
     ) {
       const props = ghostArrowProps(selectedShape, cursorOverShape);
-      return <TempPresentationalArrow {...props}></TempPresentationalArrow>;
+      return <Path {...props}></Path>;
     }
 
     const rectProps = ghostRectProps(cursorPosition.x, cursorPosition.y);
@@ -52,8 +51,7 @@ const Ghosts: React.FC = () => {
       const arrowProps = ghostArrowProps(selectedShape, rectProps.shape);
       return (
         <>
-          <Rect {...rectProps}></Rect>;
-          <TempPresentationalArrow {...arrowProps}></TempPresentationalArrow>
+          <Rect {...rectProps}></Rect>;<Path {...arrowProps}></Path>
         </>
       );
     }
@@ -66,12 +64,12 @@ const Ghosts: React.FC = () => {
 export default Ghosts;
 
 function ghostArrowProps(fromShape: Shape, toShape: Shape) {
-  const arrowProps: ArrowProps = {
+  const arrowProps: ArrowTypeProps = {
     id: '',
     fromShape: fromShape,
     toShape: toShape,
     text: '',
-    isSavedInDB: false,
+    color: COLORS.ghost,
   };
   return arrowProps;
 }
