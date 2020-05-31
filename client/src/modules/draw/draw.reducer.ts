@@ -46,7 +46,6 @@ import {
   selectAllFn,
 } from 'modules/draw/mixins/multiSelect/multiSelect.reducer';
 import {
-  editTextFn,
   endEditText,
   endEditTextPending,
   EditTextState,
@@ -238,7 +237,6 @@ const drawSlice = createSlice({
     updateDrawing: updateDrawingFn,
     // editText
     startEditText: startEditTextFn,
-    editText: editTextFn,
     // select
     cancelSelect: cancelSelectFn,
     selectClickTarget: selectClickTargetFn,
@@ -354,7 +352,6 @@ const drawSlice = createSlice({
 export const {
   updateDrawing,
   startEditText,
-  editText,
   selectDrawing,
   cancelSelect,
   startDrag,

@@ -14,9 +14,8 @@ export interface BaseShapeProps {
   fillOpacity: number;
   strokeColor: string;
   strokeDasharray: number;
-  textX: number;
-  textY: number;
   placeholderText?: string;
+  alignText: string;
   shape: Shape;
   isMultiSelected: boolean;
   isSelected: boolean;
@@ -33,9 +32,8 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     strokeColor,
     strokeDasharray,
     shape,
-    textX,
-    textY,
     placeholderText,
+    alignText,
     isMultiSelected,
     isSelected,
     playerSelected,
@@ -60,7 +58,6 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
 
   const transform = `translate(${x + translateX}, ${y + translateY})`;
 
-  const fontSize = 12;
   const radiusSize = 2;
   const strokeWidth = 4;
   const selectedStrokeDashArray = 5;
@@ -106,13 +103,14 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         strokeDasharray={borderStrokeDash}
       ></rect>
       <TextBlock
+        id={id}
         isSelected={isSelected}
-        x={textX}
-        y={textY}
-        fontSize={fontSize}
+        width={width + deltaWidth}
+        height={height + deltaHeight}
         text={text}
         placeholderText={placeholderText}
         createdAtZoomLevel={createdAtZoomLevel}
+        alignText={alignText}
       />
       {(isSelected || isMultiSelected || isGhost) && (
         <SelectionCircles

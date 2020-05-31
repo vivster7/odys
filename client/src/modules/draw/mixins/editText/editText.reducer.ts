@@ -26,45 +26,32 @@ export const startEditTextFn: DrawReducer = (state, action) => {
 
   state.editText = {
     startingText: drawing.text,
-    isEditing: false,
+    isEditing: true,
   };
-};
-
-export const editTextFn: DrawReducer<string> = (state, action) => {
-  const { select } = state;
-  if (!select) {
-    throw new Error(
-      `[draw/editText] Cannot edit text if a shape is not selected. draw/select should have fired first.`
-    );
-  }
-
-  const { id } = select;
-  const drawing = getDrawing(state, id);
-
-  drawing.text = action.payload;
-  state.editText.isEditing = true;
 };
 
 export const endEditText = createAsyncThunk(
   'draw/endEditText',
   async ({ id }: EndEditText, thunkAPI) => {
-    thunkAPI.dispatch(save([id]));
+    await thunkAPI.dispatch(save([id]));
   }
 );
 
 interface EndEditText {
   id: string;
+  text: string;
 }
 
 export const endEditTextPending: DrawActionPending<EndEditText> = (
   state,
   action
 ) => {
-  const { id } = action.meta.arg;
+  const { id, text } = action.meta.arg;
   const drawing = getDrawing(state, id);
 
   const snapshot = { ...drawing, text: state.editText.startingText };
   state.editText.startingText = drawing.text;
+  state.editText.isEditing = false;
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
@@ -76,4 +63,6 @@ export const endEditTextPending: DrawActionPending<EndEditText> = (
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
+
+  drawing.text = text;
 };

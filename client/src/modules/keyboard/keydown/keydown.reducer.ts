@@ -31,6 +31,7 @@ const LISTEN_KEYS = [
   'ShiftRight',
   'MetaLeft',
   'MetaRight',
+  'Enter',
 ];
 
 export const keydown = createAsyncThunk(
@@ -60,6 +61,12 @@ export const keydown = createAsyncThunk(
       }
     }
 
+    // if (e.code === 'Enter') {
+    //   if (select?.id && editText.isEditing === false) {
+    //     return dispatch(startEditText());
+    //   }
+    // }
+
     if (e.code === 'KeyC' && e.metaKey) {
       return dispatch(copy());
     }
@@ -70,7 +77,7 @@ export const keydown = createAsyncThunk(
       return dispatch(cut());
     }
 
-    if (e.code === 'Escape') {
+    if (e.code === 'Escape' && !editText.isEditing) {
       return dispatch(cancelSelect());
     }
 

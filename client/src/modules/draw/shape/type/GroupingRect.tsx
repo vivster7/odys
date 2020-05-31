@@ -14,9 +14,8 @@ const GroupingRect: React.FC<ShapeTypeProps> = (props) => {
   const fillOpacity = 0.15;
   const strokeDasharray = 0;
   const strokeColor = COLORS.groupingRectDefault;
-  const textX = (props.shape.width + props.shape.deltaWidth) / 2;
-  const textY = 0;
-  const placeholderText = 'Type to enter group name';
+  const alignText = 'top';
+  const placeholderText = 'Click to edit group name';
   const childProps = {
     ...props,
     cursor,
@@ -24,9 +23,8 @@ const GroupingRect: React.FC<ShapeTypeProps> = (props) => {
     fillOpacity,
     strokeColor,
     strokeDasharray,
-    textX,
-    textY,
     placeholderText,
+    alignText,
   };
   return <BaseShape {...childProps}></BaseShape>;
 };

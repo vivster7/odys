@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
 
-import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Canvas from 'modules/canvas/Canvas';
 import LandingPage from './landing/LandingPage';
@@ -52,9 +51,6 @@ const DrawingBoard: React.FC = () => {
     <>
       <Canvas></Canvas>
       <LandingPage></LandingPage>
-      <div style={{ opacity: 0, display: 'flex', flex: '0 0', height: '0px' }}>
-        <HiddenTextInput></HiddenTextInput>
-      </div>
       <div
         style={{
           position: 'absolute',
