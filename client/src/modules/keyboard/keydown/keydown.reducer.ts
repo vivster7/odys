@@ -25,6 +25,8 @@ const LISTEN_KEYS = [
   'AltRight',
   'ShiftLeft',
   'ShiftRight',
+  'MetaLeft',
+  'MetaRight',
 ];
 
 export const keydown = createAsyncThunk(
@@ -80,12 +82,17 @@ export const keydownPendingFn = (
   state: KeyboardState,
   action: ActionPending<KeyEvent>
 ) => {
-  const { code } = action.meta.arg;
+  const { code, metaKey } = action.meta.arg;
+
   if (code === 'AltLeft' || code === 'AltRight') {
     state.altKey = true;
   }
 
   if (code === 'ShiftLeft' || code === 'ShiftRight') {
     state.shiftKey = true;
+  }
+
+  if (metaKey) {
+    state.cmdKey = true;
   }
 };

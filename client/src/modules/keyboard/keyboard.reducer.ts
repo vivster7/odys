@@ -4,11 +4,13 @@ import { keydown, keydownPendingFn } from './keydown/keydown.reducer';
 export interface KeyboardState {
   altKey: boolean;
   shiftKey: boolean;
+  cmdKey: boolean;
 }
 
 const initialState: KeyboardState = {
   altKey: false,
   shiftKey: false,
+  cmdKey: false,
 };
 
 export interface KeyEvent {
@@ -22,9 +24,10 @@ const keyboardSlice = createSlice({
   initialState: initialState,
   reducers: {
     keyup: (state, action: PayloadAction<KeyEvent>) => {
-      const { code } = action.payload;
+      const { code, metaKey } = action.payload;
       if (code === 'AltLeft' || code === 'AltRight') state.altKey = false;
       if (code === 'ShiftLeft' || code === 'ShiftRight') state.shiftKey = false;
+      if (!metaKey) state.cmdKey = false;
     },
   },
   extraReducers: {
