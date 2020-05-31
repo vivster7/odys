@@ -29,6 +29,11 @@ const keyboardSlice = createSlice({
       if (code === 'ShiftLeft' || code === 'ShiftRight') state.shiftKey = false;
       if (!metaKey) state.cmdKey = false;
     },
+    clearKeys: (state, action: PayloadAction<void>) => {
+      state.altKey = false;
+      state.shiftKey = false;
+      state.cmdKey = false;
+    },
   },
   extraReducers: {
     [keydown.pending as any]: keydownPendingFn,
@@ -37,6 +42,6 @@ const keyboardSlice = createSlice({
   },
 });
 
-export const { keyup } = keyboardSlice.actions;
+export const { keyup, clearKeys } = keyboardSlice.actions;
 const keyboardReducer = keyboardSlice.reducer;
 export default keyboardReducer;

@@ -23,6 +23,7 @@ import {
 } from './zoom/zoom.reducer';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
+import { clearKeys } from 'modules/keyboard/keyboard.reducer';
 import * as uuid from 'uuid';
 import { COLORS } from 'global/colors';
 import Cursors from './cursor/Cursors';
@@ -292,6 +293,11 @@ const Canvas: React.FC = () => {
     }
   }
 
+  function handlePointerLeave(e: React.PointerEvent) {
+    dispatch(clearKeys());
+    handlePointerUp(e);
+  }
+
   function handlePointerOver(e: React.PointerEvent) {
     e.stopPropagation();
     e.preventDefault();
@@ -353,6 +359,7 @@ const Canvas: React.FC = () => {
       onPointerMove={(e) => handlePointerMove(e)}
       onPointerDown={(e) => handlePointerDown(e)}
       onPointerUp={(e) => handlePointerUp(e)}
+      onPointerLeave={(e) => handlePointerLeave(e)}
       cursor={cursor}
     >
       <g id="odys-zoomable-group" transform={transform}>
