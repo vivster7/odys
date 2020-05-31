@@ -1,12 +1,12 @@
 import { Shape } from '../shape/shape.reducer';
 
+const EDGE_OFFSET = 5;
+const IO_OFFSET = 10;
+
 export function computeCurve(fromShape: Shape, toShape: Shape) {
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = fromShape;
   const r2 = toShape;
-
-  const edgeOffset = 5;
-  const ioOffset = 10;
 
   const r1X = r1.x + r1.translateX;
   const r1Y = r1.y + r1.translateY;
@@ -45,18 +45,18 @@ export function computeCurve(fromShape: Shape, toShape: Shape) {
 
     if (r1XMid > r2XMid) {
       const cp = controlPointOffset(r2XEdge, r1X);
-      x1 = r1X - edgeOffset;
-      x2 = r2XEdge + edgeOffset;
-      y1 = r1YMid - ioOffset;
-      y2 = r2YMid - ioOffset;
+      x1 = r1X - EDGE_OFFSET;
+      x2 = r2XEdge + EDGE_OFFSET;
+      y1 = r1YMid - IO_OFFSET;
+      y2 = r2YMid - IO_OFFSET;
 
       path = `M ${x1} ${y1} C ${x1 - cp} ${y1} ${x2 + cp} ${y2}, ${x2} ${y2}`;
     } else {
       const cp = controlPointOffset(r1XEdge, r2X);
-      x1 = r1XEdge + edgeOffset;
-      x2 = r2X - edgeOffset;
-      y1 = r1YMid + ioOffset;
-      y2 = r2YMid + ioOffset;
+      x1 = r1XEdge + EDGE_OFFSET;
+      x2 = r2X - EDGE_OFFSET;
+      y1 = r1YMid + IO_OFFSET;
+      y2 = r2YMid + IO_OFFSET;
 
       path = `M ${x1} ${y1} C ${x1 + cp} ${y1} ${x2 - cp} ${y2}, ${x2} ${y2}`;
     }
@@ -68,18 +68,18 @@ export function computeCurve(fromShape: Shape, toShape: Shape) {
 
     if (r1YMid > r2YMid) {
       const cp = controlPointOffset(r2YEdge, r1Y);
-      y1 = r1Y - edgeOffset;
-      y2 = r2YEdge + edgeOffset;
-      x1 = r1XMid - ioOffset;
-      x2 = r2XMid - ioOffset;
+      y1 = r1Y - EDGE_OFFSET;
+      y2 = r2YEdge + EDGE_OFFSET;
+      x1 = r1XMid - IO_OFFSET;
+      x2 = r2XMid - IO_OFFSET;
 
       path = `M ${x1} ${y1} C ${x1} ${y1 - cp} ${x2} ${y2 + cp}, ${x2} ${y2}`;
     } else {
       const cp = controlPointOffset(r1YEdge, r2Y);
-      y1 = r1YEdge + edgeOffset;
-      y2 = r2Y - edgeOffset;
-      x1 = r1XMid + ioOffset;
-      x2 = r2XMid + ioOffset;
+      y1 = r1YEdge + EDGE_OFFSET;
+      y2 = r2Y - EDGE_OFFSET;
+      x1 = r1XMid + IO_OFFSET;
+      x2 = r2XMid + IO_OFFSET;
 
       path = `M ${x1} ${y1} C ${x1} ${y1 + cp} ${x2} ${y2 - cp}, ${x2} ${y2}`;
     }
