@@ -47,16 +47,16 @@ export function computeCurve(fromShape: Shape, toShape: Shape) {
       const cp = controlPointOffset(r2XEdge, r1X);
       x1 = r1X - EDGE_OFFSET;
       x2 = r2XEdge + EDGE_OFFSET;
-      y1 = r1YMid - IO_OFFSET;
-      y2 = r2YMid - IO_OFFSET;
+      y1 = r1YMid + IO_OFFSET;
+      y2 = r2YMid + IO_OFFSET;
 
       path = `M ${x1} ${y1} C ${x1 - cp} ${y1} ${x2 + cp} ${y2}, ${x2} ${y2}`;
     } else {
       const cp = controlPointOffset(r1XEdge, r2X);
       x1 = r1XEdge + EDGE_OFFSET;
       x2 = r2X - EDGE_OFFSET;
-      y1 = r1YMid + IO_OFFSET;
-      y2 = r2YMid + IO_OFFSET;
+      y1 = r1YMid - IO_OFFSET;
+      y2 = r2YMid - IO_OFFSET;
 
       path = `M ${x1} ${y1} C ${x1 + cp} ${y1} ${x2 - cp} ${y2}, ${x2} ${y2}`;
     }
