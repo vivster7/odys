@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, shallowEqual } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
 
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
