@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, shallowEqual } from 'react-redux';
 import { useSelector } from 'global/redux';
 
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
@@ -11,6 +11,7 @@ import { COLORS } from 'global/colors';
 
 import Cockpit from './cockpit/Cockpit';
 import { getOrCreateBoard } from './board.reducer';
+import OnlinePlayers from 'modules/players/OnlinePlayers';
 
 const BoardLoading: React.FC = () => (
   <div
@@ -78,6 +79,16 @@ const DrawingBoard: React.FC = () => {
         style={{
           position: 'absolute',
           top: '10px',
+          right: '10px',
+          pointerEvents: 'none',
+        }}
+      >
+        <OnlinePlayers></OnlinePlayers>
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          top: '40px',
           right: '10px',
           pointerEvents: 'none',
         }}
