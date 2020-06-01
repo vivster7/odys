@@ -31,6 +31,7 @@ const Toast: React.FC<ToastContent> = (props) => {
           paddingRight: '5px',
           paddingBottom: '5px',
           justifyContent: 'flex-end',
+          pointerEvents: 'all',
         }}
       >
         <p onClick={(e) => dispatch(clearErrors())}>x</p>
