@@ -16,6 +16,7 @@ const LandingPage: React.FC = () => {
       {showEmptyState ? (
         <div
           style={{
+            pointerEvents: 'none',
             position: 'absolute',
             top: '45%',
             textAlign: 'center',
