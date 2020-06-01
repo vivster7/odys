@@ -49,6 +49,9 @@ const syncBlacklist = new Set([
   'copyPaste',
   'players',
   'self',
+  // deletes are synced by removing / adding objects
+  // ignore this field across clients.
+  'isDeleted',
 ]);
 
 const diffPatch = jdp.create({

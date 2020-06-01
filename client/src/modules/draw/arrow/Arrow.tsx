@@ -1,8 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { addError } from 'modules/errors/errors.reducer';
-
 import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
 import { selectDrawing } from '../draw.reducer';
@@ -102,8 +100,6 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
 
 const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const { id, playerSelected } = props;
-  const dispatch = useDispatch();
-
   const arrow = useSelector((s) => s.draw.arrows[id]);
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
@@ -123,11 +119,14 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
       console.error(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`);
     if (!r2)
       console.error(`[r2Arrow] Could not find shape$ ${arrow.toShapeId}`);
-    dispatch(
-      addError(
-        "We're having issues syncing this diagram. Try refreshing this page."
-      )
-    );
+
+    // If you undo to delete a shape, but its got new arrow attached,
+    // this error will arise. Maybe its fine to just hide arrows without an error?
+    // dispatch(
+    //   addError(
+    //     "We're having issues syncing this diagram. Try refreshing this page."
+    //   )
+    // );
     return <></>;
   }
 

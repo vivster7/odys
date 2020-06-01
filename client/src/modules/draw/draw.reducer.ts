@@ -65,7 +65,14 @@ import {
   fetchShapesFulfilled,
   Shape,
 } from 'modules/draw/shape/shape.reducer';
-import { save, saveFulfilled, saveRejected } from './mixins/save/save.reducer';
+import {
+  save,
+  saveFulfilled,
+  saveRejected,
+  saveDelete,
+  saveDeleteFulfilled,
+  saveDeleteRejected,
+} from './mixins/save/save.reducer';
 import {
   TimeTravelState,
   safeUpdateDrawings,
@@ -239,6 +246,9 @@ const drawSlice = createSlice({
     [save.pending as any]: (state, action) => {},
     [save.fulfilled as any]: saveFulfilled,
     [save.rejected as any]: saveRejected,
+    [saveDelete.pending as any]: (state, action) => {},
+    [saveDelete.fulfilled as any]: saveDeleteFulfilled,
+    [saveDelete.rejected as any]: saveDeleteRejected,
     // shape
     [fetchShapes.pending as any]: (state, action) => {},
     [fetchShapes.fulfilled as any]: fetchShapesFulfilled,

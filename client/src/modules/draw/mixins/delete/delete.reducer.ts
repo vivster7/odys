@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawActionPending, getDrawings } from 'modules/draw/draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import { save } from '../save/save.reducer';
+import { saveDelete } from '../save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { RootState } from 'App';
 import { getConnectedArrows } from 'modules/draw/arrow/arrow.reducer';
@@ -19,7 +19,7 @@ export const deleteDrawings = createAsyncThunk(
     const arrows = getConnectedArrows(state.draw, ids);
     const allIds = ids.concat(arrows.map((a) => a.id));
 
-    thunkAPI.dispatch(save(allIds));
+    thunkAPI.dispatch(saveDelete(allIds));
   }
 );
 

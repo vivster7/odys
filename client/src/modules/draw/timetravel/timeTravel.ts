@@ -7,7 +7,7 @@ import {
 } from '../draw.reducer';
 import { instanceOfArrow } from '../arrow/arrow.reducer';
 import { reorder } from '../mixins/drawOrder/drawOrder';
-import { save } from '../mixins/save/save.reducer';
+import { save, saveDelete } from '../mixins/save/save.reducer';
 import {
   applySelect,
   isSelected,
@@ -71,7 +71,7 @@ export const safeUpdateDrawingsPending: DrawActionPending<SafeUpdateDrawings> = 
 export const safeDeleteDrawings = createAsyncThunk(
   'draw/safeDeleteDrawings',
   async (ids: string[], thunkAPI) => {
-    thunkAPI.dispatch(save(ids));
+    thunkAPI.dispatch(saveDelete(ids));
 
     const state = thunkAPI.getState() as RootState;
     if (isSelected(state.draw, ids)) {
