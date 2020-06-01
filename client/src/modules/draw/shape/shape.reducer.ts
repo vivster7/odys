@@ -1,4 +1,4 @@
-import { DrawState, Drawing } from '../draw.reducer';
+import { DrawState, Drawing, getDrawings } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysShape } from 'generated';
@@ -46,7 +46,7 @@ export function getShape(state: DrawState, id: string): Shape {
 }
 
 export function getShapes(state: DrawState, ids: string[]): Shape[] {
-  return ids.map((id) => getShape(state, id));
+  return getDrawings(state, ids).filter((d) => instanceOfShape(d)) as Shape[];
 }
 
 export const fetchShapes = createAsyncThunk(
