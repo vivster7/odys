@@ -27,9 +27,9 @@ const keyboardSlice = createSlice({
   initialState: initialState,
   reducers: {
     keyup: (state, action: PayloadAction<KeyEvent>) => {
-      const { code, metaKey } = action.payload;
-      if (code === 'AltLeft' || code === 'AltRight') state.altKey = false;
-      if (code === 'ShiftLeft' || code === 'ShiftRight') state.shiftKey = false;
+      const { code, altKey, shiftKey, metaKey } = action.payload;
+      if (!altKey) state.altKey = false;
+      if (!shiftKey) state.shiftKey = false;
       if (!metaKey) state.cmdKey = false;
       if (code === 'KeyG') state.gKey = false;
     },
@@ -42,8 +42,8 @@ const keyboardSlice = createSlice({
   },
   extraReducers: {
     [keydown.pending as any]: keydownPendingFn,
-    [keydown.fulfilled as any]: (state, action) => { },
-    [keydown.rejected as any]: (state, action) => { },
+    [keydown.fulfilled as any]: (state, action) => {},
+    [keydown.rejected as any]: (state, action) => {},
   },
 });
 
