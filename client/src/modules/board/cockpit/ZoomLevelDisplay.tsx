@@ -35,6 +35,7 @@ const ZoomLevelDisplay: React.FC<ZoomLevelDisplayProps> = (props) => {
         justifyContent: 'space-around',
         alignSelf: 'flex-end',
         marginBottom: '5px',
+        pointerEvents: 'all',
         /*color: COLORS.secondaryText,*/
       }}
     >

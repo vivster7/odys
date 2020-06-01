@@ -29,7 +29,13 @@ const KeyTooltips: React.FC = () => {
 
   return (
     <>
-      <div style={{ display: 'flex', flexFlow: 'row nowrap' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexFlow: 'row nowrap',
+          pointerEvents: 'all',
+        }}
+      >
         <KeyToggle
           isToggled={isAltPressed}
           tips={[
