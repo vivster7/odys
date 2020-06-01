@@ -9,7 +9,6 @@ import uuid from 'uuid';
 const KeyTooltips: React.FC = () => {
   const dispatch = useDispatch();
 
-  const isAltPressed = useSelector((s) => s.keyboard.altKey);
   const isShiftPressed = useSelector((s) => s.keyboard.shiftKey);
   const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
   const isGPressed = useSelector((s) => s.keyboard.gKey);
@@ -24,7 +23,6 @@ const KeyTooltips: React.FC = () => {
   const isMultiSelecting = useSelector((s) => s.draw.multiSelect);
 
   const platform = window.navigator.platform;
-  const optionOrAlt = platform.includes('Mac') ? 'Option' : 'Alt';
   const cmdOrCtrl = platform.includes('Mac') ? 'Command' : 'Ctrl';
 
   return (
@@ -37,29 +35,22 @@ const KeyTooltips: React.FC = () => {
         }}
       >
         <KeyToggle
-          isToggled={isAltPressed}
+          isToggled={isCmdPressed}
           tips={[
             '⌥ + Click to draw a box',
             '⌥ + Click to draw arrow from selected box',
+            '⌘ + A to select all',
+            '⌘ + Z to undo',
+            '⌘ + ⇧ + Z to redo',
           ]}
         >
-          ⌥ [{optionOrAlt}]
+          ⌘ [{cmdOrCtrl}]
         </KeyToggle>
         <KeyToggle
           isToggled={isShiftPressed}
           tips={['⇧ + Click (or Drag) to multi-select']}
         >
           ⇧ [Shift]
-        </KeyToggle>
-        <KeyToggle
-          isToggled={isCmdPressed}
-          tips={[
-            '⌘ + A to select all',
-            '⌘ + Z to undo',
-            '⌘ + ⇧ [Shift] + Z to redo',
-          ]}
-        >
-          ⌘ [{cmdOrCtrl}]
         </KeyToggle>
         {isMultiSelecting && (
           <KeyToggle

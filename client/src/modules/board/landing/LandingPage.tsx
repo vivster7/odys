@@ -5,7 +5,7 @@ import { COLORS } from 'global/colors';
 
 const LandingPage: React.FC = () => {
   const platform = window.navigator.platform;
-  const optionOrAlt = platform.includes('Mac') ? 'Option' : 'Alt';
+  const cmdOrCtrl = platform.includes('Mac') ? 'Command' : 'Ctrl';
 
   const showEmptyState = useSelector(
     (s) => isEmpty(s.draw.shapes) && isEmpty(s.draw.arrows)
@@ -26,7 +26,7 @@ const LandingPage: React.FC = () => {
             fontWeight: 500,
           }}
         >
-          ⌥ [{optionOrAlt}] + Click to draw your first box
+          ⌘ [{cmdOrCtrl}] + Click to draw your first box
         </div>
       ) : (
         <></>

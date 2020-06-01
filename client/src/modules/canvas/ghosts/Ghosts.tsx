@@ -17,12 +17,12 @@ const Ghosts: React.FC = () => {
   const cursorOverShape = useSelector(
     (s) => s.canvas.cursorOver.id && s.draw.shapes[s.canvas.cursorOver.id]
   );
-  const isAltPressed = useSelector((s) => s.keyboard.altKey);
+  const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
   const isDragging = useSelector((s) => s.draw.drag !== null);
   const isResizing = useSelector((s) => s.draw.resize !== null);
 
   function getGhost() {
-    if (!isAltPressed || isResizing || isDragging || !cursorPosition) {
+    if (!isCmdPressed || isResizing || isDragging || !cursorPosition) {
       return <></>;
     }
 

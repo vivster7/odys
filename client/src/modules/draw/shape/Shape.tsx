@@ -46,13 +46,13 @@ export const Shape: React.FC<DrawingProps> = (props) => {
 
   function sharedOnPointerDown(
     e: React.PointerEvent,
-    onAltClick?: (a: any) => AnyAction
+    onCmdClick?: (a: any) => AnyAction
   ) {
     e.stopPropagation();
     e.preventDefault();
 
     if (
-      e.altKey &&
+      e.metaKey &&
       !!selectedShape &&
       !isOverlapping(shape, selectedShape) &&
       !isSelected
@@ -65,8 +65,8 @@ export const Shape: React.FC<DrawingProps> = (props) => {
           boardId: board.id,
         })
       );
-    } else if (e.altKey && onAltClick) {
-      dispatch(onAltClick({ clickX: e.clientX, clickY: e.clientY }));
+    } else if (e.metaKey && onCmdClick) {
+      dispatch(onCmdClick({ clickX: e.clientX, clickY: e.clientY }));
     } else {
       dispatch(selectDrawing({ id, shiftKey: e.shiftKey }));
       dispatch(

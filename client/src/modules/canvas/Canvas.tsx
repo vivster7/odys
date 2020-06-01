@@ -99,11 +99,11 @@ const Canvas: React.FC = () => {
   const resizingId = useSelector((s) => s.draw.resize && s.draw.resize.id);
 
   const isShiftPressed = useSelector((s) => s.keyboard.shiftKey);
-  const isAltPressed = useSelector((s) => s.keyboard.altKey);
+  const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
   const selectedShapeId = useSelector((s) => s.draw.select?.id);
 
   const selectMode = isShiftPressed;
-  const insertMode = isAltPressed;
+  const insertMode = isCmdPressed;
 
   // using local variable to make scale / pan fast!
   const [topLeftX, setTopLeftX] = useState(canvasState.topLeftX);
@@ -192,7 +192,7 @@ const Canvas: React.FC = () => {
     e.preventDefault();
     dispatch(cancelSelect());
 
-    if (e.altKey) {
+    if (e.metaKey) {
       dispatch(
         startNewRect({ clickX: e.clientX, clickY: e.clientY, selectedShapeId })
       );
