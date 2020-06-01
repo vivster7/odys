@@ -1,13 +1,9 @@
-import {
-  DrawReducer,
-  DrawActionPending,
-  DrawState,
-} from '../../../draw.reducer';
+import { DrawReducer, DrawActionPending } from '../../../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from 'modules/draw/mixins/save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
-import { Shape, getShape, getShapes } from '../../shape.reducer';
+import { getShape, getShapes } from '../../shape.reducer';
 
 export interface DragState {
   id: string;
@@ -36,7 +32,7 @@ export const startDragFn: DrawReducer<DragState> = (state, action) => {
 
   state.drag = {
     id: id,
-    encompassedIds: findEncompassed(state, shape).map((s) => s.id),
+    encompassedIds: shape.inside,
     clickX: clickX,
     clickY: clickY,
   };
@@ -127,20 +123,3 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
 };
-
-function findEncompassed(state: DrawState, parent: Shape): Shape[] {
-  if (parent.type !== 'grouping_rect') return [];
-
-  const isEncompassedBy = (parent: Shape, s: Shape): boolean => {
-    if (parent.id === s.id) return false;
-    return (
-      parent.x <= s.x &&
-      parent.x + parent.width >= s.x + s.width &&
-      parent.y <= s.y &&
-      parent.y + parent.height >= s.y + s.height
-    );
-  };
-
-  const shapes = Object.values(state.shapes);
-  return shapes.filter((s) => isEncompassedBy(parent, s));
-}

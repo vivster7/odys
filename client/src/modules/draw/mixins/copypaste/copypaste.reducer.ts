@@ -11,10 +11,11 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'App';
 import { save } from '../save/save.reducer';
 import uuid from 'uuid';
-import { instanceOfArrow, Arrow } from 'modules/draw/arrow/arrow.reducer';
+import { Arrow } from 'modules/draw/arrow/arrow.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { reorder } from '../drawOrder/drawOrder';
 import { applySelect } from '../multiSelect/multiSelect.reducer';
+import { allSelectedIds } from '../select/select.reducer';
 
 export interface CopyPasteState {
   // Ids of copied shapes.
@@ -34,14 +35,7 @@ export interface CopyPasteState {
 }
 
 export const copyFn: DrawReducer = (state, action) => {
-  const allIds = [];
-  if (state.select) {
-    allIds.push(state.select.id);
-  }
-
-  if (state.multiSelect) {
-    allIds.push(...Object.keys(state.multiSelect.selectedShapeIds));
-  }
+  const allIds = allSelectedIds(state);
 
   const drawings = getDrawings(state, allIds);
   // can only copy shapes
@@ -72,7 +66,10 @@ export const pastePending: DrawActionPending = (state, action) => {
 
   const drawings = getDrawings(state, copied);
   const shapes = drawings.filter((c) => instanceOfShape(c)) as Shape[];
-  const arrows = drawings.filter((c) => instanceOfArrow(c)) as Arrow[];
+  const shapeIds = new Set(...[shapes.map((s) => s.id)]);
+  const arrows = Object.values(state.arrows).filter(
+    (a) => shapeIds.has(a.fromShapeId) && shapeIds.has(a.toShapeId)
+  );
 
   // TODO: offset should take into account svg scale
   const offsetX = 20 * (numTimesPasted + (isCut ? 0 : 1));
@@ -84,6 +81,9 @@ export const pastePending: DrawActionPending = (state, action) => {
   const oldToNew = Object.fromEntries(
     shapes.map((s, i) => [s.id, clonedShapes[i].id])
   );
+
+  // after creating the `oldToNew` mapping, we can update the `inside` value
+  clonedShapes.forEach((s) => (s.inside = s.inside.map((id) => oldToNew[id])));
   const clonedArrows = arrows.map((a) => cloneArrow(oldToNew, a));
 
   clonedShapes.forEach((s) => (state.shapes[s.id] = s));

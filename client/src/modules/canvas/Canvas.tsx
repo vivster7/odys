@@ -8,7 +8,6 @@ import {
   resizeDragSelection,
   endDragSelection,
   startNewRect,
-  endNewRectByDrag,
 } from '../draw/draw.reducer';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
@@ -148,30 +147,6 @@ const Canvas: React.FC = () => {
 
   function handlePointerMove(e: React.PointerEvent) {
     e.preventDefault();
-
-    if (
-      newRect &&
-      !cursorWithinEpsilon(
-        newRect.clickX,
-        newRect.clickY,
-        e.clientX,
-        e.clientY,
-        canvasState.scale
-      )
-    ) {
-      dispatch(
-        endNewRectByDrag({
-          id: uuid.v4(),
-          clickX: e.clientX,
-          clickY: e.clientY,
-          canvasTopLeftX: canvasState.topLeftX,
-          canvasTopLeftY: canvasState.topLeftY,
-          canvasScale: canvasState.scale,
-          canvasZoomLevel: canvasState.zoomLevel,
-          boardId: boardId,
-        })
-      );
-    }
 
     if (dragState) {
       dispatch(

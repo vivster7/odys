@@ -36,7 +36,6 @@ import {
   endNewRectByClick,
   NewRectState,
   startNewRectFn,
-  endNewRectByDragFn,
   endNewRectByClickPending,
 } from 'modules/draw/shape/newRect.reducer';
 import {
@@ -88,6 +87,7 @@ import {
 } from './mixins/copypaste/copypaste.reducer';
 import { RootState } from 'App';
 import { uniq, compact } from 'lodash';
+import { createGroup, createGroupPending } from './shape/group.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type ActionPending<T = void> = {
@@ -222,7 +222,6 @@ const drawSlice = createSlice({
     resize: resizeFn,
     // newRect
     startNewRect: startNewRectFn,
-    endNewRectByDrag: endNewRectByDragFn,
     // multiSelect
     startDragSelection: startDragSelectionFn,
     resizeDragSelection: resizeDragSelectionFn,
@@ -244,6 +243,9 @@ const drawSlice = createSlice({
     [fetchShapes.pending as any]: (state, action) => {},
     [fetchShapes.fulfilled as any]: fetchShapesFulfilled,
     [fetchShapes.rejected as any]: (state, action) => {},
+    [createGroup.pending as any]: createGroupPending,
+    [createGroup.fulfilled as any]: (state, action) => {},
+    [createGroup.rejected as any]: (state, action) => {},
     // arrow
     [fetchArrows.pending as any]: (state, action) => {},
     [fetchArrows.fulfilled as any]: fetchArrowsFulfilled,
@@ -325,7 +327,6 @@ export const {
   startResize,
   resize,
   startNewRect,
-  endNewRectByDrag,
   startDragSelection,
   resizeDragSelection,
   endDragSelection,

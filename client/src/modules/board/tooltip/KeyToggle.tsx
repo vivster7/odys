@@ -4,6 +4,7 @@ import { COLORS } from 'global/colors';
 interface KeyToggle {
   isToggled: boolean;
   tips: string[];
+  onClick?: (e: React.MouseEvent) => void;
 }
 
 interface KeyTogglePopup {
@@ -64,6 +65,7 @@ const KeyToggle: React.FC<KeyToggle> = (props) => {
       {isHovered ? renderActionTips() : <></>}
       <div style={{ position: 'relative' }}>
         <div
+          onClick={props.onClick}
           onPointerOver={(_) => setIsHovered(true)}
           onPointerLeave={(_) => setIsHovered(false)}
           style={{

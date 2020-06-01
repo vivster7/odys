@@ -11,12 +11,18 @@ import { Saveable } from '../mixins/save/save.reducer';
 import odysClient from 'global/odysClient';
 
 export type Shape = Rect | GroupingRect | Text;
+interface Container {
+  inside: string[];
+}
+
 type ShapeMixins = Draggable &
   Resizable &
   Selectable &
   TextEditable &
+  Container &
   Saveable &
   Deleteable;
+
 export interface Rect extends OdysShape, ShapeMixins {
   type: 'rect';
 }
@@ -69,6 +75,7 @@ export const fetchShapesFulfilled = (
       translateY: 0,
       deltaWidth: 0,
       deltaHeight: 0,
+      inside: [],
     };
     state.shapes[s.id] = shape;
     //TODO: order should be saved on server.

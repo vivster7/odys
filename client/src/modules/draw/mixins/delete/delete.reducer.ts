@@ -5,6 +5,7 @@ import { save } from '../save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { RootState } from 'App';
 import { getConnectedArrows } from 'modules/draw/arrow/arrow.reducer';
+import { cancelSelectFn } from '../select/select.reducer';
 
 export interface Deleteable {
   id: string;
@@ -40,6 +41,9 @@ export const deleteDrawingsPending: DrawActionPending<DeleteDrawings> = (
 
   drawings.forEach((d) => (d.isDeleted = true));
   reorder(drawings, state);
+
+  // cancel selection after deletion
+  cancelSelectFn(state, { type: 'draw/cancelSelect', payload: undefined });
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',

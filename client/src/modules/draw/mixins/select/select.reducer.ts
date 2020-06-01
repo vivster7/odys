@@ -1,7 +1,9 @@
 import { findLast } from 'lodash';
 import { isWithinBounds } from 'math/box';
-import { DrawReducer } from 'modules/draw/draw.reducer';
+import { DrawReducer, DrawState } from 'modules/draw/draw.reducer';
 import { applySelectOrDeselect } from '../multiSelect/multiSelect.reducer';
+import { getShapes } from 'modules/draw/shape/shape.reducer';
+import { uniq } from 'lodash';
 
 export interface SelectedState {
   id: string;
@@ -49,3 +51,21 @@ export const cancelSelectFn: DrawReducer = (state, action) => {
   state.select = null;
   state.multiSelect = null;
 };
+
+export function allSelectedIds(state: DrawState): string[] {
+  const { select, multiSelect } = state;
+  let ids = [];
+  if (select?.id) {
+    ids.push(select.id);
+  }
+
+  if (multiSelect) {
+    ids = ids.concat(Object.keys(multiSelect.selectedShapeIds));
+  }
+
+  const shapes = getShapes(state, ids);
+  const groups = shapes.filter((s) => s.type === 'grouping_rect');
+  const inner = groups.flatMap((g) => g.inside);
+  ids = ids.concat(inner);
+  return uniq(ids);
+}
