@@ -95,13 +95,13 @@ export const keydownPendingFn = (
   state: KeyboardState,
   action: ActionPending<KeyEvent>
 ) => {
-  const { code, metaKey } = action.meta.arg;
+  const { metaKey, altKey, shiftKey } = action.meta.arg;
 
-  if (code === 'AltLeft' || code === 'AltRight') {
+  if (altKey) {
     state.altKey = true;
   }
 
-  if (code === 'ShiftLeft' || code === 'ShiftRight') {
+  if (shiftKey) {
     state.shiftKey = true;
   }
 
