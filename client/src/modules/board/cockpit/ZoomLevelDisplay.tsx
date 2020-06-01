@@ -53,6 +53,7 @@ const ZoomLevelDisplay: React.FC<ZoomLevelDisplayProps> = (props) => {
           margin: '3px -1px',
           fontSize: '12px',
           fontWeight: 600,
+          color: COLORS.secondaryText,
         }}
       >
         {zoomLevel}
