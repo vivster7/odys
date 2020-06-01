@@ -1,13 +1,9 @@
-import {
-  DrawReducer,
-  DrawActionPending,
-  DrawState,
-} from '../../../draw.reducer';
+import { DrawReducer, DrawActionPending } from '../../../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from 'modules/draw/mixins/save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
-import { Shape, getShape, getShapes } from '../../shape.reducer';
+import { getShape, getShapes } from '../../shape.reducer';
 
 export interface DragState {
   id: string;
