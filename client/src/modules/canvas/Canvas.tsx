@@ -286,29 +286,51 @@ const Canvas: React.FC = () => {
     // browser sends ctrl key for pinch-to-zoom
     const isPinchToZoom = e.ctrlKey;
 
-    const invertX = (e.clientX - topLeftX) / scale;
-    const invertY = (e.clientY - topLeftY) / scale;
+    function zoom() {
+      const invertX = (e.clientX - topLeftX) / scale;
+      const invertY = (e.clientY - topLeftY) / scale;
 
-    let scaleFactor;
-    if (e.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
-      scaleFactor = 0.002 * -e.deltaY;
-    } else if (e.deltaMode === WheelEvent.DOM_DELTA_LINE) {
-      scaleFactor = 0.05 * -e.deltaY;
+      let scaleFactor;
+      if (e.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
+        scaleFactor = 0.002 * -e.deltaY;
+      } else if (e.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+        scaleFactor = 0.05 * -e.deltaY;
+      } else {
+        scaleFactor = 1 * -e.deltaY;
+      }
+
+      if (isPinchToZoom) {
+        scaleFactor *= 7;
+      }
+
+      const updatedScale = bound(
+        scale * Math.pow(2, scaleFactor),
+        zoomLeveltoScaleMap[MIN_ZOOM_LEVEL],
+        zoomLeveltoScaleMap[MAX_ZOOM_LEVEL]
+      );
+      const updatedTopLeftX = e.clientX - invertX * updatedScale;
+      const updatedTopLeftY = e.clientY - invertY * updatedScale;
+
+      return [updatedTopLeftX, updatedTopLeftY, updatedScale];
+    }
+
+    function pan() {
+      const updatedTopLeftX = topLeftX + -e.deltaX;
+      const updatedTopLeftY = topLeftY + -e.deltaY;
+
+      return [updatedTopLeftX, updatedTopLeftY];
+    }
+
+    let [updatedTopLeftX, updatedTopLeftY, updatedScale] = [
+      topLeftX,
+      topLeftY,
+      scale,
+    ];
+    if (e.metaKey || isPinchToZoom) {
+      [updatedTopLeftX, updatedTopLeftY, updatedScale] = zoom();
     } else {
-      scaleFactor = 1 * -e.deltaY;
+      [updatedTopLeftX, updatedTopLeftY] = pan();
     }
-
-    if (isPinchToZoom) {
-      scaleFactor *= 7;
-    }
-
-    const updatedScale = bound(
-      scale * Math.pow(2, scaleFactor),
-      zoomLeveltoScaleMap[MIN_ZOOM_LEVEL],
-      zoomLeveltoScaleMap[MAX_ZOOM_LEVEL]
-    );
-    const updatedTopLeftX = e.clientX - invertX * updatedScale;
-    const updatedTopLeftY = e.clientY - invertY * updatedScale;
 
     setScale(updatedScale);
     setTopLeftX(updatedTopLeftX);
