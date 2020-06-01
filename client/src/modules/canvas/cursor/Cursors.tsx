@@ -9,6 +9,7 @@ const Cursors: React.FC = () => {
 
     return playerCursors.map((player) => (
       <use
+        style={{ pointerEvents: 'none' }}
         key={player.id}
         href="#cursor"
         fill={player.color}
