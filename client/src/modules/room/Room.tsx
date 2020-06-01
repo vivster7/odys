@@ -9,8 +9,16 @@ import { usePlayerConnectionListeners } from 'modules/players/mixins/connection/
 import { useCursorMovedListener } from 'modules/players/mixins/cursor/cursor';
 
 import { connect, registerSocketListener } from 'socket/socket';
-import { syncState } from 'App';
-import { keyup } from 'modules/keyboard/keyboard.reducer';
+import { syncState, OdysDispatch } from 'App';
+import { keyup, KeyEvent } from 'modules/keyboard/keyboard.reducer';
+import throttle from 'lodash.throttle';
+
+const throttledKeydown = throttle(
+  (dispatch: OdysDispatch, payload: KeyEvent) => {
+    dispatch(keydown(payload));
+  },
+  150
+);
 
 const Room: React.FC = () => {
   const { id } = useParams();
@@ -21,13 +29,13 @@ const Room: React.FC = () => {
   // kinda want this at app level, but app doesn't have access to dispatch yet.
   useEffect(() => {
     const downHandler = (e: KeyboardEvent) => {
-      const payload = {
+      const payload: KeyEvent = {
         code: e.code,
         metaKey: e.metaKey,
         shiftKey: e.shiftKey,
         altKey: e.altKey,
       };
-      dispatch(keydown(payload));
+      throttledKeydown(dispatch, payload);
     };
 
     const upHandler = (e: KeyboardEvent) => {
