@@ -10,16 +10,20 @@ import { undo } from 'modules/draw/timetravel/undo.reducer';
 import { redo } from 'modules/draw/timetravel/redo.reducer';
 import { paste, cut } from 'modules/draw/mixins/copypaste/copypaste.reducer';
 import { KeyboardState, KeyEvent } from 'modules/keyboard/keyboard.reducer';
+import { createGroup } from 'modules/draw/shape/group.reducer';
+import uuid from 'uuid';
+import { allSelectedIds } from 'modules/draw/mixins/select/select.reducer';
 
 // Only keys in this list will trigger the keydown condition.
 const LISTEN_KEYS = [
   'Backspace',
   'Delete',
   'KeyA',
-  'KeyZ',
   'KeyC',
+  'KeyG',
   'KeyV',
   'KeyX',
+  'KeyZ',
   'Escape',
   'AltLeft',
   'AltRight',
@@ -35,18 +39,13 @@ export const keydown = createAsyncThunk(
     const state = thunkAPI.getState() as any;
     const dispatch = thunkAPI.dispatch;
 
-    const { select, multiSelect, editText } = state.draw;
-    if (e.code === 'Backspace' || e.code === 'Delete') {
-      if (select?.id && editText.isEditing === false) {
-        await dispatch(deleteDrawings({ ids: [select.id] }));
-        return dispatch(cancelSelect());
-      }
-
-      if (multiSelect) {
-        const ids = Object.keys(multiSelect.selectedShapeIds);
-        await dispatch(deleteDrawings({ ids }));
-        return dispatch(cancelSelect());
-      }
+    const { shapes, select, multiSelect, editText } = state.draw;
+    if (
+      (e.code === 'Backspace' || e.code === 'Delete') &&
+      !editText.isEditing
+    ) {
+      const ids = allSelectedIds(state.draw);
+      await dispatch(deleteDrawings({ ids }));
     }
 
     if (e.code === 'KeyA' && e.metaKey) {
@@ -73,6 +72,20 @@ export const keydown = createAsyncThunk(
 
     if (e.code === 'Escape') {
       return dispatch(cancelSelect());
+    }
+
+    if (e.code === 'KeyG' && multiSelect) {
+      return dispatch(createGroup(uuid.v4()));
+    }
+
+    if (
+      e.code === 'KeyG' &&
+      !editText.isEditing &&
+      select?.id &&
+      shapes[select.id] &&
+      shapes[select.id].type === 'grouping_rect'
+    ) {
+      return dispatch(deleteDrawings({ ids: [select.id] }));
     }
   },
   { condition: (e: KeyEvent, thunkAPI) => LISTEN_KEYS.includes(e.code) }

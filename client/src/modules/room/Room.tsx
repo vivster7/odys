@@ -25,6 +25,7 @@ const Room: React.FC = () => {
         code: e.code,
         metaKey: e.metaKey,
         shiftKey: e.shiftKey,
+        altKey: e.altKey,
       };
       dispatch(keydown(payload));
     };
@@ -34,6 +35,7 @@ const Room: React.FC = () => {
         code: e.code,
         metaKey: e.metaKey,
         shiftKey: e.shiftKey,
+        altKey: e.altKey,
       };
       dispatch(keyup(payload));
     };
