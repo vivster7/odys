@@ -59,6 +59,7 @@ const DrawingBoard: React.FC = () => {
           position: 'absolute',
           bottom: '10px',
           right: '10px',
+          pointerEvents: 'none',
         }}
       >
         <Cockpit></Cockpit>
@@ -68,6 +69,7 @@ const DrawingBoard: React.FC = () => {
           position: 'absolute',
           left: '15px',
           bottom: '10px',
+          pointerEvents: 'none',
         }}
       >
         <KeyTooltips />
@@ -77,6 +79,7 @@ const DrawingBoard: React.FC = () => {
           position: 'absolute',
           top: '10px',
           right: '10px',
+          pointerEvents: 'none',
         }}
       >
         <ToastContainer></ToastContainer>
