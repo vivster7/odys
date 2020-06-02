@@ -141,6 +141,7 @@ export interface ArrowData {
   [id: string]: Arrow;
 }
 
+type LoadStates = 'loading' | 'success' | 'failed';
 export interface DrawState {
   shapes: ShapeData;
   arrows: ArrowData;
@@ -153,6 +154,7 @@ export interface DrawState {
   newRect: NewRectState | null;
   timetravel: TimeTravelState;
   copyPaste: CopyPasteState;
+  loaded: LoadStates;
 }
 
 const initialState: DrawState = {
@@ -173,6 +175,7 @@ const initialState: DrawState = {
     numTimesPasted: 0,
     isCut: false,
   },
+  loaded: 'loading',
 };
 
 export type Drawing = Arrow | Shape;
@@ -196,6 +199,20 @@ export const fetchDrawings = createAsyncThunk(
     await thunkAPI.dispatch(fetchArrows(boardId));
   }
 );
+
+export const fetchDrawingsRejected: DrawActionFulfilled<string> = (
+  state,
+  action
+) => {
+  state.loaded = 'failed';
+};
+
+export const fetchDrawingsFulfilled: DrawActionFulfilled<string> = (
+  state,
+  action
+) => {
+  state.loaded = 'success';
+};
 
 export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
   // be wary of adding undo/redo buffer to this fn
@@ -245,8 +262,8 @@ const drawSlice = createSlice({
   extraReducers: {
     // drawing
     [fetchDrawings.pending as any]: (state, action) => {},
-    [fetchDrawings.fulfilled as any]: (state, action) => {},
-    [fetchDrawings.rejected as any]: (state, action) => {},
+    [fetchDrawings.fulfilled as any]: fetchDrawingsFulfilled,
+    [fetchDrawings.rejected as any]: fetchDrawingsRejected,
     //save
     [save.pending as any]: (state, action) => {},
     [save.fulfilled as any]: saveFulfilled,

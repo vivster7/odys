@@ -8,30 +8,28 @@ const LandingPage: React.FC = () => {
   const cmdOrCtrl = platform.includes('Mac') ? 'Command' : 'Ctrl';
 
   const showEmptyState = useSelector(
-    (s) => isEmpty(s.draw.shapes) && isEmpty(s.draw.arrows)
+    (s) =>
+      s.draw.loaded === 'success' &&
+      isEmpty(s.draw.shapes) &&
+      isEmpty(s.draw.arrows)
   );
 
+  if (!showEmptyState) return <></>;
   return (
-    <>
-      {showEmptyState ? (
-        <div
-          style={{
-            pointerEvents: 'none',
-            position: 'absolute',
-            top: '45%',
-            textAlign: 'center',
-            width: '100%',
-            color: COLORS.tooltipText,
-            fontSize: '14px',
-            fontWeight: 500,
-          }}
-        >
-          ⌘ [{cmdOrCtrl}] + Click to draw your first box
-        </div>
-      ) : (
-        <></>
-      )}
-    </>
+    <div
+      style={{
+        pointerEvents: 'none',
+        position: 'absolute',
+        top: '45%',
+        textAlign: 'center',
+        width: '100%',
+        color: COLORS.tooltipText,
+        fontSize: '14px',
+        fontWeight: 500,
+      }}
+    >
+      ⌘ [{cmdOrCtrl}] + Click to draw your first box
+    </div>
   );
 };
 
