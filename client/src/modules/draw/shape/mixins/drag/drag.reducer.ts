@@ -4,6 +4,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from 'modules/draw/mixins/save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { getShape, getShapes } from '../../shape.reducer';
+import { findChildrenRecursively } from '../../group.reducer';
 
 export interface DragState {
   id: string;
@@ -29,10 +30,11 @@ interface Drag {
 export const startDragFn: DrawReducer<DragState> = (state, action) => {
   const { id, clickX, clickY } = action.payload;
   const shape = getShape(state, id);
+  const children = findChildrenRecursively(state, [shape]);
 
   state.drag = {
     id: id,
-    encompassedIds: shape.inside,
+    encompassedIds: children.map((c) => c.id),
     clickX: clickX,
     clickY: clickY,
   };

@@ -3,9 +3,8 @@ import BaseShape from './BaseShape';
 import { ShapeTypeProps } from '../Shape';
 import { COLORS } from 'global/colors';
 import { useDispatch } from 'react-redux';
-import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
 import { Shape } from '../shape.reducer';
-import { createGroup } from '../group.reducer';
+import { createGroup, ungroup } from '../group.reducer';
 import uuid from 'uuid';
 
 const GroupingRect: React.FC<ShapeTypeProps> = (props) => {
@@ -106,7 +105,7 @@ export const Ungroup: React.FC<UngroupProps> = (props) => {
     e.preventDefault();
     e.stopPropagation();
     setIsPushed(false);
-    dispatch(deleteDrawings({ ids: [id] }));
+    dispatch(ungroup(id));
   }
 
   function handlePointerLeave(e: React.PointerEvent) {

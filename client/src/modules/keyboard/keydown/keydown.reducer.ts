@@ -10,7 +10,7 @@ import { undo } from 'modules/draw/timetravel/undo.reducer';
 import { redo } from 'modules/draw/timetravel/redo.reducer';
 import { paste, cut } from 'modules/draw/mixins/copypaste/copypaste.reducer';
 import { KeyboardState, KeyEvent } from 'modules/keyboard/keyboard.reducer';
-import { createGroup } from 'modules/draw/shape/group.reducer';
+import { createGroup, ungroup } from 'modules/draw/shape/group.reducer';
 import uuid from 'uuid';
 import { allSelectedIds } from 'modules/draw/mixins/select/select.reducer';
 
@@ -85,7 +85,7 @@ export const keydown = createAsyncThunk(
       shapes[select.id] &&
       shapes[select.id].type === 'grouping_rect'
     ) {
-      return dispatch(deleteDrawings({ ids: [select.id] }));
+      return dispatch(ungroup(select.id));
     }
   },
   { condition: (e: KeyEvent, thunkAPI) => LISTEN_KEYS.includes(e.code) }

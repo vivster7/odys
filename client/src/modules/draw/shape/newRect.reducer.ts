@@ -98,7 +98,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRectWithArrow> = (
     deltaWidth: 0,
     deltaHeight: 0,
     isSavedInDB: true,
-    inside: [],
+    parent: '',
   };
 
   state.newRect = null;

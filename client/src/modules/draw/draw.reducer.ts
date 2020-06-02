@@ -94,7 +94,12 @@ import {
 } from './mixins/copypaste/copypaste.reducer';
 import { RootState } from 'App';
 import { uniq, compact } from 'lodash';
-import { createGroup, createGroupPending } from './shape/group.reducer';
+import {
+  createGroup,
+  createGroupPending,
+  ungroup,
+  ungroupPending,
+} from './shape/group.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 export type ActionPending<T = void> = {
@@ -256,6 +261,9 @@ const drawSlice = createSlice({
     [createGroup.pending as any]: createGroupPending,
     [createGroup.fulfilled as any]: (state, action) => {},
     [createGroup.rejected as any]: (state, action) => {},
+    [ungroup.pending as any]: ungroupPending,
+    [ungroup.fulfilled as any]: (state, action) => {},
+    [ungroup.rejected as any]: (state, action) => {},
     // arrow
     [fetchArrows.pending as any]: (state, action) => {},
     [fetchArrows.fulfilled as any]: fetchArrowsFulfilled,
