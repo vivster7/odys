@@ -17,7 +17,7 @@ const throttledKeydown = throttle(
   (dispatch: OdysDispatch, payload: KeyEvent) => {
     dispatch(keydown(payload));
   },
-  150
+  50
 );
 
 const Room: React.FC = () => {
