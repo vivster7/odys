@@ -8,6 +8,7 @@ import {
   cursorWithinEpsilon,
   translateCursorPosition,
 } from 'modules/canvas/cursor/cursor';
+import { CreateGroup } from 'modules/draw/shape/type/GroupingRect';
 
 interface MultiDragState {
   startX: number;
@@ -31,7 +32,6 @@ const MultiSelect: React.FC = () => {
   const borderPadding = 20 / canvasScale;
   const dashArray = 5 / canvasScale;
   const borderWidth = 2 / canvasScale;
-
   const [multiDrag, setMultiDrag] = useState<MultiDragState | null>(null);
 
   function handlePointerDown(e: React.PointerEvent) {
@@ -121,24 +121,28 @@ const MultiSelect: React.FC = () => {
       ></rect>
     );
   } else if (selectionOutline) {
+    const x =
+      selectionOutline.x - borderPadding + ((multiDrag && multiDrag.x) || 0);
+    const y =
+      selectionOutline.y - borderPadding + ((multiDrag && multiDrag.y) || 0);
+    const width = selectionOutline.width + borderPadding + borderPadding;
+    const height = selectionOutline.height + borderPadding + borderPadding;
+
     return (
-      <rect
-        x={
-          selectionOutline.x - borderPadding + ((multiDrag && multiDrag.x) || 0)
-        }
-        y={
-          selectionOutline.y - borderPadding + ((multiDrag && multiDrag.y) || 0)
-        }
-        width={selectionOutline.width + borderPadding + borderPadding}
-        height={selectionOutline.height + borderPadding + borderPadding}
-        fill="white"
-        fillOpacity="0"
-        stroke={COLORS.selectionArea}
-        strokeDasharray={dashArray + 'px'}
-        strokeWidth={borderWidth + 'px'}
-        cursor="grab"
-        onPointerDown={(e) => handlePointerDown(e)}
-      ></rect>
+      <g transform={`translate(${x}, ${y})`}>
+        <rect
+          width={width}
+          height={height}
+          fill="white"
+          fillOpacity="0"
+          stroke={COLORS.selectionArea}
+          strokeDasharray={dashArray + 'px'}
+          strokeWidth={borderWidth + 'px'}
+          cursor="grab"
+          onPointerDown={(e) => handlePointerDown(e)}
+        ></rect>
+        <CreateGroup width={width} height={height}></CreateGroup>
+      </g>
     );
   }
   return <></>;

@@ -4,6 +4,7 @@ import { COLORS } from 'global/colors';
 import TextBlock from 'modules/draw/mixins/editText/TextBlock';
 import SelectionCircles from 'modules/draw/mixins/select/SelectionCircles';
 import { Player } from 'modules/players/players.reducer';
+import { Ungroup } from './GroupingRect';
 export const SHAPE_WIDTH = 150;
 export const SHAPE_HEIGHT = 75;
 
@@ -120,6 +121,9 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
           width={width + deltaWidth}
           height={height + deltaHeight}
         ></SelectionCircles>
+      )}
+      {isSelected && shape.type === 'grouping_rect' && (
+        <Ungroup shape={shape}></Ungroup>
       )}
     </g>
   );

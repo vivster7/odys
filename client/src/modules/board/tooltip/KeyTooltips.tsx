@@ -52,24 +52,6 @@ const KeyTooltips: React.FC = () => {
         >
           ⇧ [Shift]
         </KeyToggle>
-        {isMultiSelecting && (
-          <KeyToggle
-            onClick={(e) => dispatch(createGroup(uuid.v4()))}
-            isToggled={isGPressed}
-            tips={[]}
-          >
-            G [Group]
-          </KeyToggle>
-        )}
-        {selectedId && isGroupingRectSelected && !isMultiSelecting && (
-          <KeyToggle
-            onClick={(e) => dispatch(deleteDrawings({ ids: [selectedId] }))}
-            isToggled={isGPressed}
-            tips={[]}
-          >
-            G [Ungroup]
-          </KeyToggle>
-        )}
       </div>
     </>
   );

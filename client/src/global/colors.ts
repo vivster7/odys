@@ -14,6 +14,7 @@ const STORM_PETREL = '#8395a7';
 
 export const COLORS = {
   select: BLURPLE,
+  createGroupText: BLURPLE,
   groupingRectBG: HINT_OF_ICE_PACK,
   groupingRectDefault: CITY_LIGHTS,
   rectBg: ANTI_FLASH_WHITE,
