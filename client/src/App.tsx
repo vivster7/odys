@@ -64,11 +64,11 @@ const syncEnhancer: StoreEnhancer = (createStore) => (
   initialState
 ) => {
   const syncedRootReducer = (state: any, action: any) => {
-    const newState = reducer(state, action);
+    const newState = reducer(state, action) as any;
 
     if (action.type.startsWith('draw/')) {
       const diff = diffPatch.diff(state, newState);
-      if (diff) {
+      if (diff && newState.draw.loaded === 'success') {
         emitEvent('updatedState', diff);
       }
     }
