@@ -11,7 +11,12 @@ import { RootState } from 'App';
 export const createGroup = createAsyncThunk(
   'draw/createGroup',
   async (id: string, thunkAPI) => {
-    thunkAPI.dispatch(save([id]));
+    const state = thunkAPI.getState() as RootState;
+    const shape = state.draw.shapes[id];
+    const children = findDirectChildren(state.draw, [shape.id]);
+    const ids = [id].concat(children.map((c) => c.id));
+
+    thunkAPI.dispatch(save(ids));
   }
 );
 
@@ -80,25 +85,42 @@ export const createGroupPending: DrawActionPending<string> = (
   state.timetravel.redos = [];
 };
 
+// This is module state to share information between the ungroup action
+// and the pending/fulfilled/rejected reducers.
+// It is key'd by requestId to be thread-safe.
+const ungroupState: {
+  [requestId: string]: string[];
+} = {};
+
 export const ungroup = createAsyncThunk(
   'draw/ungroup',
   async (id: string, thunkAPI) => {
-    const state = thunkAPI.getState() as RootState;
-    const shape = state.draw.shapes[id];
-    const children = findDirectChildren(state.draw, [shape]);
-
-    thunkAPI.dispatch(save(children.map((c) => c.id)));
+    const requestId = thunkAPI.requestId;
+    const childrenIds = ungroupState[requestId];
+    thunkAPI.dispatch(save(childrenIds));
     thunkAPI.dispatch(deleteDrawings({ ids: [id] }));
   }
 );
 
 export const ungroupPending: DrawActionPending<string> = (state, action) => {
+  const { requestId } = action.meta;
   const id = action.meta.arg;
   const shape = state.shapes[id];
   shape.isDeleted = true;
 
-  const children = findDirectChildren(state, [shape]);
+  const children = findDirectChildren(state, [shape.id]);
   children.forEach((c) => (c.parentId = ''));
+  ungroupState[requestId] = children.map((c) => c.id);
+};
+
+export const ungroupRejected: DrawActionPending<string> = (state, action) => {
+  const { requestId } = action.meta;
+  delete ungroupState[requestId];
+};
+
+export const ungroupFulfilled: DrawActionPending<string> = (state, action) => {
+  const { requestId } = action.meta;
+  delete ungroupState[requestId];
 };
 
 export function findChildrenRecursively(
@@ -108,7 +130,10 @@ export function findChildrenRecursively(
   let queue = [...parents];
   let allChildren: Shape[] = [];
   while (queue.length !== 0) {
-    const children = findDirectChildren(state, queue);
+    const children = findDirectChildren(
+      state,
+      queue.map((s) => s.id)
+    );
     allChildren = allChildren.concat(children);
 
     const next = children.filter((s) => s.type === 'grouping_rect');
@@ -117,7 +142,7 @@ export function findChildrenRecursively(
   return allChildren;
 }
 
-function findDirectChildren(state: DrawState, parents: Shape[]): Shape[] {
-  const parentIds = new Set(parents.map((p) => p.id));
-  return Object.values(state.shapes).filter((s) => parentIds.has(s.parentId));
+function findDirectChildren(state: DrawState, parentIds: string[]): Shape[] {
+  const set = new Set(parentIds);
+  return Object.values(state.shapes).filter((s) => set.has(s.parentId));
 }

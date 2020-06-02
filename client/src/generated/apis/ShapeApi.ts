@@ -28,6 +28,7 @@ export interface ShapeDeleteRequest {
   type?: string;
   createdAtZoomLevel?: string;
   isDeleted?: boolean;
+  parentId?: string;
   prefer?: ShapeDeletePreferEnum;
 }
 
@@ -44,6 +45,7 @@ export interface ShapeGetRequest {
   type?: string;
   createdAtZoomLevel?: string;
   isDeleted?: boolean;
+  parentId?: string;
   select?: string;
   order?: string;
   range?: string;
@@ -66,6 +68,7 @@ export interface ShapePatchRequest {
   type?: string;
   createdAtZoomLevel?: string;
   isDeleted?: boolean;
+  parentId?: string;
   prefer?: ShapePatchPreferEnum;
   shape?: OdysShape;
 }
@@ -135,6 +138,10 @@ export class ShapeApi extends runtime.BaseAPI {
 
     if (requestParameters.isDeleted !== undefined) {
       queryParameters['is_deleted'] = requestParameters.isDeleted;
+    }
+
+    if (requestParameters.parentId !== undefined) {
+      queryParameters['parent_id'] = requestParameters.parentId;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -218,6 +225,10 @@ export class ShapeApi extends runtime.BaseAPI {
 
     if (requestParameters.isDeleted !== undefined) {
       queryParameters['is_deleted'] = requestParameters.isDeleted;
+    }
+
+    if (requestParameters.parentId !== undefined) {
+      queryParameters['parent_id'] = requestParameters.parentId;
     }
 
     if (requestParameters.select !== undefined) {
@@ -336,6 +347,10 @@ export class ShapeApi extends runtime.BaseAPI {
 
     if (requestParameters.isDeleted !== undefined) {
       queryParameters['is_deleted'] = requestParameters.isDeleted;
+    }
+
+    if (requestParameters.parentId !== undefined) {
+      queryParameters['parent_id'] = requestParameters.parentId;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};

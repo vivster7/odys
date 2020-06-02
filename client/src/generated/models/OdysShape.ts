@@ -93,6 +93,12 @@ export interface OdysShape {
    * @memberof OdysShape
    */
   isDeleted: boolean;
+  /**
+   *
+   * @type {string}
+   * @memberof OdysShape
+   */
+  parentId: string;
 }
 
 export function OdysShapeFromJSON(json: any): OdysShape {
@@ -119,6 +125,7 @@ export function OdysShapeFromJSONTyped(
     type: json['type'],
     createdAtZoomLevel: json['created_at_zoom_level'],
     isDeleted: json['is_deleted'],
+    parentId: json['parent_id'],
   };
 }
 
@@ -142,5 +149,6 @@ export function OdysShapeToJSON(value?: OdysShape | null): any {
     type: value.type,
     created_at_zoom_level: value.createdAtZoomLevel,
     is_deleted: value.isDeleted,
+    parent_id: value.parentId,
   };
 }

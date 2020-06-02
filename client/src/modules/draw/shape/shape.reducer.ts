@@ -75,7 +75,6 @@ export const fetchShapesFulfilled = (
       translateY: 0,
       deltaWidth: 0,
       deltaHeight: 0,
-      parentId: '',
     };
     state.shapes[s.id] = shape;
     //TODO: order should be saved on server.
