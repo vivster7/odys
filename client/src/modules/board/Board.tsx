@@ -18,7 +18,7 @@ const BoardLoading: React.FC = () => (
     style={{
       height: '100%',
       width: '100%',
-      background: COLORS.appBg,
+      background: COLORS.canvas,
     }}
   ></div>
 );
