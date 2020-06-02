@@ -51,7 +51,7 @@ export const createGroupPending: DrawActionPending<string> = (
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     isDeleted: false,
-    parent: '',
+    parentId: '',
   };
 
   state.shapes[id] = group;
@@ -60,8 +60,8 @@ export const createGroupPending: DrawActionPending<string> = (
   Object.keys(selectedShapeIds).forEach((id) => {
     const shape = state.shapes[id];
     // cannot automatically reparent
-    if (!shape.parent) {
-      shape.parent = group.id;
+    if (!shape.parentId) {
+      shape.parentId = group.id;
     }
   });
 
@@ -98,7 +98,7 @@ export const ungroupPending: DrawActionPending<string> = (state, action) => {
   shape.isDeleted = true;
 
   const children = findDirectChildren(state, [shape]);
-  children.forEach((c) => (c.parent = ''));
+  children.forEach((c) => (c.parentId = ''));
 };
 
 export function findChildrenRecursively(
@@ -119,5 +119,5 @@ export function findChildrenRecursively(
 
 function findDirectChildren(state: DrawState, parents: Shape[]): Shape[] {
   const parentIds = new Set(parents.map((p) => p.id));
-  return Object.values(state.shapes).filter((s) => parentIds.has(s.parent));
+  return Object.values(state.shapes).filter((s) => parentIds.has(s.parentId));
 }

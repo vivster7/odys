@@ -93,7 +93,7 @@ function ghostRectProps(x: number, y: number) {
     deltaWidth: 0,
     deltaHeight: 0,
     isSavedInDB: false,
-    parent: '',
+    parentId: '',
   };
 
   const shapeProps: ShapeTypeProps = {

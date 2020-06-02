@@ -82,8 +82,10 @@ export const pastePending: DrawActionPending = (state, action) => {
     shapes.map((s, i) => [s.id, clonedShapes[i].id])
   );
 
-  // after creating the `oldToNew` mapping, we can update the `parent` value
-  clonedShapes.forEach((s) => (s.parent = s.parent && oldToNew[s.parent]));
+  // after creating the `oldToNew` mapping, we can update the `parentId` value
+  clonedShapes.forEach(
+    (s) => (s.parentId = s.parentId && oldToNew[s.parentId])
+  );
   const clonedArrows = arrows.map((a) => cloneArrow(oldToNew, a));
 
   clonedShapes.forEach((s) => (state.shapes[s.id] = s));

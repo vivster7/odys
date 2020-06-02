@@ -12,7 +12,7 @@ import odysClient from 'global/odysClient';
 
 export type Shape = Rect | GroupingRect | Text;
 interface Parentable {
-  parent: string;
+  parentId: string;
 }
 
 type ShapeMixins = Draggable &
@@ -75,7 +75,7 @@ export const fetchShapesFulfilled = (
       translateY: 0,
       deltaWidth: 0,
       deltaHeight: 0,
-      parent: '',
+      parentId: '',
     };
     state.shapes[s.id] = shape;
     //TODO: order should be saved on server.
