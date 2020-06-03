@@ -1,8 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { addError } from 'modules/errors/errors.reducer';
-
 import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
 import { selectDrawing } from '../draw.reducer';
@@ -11,8 +9,6 @@ import { setCursorOver } from 'modules/canvas/canvas.reducer';
 import { computeCurve } from './path';
 import { Shape } from 'modules/draw/shape/shape.reducer';
 import TextBlock from 'modules/draw/mixins/editText/TextBlock';
-
-const TEXT_PADDING = 5;
 
 export interface ArrowTypeProps {
   id: string;
@@ -36,7 +32,6 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
   } = props;
   const dispatch = useDispatch();
 
-  const fontSize = 12;
   const strokeWidth = 3;
   const selectionTargetWidth = 20;
 
