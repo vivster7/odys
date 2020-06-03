@@ -69,7 +69,7 @@ const syncEnhancer: StoreEnhancer = (createStore) => (
     if (action.type.startsWith('draw/')) {
       const diff = diffPatch.diff(state, newState);
       if (diff && newState.draw.loaded === 'success') {
-        emitEvent('updatedState', diff);
+        setTimeout(() => emitEvent('updatedState', diff), 0);
       }
     }
 
