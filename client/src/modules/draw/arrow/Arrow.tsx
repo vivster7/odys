@@ -9,8 +9,6 @@ import { setCursorOver } from 'modules/canvas/canvas.reducer';
 import { computeCurve } from './path';
 import { Shape } from 'modules/draw/shape/shape.reducer';
 
-const TEXT_PADDING = 5;
-
 export interface ArrowTypeProps {
   id: string;
   fromShape: Shape;
@@ -23,11 +21,10 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
   const { id, fromShape, toShape, text, color } = props;
   const dispatch = useDispatch();
 
-  const fontSize = 12;
   const strokeWidth = 3;
   const selectionTargetWidth = 20;
 
-  const { path, x1, x2, y1, y2 } = computeCurve(fromShape, toShape);
+  const { path } = computeCurve(fromShape, toShape);
 
   const isGhost = id === '' && text === '';
 
@@ -80,18 +77,6 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
             fill="transparent"
             d={path}
           />
-          <text
-            x={(x1 + x2) / 2}
-            y={(y1 + y2) / 2 - TEXT_PADDING}
-            textAnchor="middle"
-            textRendering="optimizeSpeed"
-            dominantBaseline="baseline"
-            fontSize={fontSize + 'px'}
-            fill={COLORS.text}
-            onPointerDown={(e) => handlePointerDown(e)}
-          >
-            {text}
-          </text>
         </>
       )}
     </g>

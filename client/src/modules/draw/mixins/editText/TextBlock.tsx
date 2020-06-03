@@ -16,7 +16,6 @@ interface TextBlockProps {
   width: number;
   height: number;
   text: string;
-  createdAtZoomLevel: number;
   isSelected: boolean;
   alignText: string;
   placeholderText?: string;

@@ -109,7 +109,6 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         height={height + deltaHeight}
         text={text}
         placeholderText={placeholderText}
-        createdAtZoomLevel={createdAtZoomLevel}
         alignText={alignText}
       />
       {(isSelected || isMultiSelected || isGhost) && (
