@@ -19,6 +19,7 @@ interface TextBlockProps {
   isSelected: boolean;
   alignText: string;
   placeholderText?: string;
+  backgroundColor?: string;
 }
 
 const TextBlock: React.FC<TextBlockProps> = (props) => {
@@ -35,6 +36,7 @@ const TextBlock: React.FC<TextBlockProps> = (props) => {
     placeholderText = DEFAULT_PLACEHOLDER_TEXT,
     alignText,
     isSelected,
+    backgroundColor,
   } = props;
 
   const usePlaceholder = isSelected && isEmpty(text) && !isEditing;
@@ -139,6 +141,7 @@ const TextBlock: React.FC<TextBlockProps> = (props) => {
           suppressContentEditableWarning
           style={{
             color: usePlaceholder ? COLORS.placeholderText : COLORS.text,
+            backgroundColor: backgroundColor,
             fontSize: usePlaceholder ? '12px' : '14px',
             textAlign: 'center',
             lineHeight: '1.25rem',

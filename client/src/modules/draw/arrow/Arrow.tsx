@@ -102,6 +102,11 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
             height={Math.max(Math.abs(y2 - y1), 40)}
             text={text}
             alignText="center"
+            backgroundColor={
+              isSelected
+                ? 'rgba(231, 235, 239, 0.9)'
+                : 'rgba(231, 235, 239, 0.3)'
+            }
           />
         </>
       )}
