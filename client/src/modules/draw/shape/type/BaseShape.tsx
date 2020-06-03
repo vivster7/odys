@@ -22,6 +22,7 @@ export interface BaseShapeProps {
   playerSelected?: Player;
   onPointerDown: (e: React.PointerEvent) => void;
   onPointerOver: (e: React.PointerEvent) => void;
+  isCmdPressed: boolean;
 }
 
 const BaseShape: React.FC<BaseShapeProps> = (props) => {
@@ -39,6 +40,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     playerSelected,
     onPointerDown,
     onPointerOver,
+    isCmdPressed,
   } = props;
 
   const {
@@ -89,7 +91,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
       cursor={cursor}
       opacity={isSavedInDB ? 1 : 0.5}
       onPointerDown={(e) => onPointerDown(e)}
-      onPointerOver={(e) => onPointerOver(e)}
+      onPointerOver={isCmdPressed ? (e) => onPointerOver(e) : undefined}
     >
       <rect
         width={width + deltaWidth}

@@ -368,7 +368,7 @@ const Canvas: React.FC = () => {
           transform={`translate(${topLeftX * (1 / scale) * -1}, ${
             topLeftY * (1 / scale) * -1
           }) scale(${1 / scale})`}
-          onPointerOver={(e) => handlePointerOver(e)}
+          onPointerOver={isCmdPressed ? (e) => handlePointerOver(e) : undefined}
         >
           {/* TODO: 2000 magic number should equal screen width/height on initial load */}
           <rect height="2000" width="2000" opacity="0"></rect>

@@ -15,10 +15,11 @@ export interface ArrowTypeProps {
   toShape: Shape;
   text: string;
   color: string;
+  isCmdPressed: boolean;
 }
 
 export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
-  const { id, fromShape, toShape, text, color } = props;
+  const { id, fromShape, toShape, text, color, isCmdPressed } = props;
   const dispatch = useDispatch();
 
   const strokeWidth = 3;
@@ -44,7 +45,7 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
     <g
       id={props.id}
       onPointerDown={(e) => handlePointerDown(e)}
-      onPointerOver={(e) => handlePointerOver(e)}
+      onPointerOver={isCmdPressed ? (e) => handlePointerOver(e) : undefined}
       cursor="pointer"
     >
       <defs>
@@ -92,6 +93,7 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const r2 = useSelector((s) => s.draw.shapes[arrow.toShapeId]);
 
   const isSelected = useSelector((s) => s.draw.select?.id === id);
+  const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
 
   const color = isSelected
     ? COLORS.select
@@ -118,11 +120,12 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   return (
     <Path
       {...{
-        id: id,
+        id,
+        isCmdPressed,
+        color,
         text: arrow.text,
         fromShape: r1,
         toShape: r2,
-        color: color,
       }}
     />
   );

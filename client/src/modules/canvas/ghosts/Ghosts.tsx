@@ -70,6 +70,7 @@ function ghostArrowProps(fromShape: Shape, toShape: Shape) {
     toShape: toShape,
     text: '',
     color: COLORS.ghost,
+    isCmdPressed: false,
   };
   return arrowProps;
 }
@@ -103,6 +104,7 @@ function ghostRectProps(x: number, y: number) {
     isSelected: false,
     onPointerDown: () => {},
     onPointerOver: () => {},
+    isCmdPressed: false,
   };
 
   return shapeProps;
