@@ -70,6 +70,7 @@ function ghostArrowProps(fromShape: Shape, toShape: Shape) {
     toShape: toShape,
     text: '',
     color: COLORS.ghost,
+    isSelected: false,
   };
   return arrowProps;
 }

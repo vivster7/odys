@@ -11,8 +11,8 @@ const DEFAULT_PLACEHOLDER_TEXT = 'Click to edit text';
 
 interface TextBlockProps {
   id: string;
-  // x: number;
-  // y: number;
+  x?: number;
+  y?: number;
   width: number;
   height: number;
   text: string;
@@ -27,6 +27,8 @@ const TextBlock: React.FC<TextBlockProps> = (props) => {
 
   const {
     id,
+    x,
+    y,
     width,
     height,
     text,
@@ -121,7 +123,7 @@ const TextBlock: React.FC<TextBlockProps> = (props) => {
   };
 
   return (
-    <foreignObject width={width} height={height}>
+    <foreignObject width={width} height={height} x={x} y={y}>
       <div
         style={{
           display: 'flex',

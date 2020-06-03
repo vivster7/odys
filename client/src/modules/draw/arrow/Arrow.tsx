@@ -1,6 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 
+import { addError } from 'modules/errors/errors.reducer';
+
 import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
 import { selectDrawing } from '../draw.reducer';
@@ -8,6 +10,9 @@ import { useSelector } from 'global/redux';
 import { setCursorOver } from 'modules/canvas/canvas.reducer';
 import { computeCurve } from './path';
 import { Shape } from 'modules/draw/shape/shape.reducer';
+import TextBlock from 'modules/draw/mixins/editText/TextBlock';
+
+const TEXT_PADDING = 5;
 
 export interface ArrowTypeProps {
   id: string;
@@ -15,16 +20,18 @@ export interface ArrowTypeProps {
   toShape: Shape;
   text: string;
   color: string;
+  isSelected: boolean;
 }
 
 export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
-  const { id, fromShape, toShape, text, color } = props;
+  const { id, fromShape, toShape, text, color, isSelected } = props;
   const dispatch = useDispatch();
 
+  const fontSize = 12;
   const strokeWidth = 3;
   const selectionTargetWidth = 20;
 
-  const { path } = computeCurve(fromShape, toShape);
+  const { path, x1, x2, y1, y2 } = computeCurve(fromShape, toShape);
 
   const isGhost = id === '' && text === '';
 
@@ -77,6 +84,16 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
             fill="transparent"
             d={path}
           />
+          <TextBlock
+            id={id}
+            isSelected={isSelected}
+            x={Math.min(x1, x2)}
+            y={Math.min(y1, y2)}
+            width={Math.max(Math.abs(x2 - x1), 100)}
+            height={Math.max(Math.abs(y2 - y1), 40)}
+            text={text}
+            alignText="center"
+          />
         </>
       )}
     </g>
@@ -123,6 +140,7 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
         fromShape: r1,
         toShape: r2,
         color: color,
+        isSelected: isSelected,
       }}
     />
   );
