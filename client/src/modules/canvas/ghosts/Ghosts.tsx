@@ -71,6 +71,7 @@ function ghostArrowProps(fromShape: Shape, toShape: Shape) {
     text: '',
     color: COLORS.ghost,
     isCmdPressed: false,
+    isSelected: false,
   };
   return arrowProps;
 }
