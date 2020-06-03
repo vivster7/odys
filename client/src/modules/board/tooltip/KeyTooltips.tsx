@@ -1,26 +1,10 @@
 import React from 'react';
 import KeyToggle from './KeyToggle';
 import { useSelector } from 'global/redux';
-import { useDispatch } from 'react-redux';
-import { createGroup } from 'modules/draw/shape/group.reducer';
-import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
-import uuid from 'uuid';
 
 const KeyTooltips: React.FC = () => {
-  const dispatch = useDispatch();
-
   const isShiftPressed = useSelector((s) => s.keyboard.shiftKey);
   const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
-  const isGPressed = useSelector((s) => s.keyboard.gKey);
-
-  const selectedId = useSelector((s) => s.draw.select?.id);
-  const selectedShape = useSelector(
-    (s) => selectedId && s.draw.shapes[selectedId]
-  );
-  const isGroupingRectSelected =
-    selectedShape && selectedShape.type === 'grouping_rect';
-
-  const isMultiSelecting = useSelector((s) => s.draw.multiSelect);
 
   const platform = window.navigator.platform;
   const cmdOrCtrl = platform.includes('Mac') ? 'Command' : 'Ctrl';
