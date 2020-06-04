@@ -133,7 +133,7 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
   applySelect(state, shapes);
 };
 
-export const selectAllFn: DrawReducer<string> = (state, action) => {
+export const selectAllFn: DrawReducer = (state, action) => {
   const shapeIds = Object.keys(state.shapes);
   const shapes = Object.values(state.shapes).filter((s) => !s.isDeleted);
 

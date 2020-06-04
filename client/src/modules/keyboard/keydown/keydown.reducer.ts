@@ -50,7 +50,7 @@ export const keydown = createAsyncThunk(
     }
 
     if (e.code === 'KeyA' && e.metaKey) {
-      return dispatch(selectAll(state.players.self));
+      return dispatch(selectAll());
     }
 
     if (e.code === 'KeyZ' && e.metaKey) {
