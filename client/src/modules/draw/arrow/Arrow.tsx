@@ -52,14 +52,7 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
   }
 
   return (
-    <g
-      id={props.id}
-      onPointerDown={(e) => handlePointerDown(e)}
-      onPointerOver={
-        shouldIgnorePointerOver ? undefined : (e) => handlePointerOver(e)
-      }
-      cursor="pointer"
-    >
+    <g id={props.id} cursor="pointer">
       <defs>
         <marker
           id={`arrowhead.${props.id}`}
@@ -84,22 +77,26 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
       ) : (
         <>
           <path
+            onPointerDown={(e) => handlePointerDown(e)}
+            onPointerOver={
+              shouldIgnorePointerOver ? undefined : (e) => handlePointerOver(e)
+            }
             stroke={color}
             strokeOpacity="0"
             strokeWidth={selectionTargetWidth + 'px'}
             fill="transparent"
             d={path}
           />
-          <TextBlock
-            id={id}
-            isSelected={isSelected}
-            x={Math.min(x1, x2)}
-            y={Math.min(y1, y2)}
-            width={Math.max(Math.abs(x2 - x1), 100)}
-            height={Math.max(Math.abs(y2 - y1), 40)}
-            text={text}
-            alignText="center"
-          />
+          {/* <TextBlock
+              id={id}
+              isSelected={isSelected}
+              x={Math.min(x1, x2)}
+              y={Math.min(y1, y2)}
+              width={Math.max(Math.abs(x2 - x1), 100)}
+              height={Math.max(Math.abs(y2 - y1), 40)}
+              text={text}
+              alignText="center"
+            /> */}
         </>
       )}
     </g>
