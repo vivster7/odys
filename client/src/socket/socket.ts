@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { registerSelf } from 'modules/players/players.reducer';
+import { registerSelf, unregisterSelf } from 'modules/players/players.reducer';
 import { OdysDispatch } from 'App';
 
 export interface ClientEvent {
@@ -14,6 +14,10 @@ export function connect(dispatch: OdysDispatch, roomId: string) {
 
   socket.on('connect', () => {
     dispatch(registerSelf(socket.id));
+  });
+
+  socket.on('disconnect', () => {
+    dispatch(unregisterSelf());
   });
 }
 

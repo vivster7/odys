@@ -20,6 +20,15 @@ export const registerSelfFn: PlayersReducer<string> = (state, action) => {
   connectPlayersFn(state, connectPlayerAction);
 };
 
+export const unregisterSelfFn: PlayersReducer = (state, action) => {
+  const id = state.self;
+  const disconnectPlayerAction = {
+    type: 'players/disconnectPlayer',
+    payload: id,
+  };
+  disconnectPlayerFn(state, disconnectPlayerAction);
+};
+
 export const connectPlayersFn: PlayersReducer<string[]> = (state, action) => {
   const playerIds = action.payload;
 
