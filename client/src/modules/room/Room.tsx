@@ -10,7 +10,7 @@ import { useCursorMovedListener } from 'modules/players/mixins/cursor/cursor';
 
 import { connect, registerSocketListener } from 'socket/socket';
 import { syncState, OdysDispatch } from 'App';
-import { keyup, KeyEvent } from 'modules/keyboard/keyboard.reducer';
+import { keyup, KeyEvent, clearKeys } from 'modules/keyboard/keyboard.reducer';
 import throttle from 'lodash.throttle';
 
 const throttledKeydown = throttle(
@@ -47,6 +47,13 @@ const Room: React.FC = () => {
       };
       dispatch(keyup(payload));
     };
+
+    // reset keys when switching tabs
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        dispatch(clearKeys());
+      }
+    });
 
     window.addEventListener('keydown', downHandler, { capture: true });
     window.addEventListener('keyup', upHandler, { capture: true });
