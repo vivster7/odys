@@ -101,6 +101,9 @@ const Canvas: React.FC = () => {
   const isShiftPressed = useSelector((s) => s.keyboard.shiftKey);
   const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
   const selectedShapeId = useSelector((s) => s.draw.select?.id);
+  const shouldIgnorePointerOver = useSelector(
+    (s) => !!s.draw.drag || !!s.draw.resize
+  );
 
   const selectMode = isShiftPressed;
   const insertMode = isCmdPressed;
@@ -368,7 +371,9 @@ const Canvas: React.FC = () => {
           transform={`translate(${topLeftX * (1 / scale) * -1}, ${
             topLeftY * (1 / scale) * -1
           }) scale(${1 / scale})`}
-          onPointerOver={isCmdPressed ? (e) => handlePointerOver(e) : undefined}
+          onPointerOver={
+            shouldIgnorePointerOver ? undefined : (e) => handlePointerOver(e)
+          }
         >
           {/* TODO: 2000 magic number should equal screen width/height on initial load */}
           <rect height="2000" width="2000" opacity="0"></rect>

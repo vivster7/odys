@@ -26,7 +26,7 @@ export interface ShapeTypeProps {
   playerSelected?: Player;
   onPointerDown: (e: React.PointerEvent) => void;
   onPointerOver: (e: React.PointerEvent) => void;
-  isCmdPressed: boolean;
+  shouldIgnorePointerOver: boolean;
 }
 
 export const Shape: React.FC<DrawingProps> = (props) => {
@@ -44,7 +44,9 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     (s) => selectedShapeId && s.draw.shapes[selectedShapeId]
   );
   const isSelected = selectedShapeId === id;
-  const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
+  const shouldIgnorePointerOver = useSelector(
+    (s) => !!s.draw.drag || !!s.draw.resize
+  );
 
   function sharedOnPointerDown(
     e: React.PointerEvent,
@@ -106,7 +108,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     playerSelected,
     onPointerDown,
     onPointerOver,
-    isCmdPressed,
+    shouldIgnorePointerOver,
   };
 
   if (shape?.isDeleted) return <></>;

@@ -16,7 +16,7 @@ export interface ArrowTypeProps {
   toShape: Shape;
   text: string;
   color: string;
-  isCmdPressed: boolean;
+  shouldIgnorePointerOver: boolean;
   isSelected: boolean;
 }
 
@@ -27,7 +27,7 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
     toShape,
     text,
     color,
-    isCmdPressed,
+    shouldIgnorePointerOver,
     isSelected,
   } = props;
   const dispatch = useDispatch();
@@ -55,7 +55,9 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
     <g
       id={props.id}
       onPointerDown={(e) => handlePointerDown(e)}
-      onPointerOver={isCmdPressed ? (e) => handlePointerOver(e) : undefined}
+      onPointerOver={
+        shouldIgnorePointerOver ? undefined : (e) => handlePointerOver(e)
+      }
       cursor="pointer"
     >
       <defs>
@@ -113,7 +115,9 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const r2 = useSelector((s) => s.draw.shapes[arrow.toShapeId]);
 
   const isSelected = useSelector((s) => s.draw.select?.id === id);
-  const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
+  const shouldIgnorePointerOver = useSelector(
+    (s) => !!s.draw.drag || !!s.draw.resize
+  );
 
   const color = isSelected
     ? COLORS.select
@@ -141,7 +145,7 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
     <Path
       {...{
         id,
-        isCmdPressed,
+        shouldIgnorePointerOver,
         color,
         text: arrow.text,
         fromShape: r1,
