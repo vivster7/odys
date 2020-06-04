@@ -11,6 +11,7 @@ import {
 import { CreateGroup } from 'modules/draw/shape/type/GroupingRect';
 import { useSelectBoxResizeEmitter } from 'modules/players/mixins/selectbox/selectbox';
 import { useDebounce } from 'global/debounce';
+import SelectBox from 'modules/canvas/selectbox/SelectBox';
 
 interface MultiDragState {
   startX: number;
@@ -114,16 +115,16 @@ const MultiSelect: React.FC = () => {
 
   if (selectionRect) {
     return (
-      <rect
-        x={selectionRect.x}
-        y={selectionRect.y}
-        width={selectionRect.width}
-        height={selectionRect.height}
-        fill={COLORS.selectionArea}
-        fillOpacity="0.1"
-        stroke={COLORS.selectionInProgress}
-        strokeWidth={borderWidth + 'px'}
-      ></rect>
+      <SelectBox
+        box={{
+          x: selectionRect.x,
+          y: selectionRect.y,
+          width: selectionRect.width,
+          height: selectionRect.height,
+        }}
+        fillColor={COLORS.selectionArea}
+        strokeColor={COLORS.selectionInProgress}
+      ></SelectBox>
     );
   } else if (selectionOutline) {
     const x =
