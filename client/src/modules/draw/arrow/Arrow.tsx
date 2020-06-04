@@ -44,7 +44,8 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
 
   const isGhost = id === '' && text === '';
 
-  function handlePointerDown(e: React.PointerEvent) {
+  function handlePointerDown(e: React.MouseEvent) {
+    console.log('arrow clicked');
     e.stopPropagation();
     e.preventDefault();
     dispatch(selectDrawing({ id, shiftKey: e.shiftKey }));
@@ -59,8 +60,8 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
   return (
     <g
       id={props.id}
-      onPointerDown={(e) => handlePointerDown(e)}
       onPointerOver={isCmdPressed ? (e) => handlePointerOver(e) : undefined}
+      pointerEvents="visibleStroke"
       cursor="pointer"
     >
       <defs>
@@ -87,10 +88,11 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
       ) : (
         <>
           <path
-            stroke={color}
-            strokeOpacity="0"
+            stroke="red"
+            strokeOpacity="1"
             strokeWidth={selectionTargetWidth + 'px'}
-            fill="transparent"
+            fill="white"
+            onClick={(e) => handlePointerDown(e)}
             d={path}
           />
           <TextBlock

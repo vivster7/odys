@@ -133,8 +133,8 @@ const MultiSelect: React.FC = () => {
         <rect
           width={width}
           height={height}
-          fill="white"
-          fillOpacity="0"
+          fill={COLORS.selectionArea}
+          fillOpacity="0.1"
           stroke={COLORS.selectionArea}
           strokeDasharray={dashArray + 'px'}
           strokeWidth={borderWidth + 'px'}
