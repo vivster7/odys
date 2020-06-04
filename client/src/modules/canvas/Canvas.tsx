@@ -28,6 +28,7 @@ import { COLORS } from 'global/colors';
 import Cursors from './cursor/Cursors';
 import { cursorWithinEpsilon } from './cursor/cursor';
 import Ghosts from './ghosts/Ghosts';
+import PlayerSelectBoxes from './selectbox/PlayerSelectBoxes';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -380,6 +381,7 @@ const Canvas: React.FC = () => {
         </g>
         <DrawContainer></DrawContainer>
         <MultiSelect></MultiSelect>
+        <PlayerSelectBoxes></PlayerSelectBoxes>
         <Cursors></Cursors>
         <Ghosts></Ghosts>
       </g>

@@ -5,7 +5,7 @@ import { Cursor } from 'modules/canvas/cursor/cursor';
 import { OdysDispatch } from 'App';
 
 export interface PlayerCursor {
-  id: string;
+  playerId: string;
   cursor: Cursor;
 }
 
@@ -14,7 +14,7 @@ export function useCursorMovedListener(dispatch: OdysDispatch) {
     const onCursorMoved = (event: ClientEvent) => {
       dispatch(
         syncCursor({
-          id: event.clientId,
+          playerId: event.clientId,
           cursor: event.data,
         })
       );

@@ -1,24 +1,30 @@
 import React from 'react';
 import { useSelector } from 'global/redux';
+import { shallowEqual } from 'react-redux';
 
 const Cursors: React.FC = () => {
-  const players = useSelector((s) => s.players.players);
+  const players = useSelector((s) => s.players.players, shallowEqual);
+  const playerCursors = useSelector(
+    (s) => Object.values(s.players.cursors),
+    shallowEqual
+  );
 
   function renderCursors() {
-    const playerCursors = Object.values(players).filter((p) => p.cursor);
-
-    return playerCursors.map((player) => (
-      <use
-        style={{ pointerEvents: 'none' }}
-        key={player.id}
-        href="#cursor"
-        fill={player.color}
-        width="22px"
-        height="22px"
-        x={player.cursor?.x}
-        y={player.cursor?.y}
-      ></use>
-    ));
+    return playerCursors.map((pc) => {
+      const player = players[pc.playerId];
+      return (
+        <use
+          style={{ pointerEvents: 'none' }}
+          key={player.id}
+          href="#cursor"
+          fill={player.color}
+          width="22px"
+          height="22px"
+          x={pc.cursor.x}
+          y={pc.cursor.y}
+        ></use>
+      );
+    });
   }
 
   return (

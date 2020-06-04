@@ -7,7 +7,9 @@ import {
 } from './mixins/connection/connection.reducer';
 import { syncStateFn } from './mixins/sync/sync.reducer';
 import { syncCursorFn } from './mixins/cursor/sync.reducer';
-import { Cursor } from 'modules/canvas/cursor/cursor';
+import { syncSelectBoxFn } from './mixins/selectbox/sync.reducer';
+import { PlayerSelectBox } from './mixins/selectbox/selectbox';
+import { PlayerCursor } from './mixins/cursor/cursor';
 
 export type PlayersReducer<T = void> = CaseReducer<
   PlayersState,
@@ -17,7 +19,6 @@ export type PlayersReducer<T = void> = CaseReducer<
 export interface Player {
   id: string;
   color: string;
-  cursor?: Cursor;
 }
 
 export interface PlayerSelection {
@@ -29,12 +30,16 @@ export interface PlayersState {
   self: string;
   players: { [id: string]: Player };
   selections: PlayerSelection[];
+  selectBoxes: { [playerId: string]: PlayerSelectBox };
+  cursors: { [playerId: string]: PlayerCursor };
 }
 
 const initialState: PlayersState = {
   self: '',
   players: {},
   selections: [],
+  selectBoxes: {},
+  cursors: {},
 };
 
 const playersSlice = createSlice({
@@ -46,6 +51,7 @@ const playersSlice = createSlice({
     connectPlayers: connectPlayersFn,
     disconnectPlayer: disconnectPlayerFn,
     syncCursor: syncCursorFn,
+    syncSelectBox: syncSelectBoxFn,
   },
   extraReducers: { 'global/syncState': syncStateFn },
 });
@@ -56,6 +62,7 @@ export const {
   connectPlayers,
   disconnectPlayer,
   syncCursor,
+  syncSelectBox,
 } = playersSlice.actions;
 const playersReducer = playersSlice.reducer;
 export default playersReducer;

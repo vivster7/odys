@@ -9,6 +9,8 @@ import {
   translateCursorPosition,
 } from 'modules/canvas/cursor/cursor';
 import { CreateGroup } from 'modules/draw/shape/type/GroupingRect';
+import { useSelectBoxResizeEmitter } from 'modules/players/mixins/selectbox/selectbox';
+import { useDebounce } from 'global/debounce';
 
 interface MultiDragState {
   startX: number;
@@ -33,6 +35,9 @@ const MultiSelect: React.FC = () => {
   const dashArray = 5 / canvasScale;
   const borderWidth = 2 / canvasScale;
   const [multiDrag, setMultiDrag] = useState<MultiDragState | null>(null);
+
+  const debouncedSelectionRect = useDebounce(selectionRect, 10);
+  useSelectBoxResizeEmitter(debouncedSelectionRect);
 
   function handlePointerDown(e: React.PointerEvent) {
     e.stopPropagation();

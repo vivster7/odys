@@ -88,6 +88,10 @@ io.on('connection', (socket: socket.Socket) => {
     socket.on('cursorMoved', (data) => {
       broadcastToRoom('cursorMoved', data);
     });
+
+    socket.on('selectBoxResize', (data) => {
+      broadcastToRoom('selectBoxResize', data);
+    });
   };
 
   registerClientEvents();
