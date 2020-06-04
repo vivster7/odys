@@ -49,7 +49,9 @@ export const connectPlayersFn: PlayersReducer<string[]> = (state, action) => {
 
 export const disconnectPlayerFn: PlayersReducer<string> = (state, action) => {
   const id = action.payload;
-  delete state.players[id];
+  if (state.players[id]) delete state.players[id];
+  if (state.cursors[id]) delete state.cursors[id];
+  if (state.selectBoxes[id]) delete state.selectBoxes[id];
   // filter player out from selections
   state.selections = state.selections.filter((s) => s.id !== id);
 };
