@@ -27,7 +27,7 @@ const Ghosts: React.FC = () => {
     }
 
     if (
-      (cursorOver.type === 'rect' || cursorOver.type === 'grouping_rect') &&
+      ['rect', 'grouping_rect', 'text'].includes(cursorOver.type) &&
       selectedShape &&
       cursorOverShape &&
       selectedShape.id !== cursorOver.id &&
