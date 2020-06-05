@@ -10,6 +10,9 @@ import { syncCursorFn } from './mixins/cursor/sync.reducer';
 import { syncSelectBoxFn } from './mixins/selectbox/sync.reducer';
 import { PlayerSelectBox } from './mixins/selectbox/selectbox';
 import { PlayerCursor } from './mixins/cursor/cursor';
+import uuid from 'uuid';
+
+export const CURRENT_PLAYER_ID = uuid.v4();
 
 export type PlayersReducer<T = void> = CaseReducer<
   PlayersState,
@@ -35,7 +38,7 @@ export interface PlayersState {
 }
 
 const initialState: PlayersState = {
-  self: '',
+  self: CURRENT_PLAYER_ID,
   players: {},
   selections: [],
   selectBoxes: {},

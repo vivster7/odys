@@ -14,7 +14,7 @@ export function useCursorMovedListener(dispatch: OdysDispatch) {
     const onCursorMoved = (event: ClientEvent) => {
       dispatch(
         syncCursor({
-          playerId: event.clientId,
+          playerId: event.playerId,
           cursor: event.data,
         })
       );

@@ -21,7 +21,7 @@ export function useSelectBoxResizeListener(dispatch: OdysDispatch) {
     const onSelectBoxResize = (event: ClientEvent) => {
       dispatch(
         syncSelectBox({
-          playerId: event.clientId,
+          playerId: event.playerId,
           selectBox: event.data,
         })
       );

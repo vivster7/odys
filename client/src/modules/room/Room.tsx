@@ -23,7 +23,7 @@ const throttledKeydown = throttle(
 const Room: React.FC = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
-  const selfClientId = useSelector((s) => s.players.self);
+  const playerId = useSelector((s) => s.players.self);
 
   // listen to keydown/keyup events and fire events
   // kinda want this at app level, but app doesn't have access to dispatch yet.
@@ -73,12 +73,12 @@ const Room: React.FC = () => {
 
   useEffect(() => {
     const onSyncState = (data: any) => {
-      if (data.clientId !== selfClientId && data.data) {
+      if (data.playerId !== playerId && data.data) {
         dispatch(syncState(data));
       }
     };
     return registerSocketListener('updatedState', onSyncState);
-  }, [dispatch, selfClientId]);
+  }, [dispatch, playerId]);
 
   usePlayerConnectionListeners(dispatch);
   useCursorMovedListener(dispatch);

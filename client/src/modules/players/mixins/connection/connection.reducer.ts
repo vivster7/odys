@@ -7,15 +7,12 @@ import {
 } from 'modules/players/players.reducer';
 import { registerSocketListener } from 'socket/socket';
 import { PALETTE } from 'global/colors';
-import { difference, map } from 'lodash';
+import { difference } from 'lodash';
 
-export const registerSelfFn: PlayersReducer<string> = (state, action) => {
-  const id = action.payload;
-  state.self = id;
-
+export const registerSelfFn: PlayersReducer = (state, action) => {
   const connectPlayerAction = {
     type: 'players/connectPlayers',
-    payload: [id],
+    payload: [state.self],
   };
   connectPlayersFn(state, connectPlayerAction);
 };
@@ -37,7 +34,7 @@ export const connectPlayersFn: PlayersReducer<string[]> = (state, action) => {
     Object.values(state.players).map((p) => p.color)
   );
 
-  map(playerIds, (id, idx) => {
+  playerIds.forEach((id, idx) => {
     if (id && !state.players[id]) {
       state.players[id] = {
         id,

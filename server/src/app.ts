@@ -28,12 +28,19 @@ app.get('*', (req, res) => {
 const server = require('http').createServer(app);
 const io = socket(server);
 
+// players maps from socket.clientId to CURRENT_PLAYER_ID (client generated)
+const players: { [clientId: string]: string } = {};
+
 io.use((socket, next) => {
-  const roomId = socket.handshake.query?.roomId;
-  if (roomId) {
-    return next();
+  const { roomId = '', currentPlayerId = '' } = socket.handshake.query;
+  if (!roomId) {
+    return next(new Error('Handshake did not specify room to join'));
   }
-  return next(new Error('Handshake did not specify room to join'));
+  if (!currentPlayerId) {
+    return next(new Error('Handshake did not specify currentPlayerId'));
+  }
+
+  return next();
 });
 
 const connectExistingPlayersToSender = (
@@ -41,12 +48,14 @@ const connectExistingPlayersToSender = (
   roomId: string
 ) => {
   io.sockets.in(roomId).clients((err: any, clients: any) => {
-    clients = clients.filter((id: string) => id !== socket.id);
-    if (clients.length) {
-      console.log(`connecting existing players ${clients}`);
+    const others = clients.filter(
+      (id: string) => id !== socket.id && players[id]
+    );
+    if (others.length) {
+      console.log(`connecting existing players ${others}`);
       socket.emit(
         'playersConnected',
-        clients.map((id: string) => id)
+        others.map((id: string) => players[id])
       );
     }
   });
@@ -54,21 +63,30 @@ const connectExistingPlayersToSender = (
 
 io.on('connection', (socket: socket.Socket) => {
   const query = socket.handshake.query;
-  const roomId = query.roomId;
+  const { roomId, currentPlayerId } = query;
 
-  console.log('client connected', socket.id);
+  console.log(`client connected ${currentPlayerId} (${socket.id})`);
   socket.join(roomId);
+
+  // clean up if socket id has changed (e.g reconnected)
+  Object.keys(players).forEach((id) => {
+    if (players[id] === currentPlayerId) {
+      delete players[id];
+    }
+  });
+  players[socket.id] = currentPlayerId;
 
   const broadcastToRoom = (eventName: string, data: any) => {
     // console.log(`broadcast to room ${roomId}: ${eventName}`);
     socket.to(roomId).broadcast.emit(eventName, data);
   };
 
-  broadcastToRoom('playersConnected', [socket.id]);
+  broadcastToRoom('playersConnected', [players[socket.id]]);
   connectExistingPlayersToSender(socket, roomId);
 
   socket.on('disconnect', () => {
-    broadcastToRoom('playerDisconnected', socket.id);
+    broadcastToRoom('playerDisconnected', players[socket.id]);
+    delete players[socket.id];
   });
 
   const registerClientEvents = () => {
@@ -77,7 +95,7 @@ io.on('connection', (socket: socket.Socket) => {
       packet of data sent to include `clientId`.
     */
     socket.use((packet, next) => {
-      packet[1] = { data: packet[1], clientId: socket.id };
+      packet[1] = { data: packet[1], playerId: players[socket.id] };
       next();
     });
 

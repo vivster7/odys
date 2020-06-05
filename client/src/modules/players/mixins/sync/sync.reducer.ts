@@ -39,7 +39,7 @@ export const syncStateFn = (
   state: PlayersState,
   action: PayloadAction<any>
 ) => {
-  const clientId = action.payload.clientId;
+  const playerId = action.payload.playerId;
   const stateDiff = action.payload.data as any;
 
   if (stateDiff.players && stateDiff.players.players) {
@@ -56,17 +56,17 @@ export const syncStateFn = (
     drawDiff && (drawDiff.multiSelect as MultiSelectedDiff | null);
 
   if (selectedDiff) {
-    syncSelectedDiff(state, clientId, selectedDiff, multiSelectedDiff);
+    syncSelectedDiff(state, playerId, selectedDiff, multiSelectedDiff);
   }
 
   if (multiSelectedDiff) {
-    syncMultiSelectedDiff(state, clientId, selectedDiff, multiSelectedDiff);
+    syncMultiSelectedDiff(state, playerId, selectedDiff, multiSelectedDiff);
   }
 };
 
 const syncSelectedDiff = (
   state: PlayersState,
-  clientId: string,
+  playerId: string,
   selectedDiff: SelectedDiff,
   multiSelectedDiff: MultiSelectedDiff | null
 ) => {
@@ -75,24 +75,24 @@ const syncSelectedDiff = (
     if (prev && !next) {
       // unselect -- but defer to multiSelectedDiff if it exists
       if (!multiSelectedDiff) {
-        state.selections = state.selections.filter((s) => s.id !== clientId);
+        state.selections = state.selections.filter((s) => s.id !== playerId);
       }
     } else if (!prev && next) {
       // new selection
-      state.selections = state.selections.filter((s) => s.id !== clientId);
-      state.selections.push({ id: clientId, select: [next.id] });
+      state.selections = state.selections.filter((s) => s.id !== playerId);
+      state.selections.push({ id: playerId, select: [next.id] });
     }
   } else if (selectedDiff.hasOwnProperty('id')) {
     // changed selection
     const [prev, next] = selectedDiff.id; // eslint-disable-line
-    state.selections = state.selections.filter((s) => s.id !== clientId);
-    state.selections.push({ id: clientId, select: [next] });
+    state.selections = state.selections.filter((s) => s.id !== playerId);
+    state.selections.push({ id: playerId, select: [next] });
   }
 };
 
 const syncMultiSelectedDiff = (
   state: PlayersState,
-  clientId: string,
+  playerId: string,
   selectedDiff: SelectedDiff | null,
   multiSelectedDiff: MultiSelectedDiff
 ) => {
@@ -101,20 +101,20 @@ const syncMultiSelectedDiff = (
     if (prev && !next) {
       // unselect but defer to selectedDiff if it exists
       if (!selectedDiff) {
-        state.selections = state.selections.filter((s) => s.id !== clientId);
+        state.selections = state.selections.filter((s) => s.id !== playerId);
       }
     } else if (!prev && next) {
       // new selection
-      state.selections = state.selections.filter((s) => s.id !== clientId);
+      state.selections = state.selections.filter((s) => s.id !== playerId);
       state.selections.push({
-        id: clientId,
+        id: playerId,
         select: Object.keys(next.selectedShapeIds),
       });
     }
   } else if (multiSelectedDiff.hasOwnProperty('selectedShapeIds')) {
     // changed selection
     const selectedShapeIdsDiff = multiSelectedDiff.selectedShapeIds;
-    const selectionIdx = state.selections.findIndex((s) => s.id === clientId);
+    const selectionIdx = state.selections.findIndex((s) => s.id === playerId);
     if (selectionIdx >= 0) {
       const selectedIds = state.selections[selectionIdx].select;
       const set = new Set(selectedIds);
