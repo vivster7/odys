@@ -24,6 +24,7 @@ const Room: React.FC = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const playerId = useSelector((s) => s.players.self);
+  const isDrawStateLoaded = useSelector((s) => s.draw.loaded);
 
   // listen to keydown/keyup events and fire events
   // kinda want this at app level, but app doesn't have access to dispatch yet.
@@ -73,12 +74,12 @@ const Room: React.FC = () => {
 
   useEffect(() => {
     const onSyncState = (data: any) => {
-      if (data.playerId !== playerId && data.data) {
+      if (data.playerId !== playerId && data.data && isDrawStateLoaded) {
         dispatch(syncState(data));
       }
     };
     return registerSocketListener('updatedState', onSyncState);
-  }, [dispatch, playerId]);
+  }, [dispatch, playerId, isDrawStateLoaded]);
 
   usePlayerConnectionListeners(dispatch);
   useCursorMovedListener(dispatch);
