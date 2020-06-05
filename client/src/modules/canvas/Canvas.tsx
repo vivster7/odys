@@ -361,6 +361,7 @@ const Canvas: React.FC = () => {
 
     const text = newShape(boardId, {
       type: 'text',
+      text: 'text',
       x: x - SHAPE_WIDTH / 2,
       y: y - SHAPE_HEIGHT / 2,
     });

@@ -90,7 +90,7 @@ export const newShape = (boardId: string, shape: Partial<Shape>): Shape => {
     boardId: boardId,
     id: uuid.v4(),
     type: 'rect',
-    text: 'text',
+    text: '',
     x: 0,
     y: 0,
     width: SHAPE_WIDTH,
