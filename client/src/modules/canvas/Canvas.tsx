@@ -202,11 +202,13 @@ const Canvas: React.FC = () => {
     e.preventDefault();
     dispatch(cancelSelect());
 
+    const isMiddleMouseButtonPressed = e.button === 1;
+
     if (e.metaKey) {
       dispatch(
         startNewRect({ clickX: e.clientX, clickY: e.clientY, selectedShapeId })
       );
-    } else if (panMode) {
+    } else if (panMode || isMiddleMouseButtonPressed) {
       setPan({ startX: e.clientX, startY: e.clientY });
     } else {
       dispatch(
