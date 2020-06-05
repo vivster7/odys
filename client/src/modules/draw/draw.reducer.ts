@@ -78,6 +78,7 @@ import {
   safeDeleteDrawingsPending,
   safeDeleteDrawings,
   safeUpdateDrawingsPending,
+  TimeTravelSafeAction,
 } from 'modules/draw/timetravel/timeTravel';
 import { undo, undoFulfilled } from './timetravel/undo.reducer';
 import { redo, redoFulfilled } from './timetravel/redo.reducer';
@@ -214,9 +215,6 @@ export const fetchDrawingsFulfilled: DrawActionFulfilled<string> = (
 };
 
 export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
-  // be wary of adding undo/redo buffer to this fn
-  // they sync changes from socket updates and need to be synchronous
-
   const { id } = action.payload;
   const existing = state.shapes[id] ?? state.arrows[id] ?? {};
   const drawing = Object.assign({}, existing, action.payload);
@@ -227,6 +225,20 @@ export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
     state.shapes[drawing.id] = drawing;
   }
   reorder([drawing], state);
+
+  state.select = { id: drawing.id };
+  state.multiSelect = null;
+
+  const undo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeDeleteDrawings',
+    arg: [drawing.id],
+  };
+  const redo: TimeTravelSafeAction = {
+    actionCreatorName: 'safeUpdateDrawings',
+    arg: { drawings: [drawing] },
+  };
+  state.timetravel.undos.push({ undo, redo });
+  state.timetravel.redos = [];
 };
 
 const drawSlice = createSlice({

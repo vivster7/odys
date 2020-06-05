@@ -6,7 +6,7 @@ const Text: React.FC<ShapeTypeProps> = (props) => {
   const cursor = props.isDragging ? 'grabbing' : 'grab';
   const fill = 'white';
   const fillOpacity = 0;
-  const strokeColor = 'white';
+  const strokeColor = 'none';
   const strokeDasharray = 0;
   const alignText = 'center';
   const childProps = {

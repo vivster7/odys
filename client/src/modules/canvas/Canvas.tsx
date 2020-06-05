@@ -8,12 +8,14 @@ import {
   resizeDragSelection,
   endDragSelection,
   startNewRect,
+  updateDrawing,
 } from '../draw/draw.reducer';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
 import { wheelEnd, endPan, cleanCanvas, setCursorOver } from './canvas.reducer';
 import DrawContainer from '../draw/DrawContainer';
 import { endNewRectByClick } from '../draw/shape/newRect.reducer';
+import { newShape } from 'modules/draw/shape/shape.reducer';
 import MultiSelect from '../draw/mixins/multiSelect/MultiSelect';
 import {
   zoomLeveltoScaleMap,
@@ -349,6 +351,19 @@ const Canvas: React.FC = () => {
     );
   }
 
+  function handleDoubleClick(e: React.MouseEvent) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const text = newShape(boardId, {
+      type: 'text',
+      x: e.clientX - 100 / 2,
+      y: e.clientY - 100 / 2,
+    });
+
+    dispatch(updateDrawing(text));
+  }
+
   return (
     <svg
       id="odys-canvas"
@@ -372,6 +387,7 @@ const Canvas: React.FC = () => {
           transform={`translate(${topLeftX * (1 / scale) * -1}, ${
             topLeftY * (1 / scale) * -1
           }) scale(${1 / scale})`}
+          onDoubleClick={(e) => handleDoubleClick(e)}
           onPointerOver={
             shouldIgnorePointerOver ? undefined : (e) => handlePointerOver(e)
           }

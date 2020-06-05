@@ -9,6 +9,9 @@ import { Selectable } from 'modules/draw/mixins/select/select.reducer';
 import { Deleteable } from 'modules/draw/mixins/delete/delete.reducer';
 import { Saveable } from '../mixins/save/save.reducer';
 import odysClient from 'global/odysClient';
+import { DEFAULT_ZOOM_LEVEL } from 'modules/canvas/zoom/zoom.reducer';
+import { SHAPE_HEIGHT, SHAPE_WIDTH } from './type/BaseShape';
+import uuid from 'uuid';
 
 export type Shape = Rect | GroupingRect | Text;
 interface Parentable {
@@ -80,4 +83,29 @@ export const fetchShapesFulfilled = (
     //TODO: order should be saved on server.
     reorder([shape], state);
   });
+};
+
+export const newShape = (boardId: string, shape: Partial<Shape>): Shape => {
+  const defaults: Shape = {
+    boardId: boardId,
+    id: uuid.v4(),
+    type: 'rect',
+    text: 'text',
+    x: 0,
+    y: 0,
+    width: SHAPE_WIDTH,
+    height: SHAPE_HEIGHT,
+    createdAtZoomLevel: DEFAULT_ZOOM_LEVEL,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isDeleted: false,
+    translateX: 0,
+    translateY: 0,
+    deltaWidth: 0,
+    deltaHeight: 0,
+    isSavedInDB: true,
+    parentId: '',
+  };
+
+  return Object.assign(defaults, shape);
 };
