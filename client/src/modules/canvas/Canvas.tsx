@@ -31,6 +31,7 @@ import Cursors from './cursor/Cursors';
 import { cursorWithinEpsilon } from './cursor/cursor';
 import Ghosts from './ghosts/Ghosts';
 import PlayerSelectBoxes from './selectbox/PlayerSelectBoxes';
+import { SHAPE_WIDTH, SHAPE_HEIGHT } from 'modules/draw/shape/type/BaseShape';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -355,10 +356,13 @@ const Canvas: React.FC = () => {
     e.stopPropagation();
     e.preventDefault();
 
+    const x = (e.clientX - topLeftX) / scale;
+    const y = (e.clientY - topLeftY) / scale;
+
     const text = newShape(boardId, {
       type: 'text',
-      x: e.clientX - 100 / 2,
-      y: e.clientY - 100 / 2,
+      x: x - SHAPE_WIDTH / 2,
+      y: y - SHAPE_HEIGHT / 2,
     });
 
     dispatch(updateDrawing(text));

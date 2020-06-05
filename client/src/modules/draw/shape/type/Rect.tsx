@@ -3,9 +3,6 @@ import { ShapeTypeProps } from '../Shape';
 import BaseShape from './BaseShape';
 import { COLORS } from 'global/colors';
 
-export const RECT_WIDTH = 150;
-export const RECT_HEIGHT = 75;
-
 const Rect: React.FC<ShapeTypeProps> = (props) => {
   const { isSelected, isDragging } = props;
   const cursor = isSelected ? (isDragging ? 'grabbing' : 'grab') : 'pointer';

@@ -1,12 +1,12 @@
 import React from 'react';
-import Rect, { RECT_WIDTH, RECT_HEIGHT } from 'modules/draw/shape/type/Rect';
+import Rect from 'modules/draw/shape/type/Rect';
 import { useSelector } from 'global/redux';
-import { DEFAULT_ZOOM_LEVEL } from '../zoom/zoom.reducer';
-import { Shape } from 'modules/draw/shape/shape.reducer';
+import { Shape, newShape } from 'modules/draw/shape/shape.reducer';
 import { Path, ArrowTypeProps } from 'modules/draw/arrow/Arrow';
 import { isOverlapping } from 'math/box';
 import { ShapeTypeProps } from 'modules/draw/shape/Shape';
 import { COLORS } from 'global/colors';
+import { SHAPE_WIDTH, SHAPE_HEIGHT } from 'modules/draw/shape/type/BaseShape';
 
 const Ghosts: React.FC = () => {
   const cursorPosition = useSelector((s) => s.canvas.cursor);
@@ -77,26 +77,14 @@ function ghostArrowProps(fromShape: Shape, toShape: Shape) {
 }
 
 function ghostRectProps(x: number, y: number) {
-  const shape: Shape = {
+  const boardId = '';
+  const shape: Shape = newShape(boardId, {
+    id: '', // ghosts have no id
     type: 'rect',
-    x: x - RECT_WIDTH / 2,
-    y: y - RECT_HEIGHT / 2,
-    id: '',
-    text: '',
-    width: RECT_WIDTH,
-    height: RECT_HEIGHT,
-    createdAtZoomLevel: DEFAULT_ZOOM_LEVEL,
-    boardId: '',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    isDeleted: false,
-    translateX: 0,
-    translateY: 0,
-    deltaWidth: 0,
-    deltaHeight: 0,
+    x: x - SHAPE_WIDTH / 2,
+    y: y - SHAPE_HEIGHT / 2,
     isSavedInDB: false,
-    parentId: '',
-  };
+  });
 
   const shapeProps: ShapeTypeProps = {
     shape: shape,

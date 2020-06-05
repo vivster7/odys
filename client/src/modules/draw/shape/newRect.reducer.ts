@@ -4,13 +4,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { DrawReducer, DrawActionPending, Drawing } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
-import { RECT_WIDTH, RECT_HEIGHT } from './type/Rect';
-import { Rect } from './shape.reducer';
+import { newShape, Shape } from './shape.reducer';
 import { save } from '../mixins/save/save.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
-import { DEFAULT_ZOOM_LEVEL } from 'modules/canvas/zoom/zoom.reducer';
 import { Arrow } from '../arrow/arrow.reducer';
 import { isOverlapping } from 'math/box';
+import { SHAPE_WIDTH, SHAPE_HEIGHT } from './type/BaseShape';
 
 export interface NewRectState {
   clickX: number;
@@ -77,29 +76,13 @@ export const endNewRectByClickPending: DrawActionPending<NewRectWithArrow> = (
   const x = (clickX - canvasTopLeftX) / canvasScale;
   const y = (clickY - canvasTopLeftY) / canvasScale;
 
-  const width = RECT_WIDTH;
-  const height = RECT_HEIGHT;
-
-  const rect: Rect = {
-    type: 'rect',
+  const rect: Shape = newShape(boardId, {
     id: id,
+    type: 'rect',
     text: '',
-    x: x - width / 2,
-    y: y - height / 2,
-    width: width,
-    height: height,
-    createdAtZoomLevel: DEFAULT_ZOOM_LEVEL,
-    boardId: boardId,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    isDeleted: false,
-    translateX: 0,
-    translateY: 0,
-    deltaWidth: 0,
-    deltaHeight: 0,
-    isSavedInDB: true,
-    parentId: '',
-  };
+    x: x - SHAPE_WIDTH / 2,
+    y: y - SHAPE_HEIGHT / 2,
+  });
 
   state.newRect = null;
   state.shapes[rect.id] = rect;

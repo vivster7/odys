@@ -2,8 +2,7 @@ import { getDrawing, DrawActionPending, DrawState } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from '../mixins/save/save.reducer';
-import { GroupingRect, Shape } from './shape.reducer';
-import { DEFAULT_ZOOM_LEVEL } from 'modules/canvas/zoom/zoom.reducer';
+import { Shape, newShape } from './shape.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import { deleteDrawings } from '../mixins/delete/delete.reducer';
 import { RootState } from 'App';
@@ -38,26 +37,15 @@ export const createGroupPending: DrawActionPending<string> = (
 
   const outlineMarginTop = 40;
   const outlineMargin = 20;
-  const group: GroupingRect = {
-    type: 'grouping_rect',
+  const group: Shape = newShape(drawing.boardId, {
     id: id,
+    type: 'grouping_rect',
     text: '',
     x: x - outlineMargin,
     y: y - outlineMarginTop,
-    translateX: 0,
-    translateY: 0,
     width: width + outlineMargin + outlineMargin,
     height: height + outlineMarginTop + outlineMargin,
-    deltaWidth: 0,
-    deltaHeight: 0,
-    createdAtZoomLevel: DEFAULT_ZOOM_LEVEL,
-    isSavedInDB: false,
-    boardId: drawing.boardId,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    isDeleted: false,
-    parentId: '',
-  };
+  });
 
   state.shapes[id] = group;
   reorder([group], state);
