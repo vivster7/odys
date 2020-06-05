@@ -5,14 +5,14 @@ export interface KeyboardState {
   altKey: boolean;
   shiftKey: boolean;
   cmdKey: boolean;
-  gKey: false;
+  spaceKey: boolean;
 }
 
 const initialState: KeyboardState = {
   altKey: false,
   shiftKey: false,
   cmdKey: false,
-  gKey: false,
+  spaceKey: false,
 };
 
 export interface KeyEvent {
@@ -20,6 +20,7 @@ export interface KeyEvent {
   altKey: boolean;
   metaKey: boolean;
   shiftKey: boolean;
+  repeat: boolean;
 }
 
 const keyboardSlice = createSlice({
@@ -31,13 +32,13 @@ const keyboardSlice = createSlice({
       if (!altKey) state.altKey = false;
       if (!shiftKey) state.shiftKey = false;
       if (!metaKey) state.cmdKey = false;
-      if (code === 'KeyG') state.gKey = false;
+      if (code === 'Space') state.spaceKey = false;
     },
     clearKeys: (state, action: PayloadAction<void>) => {
       state.altKey = false;
       state.shiftKey = false;
       state.cmdKey = false;
-      state.gKey = false;
+      state.spaceKey = false;
     },
   },
   extraReducers: {

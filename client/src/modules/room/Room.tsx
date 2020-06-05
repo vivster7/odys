@@ -35,6 +35,7 @@ const Room: React.FC = () => {
         metaKey: e.metaKey,
         shiftKey: e.shiftKey,
         altKey: e.altKey,
+        repeat: e.repeat,
       };
       throttledKeydown(dispatch, payload);
     };
@@ -45,6 +46,7 @@ const Room: React.FC = () => {
         metaKey: e.metaKey,
         shiftKey: e.shiftKey,
         altKey: e.altKey,
+        repeat: e.repeat,
       };
       dispatch(keyup(payload));
     };

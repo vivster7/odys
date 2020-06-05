@@ -32,6 +32,7 @@ const LISTEN_KEYS = [
   'MetaLeft',
   'MetaRight',
   'Enter',
+  'Space',
 ];
 
 export const keydown = createAsyncThunk(
@@ -95,14 +96,22 @@ export const keydown = createAsyncThunk(
       return dispatch(ungroup(select.id));
     }
   },
-  { condition: (e: KeyEvent, thunkAPI) => LISTEN_KEYS.includes(e.code) }
+  {
+    condition: (e: KeyEvent, thunkAPI) => {
+      return (
+        LISTEN_KEYS.includes(e.code) &&
+        // ignore if key is held down (aside from undo/redo)
+        (e.repeat === false || e.code === 'KeyZ')
+      );
+    },
+  }
 );
 
 export const keydownPendingFn = (
   state: KeyboardState,
   action: ActionPending<KeyEvent>
 ) => {
-  const { metaKey, altKey, shiftKey } = action.meta.arg;
+  const { code, metaKey, altKey, shiftKey } = action.meta.arg;
 
   if (altKey) {
     state.altKey = true;
@@ -114,5 +123,9 @@ export const keydownPendingFn = (
 
   if (metaKey) {
     state.cmdKey = true;
+  }
+
+  if (code === 'Space') {
+    state.spaceKey = true;
   }
 };

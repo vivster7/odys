@@ -104,6 +104,8 @@ const Canvas: React.FC = () => {
 
   const isShiftPressed = useSelector((s) => s.keyboard.shiftKey);
   const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
+  const isSpacePressed = useSelector((s) => s.keyboard.spaceKey);
+
   const selectedShapeId = useSelector((s) => s.draw.select?.id);
   const shouldIgnorePointerOver = useSelector(
     (s) => !!s.draw.drag || !!s.draw.resize
@@ -111,6 +113,7 @@ const Canvas: React.FC = () => {
 
   const selectMode = isShiftPressed;
   const insertMode = isCmdPressed;
+  const panMode = isSpacePressed;
 
   // using local variable to make scale / pan fast!
   const [topLeftX, setTopLeftX] = useState(canvasState.topLeftX);
@@ -122,13 +125,13 @@ const Canvas: React.FC = () => {
 
   const [pan, setPan] = useState<PanState | null>(null);
 
-  const cursor = insertMode
-    ? 'pointer'
-    : selectMode
-    ? 'crosshair'
-    : pan
-    ? 'grabbing'
-    : 'grab';
+  const cursor = (() => {
+    if (insertMode) return 'pointer';
+    if (selectMode) return 'crosshair';
+    if (pan) return 'grabbing';
+    if (panMode) return 'grab';
+    return 'auto';
+  })();
 
   const transform = `translate(${topLeftX + translateX}, ${
     topLeftY + translateY
@@ -203,7 +206,9 @@ const Canvas: React.FC = () => {
       dispatch(
         startNewRect({ clickX: e.clientX, clickY: e.clientY, selectedShapeId })
       );
-    } else if (selectMode) {
+    } else if (panMode) {
+      setPan({ startX: e.clientX, startY: e.clientY });
+    } else {
       dispatch(
         startDragSelection({
           x: e.clientX,
@@ -213,8 +218,6 @@ const Canvas: React.FC = () => {
           canvasScale: scale,
         })
       );
-    } else {
-      setPan({ startX: e.clientX, startY: e.clientY });
     }
   }
 
