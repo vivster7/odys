@@ -1,51 +1,26 @@
-import { useEffect, Dispatch } from 'react';
-import { PayloadAction } from '@reduxjs/toolkit';
+import { useEffect } from 'react';
 import {
   PlayersReducer,
   connectPlayers,
   disconnectPlayer,
+  Player,
 } from 'modules/players/players.reducer';
 import { registerSocketListener } from 'socket/socket';
-import { PALETTE } from 'global/colors';
-import { difference } from 'lodash';
+import { OdysDispatch } from 'App';
 
-export const registerSelfFn: PlayersReducer = (state, action) => {
-  const connectPlayerAction = {
-    type: 'players/connectPlayers',
-    payload: [state.self],
-  };
-  connectPlayersFn(state, connectPlayerAction);
-};
+export const connectPlayersFn: PlayersReducer<Player[]> = (state, action) => {
+  const players = action.payload;
 
-export const unregisterSelfFn: PlayersReducer = (state, action) => {
-  const id = state.self;
-  const disconnectPlayerAction = {
-    type: 'players/disconnectPlayer',
-    payload: id,
-  };
-  disconnectPlayerFn(state, disconnectPlayerAction);
-};
-
-export const connectPlayersFn: PlayersReducer<string[]> = (state, action) => {
-  const playerIds = action.payload;
-
-  const availableColors = difference(
-    PALETTE,
-    Object.values(state.players).map((p) => p.color)
-  );
-
-  playerIds.forEach((id, idx) => {
-    if (id && !state.players[id]) {
-      state.players[id] = {
-        id,
-        color: availableColors[idx % availableColors.length],
-      };
-    }
+  players.forEach((p) => {
+    state.players[p.id] = {
+      id: p.id,
+      color: p.color,
+    };
   });
 };
 
-export const disconnectPlayerFn: PlayersReducer<string> = (state, action) => {
-  const id = action.payload;
+export const disconnectPlayerFn: PlayersReducer<Player> = (state, action) => {
+  const { id } = action.payload;
   if (state.players[id]) delete state.players[id];
   if (state.cursors[id]) delete state.cursors[id];
   if (state.selectBoxes[id]) delete state.selectBoxes[id];
@@ -53,21 +28,19 @@ export const disconnectPlayerFn: PlayersReducer<string> = (state, action) => {
   state.selections = state.selections.filter((s) => s.id !== id);
 };
 
-export function usePlayerConnectionListeners(
-  dispatch: Dispatch<PayloadAction<string[] | string>>
-) {
+export function usePlayerConnectionListeners(dispatch: OdysDispatch) {
   useEffect(() => {
-    const onPlayersConnected = (data: any) => {
-      console.log(`welcome friends ${data}`);
-      dispatch(connectPlayers(data));
+    const onPlayersConnected = (players: Player[]) => {
+      console.log(`welcome friends ${players.map((p) => p.id)}`);
+      dispatch(connectPlayers(players));
     };
     return registerSocketListener('playersConnected', onPlayersConnected);
   }, [dispatch]);
 
   useEffect(() => {
-    const onPlayerDisonnected = (data: any) => {
-      console.log(`goodbye friend ${data}`);
-      dispatch(disconnectPlayer(data));
+    const onPlayerDisonnected = (player: Player) => {
+      console.log(`goodbye friend ${player}`);
+      dispatch(disconnectPlayer(player));
     };
     return registerSocketListener('playerDisconnected', onPlayerDisonnected);
   }, [dispatch]);

@@ -2,8 +2,6 @@ import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
 import {
   connectPlayersFn,
   disconnectPlayerFn,
-  registerSelfFn,
-  unregisterSelfFn,
 } from './mixins/connection/connection.reducer';
 import { syncStateFn } from './mixins/sync/sync.reducer';
 import { syncCursorFn } from './mixins/cursor/sync.reducer';
@@ -49,8 +47,6 @@ const playersSlice = createSlice({
   name: 'players',
   initialState: initialState,
   reducers: {
-    registerSelf: registerSelfFn,
-    unregisterSelf: unregisterSelfFn,
     connectPlayers: connectPlayersFn,
     disconnectPlayer: disconnectPlayerFn,
     syncCursor: syncCursorFn,
@@ -60,8 +56,6 @@ const playersSlice = createSlice({
 });
 
 export const {
-  registerSelf,
-  unregisterSelf,
   connectPlayers,
   disconnectPlayer,
   syncCursor,

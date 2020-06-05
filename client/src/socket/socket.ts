@@ -1,12 +1,8 @@
 import io from 'socket.io-client';
-import {
-  registerSelf,
-  unregisterSelf,
-  CURRENT_PLAYER_ID,
-} from 'modules/players/players.reducer';
+import { CURRENT_PLAYER_ID } from 'modules/players/players.reducer';
 import { OdysDispatch } from 'App';
 
-export interface ClientEvent {
+export interface SocketEvent {
   playerId: string;
   data: any;
 }
@@ -16,14 +12,6 @@ let socket: SocketIOClient.Socket;
 export function connect(dispatch: OdysDispatch, roomId: string) {
   socket = io({
     query: { roomId: roomId, currentPlayerId: CURRENT_PLAYER_ID },
-  });
-
-  socket.on('connect', () => {
-    dispatch(registerSelf());
-  });
-
-  socket.on('disconnect', () => {
-    dispatch(unregisterSelf());
   });
 }
 

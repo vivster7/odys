@@ -21,7 +21,7 @@ import keyboardReducer from './modules/keyboard/keyboard.reducer';
 import roomReducer from './modules/room/room.reducer';
 import boardReducer from './modules/board/board.reducer';
 import playersReducer from './modules/players/players.reducer';
-import { emitEvent } from 'socket/socket';
+import { emitEvent, SocketEvent } from 'socket/socket';
 
 const rootReducer = combineReducers({
   draw: drawReducer,
@@ -79,7 +79,7 @@ const syncEnhancer: StoreEnhancer = (createStore) => (
   return createStore(syncedRootReducer, initialState);
 };
 
-export const syncState = createAction<RootState>('global/syncState');
+export const syncState = createAction<SocketEvent>('global/syncState');
 
 const store = configureStore({
   reducer: rootReducer,

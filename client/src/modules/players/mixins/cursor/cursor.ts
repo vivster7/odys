@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { syncCursor } from 'modules/players/players.reducer';
-import { emitEvent, registerSocketListener, ClientEvent } from 'socket/socket';
+import { emitEvent, registerSocketListener, SocketEvent } from 'socket/socket';
 import { Cursor } from 'modules/canvas/cursor/cursor';
 import { OdysDispatch } from 'App';
 
@@ -11,7 +11,7 @@ export interface PlayerCursor {
 
 export function useCursorMovedListener(dispatch: OdysDispatch) {
   useEffect(() => {
-    const onCursorMoved = (event: ClientEvent) => {
+    const onCursorMoved = (event: SocketEvent) => {
       dispatch(
         syncCursor({
           playerId: event.playerId,

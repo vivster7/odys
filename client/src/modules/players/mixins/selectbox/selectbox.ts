@@ -6,7 +6,7 @@
  * See: players/mixins/sync/sync.reducers.ts
  */
 import { useEffect } from 'react';
-import { emitEvent, registerSocketListener, ClientEvent } from 'socket/socket';
+import { emitEvent, registerSocketListener, SocketEvent } from 'socket/socket';
 import { OdysDispatch } from 'App';
 import Box from 'math/box';
 import { syncSelectBox } from 'modules/players/players.reducer';
@@ -18,7 +18,7 @@ export interface PlayerSelectBox {
 
 export function useSelectBoxResizeListener(dispatch: OdysDispatch) {
   useEffect(() => {
-    const onSelectBoxResize = (event: ClientEvent) => {
+    const onSelectBoxResize = (event: SocketEvent) => {
       dispatch(
         syncSelectBox({
           playerId: event.playerId,

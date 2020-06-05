@@ -8,7 +8,7 @@ import { keydown } from 'modules/keyboard/keydown/keydown.reducer';
 import { usePlayerConnectionListeners } from 'modules/players/mixins/connection/connection.reducer';
 import { useCursorMovedListener } from 'modules/players/mixins/cursor/cursor';
 
-import { connect, registerSocketListener } from 'socket/socket';
+import { connect, registerSocketListener, SocketEvent } from 'socket/socket';
 import { syncState, OdysDispatch } from 'App';
 import { keyup, KeyEvent, clearKeys } from 'modules/keyboard/keyboard.reducer';
 import throttle from 'lodash.throttle';
@@ -73,7 +73,7 @@ const Room: React.FC = () => {
   }, [dispatch, id]);
 
   useEffect(() => {
-    const onSyncState = (data: any) => {
+    const onSyncState = (data: SocketEvent) => {
       if (data.playerId !== playerId && data.data && isDrawStateLoaded) {
         dispatch(syncState(data));
       }
