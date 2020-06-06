@@ -72,6 +72,8 @@ function ghostArrowProps(fromShape: Shape, toShape: Shape) {
     color: COLORS.ghost,
     shouldIgnorePointerOver: false,
     isSelected: false,
+    fromShapeArrows: {},
+    toShapeArrows: {},
   };
   return arrowProps;
 }

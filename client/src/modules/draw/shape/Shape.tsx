@@ -9,7 +9,7 @@ import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
 import { isOverlapping } from 'math/box';
 import { startDrag, startNewRect, selectDrawing } from '../draw.reducer';
-import { DrawingProps } from '../DrawContainer';
+import { BaseDrawingProps } from '../DrawContainer';
 import { Shape as ShapeType } from './shape.reducer';
 import { Player } from 'modules/players/players.reducer';
 import { drawArrow } from '../arrow/arrow.reducer';
@@ -30,7 +30,7 @@ export interface ShapeTypeProps {
   shouldIgnorePointerOver: boolean;
 }
 
-export const Shape: React.FC<DrawingProps> = (props) => {
+export const Shape: React.FC<BaseDrawingProps> = (props) => {
   const { id, playerSelected } = props;
   const dispatch = useDispatch();
 

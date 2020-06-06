@@ -1,12 +1,12 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, shallowEqual } from 'react-redux';
 
-import { DrawingProps } from '../DrawContainer';
+import { BaseDrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
 import { selectDrawing } from '../draw.reducer';
 import { useSelector } from 'global/redux';
 import { setCursorOver } from 'modules/canvas/canvas.reducer';
-import { computeCurve } from './path';
+import { computeCurve, ShapeArrows } from './path';
 import { Shape } from 'modules/draw/shape/shape.reducer';
 import TextBlock from 'modules/draw/mixins/editText/TextBlock';
 
@@ -18,6 +18,13 @@ export interface ArrowTypeProps {
   color: string;
   shouldIgnorePointerOver: boolean;
   isSelected: boolean;
+  fromShapeArrows: ShapeArrows;
+  toShapeArrows: ShapeArrows;
+}
+
+export interface ArrowProps extends BaseDrawingProps {
+  fromShapeArrows: ShapeArrows;
+  toShapeArrows: ShapeArrows;
 }
 
 export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
@@ -29,13 +36,21 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
     color,
     shouldIgnorePointerOver,
     isSelected,
+    fromShapeArrows,
+    toShapeArrows,
   } = props;
   const dispatch = useDispatch();
 
   const strokeWidth = 3;
   const selectionTargetWidth = 20;
 
-  const { path } = computeCurve(fromShape, toShape);
+  const { path } = computeCurve(
+    id,
+    fromShape,
+    toShape,
+    fromShapeArrows,
+    toShapeArrows
+  );
 
   const isGhost = id === '' && text === '';
 
@@ -104,8 +119,8 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
   );
 });
 
-const Arrow: React.FC<DrawingProps> = React.memo((props) => {
-  const { id, playerSelected } = props;
+const Arrow: React.FC<ArrowProps> = React.memo((props) => {
+  const { id, playerSelected, fromShapeArrows, toShapeArrows } = props;
   const arrow = useSelector((s) => s.draw.arrows[id]);
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
@@ -153,9 +168,11 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
         fromShape: r1,
         toShape: r2,
         isSelected: isSelected,
+        fromShapeArrows: fromShapeArrows,
+        toShapeArrows: toShapeArrows,
       }}
     />
   );
-});
+}, shallowEqual);
 
 export default Arrow;
