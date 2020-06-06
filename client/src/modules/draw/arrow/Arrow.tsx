@@ -35,7 +35,7 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
   const strokeWidth = 3;
   const selectionTargetWidth = 20;
 
-  const { path, x1, x2, y1, y2 } = computeCurve(fromShape, toShape);
+  const { path } = computeCurve(fromShape, toShape);
 
   const isGhost = id === '' && text === '';
 
@@ -70,6 +70,7 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
         strokeWidth={strokeWidth + 'px'}
         fill="transparent"
         d={path}
+        pointerEvents="stroke"
         markerEnd={`url(#arrowhead.${props.id})`}
       />
       {isGhost ? (
