@@ -84,8 +84,8 @@ function zoomLevelBucket(existingZoomLevel: number, k: number): number {
 }
 
 interface PanState {
-  startX: number;
-  startY: number;
+  prevX: number;
+  prevY: number;
 }
 
 const Canvas: React.FC = () => {
@@ -118,8 +118,6 @@ const Canvas: React.FC = () => {
   // using local variable to make scale / pan fast!
   const [topLeftX, setTopLeftX] = useState(canvasState.topLeftX);
   const [topLeftY, setTopLeftY] = useState(canvasState.topLeftY);
-  const [translateX, setTranslateX] = useState(0);
-  const [translateY, setTranslateY] = useState(0);
   const [scale, setScale] = useState(canvasState.scale);
   const [zoomLevel, setZoomLevel] = useState(canvasState.zoomLevel);
 
@@ -133,9 +131,7 @@ const Canvas: React.FC = () => {
     return 'auto';
   })();
 
-  const transform = `translate(${topLeftX + translateX}, ${
-    topLeftY + translateY
-  }) scale(${scale})`;
+  const transform = `translate(${topLeftX}, ${topLeftY}) scale(${scale})`;
 
   if (canvasState.dirty) {
     setTopLeftX(canvasState.topLeftX);
@@ -181,8 +177,12 @@ const Canvas: React.FC = () => {
     }
 
     if (pan !== null) {
-      setTranslateX(e.clientX - pan.startX);
-      setTranslateY(e.clientY - pan.startY);
+      const deltaX = e.clientX - pan.prevX;
+      const deltaY = e.clientY - pan.prevY;
+
+      setPan({ prevX: e.clientX, prevY: e.clientY });
+      setTopLeftX(topLeftX + deltaX);
+      setTopLeftY(topLeftY + deltaY);
     }
 
     if (resizingId) {
@@ -209,7 +209,7 @@ const Canvas: React.FC = () => {
         startNewRect({ clickX: e.clientX, clickY: e.clientY, selectedShapeId })
       );
     } else if (panMode || isMiddleMouseButtonPressed) {
-      setPan({ startX: e.clientX, startY: e.clientY });
+      setPan({ prevX: e.clientX, prevY: e.clientY });
     } else {
       dispatch(
         startDragSelection({
@@ -265,14 +265,8 @@ const Canvas: React.FC = () => {
     }
 
     if (pan !== null) {
-      const newTopLeftX = topLeftX + translateX;
-      const newTopLeftY = topLeftY + translateY;
       setPan(null);
-      setTopLeftX(newTopLeftX);
-      setTopLeftY(newTopLeftY);
-      setTranslateX(0);
-      setTranslateY(0);
-      dispatch(endPan({ topLeftX: newTopLeftX, topLeftY: newTopLeftY }));
+      dispatch(endPan({ topLeftX, topLeftY }));
     }
 
     if (resizingId) {
