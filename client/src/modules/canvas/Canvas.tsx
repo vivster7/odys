@@ -8,7 +8,7 @@ import {
   resizeDragSelection,
   endDragSelection,
   startNewRect,
-  updateDrawing,
+  updateDrawings,
 } from '../draw/draw.reducer';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
@@ -363,7 +363,7 @@ const Canvas: React.FC = () => {
       y: y - SHAPE_HEIGHT / 2,
     });
 
-    dispatch(updateDrawing(text));
+    dispatch(updateDrawings([text]));
   }
 
   return (

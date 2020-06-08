@@ -218,26 +218,31 @@ export const fetchDrawingsFulfilled: DrawActionFulfilled<string> = (
   state.loaded = 'success';
 };
 
-export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
-  const { id } = action.payload;
-  const existing = state.shapes[id] ?? state.arrows[id] ?? {};
-  const drawing = Object.assign({}, existing, action.payload);
+export const updateDrawingsFn: DrawReducer<Drawing[]> = (state, action) => {
+  const updates: Drawing[] = action.payload;
+  const drawings = updates.map((update) => {
+    const { id = '' } = update;
+    const existing: Drawing = state.shapes[id] ?? state.arrows[id] ?? {};
+    return { ...existing, ...update };
+  });
 
-  if (instanceOfArrow(drawing)) {
-    state.arrows[drawing.id] = drawing;
-  } else {
-    state.shapes[drawing.id] = drawing;
-  }
-  reorder([drawing], state);
-  applySelect(state, [drawing]);
+  drawings.forEach((d) => {
+    if (instanceOfArrow(d)) {
+      state.arrows[d.id] = d;
+    } else {
+      state.shapes[d.id] = d;
+    }
+  });
+  reorder(drawings, state);
+  applySelect(state, drawings);
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',
-    arg: [drawing.id],
+    arg: drawings.map((d) => d.id),
   };
   const redo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
-    arg: { drawings: [drawing] },
+    arg: { drawings },
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
@@ -248,7 +253,7 @@ const drawSlice = createSlice({
   initialState: initialState,
   reducers: {
     // shape
-    updateDrawing: updateDrawingFn,
+    updateDrawings: updateDrawingsFn,
     // editText
     startEditText: startEditTextFn,
     // select
@@ -368,7 +373,7 @@ const drawSlice = createSlice({
 });
 
 export const {
-  updateDrawing,
+  updateDrawings,
   startEditText,
   selectDrawing,
   cancelSelect,
