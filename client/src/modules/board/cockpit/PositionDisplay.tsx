@@ -21,7 +21,6 @@ function onPointerMove(
   setCursor: React.Dispatch<React.SetStateAction<Cursor>>
 ) {
   return (e: PointerEvent) => {
-    e.preventDefault();
     const { x, y } = translateCursorPosition(
       e.clientX,
       e.clientY,
