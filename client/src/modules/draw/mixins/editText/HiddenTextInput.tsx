@@ -20,7 +20,7 @@ const save = (dispatch: OdysDispatch, id: string, text: string) => {
   dispatch(editText({ id, text }));
 };
 
-const debouncedSave = debounce(save, 150);
+const debouncedSave = debounce(save, 150, { leading: true });
 
 const HiddenTextInput: React.FC<HiddenTextInputProps> = React.memo((props) => {
   const id = useSelector((s) => s.draw.editText?.id);

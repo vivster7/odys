@@ -44,12 +44,15 @@ export const keydown: any = createAsyncThunk(
     const dispatch = thunkAPI.dispatch;
 
     const { shapes, select, multiSelect, editText } = state.draw;
-    if ((e.code === 'Backspace' || e.code === 'Delete') && editText === null) {
+    const isNotEditingText =
+      editText === null || (editText.startingText === '' && !editText.hasTyped);
+
+    if ((e.code === 'Backspace' || e.code === 'Delete') && isNotEditingText) {
       const ids = allSelectedIds(state.draw);
       await dispatch(deleteDrawings({ ids }));
     }
 
-    if (e.code === 'KeyA' && e.metaKey && editText === null) {
+    if (e.code === 'KeyA' && e.metaKey && isNotEditingText) {
       return dispatch(selectAll());
     }
 

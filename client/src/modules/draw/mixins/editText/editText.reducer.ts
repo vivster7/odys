@@ -7,6 +7,10 @@ export interface EditTextState {
   // id of drawing being edited
   id: string;
   startingText: string;
+
+  // indicates if user has typed anything
+  // if false and startingText is empty, a 'Delete' will delete the object
+  hasTyped: boolean;
 }
 
 export interface TextEditable {
@@ -21,6 +25,7 @@ export const startEditTextFn: DrawReducer<string> = (state, action) => {
   state.editText = {
     id: id,
     startingText: drawing.text,
+    hasTyped: false,
   };
 };
 
@@ -40,6 +45,7 @@ export const editTextPending: DrawActionPending<EditText> = (state, action) => {
   const { id, text } = action.meta.arg;
   const drawing = getDrawing(state, id);
   drawing.text = text;
+  if (state.editText) state.editText.hasTyped = true;
   // NOTE: intentionally skipping undo/redo
 };
 
