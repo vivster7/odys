@@ -14,12 +14,12 @@ export interface BaseShapeProps {
   fillOpacity: number;
   strokeColor: string;
   strokeDasharray: number;
-  placeholderText?: string;
   alignText: string;
   shape: Shape;
   isMultiSelected: boolean;
   isSelected: boolean;
   playerSelected?: Player;
+  isEditing: boolean;
   onPointerDown: (e: React.PointerEvent) => void;
   onPointerOver: (e: React.PointerEvent) => void;
   shouldIgnorePointerOver: boolean;
@@ -33,11 +33,11 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     strokeColor,
     strokeDasharray,
     shape,
-    placeholderText,
     alignText,
     isMultiSelected,
     isSelected,
     playerSelected,
+    isEditing,
     onPointerDown,
     onPointerOver,
     shouldIgnorePointerOver,
@@ -108,11 +108,11 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
       ></rect>
       <TextBlock
         id={id}
+        isEditing={isEditing}
         isSelected={isSelected}
         width={width + deltaWidth}
         height={height + deltaHeight}
         text={text}
-        placeholderText={placeholderText}
         alignText={alignText}
       />
       {(isSelected || isMultiSelected || isGhost) && (

@@ -10,6 +10,7 @@ import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import { Arrow } from '../arrow/arrow.reducer';
 import { isOverlapping } from 'math/box';
 import { SHAPE_WIDTH, SHAPE_HEIGHT } from './type/BaseShape';
+import { applySelect } from '../mixins/multiSelect/multiSelect.reducer';
 
 export interface NewRectState {
   clickX: number;
@@ -87,10 +88,7 @@ export const endNewRectByClickPending: DrawActionPending<NewRectWithArrow> = (
   state.newRect = null;
   state.shapes[rect.id] = rect;
   reorder([rect], state);
-
-  state.select = {
-    id: rect.id,
-  };
+  applySelect(state, [rect]);
 
   let undoArg = [id];
   let redoArg: { drawings: Drawing[] } = { drawings: [rect] };

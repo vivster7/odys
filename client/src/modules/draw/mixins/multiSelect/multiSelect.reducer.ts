@@ -8,6 +8,11 @@ import Box, { isOverlapping, outline } from 'math/box';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import Point from 'math/point';
+import uuid from 'uuid';
+import {
+  endEditTextPending,
+  startEditTextFn,
+} from '../editText/editText.reducer';
 
 export interface MultiSelectState {
   // origin where selectionRect begins
@@ -134,29 +139,35 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
 };
 
 export const selectAllFn: DrawReducer = (state, action) => {
-  const shapeIds = Object.keys(state.shapes);
   const shapes = Object.values(state.shapes).filter((s) => !s.isDeleted);
-
-  state.select = null;
-  state.multiSelect = {
-    origin: null,
-    selectionRect: null,
-    selectedShapeIds: Object.fromEntries(shapeIds.map((id) => [id, true])),
-    outline: outline(...shapes),
-  };
+  applySelect(state, shapes);
 };
 
 export const applySelect = (state: DrawState, drawings: Drawing[]) => {
-  const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
+  if (state.editText !== null) {
+    const endEditTextPendingAction = {
+      type: 'draw/endEditTextPending',
+      payload: undefined,
+      meta: {
+        arg: state.editText.id,
+        requestId: uuid.v4(),
+      },
+    };
+    endEditTextPending(state, endEditTextPendingAction);
+  }
+
   if (drawings.length === 0) {
     state.select = null;
     state.multiSelect = null;
   } else if (drawings.length === 1) {
     state.select = { id: drawings[0].id };
     state.multiSelect = null;
-  } else if (shapes.length === 1) {
-    state.select = { id: shapes[0].id };
-    state.multiSelect = null;
+    if (drawings[0].text === '') {
+      startEditTextFn(state, {
+        type: 'draw/startEditText',
+        payload: drawings[0].id,
+      });
+    }
   } else {
     state.select = null;
     const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];

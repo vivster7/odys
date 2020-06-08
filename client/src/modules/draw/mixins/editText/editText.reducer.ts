@@ -4,8 +4,9 @@ import { save } from 'modules/draw/mixins/save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 
 export interface EditTextState {
+  // id of drawing being edited
+  id: string;
   startingText: string;
-  isEditing: boolean;
 }
 
 export interface TextEditable {
@@ -13,46 +14,59 @@ export interface TextEditable {
   text: string;
 }
 
-export const startEditTextFn: DrawReducer = (state, action) => {
-  const { select } = state;
-  if (!select) {
-    throw new Error(
-      `[draw/startEditText] Cannot edit text if a shape is not selected. draw/select should have fired first.`
-    );
-  }
+export const startEditTextFn: DrawReducer<string> = (state, action) => {
+  const id = action.payload;
 
-  const { id } = select;
   const drawing = getDrawing(state, id);
-
   state.editText = {
+    id: id,
     startingText: drawing.text,
-    isEditing: true,
   };
 };
 
-export const endEditText = createAsyncThunk(
-  'draw/endEditText',
-  async ({ id }: EndEditText, thunkAPI) => {
-    await thunkAPI.dispatch(save([id]));
-  }
-);
-
-interface EndEditText {
+interface EditText {
   id: string;
   text: string;
 }
 
-export const endEditTextPending: DrawActionPending<EndEditText> = (
+export const editText = createAsyncThunk(
+  'draw/editText',
+  async ({ id }: EditText, thunkAPI) => {
+    thunkAPI.dispatch(save([id]));
+  }
+);
+
+export const editTextPending: DrawActionPending<EditText> = (state, action) => {
+  const { id, text } = action.meta.arg;
+  const drawing = getDrawing(state, id);
+  drawing.text = text;
+  // NOTE: intentionally skipping undo/redo
+};
+
+export const endEditText = createAsyncThunk(
+  'draw/endEditText',
+  async (id: string, thunkAPI) => {
+    await thunkAPI.dispatch(save([id]));
+  }
+);
+
+export const endEditTextPending: DrawActionPending<string> = (
   state,
   action
 ) => {
-  const { id, text } = action.meta.arg;
+  if (!state.editText) return;
+
+  const { id, startingText } = state.editText;
+  // assume this endEditText has already been cleaned up
+  if (action.meta.arg !== id) return;
+
+  state.editText = null;
+
   const drawing = getDrawing(state, id);
 
-  const snapshot = { ...drawing, text: state.editText.startingText };
-  state.editText.startingText = drawing.text;
-  state.editText.isEditing = false;
+  if (drawing.text === startingText) return;
 
+  const snapshot = { ...drawing, text: startingText };
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',
     arg: { drawings: [snapshot] },
@@ -63,6 +77,4 @@ export const endEditTextPending: DrawActionPending<EndEditText> = (
   };
   state.timetravel.undos.push({ undo, redo });
   state.timetravel.redos = [];
-
-  drawing.text = text;
 };

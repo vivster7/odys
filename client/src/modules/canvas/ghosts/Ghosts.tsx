@@ -91,6 +91,7 @@ function ghostRectProps(x: number, y: number) {
     isDragging: false,
     isMultiSelected: false,
     isSelected: false,
+    isEditing: false,
     onPointerDown: () => {},
     onPointerOver: () => {},
     shouldIgnorePointerOver: false,

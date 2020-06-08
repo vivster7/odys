@@ -3,6 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from 'modules/draw/mixins/save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { getShape } from '../../shape.reducer';
+import { applySelect } from 'modules/draw/mixins/multiSelect/multiSelect.reducer';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -238,7 +239,7 @@ export const endResizePending: DrawActionPending<EndResize> = (
   state.resize = null;
 
   if (isNewRect) {
-    state.select = { id: id };
+    applySelect(state, [shape]);
   }
 
   const undo: TimeTravelSafeAction = isNewRect

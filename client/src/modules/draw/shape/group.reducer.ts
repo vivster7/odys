@@ -6,6 +6,7 @@ import { Shape, newShape } from './shape.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import { deleteDrawings } from '../mixins/delete/delete.reducer';
 import { RootState } from 'App';
+import { applySelect } from '../mixins/multiSelect/multiSelect.reducer';
 
 export const createGroup = createAsyncThunk(
   'draw/createGroup',
@@ -49,6 +50,7 @@ export const createGroupPending: DrawActionPending<string> = (
 
   state.shapes[id] = group;
   reorder([group], state);
+  applySelect(state, [group]);
 
   Object.keys(selectedShapeIds).forEach((id) => {
     const shape = state.shapes[id];
@@ -57,9 +59,6 @@ export const createGroupPending: DrawActionPending<string> = (
       shape.parentId = group.id;
     }
   });
-
-  state.select = { id };
-  state.multiSelect = null;
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',

@@ -65,6 +65,7 @@ export const safeUpdateDrawingsPending: DrawActionPending<SafeUpdateDrawings> = 
   });
   reorder(drawings, state);
   applySelect(state, drawings);
+  state.editText = null;
 };
 
 // just like draw/deleteDrawing, except this will NEVER update the undo/redo buffer

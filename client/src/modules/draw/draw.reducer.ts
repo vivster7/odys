@@ -44,12 +44,15 @@ import {
   endDragSelectionFn,
   MultiSelectState,
   selectAllFn,
+  applySelect,
 } from 'modules/draw/mixins/multiSelect/multiSelect.reducer';
 import {
   endEditText,
   endEditTextPending,
   EditTextState,
   startEditTextFn,
+  editText,
+  editTextPending,
 } from './mixins/editText/editText.reducer';
 import {
   fetchArrows,
@@ -146,7 +149,7 @@ export interface DrawState {
   shapes: ShapeData;
   arrows: ArrowData;
   drawOrder: string[];
-  editText: EditTextState;
+  editText: EditTextState | null;
   select: SelectedState | null;
   drag: DragState | null;
   multiSelect: MultiSelectState | null;
@@ -161,7 +164,7 @@ const initialState: DrawState = {
   shapes: {},
   arrows: {},
   drawOrder: [],
-  editText: { startingText: '', isEditing: false },
+  editText: null,
   select: null,
   multiSelect: null,
   drag: null,
@@ -225,9 +228,7 @@ export const updateDrawingFn: DrawReducer<Drawing> = (state, action) => {
     state.shapes[drawing.id] = drawing;
   }
   reorder([drawing], state);
-
-  state.select = { id: drawing.id };
-  state.multiSelect = null;
+  applySelect(state, [drawing]);
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',
@@ -328,6 +329,9 @@ const drawSlice = createSlice({
     [safeDeleteDrawings.fulfilled as any]: (state, action) => {},
     [safeDeleteDrawings.rejected as any]: (state, action) => {},
     // editText
+    [editText.pending as any]: editTextPending,
+    [editText.fulfilled as any]: (state, action) => {},
+    [editText.rejected as any]: (state, action) => {},
     [endEditText.pending as any]: endEditTextPending,
     [endEditText.fulfilled as any]: (state, action) => {},
     [endEditText.rejected as any]: (state, action) => {},

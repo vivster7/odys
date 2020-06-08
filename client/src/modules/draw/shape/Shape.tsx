@@ -23,6 +23,7 @@ export interface ShapeTypeProps {
   isDragging: boolean;
   isMultiSelected: boolean;
   isSelected: boolean;
+  isEditing: boolean;
   playerSelected?: Player;
   onPointerDown: (e: React.PointerEvent) => void;
   onPointerOver: (e: React.PointerEvent) => void;
@@ -36,6 +37,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   const board = useSelector((s) => s.board);
   const shape = useSelector((s) => s.draw.shapes[id]);
   const isDragging = useSelector((s) => s.draw.drag?.id === id);
+  const isEditing = useSelector((s) => s.draw.editText?.id === id);
   const isMultiSelected = useSelector(
     (s) => !!s.draw.multiSelect?.selectedShapeIds[id]
   );
@@ -106,6 +108,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
     isMultiSelected,
     isSelected,
     playerSelected,
+    isEditing,
     onPointerDown,
     onPointerOver,
     shouldIgnorePointerOver,

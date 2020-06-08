@@ -24,7 +24,6 @@ import {
 } from './zoom/zoom.reducer';
 import { endDrag } from 'modules/draw/shape/mixins/drag/drag.reducer';
 import { endResize } from 'modules/draw/shape/mixins/resize/resize.reducer';
-import { clearKeys } from 'modules/keyboard/keyboard.reducer';
 import * as uuid from 'uuid';
 import { COLORS } from 'global/colors';
 import Cursors from './cursor/Cursors';
@@ -32,6 +31,7 @@ import { cursorWithinEpsilon } from './cursor/cursor';
 import Ghosts from './ghosts/Ghosts';
 import PlayerSelectBoxes from './selectbox/PlayerSelectBoxes';
 import { SHAPE_WIDTH, SHAPE_HEIGHT } from 'modules/draw/shape/type/BaseShape';
+import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 
 const debouncedOnWheelEnd = debounce(
   (
@@ -275,7 +275,6 @@ const Canvas: React.FC = () => {
   }
 
   function handlePointerLeave(e: React.PointerEvent) {
-    dispatch(clearKeys());
     handlePointerUp(e);
   }
 
@@ -360,7 +359,6 @@ const Canvas: React.FC = () => {
 
     const text = newShape(boardId, {
       type: 'text',
-      text: 'text',
       x: x - SHAPE_WIDTH / 2,
       y: y - SHAPE_HEIGHT / 2,
     });
@@ -369,43 +367,50 @@ const Canvas: React.FC = () => {
   }
 
   return (
-    <svg
-      id="odys-canvas"
-      style={{
-        height: '100%',
-        width: '100%',
-        background: COLORS.canvas,
-      }}
-      onPointerMove={(e) => handlePointerMove(e)}
-      onPointerDown={(e) => handlePointerDown(e)}
-      onPointerUp={(e) => handlePointerUp(e)}
-      onPointerLeave={(e) => handlePointerLeave(e)}
-      cursor={cursor}
-    >
-      <g id="odys-zoomable-group" transform={transform}>
-        {/* This canvas-background is a sibling to the drawings.
+    <>
+      <svg
+        id="odys-canvas"
+        style={{
+          height: '100%',
+          width: '100%',
+          background: COLORS.canvas,
+        }}
+        onPointerMove={(e) => handlePointerMove(e)}
+        onPointerDown={(e) => handlePointerDown(e)}
+        onPointerUp={(e) => handlePointerUp(e)}
+        onPointerLeave={(e) => handlePointerLeave(e)}
+        cursor={cursor}
+      >
+        <g id="odys-zoomable-group" transform={transform}>
+          {/* This canvas-background is a sibling to the drawings.
             This is useful for pointer enter/leave events.
             It scales to the size of the canvas */}
-        <g
-          className="canvas-background"
-          transform={`translate(${topLeftX * (1 / scale) * -1}, ${
-            topLeftY * (1 / scale) * -1
-          }) scale(${1 / scale})`}
-          onDoubleClick={(e) => handleDoubleClick(e)}
-          onPointerOver={
-            shouldIgnorePointerOver ? undefined : (e) => handlePointerOver(e)
-          }
-        >
-          {/* TODO: 2000 magic number should equal screen width/height on initial load */}
-          <rect height="2000" width="2000" opacity="0"></rect>
+          <g
+            className="canvas-background"
+            transform={`translate(${topLeftX * (1 / scale) * -1}, ${
+              topLeftY * (1 / scale) * -1
+            }) scale(${1 / scale})`}
+            onDoubleClick={(e) => handleDoubleClick(e)}
+            onPointerOver={
+              shouldIgnorePointerOver ? undefined : (e) => handlePointerOver(e)
+            }
+          >
+            {/* TODO: 2000 magic number should equal screen width/height on initial load */}
+            <rect height="2000" width="2000" opacity="0"></rect>
+          </g>
+          <DrawContainer></DrawContainer>
+          <MultiSelect></MultiSelect>
+          <PlayerSelectBoxes></PlayerSelectBoxes>
+          <Cursors></Cursors>
+          <Ghosts></Ghosts>
         </g>
-        <DrawContainer></DrawContainer>
-        <MultiSelect></MultiSelect>
-        <PlayerSelectBoxes></PlayerSelectBoxes>
-        <Cursors></Cursors>
-        <Ghosts></Ghosts>
-      </g>
-    </svg>
+      </svg>
+      <HiddenTextInput
+        topLeftX={topLeftX}
+        topLeftY={topLeftY}
+        scale={scale}
+      ></HiddenTextInput>
+    </>
   );
 };
 

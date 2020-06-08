@@ -13,6 +13,8 @@ import { KeyboardState, KeyEvent } from 'modules/keyboard/keyboard.reducer';
 import { createGroup, ungroup } from 'modules/draw/shape/group.reducer';
 import uuid from 'uuid';
 import { allSelectedIds } from 'modules/draw/mixins/select/select.reducer';
+import { RootState } from 'App';
+import { endEditText } from 'modules/draw/mixins/editText/editText.reducer';
 
 // Only keys in this list will trigger the keydown condition.
 const LISTEN_KEYS = [
@@ -35,22 +37,19 @@ const LISTEN_KEYS = [
   'Space',
 ];
 
-export const keydown = createAsyncThunk(
+export const keydown: any = createAsyncThunk(
   'keyboard/keydown',
   async (e: KeyEvent, thunkAPI) => {
-    const state = thunkAPI.getState() as any;
+    const state = thunkAPI.getState() as RootState;
     const dispatch = thunkAPI.dispatch;
 
     const { shapes, select, multiSelect, editText } = state.draw;
-    if (
-      (e.code === 'Backspace' || e.code === 'Delete') &&
-      !editText.isEditing
-    ) {
+    if ((e.code === 'Backspace' || e.code === 'Delete') && editText === null) {
       const ids = allSelectedIds(state.draw);
       await dispatch(deleteDrawings({ ids }));
     }
 
-    if (e.code === 'KeyA' && e.metaKey) {
+    if (e.code === 'KeyA' && e.metaKey && editText === null) {
       return dispatch(selectAll());
     }
 
@@ -62,12 +61,6 @@ export const keydown = createAsyncThunk(
       }
     }
 
-    // if (e.code === 'Enter') {
-    //   if (select?.id && editText.isEditing === false) {
-    //     return dispatch(startEditText());
-    //   }
-    // }
-
     if (e.code === 'KeyC' && e.metaKey) {
       return dispatch(copy());
     }
@@ -78,7 +71,7 @@ export const keydown = createAsyncThunk(
       return dispatch(cut());
     }
 
-    if (e.code === 'Escape' && !editText.isEditing) {
+    if (e.code === 'Escape') {
       return dispatch(cancelSelect());
     }
 
@@ -88,7 +81,7 @@ export const keydown = createAsyncThunk(
 
     if (
       e.code === 'KeyG' &&
-      !editText.isEditing &&
+      editText === null &&
       select?.id &&
       shapes[select.id] &&
       shapes[select.id].type === 'grouping_rect'

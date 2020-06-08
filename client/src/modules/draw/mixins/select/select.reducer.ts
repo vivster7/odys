@@ -5,6 +5,8 @@ import { applySelectOrDeselect } from '../multiSelect/multiSelect.reducer';
 import { getShapes } from 'modules/draw/shape/shape.reducer';
 import { uniq } from 'lodash';
 import { findChildrenRecursively } from 'modules/draw/shape/group.reducer';
+import uuid from 'uuid';
+import { endEditTextPending } from '../editText/editText.reducer';
 
 export interface SelectedState {
   id: string;
@@ -51,6 +53,17 @@ export const selectClickTargetFn: DrawReducer<ClickPosition> = (
 export const cancelSelectFn: DrawReducer = (state, action) => {
   state.select = null;
   state.multiSelect = null;
+  if (state.editText) {
+    const endEditTextPendingAction = {
+      type: 'draw/endEditTextPending',
+      payload: undefined,
+      meta: {
+        arg: state.editText.id,
+        requestId: uuid.v4(),
+      },
+    };
+    endEditTextPending(state, endEditTextPendingAction);
+  }
 };
 
 export function allSelectedIds(state: DrawState): string[] {
