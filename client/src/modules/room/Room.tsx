@@ -58,6 +58,11 @@ const Room: React.FC = () => {
       }
     });
 
+    // detect when mouse leaves page
+    document.addEventListener('mouseleave', function (event) {
+      dispatch(clearKeys());
+    });
+
     window.addEventListener('keydown', downHandler, { capture: true });
     window.addEventListener('keyup', upHandler, { capture: true });
     return () => {
