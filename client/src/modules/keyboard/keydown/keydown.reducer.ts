@@ -3,18 +3,20 @@ import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
 import {
   selectAll,
   cancelSelect,
-  copy,
   ActionPending,
 } from 'modules/draw/draw.reducer';
 import { undo } from 'modules/draw/timetravel/undo.reducer';
 import { redo } from 'modules/draw/timetravel/redo.reducer';
-import { paste, cut } from 'modules/draw/mixins/copypaste/copypaste.reducer';
+import {
+  copy,
+  paste,
+  cut,
+} from 'modules/draw/mixins/copypaste/copypaste.reducer';
 import { KeyboardState, KeyEvent } from 'modules/keyboard/keyboard.reducer';
 import { createGroup, ungroup } from 'modules/draw/shape/group.reducer';
 import uuid from 'uuid';
 import { allSelectedIds } from 'modules/draw/mixins/select/select.reducer';
 import { RootState } from 'App';
-import { endEditText } from 'modules/draw/mixins/editText/editText.reducer';
 
 // Only keys in this list will trigger the keydown condition.
 const LISTEN_KEYS = [

@@ -87,13 +87,14 @@ import { undo, undoFulfilled } from './timetravel/undo.reducer';
 import { redo, redoFulfilled } from './timetravel/redo.reducer';
 import {
   CopyPasteState,
-  copyFn,
   pastePending,
   paste,
   pasteFulfilled,
   cut,
   cutPending,
   cutFulfilled,
+  copyPending,
+  copy,
 } from './mixins/copypaste/copypaste.reducer';
 import { RootState } from 'App';
 import { uniq, compact } from 'lodash';
@@ -267,8 +268,6 @@ const drawSlice = createSlice({
     resizeDragSelection: resizeDragSelectionFn,
     endDragSelection: endDragSelectionFn,
     selectAll: selectAllFn,
-    // copypaste
-    copy: copyFn,
   },
   extraReducers: {
     // drawing
@@ -336,6 +335,9 @@ const drawSlice = createSlice({
     [endEditText.fulfilled as any]: (state, action) => {},
     [endEditText.rejected as any]: (state, action) => {},
     // copypaste
+    [copy.pending as any]: copyPending,
+    [copy.rejected as any]: (state, action) => {},
+    [copy.fulfilled as any]: (state, action) => {},
     [paste.pending as any]: pastePending,
     [paste.rejected as any]: (state, action) => {},
     [paste.fulfilled as any]: pasteFulfilled,
@@ -380,7 +382,6 @@ export const {
   endDragSelection,
   selectAll,
   selectClickTarget,
-  copy,
 } = drawSlice.actions;
 const drawReducer = drawSlice.reducer;
 export default drawReducer;

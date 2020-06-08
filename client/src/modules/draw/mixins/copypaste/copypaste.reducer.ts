@@ -34,7 +34,12 @@ export interface CopyPasteState {
   isCut: boolean;
 }
 
-export const copyFn: DrawReducer = (state, action) => {
+export const copy = createAsyncThunk(
+  'draw/copy',
+  async (arg: undefined, thunkAPI) => {}
+);
+
+export const copyPending: DrawActionPending = (state, action) => {
   const allIds = allSelectedIds(state);
 
   const drawings = getDrawings(state, allIds);
@@ -122,7 +127,7 @@ export const cut = createAsyncThunk('draw/cut', async (arg: void, thunkAPI) => {
 });
 
 export const cutPending: DrawActionPending = (state, action) => {
-  copyFn(state, action);
+  copyPending(state, action);
 
   state.copyPaste.cut = state.copyPaste.copied;
   state.copyPaste.numTimesPasted = 0;
