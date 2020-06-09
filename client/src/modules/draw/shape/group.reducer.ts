@@ -2,7 +2,7 @@ import { getDrawing, DrawActionPending, DrawState } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from '../mixins/save/save.reducer';
-import { Shape, newShape } from './shape.reducer';
+import { Shape, newShape, getShapes } from './shape.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import { deleteDrawings } from '../mixins/delete/delete.reducer';
 import { RootState } from 'App';
@@ -30,15 +30,16 @@ export const createGroupPending: DrawActionPending<string> = (
 
   const id = action.meta.arg;
 
-  const { outline, selectedShapeIds } = state.multiSelect;
+  const { outline, selectedIds } = state.multiSelect;
   const { x, y, width, height } = outline;
 
-  const first = Object.keys(selectedShapeIds)[0];
+  const first = Object.keys(selectedIds)[0];
   const drawing = getDrawing(state, first);
+  const { boardId } = drawing;
 
   const outlineMarginTop = 40;
   const outlineMargin = 20;
-  const group: Shape = newShape(drawing.boardId, {
+  const group: Shape = newShape(boardId, {
     id: id,
     type: 'grouping_rect',
     text: '',
@@ -52,8 +53,8 @@ export const createGroupPending: DrawActionPending<string> = (
   reorder([group], state);
   applySelect(state, [group]);
 
-  Object.keys(selectedShapeIds).forEach((id) => {
-    const shape = state.shapes[id];
+  const shapes = getShapes(state, Object.keys(selectedIds));
+  shapes.forEach((shape) => {
     // cannot automatically reparent
     if (!shape.parentId) {
       shape.parentId = group.id;

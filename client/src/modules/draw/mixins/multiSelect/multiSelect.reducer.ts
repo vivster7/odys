@@ -4,7 +4,7 @@ import {
   DrawState,
   getDrawings,
 } from '../../draw.reducer';
-import Box, { isOverlapping, outline } from 'math/box';
+import Box, { isOverlapping, outline, isIntersectingPath } from 'math/box';
 import { instanceOfShape, Shape } from 'modules/draw/shape/shape.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import Point from 'math/point';
@@ -13,6 +13,8 @@ import {
   endEditTextPending,
   startEditTextFn,
 } from '../editText/editText.reducer';
+import { computeCurve } from 'modules/draw/arrow/path';
+import { Arrow } from 'modules/draw/arrow/arrow.reducer';
 
 export interface MultiSelectState {
   // origin where selectionRect begins
@@ -21,8 +23,8 @@ export interface MultiSelectState {
   // resizeble rect used to multiselect
   selectionRect: Box | null;
 
-  // shapes selected by the resizeable rect
-  selectedShapeIds: { [key: string]: boolean };
+  // drawings selected by the resizeable rect
+  selectedIds: { [key: string]: boolean };
 
   // outline around all selected shapes
   outline: Box;
@@ -54,7 +56,7 @@ export const startDragSelectionFn: DrawReducer<StartDragSelection> = (
       width: 0,
       height: 0,
     },
-    selectedShapeIds: {},
+    selectedIds: {},
     outline: { x: 0, y: 0, width: 0, height: 0 },
   };
 };
@@ -117,12 +119,28 @@ export const resizeDragSelectionFn: DrawReducer<resizeDragSelection> = (
   selectionRect.width = newWidth;
   selectionRect.height = newHeight;
 
-  const selectedShapeIds = Object.values(state.shapes)
+  const selectedShapes = Object.values(state.shapes)
     .filter((s) => !s.isDeleted)
     .filter((s) => isOverlapping(s, selectionRect))
     .map((s) => [s.id, true]);
+  const selectedShapesIds = Object.fromEntries(selectedShapes);
 
-  state.multiSelect.selectedShapeIds = Object.fromEntries(selectedShapeIds);
+  const selectedArrows = Object.values(state.arrows)
+    .filter((a) => !a.isDeleted)
+    .filter((a) => {
+      const fromSelected = selectedShapesIds[a.fromShapeId];
+      const toSelected = selectedShapesIds[a.toShapeId];
+      if (fromSelected && toSelected) return true;
+      return isIntersectingArrow(state, selectionRect, a);
+    })
+    .map((s) => [s.id, true]);
+  const selectedArrowIds = Object.fromEntries(selectedArrows);
+
+  state.multiSelect.selectedIds = Object.assign(
+    {},
+    selectedShapesIds,
+    selectedArrowIds
+  );
 };
 
 export const endDragSelectionFn: DrawReducer = (state, action) => {
@@ -132,18 +150,22 @@ export const endDragSelectionFn: DrawReducer = (state, action) => {
     );
 
   state.multiSelect.selectionRect = null;
-  const { selectedShapeIds } = state.multiSelect;
+  const { selectedIds } = state.multiSelect;
 
-  const shapes = Object.keys(selectedShapeIds).map((id) => state.shapes[id]);
-  applySelect(state, shapes);
+  const drawings: Drawing[] = getDrawings(state, Object.keys(selectedIds));
+  applySelect(state, drawings);
 };
 
 export const selectAllFn: DrawReducer = (state, action) => {
-  const shapes = Object.values(state.shapes).filter((s) => !s.isDeleted);
-  applySelect(state, shapes);
+  const drawings: Drawing[] = Object.values({
+    ...state.shapes,
+    ...state.arrows,
+  });
+  applySelect(state, drawings);
 };
 
 export const applySelect = (state: DrawState, drawings: Drawing[]) => {
+  // before beginning a new selection, complete any edits
   if (state.editText !== null) {
     const endEditTextPendingAction = {
       type: 'draw/endEditTextPending',
@@ -160,12 +182,13 @@ export const applySelect = (state: DrawState, drawings: Drawing[]) => {
     state.select = null;
     state.multiSelect = null;
   } else if (drawings.length === 1) {
-    state.select = { id: drawings[0].id };
+    const drawing = drawings[0];
+    state.select = { id: drawing.id };
     state.multiSelect = null;
-    if (drawings[0].text === '') {
+    if (drawing.text === '' && instanceOfShape(drawing)) {
       startEditTextFn(state, {
         type: 'draw/startEditText',
-        payload: drawings[0].id,
+        payload: drawing.id,
       });
     }
   } else {
@@ -174,7 +197,7 @@ export const applySelect = (state: DrawState, drawings: Drawing[]) => {
     state.multiSelect = {
       origin: null,
       selectionRect: null,
-      selectedShapeIds: Object.fromEntries(shapes.map((s) => [s.id, true])),
+      selectedIds: Object.fromEntries(drawings.map((d) => [d.id, true])),
       outline: outline(...shapes),
     };
   }
@@ -186,7 +209,7 @@ export const isSelected = (state: DrawState, ids: string[]) => {
   }
 
   if (state.multiSelect) {
-    return Object.keys(state.multiSelect.selectedShapeIds).some((id) =>
+    return Object.keys(state.multiSelect.selectedIds).some((id) =>
       ids.includes(id)
     );
   }
@@ -196,7 +219,7 @@ export const isSelected = (state: DrawState, ids: string[]) => {
 
 function getSelectedIdSet(state: DrawState): Set<string> {
   const ids: Set<string> = new Set(
-    Object.keys(state.multiSelect?.selectedShapeIds ?? {})
+    Object.keys(state.multiSelect?.selectedIds ?? {})
   );
   if (state.select) {
     ids.add(state.select.id);
@@ -223,4 +246,15 @@ export function applySelectOrDeselect(
   const drawings = getDrawings(state, Array.from(ids));
   applySelect(state, drawings);
   reorder(drawings, state);
+}
+
+function isIntersectingArrow(
+  state: DrawState,
+  rect: Box,
+  arrow: Arrow
+): boolean {
+  const fromShape = state.shapes[arrow.fromShapeId];
+  const toShape = state.shapes[arrow.toShapeId];
+  const { path } = computeCurve(fromShape, toShape);
+  return isIntersectingPath(rect, path);
 }

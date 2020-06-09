@@ -16,6 +16,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/redux": "^3.6.0",
     "@types/socket.io-client": "^1.4.32",
+    "@types/svg-intersections": "^0.4.0",
     "@types/uuid": "^3.4.5",
     "draft-js": "^0.11.6",
     "jsondiffpatch": "^0.4.1",
@@ -28,6 +29,7 @@
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
     "socket.io-client": "^2.3.0",
+    "svg-intersections": "^0.4.0",
     "typescript": "^3.8",
     "uuid": "^3.3.3"
   },

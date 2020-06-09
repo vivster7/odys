@@ -22,9 +22,7 @@ interface MultiDragState {
 
 const MultiSelect: React.FC = () => {
   const dispatch = useDispatch();
-  const selectedShapeIds = useSelector(
-    (s) => s.draw.multiSelect?.selectedShapeIds
-  );
+  const selectedIds = useSelector((s) => s.draw.multiSelect?.selectedIds);
   const selectionRect = useSelector((s) => s.draw.multiSelect?.selectionRect);
   const selectionOutline = useSelector((s) => s.draw.multiSelect?.outline);
   const [canvasScale, canvasTopLeftX, canvasTopLeftY] = useSelector((s) => [
@@ -58,7 +56,7 @@ const MultiSelect: React.FC = () => {
 
   function handlePointerUp(e: PointerEvent) {
     e.preventDefault();
-    if (multiDrag && selectedShapeIds) {
+    if (multiDrag && selectedIds) {
       if (
         cursorWithinEpsilon(
           multiDrag.startX,
@@ -85,7 +83,7 @@ const MultiSelect: React.FC = () => {
       } else {
         dispatch(
           endDrag({
-            ids: Object.keys(selectedShapeIds),
+            ids: Object.keys(selectedIds),
             translateX: multiDrag.x,
             translateY: multiDrag.y,
           })
@@ -126,7 +124,7 @@ const MultiSelect: React.FC = () => {
         strokeColor={COLORS.selectionInProgress}
       ></SelectBox>
     );
-  } else if (selectionOutline) {
+  } else if (selectionOutline && selectionOutline.height > 0) {
     const x =
       selectionOutline.x - borderPadding + ((multiDrag && multiDrag.x) || 0);
     const y =

@@ -6,6 +6,7 @@ import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { RootState } from 'App';
 import { getConnectedArrows } from 'modules/draw/arrow/arrow.reducer';
 import { cancelSelectFn } from '../select/select.reducer';
+import { uniq, uniqBy } from 'lodash';
 
 export interface Deleteable {
   id: string;
@@ -17,7 +18,7 @@ export const deleteDrawings = createAsyncThunk(
   async ({ ids }: DeleteDrawings, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const arrows = getConnectedArrows(state.draw, ids);
-    const allIds = ids.concat(arrows.map((a) => a.id));
+    const allIds = uniq(ids.concat(arrows.map((a) => a.id)));
 
     thunkAPI.dispatch(saveDelete(allIds));
   }
@@ -32,9 +33,11 @@ export const deleteDrawingsPending: DrawActionPending<DeleteDrawings> = (
   action
 ) => {
   const { ids } = action.meta.arg;
-  const drawings = getDrawings(state, ids).concat(
-    getConnectedArrows(state, ids)
+  const drawings = uniqBy(
+    [...getDrawings(state, ids), ...getConnectedArrows(state, ids)],
+    (d) => d.id
   );
+
   const snapshots = drawings.map((d) => {
     return { ...d, isSavedInDB: true };
   });

@@ -39,7 +39,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
   const isDragging = useSelector((s) => s.draw.drag?.id === id);
   const isEditing = useSelector((s) => s.draw.editText?.id === id);
   const isMultiSelected = useSelector(
-    (s) => !!s.draw.multiSelect?.selectedShapeIds[id]
+    (s) => !!s.draw.multiSelect?.selectedIds[id]
   );
   const selectedShapeId = useSelector((s) => s.draw.select?.id);
   const selectedShape = useSelector(

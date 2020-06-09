@@ -74,7 +74,7 @@ export function allSelectedIds(state: DrawState): string[] {
   }
 
   if (multiSelect) {
-    ids = ids.concat(Object.keys(multiSelect.selectedShapeIds));
+    ids = ids.concat(Object.keys(multiSelect.selectedIds));
   }
 
   const shapes = getShapes(state, ids);

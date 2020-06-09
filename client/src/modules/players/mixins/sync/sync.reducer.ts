@@ -18,16 +18,13 @@ type SelectedDiffUnset = [{ id: string; [key: string]: any }, null];
 type SelectedDiffChange = { id: [string, string]; [key: string]: any };
 type SelectedDiff = SelectedDiffSet | SelectedDiffUnset | SelectedDiffChange;
 
-type MultiSelectedDiffSet = [
-  null,
-  { selectedShapesId: string; [key: string]: any }
-];
+type MultiSelectedDiffSet = [null, { selectedIds: string; [key: string]: any }];
 type MultiSelectedDiffUnset = [
-  { selectedShapesId: string; [key: string]: any },
+  { selectedIds: string; [key: string]: any },
   null
 ];
 type MultiSelectedDiffChange = {
-  selectedShapeIds: { [id: string]: [boolean] | [boolean, 0, 0] };
+  selectedIds: { [id: string]: [boolean] | [boolean, 0, 0] };
   [key: string]: any;
 };
 type MultiSelectedDiff =
@@ -108,26 +105,26 @@ const syncMultiSelectedDiff = (
       state.selections = state.selections.filter((s) => s.id !== playerId);
       state.selections.push({
         id: playerId,
-        select: Object.keys(next.selectedShapeIds),
+        select: Object.keys(next.selectedIds),
       });
     }
-  } else if (multiSelectedDiff.hasOwnProperty('selectedShapeIds')) {
+  } else if (multiSelectedDiff.hasOwnProperty('selectedIds')) {
     // changed selection
-    const selectedShapeIdsDiff = multiSelectedDiff.selectedShapeIds;
+    const selectedIdsDiff = multiSelectedDiff.selectedIds;
     const selectionIdx = state.selections.findIndex((s) => s.id === playerId);
     if (selectionIdx >= 0) {
       const selectedIds = state.selections[selectionIdx].select;
       const set = new Set(selectedIds);
-      const toAppend = Object.keys(selectedShapeIdsDiff).filter(
+      const toAppend = Object.keys(selectedIdsDiff).filter(
         (id) => !set.has(id)
       );
       const toDelete = new Set(
         selectedIds.filter(
           (id) =>
-            selectedShapeIdsDiff[id] &&
-            selectedShapeIdsDiff[id].length === 3 &&
-            selectedShapeIdsDiff[id][1] === 0 &&
-            selectedShapeIdsDiff[id][2] === 0
+            selectedIdsDiff[id] &&
+            selectedIdsDiff[id].length === 3 &&
+            selectedIdsDiff[id][1] === 0 &&
+            selectedIdsDiff[id][2] === 0
         )
       );
       const updated = selectedIds

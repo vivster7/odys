@@ -112,15 +112,19 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
   const r2 = useSelector((s) => s.draw.shapes[arrow.toShapeId]);
 
   const isSelected = useSelector((s) => s.draw.select?.id === id);
+  const isMultiSelected = useSelector(
+    (s) => !!s.draw.multiSelect?.selectedIds[id]
+  );
   const shouldIgnorePointerOver = useSelector(
     (s) => !!s.draw.drag || !!s.draw.resize
   );
 
-  const color = isSelected
-    ? COLORS.select
-    : playerSelected
-    ? playerSelected.color
-    : COLORS.arrowDefault;
+  const color =
+    isSelected || isMultiSelected
+      ? COLORS.select
+      : playerSelected
+      ? playerSelected.color
+      : COLORS.arrowDefault;
 
   if (!r1 || !r2) {
     if (!r1)

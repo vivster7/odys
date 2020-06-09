@@ -1,13 +1,10 @@
-import {
-  getDrawings,
-  Drawing,
-  updateDrawings,
-} from 'modules/draw/draw.reducer';
+import { Drawing, updateDrawings } from 'modules/draw/draw.reducer';
 import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
 import {
   instanceOfShape,
   Shape,
   newShape,
+  getShapes,
 } from 'modules/draw/shape/shape.reducer';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from 'App';
@@ -23,7 +20,7 @@ export const copy = createAsyncThunk(
     const state = thunkAPI.getState() as RootState;
 
     const allIds = allSelectedIds(state.draw);
-    const shapes = getDrawings(state.draw, allIds).filter(instanceOfShape);
+    const shapes = getShapes(state.draw, allIds);
     const shapeIds = new Set(...[shapes.map((s) => s.id)]);
     const arrows = Object.values(state.draw.arrows).filter(
       (a) => shapeIds.has(a.fromShapeId) && shapeIds.has(a.toShapeId)

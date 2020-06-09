@@ -1,3 +1,5 @@
+import { intersect, shape } from 'svg-intersections';
+
 interface Box {
   x: number;
   y: number;
@@ -14,6 +16,18 @@ export function isOverlapping(r1: Box, r2: Box): boolean {
   );
 }
 
+export function isIntersectingPath(rect: Box, path: string): boolean {
+  const selectRect = shape('rect', {
+    x: rect.x,
+    y: rect.y,
+    width: rect.width,
+    height: rect.height,
+  });
+  const arrowPath = shape('path', { d: path });
+  const intersection = intersect(selectRect, arrowPath);
+  return intersection.points.length !== 0;
+}
+
 export function isWithinBounds(x: number, y: number, box: Box): boolean {
   return (
     x >= box.x &&
@@ -25,7 +39,7 @@ export function isWithinBounds(x: number, y: number, box: Box): boolean {
 
 // Return rectangle that surrounds all input `rects`.
 export function outline(...rects: Box[]): Box {
-  if (rects.length === 0) throw new Error('`outline` needs >0 input `rects`');
+  if (rects.length === 0) return { x: 0, y: 0, width: 0, height: 0 };
   const first = rects[0];
   let [minX, minY] = [first.x, first.y];
   let [maxX, maxY] = [first.x + first.width, first.y + first.height];
