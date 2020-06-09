@@ -6,7 +6,9 @@ const KeyTooltips: React.FC = () => {
   const isCmdPressed = useSelector((s) => s.keyboard.cmdKey);
 
   const platform = window.navigator.platform;
-  const cmdOrCtrl = platform.includes('Mac') ? 'Command' : 'Ctrl';
+  const isMac = platform.includes('Mac');
+  const icon = isMac ? '⌘' : 'Ctrl';
+  const toggleText = isMac ? '⌘ [Command]' : 'Ctrl';
 
   return (
     <>
@@ -20,12 +22,12 @@ const KeyTooltips: React.FC = () => {
         <KeyToggle
           isToggled={isCmdPressed}
           tips={[
-            'Box:   ⌥ + Click',
-            'Arrow: ⌥ + Click with a selected box',
+            `Box:   ${icon} + Click`,
+            `Arrow: ${icon} + Click with a selected box`,
             'Text: Double Click',
           ]}
         >
-          ⌘ [{cmdOrCtrl}]
+          {toggleText}
         </KeyToggle>
       </div>
     </>
