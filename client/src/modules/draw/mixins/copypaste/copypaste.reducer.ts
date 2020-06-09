@@ -48,7 +48,7 @@ export const paste = createAsyncThunk(
       }
 
       const data = json['data'] as Drawing[];
-      const clones = cloneDrawings(data);
+      const clones = cloneDrawings(data, state.board.id);
       const arrows = clones.filter(instanceOfArrow);
       const shapes = clones.filter(instanceOfShape);
 
@@ -89,32 +89,46 @@ function midpoint(shapes: Shape[]): Point {
   return { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
 }
 
-function cloneDrawings(drawings: Drawing[]): Drawing[] {
-  const shapes = drawings.filter((c) => instanceOfShape(c)) as Shape[];
-  const arrows = drawings.filter((c) => instanceOfArrow(c)) as Arrow[];
+function cloneDrawings(drawings: Drawing[], boardId?: string): Drawing[] {
+  const shapes = drawings.filter(instanceOfShape);
+  const arrows = drawings.filter(instanceOfArrow);
 
-  const clonedShapes = shapes.map((s) => cloneShape(s));
+  const shapeExtras: Partial<Shape> = {};
+  if (boardId !== undefined) {
+    shapeExtras['boardId'] = boardId;
+  }
+  const clonedShapes = shapes.map((s) => cloneShape(s, shapeExtras));
 
   const oldToNew = Object.fromEntries(
     shapes.map((s, i) => [s.id, clonedShapes[i].id])
   );
 
   // after creating the `oldToNew` mapping, we can update the `parentId` value
-  clonedShapes.forEach((s) => (s.parentId = oldToNew[s.parentId]));
-  const clonedArrows = arrows.map((a) => cloneArrow(oldToNew, a));
+  clonedShapes.forEach((s) => (s.parentId = oldToNew[s.parentId] || ''));
+
+  const arrowExtras: Partial<Shape> = {};
+  if (boardId !== undefined) {
+    arrowExtras['boardId'] = boardId;
+  }
+  const clonedArrows = arrows.map((a) => cloneArrow(oldToNew, a, arrowExtras));
   return [...clonedShapes, ...clonedArrows];
 }
 
-function cloneShape(s: Shape): Shape {
+function cloneShape(s: Shape, extras: Partial<Shape>): Shape {
   return {
     ...s,
     id: uuid.v4(),
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    ...extras,
   };
 }
 
-function cloneArrow(mapping: { [id: string]: string }, a: Arrow): Arrow {
+function cloneArrow(
+  mapping: { [id: string]: string },
+  a: Arrow,
+  extras: Partial<Arrow>
+): Arrow {
   return {
     ...a,
     id: uuid.v4(),
@@ -122,6 +136,7 @@ function cloneArrow(mapping: { [id: string]: string }, a: Arrow): Arrow {
     updatedAt: new Date().toISOString(),
     fromShapeId: mapping[a.fromShapeId],
     toShapeId: mapping[a.toShapeId],
+    ...extras,
   };
 }
 

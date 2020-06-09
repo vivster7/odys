@@ -157,7 +157,7 @@ class OdysClient {
       json = [];
     }
 
-    if ('code' in json && 'message' in json) {
+    if ('message' in json) {
       throw new Error((json as PostgrestError).message);
     }
     return json.map((j: any) => deserializer(j));
