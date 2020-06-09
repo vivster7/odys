@@ -16,7 +16,7 @@ const initialState: KeyboardState = {
 };
 
 export interface KeyEvent {
-  code: string;
+  key: string;
   altKey: boolean;
   metaKey: boolean;
   shiftKey: boolean;
@@ -28,11 +28,11 @@ const keyboardSlice = createSlice({
   initialState: initialState,
   reducers: {
     keyup: (state, action: PayloadAction<KeyEvent>) => {
-      const { code, altKey, shiftKey, metaKey } = action.payload;
+      const { key, altKey, shiftKey, metaKey } = action.payload;
       if (!altKey) state.altKey = false;
       if (!shiftKey) state.shiftKey = false;
       if (!metaKey) state.cmdKey = false;
-      if (code === 'Space') state.spaceKey = false;
+      if (key === ' ') state.spaceKey = false;
     },
     clearKeys: (state, action: PayloadAction<void>) => {
       state.altKey = false;

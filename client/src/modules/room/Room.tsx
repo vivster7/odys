@@ -31,18 +31,19 @@ const Room: React.FC = () => {
   useEffect(() => {
     const downHandler = (e: KeyboardEvent) => {
       const payload: KeyEvent = {
-        code: e.code,
+        key: e.key,
         metaKey: e.metaKey,
         shiftKey: e.shiftKey,
         altKey: e.altKey,
         repeat: e.repeat,
       };
+
       throttledKeydown(dispatch, payload);
     };
 
     const upHandler = (e: KeyboardEvent) => {
       const payload = {
-        code: e.code,
+        key: e.key,
         metaKey: e.metaKey,
         shiftKey: e.shiftKey,
         altKey: e.altKey,

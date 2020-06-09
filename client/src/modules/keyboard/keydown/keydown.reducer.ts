@@ -20,24 +20,21 @@ import { RootState } from 'App';
 import { debouncedOnWheelEnd } from 'modules/canvas/Canvas';
 
 // Only keys in this list will trigger the keydown condition.
+const SPACE = ' ';
 const LISTEN_KEYS = [
   'Backspace',
   'Delete',
-  'KeyA',
-  'KeyC',
-  'KeyG',
-  'KeyV',
-  'KeyX',
-  'KeyZ',
+  'a',
+  'c',
+  'g',
+  'v',
+  'x',
+  'z',
   'Escape',
-  'AltLeft',
-  'AltRight',
-  'ShiftLeft',
-  'ShiftRight',
-  'MetaLeft',
-  'MetaRight',
+  'Shift',
+  'Meta',
   'Enter',
-  'Space',
+  SPACE,
 ];
 
 export const keydown: any = createAsyncThunk(
@@ -52,16 +49,16 @@ export const keydown: any = createAsyncThunk(
     const isNotEditingText =
       editText === null || (editText.startingText === '' && !editText.hasTyped);
 
-    if ((e.code === 'Backspace' || e.code === 'Delete') && isNotEditingText) {
+    if ((e.key === 'Backspace' || e.key === 'Delete') && isNotEditingText) {
       const ids = allSelectedIds(state.draw);
       await dispatch(deleteDrawings({ ids }));
     }
 
-    if (e.code === 'KeyA' && e.metaKey && isNotEditingText) {
+    if (e.key === 'a' && e.metaKey && isNotEditingText) {
       return dispatch(selectAll());
     }
 
-    if (e.code === 'KeyZ' && e.metaKey) {
+    if (e.key === 'z' && e.metaKey) {
       if (e.shiftKey) {
         return dispatch(redo());
       } else {
@@ -69,26 +66,26 @@ export const keydown: any = createAsyncThunk(
       }
     }
 
-    if (e.code === 'KeyC' && e.metaKey && isNotEditingText) {
+    if (e.key === 'c' && e.metaKey && isNotEditingText) {
       return dispatch(copy());
     }
-    if (e.code === 'KeyV' && e.metaKey && editText === null) {
+    if (e.key === 'v' && e.metaKey && editText === null) {
       return dispatch(paste());
     }
-    if (e.code === 'KeyX' && e.metaKey && isNotEditingText) {
+    if (e.key === 'x' && e.metaKey && isNotEditingText) {
       return dispatch(cut());
     }
 
-    if (e.code === 'Escape') {
+    if (e.key === 'Escape') {
       return dispatch(cancelSelect());
     }
 
-    if (e.code === 'KeyG' && multiSelect) {
+    if (e.key === 'g' && multiSelect) {
       return dispatch(createGroup(uuid.v4()));
     }
 
     if (
-      e.code === 'KeyG' &&
+      e.key === 'g' &&
       editText === null &&
       select?.id &&
       shapes[select.id] &&
@@ -100,9 +97,9 @@ export const keydown: any = createAsyncThunk(
   {
     condition: (e: KeyEvent, thunkAPI) => {
       return (
-        LISTEN_KEYS.includes(e.code) &&
+        LISTEN_KEYS.includes(e.key) &&
         // ignore if key is held down (aside from undo/redo)
-        (e.repeat === false || e.code === 'KeyZ')
+        (e.repeat === false || e.key === 'z')
       );
     },
   }
@@ -112,7 +109,7 @@ export const keydownPendingFn = (
   state: KeyboardState,
   action: ActionPending<KeyEvent>
 ) => {
-  const { code, metaKey, altKey, shiftKey } = action.meta.arg;
+  const { key, metaKey, altKey, shiftKey } = action.meta.arg;
 
   if (altKey) {
     state.altKey = true;
@@ -126,7 +123,7 @@ export const keydownPendingFn = (
     state.cmdKey = true;
   }
 
-  if (code === 'Space') {
+  if (key === SPACE) {
     state.spaceKey = true;
   }
 };
