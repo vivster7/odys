@@ -52,6 +52,8 @@ function bound(n: number, min: number, max: number): number {
 }
 
 interface WheelEnd {
+  clientX: number;
+  clientY: number;
   topLeftX: number;
   topLeftY: number;
   scale: number;
@@ -62,10 +64,30 @@ export const wheelEndFn: CaseReducer<CanvasState, PayloadAction<WheelEnd>> = (
   state,
   action
 ) => {
-  const { topLeftX, topLeftY, scale, zoomLevel } = action.payload;
+  const prevTopLeftX = state.topLeftX;
+  const prevTopLeftY = state.topLeftY;
+  const prevScale = state.scale;
+  const {
+    clientX,
+    clientY,
+    topLeftX,
+    topLeftY,
+    scale,
+    zoomLevel,
+  } = action.payload;
 
   state.topLeftX = topLeftX;
   state.topLeftY = topLeftY;
   state.scale = scale;
   state.zoomLevel = zoomLevel;
+
+  const invertX = (clientX - prevTopLeftX) / prevScale;
+  const invertY = (clientY - prevTopLeftY) / prevScale;
+  const updatedTopLeftX = clientX - invertX * scale;
+  const updatedTopLeftY = clientY - invertY * scale;
+
+  state.cursor.x -=
+    (topLeftX - prevTopLeftX - (updatedTopLeftX - prevTopLeftX)) / scale;
+  state.cursor.y -=
+    (topLeftY - prevTopLeftY - (updatedTopLeftY - prevTopLeftY)) / scale;
 };

@@ -85,17 +85,7 @@ import {
 } from 'modules/draw/timetravel/timeTravel';
 import { undo, undoFulfilled } from './timetravel/undo.reducer';
 import { redo, redoFulfilled } from './timetravel/redo.reducer';
-import {
-  CopyPasteState,
-  pastePending,
-  paste,
-  pasteFulfilled,
-  cut,
-  cutPending,
-  cutFulfilled,
-  copyPending,
-  copy,
-} from './mixins/copypaste/copypaste.reducer';
+import { paste, cut, copy } from './mixins/copypaste/copypaste.reducer';
 import { RootState } from 'App';
 import { uniq, compact } from 'lodash';
 import {
@@ -157,7 +147,6 @@ export interface DrawState {
   resize: ResizeState | null;
   newRect: NewRectState | null;
   timetravel: TimeTravelState;
-  copyPaste: CopyPasteState;
   loaded: LoadStates;
 }
 
@@ -172,13 +161,6 @@ const initialState: DrawState = {
   resize: null,
   newRect: null,
   timetravel: { undos: [], redos: [] },
-  copyPaste: {
-    copied: [],
-    pasted: [],
-    cut: [],
-    numTimesPasted: 0,
-    isCut: false,
-  },
   loaded: 'loading',
 };
 
@@ -218,8 +200,18 @@ export const fetchDrawingsFulfilled: DrawActionFulfilled<string> = (
   state.loaded = 'success';
 };
 
-export const updateDrawingsFn: DrawReducer<Drawing[]> = (state, action) => {
-  const updates: Drawing[] = action.payload;
+export const updateDrawings = createAsyncThunk(
+  'draw/updateDrawings',
+  async (drawings: Drawing[], thunkAPI) => {
+    thunkAPI.dispatch(save(drawings.map((d) => d.id)));
+  }
+);
+
+export const updateDrawingsPending: DrawActionPending<Drawing[]> = (
+  state,
+  action
+) => {
+  const updates: Drawing[] = action.meta.arg;
   const drawings = updates.map((update) => {
     const { id = '' } = update;
     const existing: Drawing = state.shapes[id] ?? state.arrows[id] ?? {};
@@ -252,8 +244,6 @@ const drawSlice = createSlice({
   name: 'draw',
   initialState: initialState,
   reducers: {
-    // shape
-    updateDrawings: updateDrawingsFn,
     // editText
     startEditText: startEditTextFn,
     // select
@@ -279,6 +269,9 @@ const drawSlice = createSlice({
     [fetchDrawings.pending as any]: (state, action) => {},
     [fetchDrawings.fulfilled as any]: fetchDrawingsFulfilled,
     [fetchDrawings.rejected as any]: fetchDrawingsRejected,
+    [updateDrawings.pending as any]: updateDrawingsPending,
+    [updateDrawings.fulfilled as any]: (state, action) => {},
+    [updateDrawings.rejected as any]: (state, action) => {},
     //save
     [save.pending as any]: (state, action) => {},
     [save.fulfilled as any]: saveFulfilled,
@@ -340,15 +333,15 @@ const drawSlice = createSlice({
     [endEditText.fulfilled as any]: (state, action) => {},
     [endEditText.rejected as any]: (state, action) => {},
     // copypaste
-    [copy.pending as any]: copyPending,
+    [copy.pending as any]: (state, action) => {},
     [copy.rejected as any]: (state, action) => {},
     [copy.fulfilled as any]: (state, action) => {},
-    [paste.pending as any]: pastePending,
+    [paste.pending as any]: (state, action) => {},
     [paste.rejected as any]: (state, action) => {},
-    [paste.fulfilled as any]: pasteFulfilled,
-    [cut.pending as any]: cutPending,
+    [paste.fulfilled as any]: (state, action) => {},
+    [cut.pending as any]: (state, action) => {},
     [cut.rejected as any]: (state, action) => {},
-    [cut.fulfilled as any]: cutFulfilled,
+    [cut.fulfilled as any]: (state, action) => {},
     //global
     'global/syncState': (state, action: any) => {
       const stateDiff = action.payload.data as Partial<RootState>;
@@ -373,7 +366,6 @@ const drawSlice = createSlice({
 });
 
 export const {
-  updateDrawings,
   startEditText,
   selectDrawing,
   cancelSelect,

@@ -18,7 +18,7 @@ export interface CanvasState {
   dirty: boolean;
   // TODO: consider moving `cursorOver` state somewhere else
   cursorOver: CursorOver;
-  cursor?: Cursor;
+  cursor: Cursor;
 }
 
 type CursorOverType =
@@ -61,7 +61,7 @@ const initialState: CanvasState = {
   pan: null,
   dirty: false,
   cursorOver: { type: 'background' },
-  cursor: undefined,
+  cursor: { x: 0, y: 0 },
 };
 
 const canvasSlice = createSlice({

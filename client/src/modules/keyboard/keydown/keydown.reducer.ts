@@ -17,6 +17,7 @@ import { createGroup, ungroup } from 'modules/draw/shape/group.reducer';
 import uuid from 'uuid';
 import { allSelectedIds } from 'modules/draw/mixins/select/select.reducer';
 import { RootState } from 'App';
+import { debouncedOnWheelEnd } from 'modules/canvas/Canvas';
 
 // Only keys in this list will trigger the keydown condition.
 const LISTEN_KEYS = [
@@ -44,6 +45,8 @@ export const keydown: any = createAsyncThunk(
   async (e: KeyEvent, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const dispatch = thunkAPI.dispatch;
+    // flush wheel end so paste has up-to-date cursor
+    debouncedOnWheelEnd.flush();
 
     const { shapes, select, multiSelect, editText } = state.draw;
     const isNotEditingText =
@@ -66,13 +69,13 @@ export const keydown: any = createAsyncThunk(
       }
     }
 
-    if (e.code === 'KeyC' && e.metaKey) {
+    if (e.code === 'KeyC' && e.metaKey && isNotEditingText) {
       return dispatch(copy());
     }
-    if (e.code === 'KeyV' && e.metaKey) {
+    if (e.code === 'KeyV' && e.metaKey && editText === null) {
       return dispatch(paste());
     }
-    if (e.code === 'KeyX' && e.metaKey) {
+    if (e.code === 'KeyX' && e.metaKey && isNotEditingText) {
       return dispatch(cut());
     }
 

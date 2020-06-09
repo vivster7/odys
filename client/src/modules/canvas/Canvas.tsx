@@ -33,15 +33,19 @@ import PlayerSelectBoxes from './selectbox/PlayerSelectBoxes';
 import { SHAPE_WIDTH, SHAPE_HEIGHT } from 'modules/draw/shape/type/BaseShape';
 import HiddenTextInput from 'modules/draw/mixins/editText/HiddenTextInput';
 
-const debouncedOnWheelEnd = debounce(
+export const debouncedOnWheelEnd = debounce(
   (
     dispatch: Dispatch<any>,
+    clientX: number,
+    clientY: number,
     topLeftX: number,
     topLeftY: number,
     scale: number,
     zoomLevel: number
   ) => {
-    dispatch(wheelEnd({ topLeftX, topLeftY, scale, zoomLevel }));
+    dispatch(
+      wheelEnd({ clientX, clientY, topLeftX, topLeftY, scale, zoomLevel })
+    );
   },
   150
 );
@@ -292,9 +296,6 @@ const Canvas: React.FC = () => {
     const isPinchToZoom = e.ctrlKey;
 
     function zoom() {
-      const invertX = (e.clientX - topLeftX) / scale;
-      const invertY = (e.clientY - topLeftY) / scale;
-
       let scaleFactor;
       if (e.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
         scaleFactor = 0.002 * -e.deltaY;
@@ -313,6 +314,10 @@ const Canvas: React.FC = () => {
         zoomLeveltoScaleMap[MIN_ZOOM_LEVEL],
         zoomLeveltoScaleMap[MAX_ZOOM_LEVEL]
       );
+
+      const invertX = (e.clientX - topLeftX) / scale;
+      const invertY = (e.clientY - topLeftY) / scale;
+
       const updatedTopLeftX = e.clientX - invertX * updatedScale;
       const updatedTopLeftY = e.clientY - invertY * updatedScale;
 
@@ -343,6 +348,8 @@ const Canvas: React.FC = () => {
     setZoomLevel(zoomLevelBucket(zoomLevel, updatedScale));
     debouncedOnWheelEnd(
       dispatch,
+      e.clientX,
+      e.clientY,
       updatedTopLeftX,
       updatedTopLeftY,
       updatedScale,
