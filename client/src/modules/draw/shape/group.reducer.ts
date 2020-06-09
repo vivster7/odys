@@ -55,12 +55,11 @@ export const createGroupPending: DrawActionPending<string> = (
 
   const shapes = getShapes(state, Object.keys(selectedIds));
   shapes.forEach((shape) => {
-    // cannot automatically reparent
-    if (!shape.parentId) {
-      shape.parentId = group.id;
-    }
+    shape.parentId = group.id;
   });
 
+  // TODO: bug -- need to remove/add parentId in undo/redo
+  // consider a composite time travel safe action?
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',
     arg: [id],
@@ -73,42 +72,18 @@ export const createGroupPending: DrawActionPending<string> = (
   state.timetravel.redos = [];
 };
 
-// This is module state to share information between the ungroup action
-// and the pending/fulfilled/rejected reducers.
-// It is key'd by requestId to be thread-safe.
-const ungroupState: {
-  [requestId: string]: string[];
-} = {};
-
 export const ungroup = createAsyncThunk(
   'draw/ungroup',
   async (id: string, thunkAPI) => {
-    const requestId = thunkAPI.requestId;
-    const childrenIds = ungroupState[requestId];
-    thunkAPI.dispatch(save(childrenIds));
     thunkAPI.dispatch(deleteDrawings({ ids: [id] }));
   }
 );
 
 export const ungroupPending: DrawActionPending<string> = (state, action) => {
-  const { requestId } = action.meta;
-  const id = action.meta.arg;
-  const shape = state.shapes[id];
-  shape.isDeleted = true;
-
-  const children = findDirectChildren(state, [shape.id]);
-  children.forEach((c) => (c.parentId = ''));
-  ungroupState[requestId] = children.map((c) => c.id);
-};
-
-export const ungroupRejected: DrawActionPending<string> = (state, action) => {
-  const { requestId } = action.meta;
-  delete ungroupState[requestId];
-};
-
-export const ungroupFulfilled: DrawActionPending<string> = (state, action) => {
-  const { requestId } = action.meta;
-  delete ungroupState[requestId];
+  // TODO: bug -- need to add/remove parents
+  // currently dont worry about reparenting,
+  // so undo-ing the ungroup (really a delete)
+  // will keep the parent/child association alive
 };
 
 export function findChildrenRecursively(
