@@ -9,6 +9,7 @@ import { Saveable, save } from '../mixins/save/save.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import odysClient from 'global/odysClient';
 import { RootState } from 'App';
+import { positionArrowsFn } from '../arrowposition/arrowPosition.reducer';
 
 export interface Arrow extends OdysArrow, ArrowMixins {}
 type ArrowMixins = Selectable & TextEditable & Saveable & Deleteable;
@@ -36,17 +37,18 @@ export const fetchArrowsFulfilled = (
   state: DrawState,
   action: PayloadAction<OdysArrow[]>
 ) => {
-  const arrows = action.payload;
-  arrows.forEach((a) => {
+  const odysArrows = action.payload;
+  const arrows = odysArrows.map((a) => {
     const arrow: Arrow = {
       ...a,
       isSavedInDB: true,
       isDeleted: false,
     };
-    state.arrows[a.id] = arrow;
-    //TODO: order should be saved on server.
-    reorder([arrow], state);
+    return arrow;
   });
+  arrows.forEach((a) => (state.arrows[a.id] = a));
+  reorder(arrows, state);
+  positionArrowsFn(state, { type: 'draw/positionArrows', payload: arrows });
 };
 
 interface DrawArrow {
@@ -113,6 +115,7 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
 
   state.arrows[arrow.id] = arrow;
   reorder([arrow], state);
+  positionArrowsFn(state, { type: 'draw/positionArrows', payload: [arrow] });
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',

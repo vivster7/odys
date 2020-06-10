@@ -4,9 +4,13 @@ import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { saveDelete } from '../save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { RootState } from 'App';
-import { getConnectedArrows } from 'modules/draw/arrow/arrow.reducer';
+import {
+  getConnectedArrows,
+  instanceOfArrow,
+} from 'modules/draw/arrow/arrow.reducer';
 import { cancelSelectFn } from '../select/select.reducer';
 import { uniq, uniqBy } from 'lodash';
+import { positionArrowsFn } from 'modules/draw/arrowposition/arrowPosition.reducer';
 
 export interface Deleteable {
   id: string;
@@ -47,6 +51,9 @@ export const deleteDrawingsPending: DrawActionPending<DeleteDrawings> = (
 
   // cancel selection after deletion
   cancelSelectFn(state, { type: 'draw/cancelSelect', payload: undefined });
+
+  const arrows = drawings.filter(instanceOfArrow);
+  positionArrowsFn(state, { type: 'draw/positionArrows', payload: arrows });
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',

@@ -8,21 +8,6 @@ const BOUNDING_BOX = {
   ratio: 1 / 2,
 };
 
-export interface ArrowData {
-  arrowId: string;
-  otherShapeId: string;
-  direction: string;
-}
-
-export interface ShapeArrows {
-  [type: string]: ArrowData[];
-}
-
-export interface ArrowOrientation {
-  // keyed by shape id and orientation
-  [id: string]: ShapeArrows;
-}
-
 export interface ShapeValues {
   x: number;
   y: number;
@@ -44,7 +29,7 @@ export function verticalOrientation(o: Orientation) {
   return o === 'top' || o === 'bottom';
 }
 
-function getShapeValues(shape: Shape): ShapeValues {
+export function getShapeValues(shape: Shape): ShapeValues {
   const x = shape.x + shape.translateX;
   const y = shape.y + shape.translateY;
   const height = shape.height + shape.deltaHeight;
@@ -66,18 +51,12 @@ function getShapeValues(shape: Shape): ShapeValues {
   };
 }
 
-export function computeOrientationFromShapes(fromShape: Shape, toShape: Shape) {
-  const r1 = getShapeValues(fromShape);
-  const r2 = getShapeValues(toShape);
-  return { ...computeOrientation(r1, r2), r1, r2 };
-}
-
 function getOffset(length: number, count: number, index: number) {
   // set min values to account for ghosts
   return (length / Math.max(2, count)) * Math.max(1, index + 1);
 }
 
-function computeOrientation(
+export function computeOrientation(
   r1: ShapeValues,
   r2: ShapeValues
 ): { from: Orientation; to: Orientation } {
@@ -88,8 +67,8 @@ function computeOrientation(
   const yNeg = r1.y - r2.yEnd;
   const yDiff = Math.max(yPos, yNeg, 0);
 
-  let from: Orientation = 'left';
-  let to: Orientation = 'right';
+  let from: Orientation = 'right';
+  let to: Orientation = 'left';
   if (Math.abs(xDiff) > BOUNDING_BOX.x || Math.abs(yDiff) > BOUNDING_BOX.y) {
     const xyRatio = Math.abs(xDiff) / Math.abs(yDiff);
     if (r2.x > r1.xEnd && r2.yMid > r1.y && r2.yMid < r1.yEnd) {
@@ -170,8 +149,8 @@ export function computeCurve(
   id: string,
   fromShape: Shape,
   toShape: Shape,
-  fromShapeArrows: ShapeArrows,
-  toShapeArrows: ShapeArrows
+  fromShapeArrows: string[],
+  toShapeArrows: string[]
 ) {
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = getShapeValues(fromShape);
@@ -185,55 +164,55 @@ export function computeCurve(
 
   const { from, to } = computeOrientation(r1, r2);
 
-  if (from && to) {
-    const _fromShapeArrows = fromShapeArrows[from] ?? [];
-    const fromShapeCount = _fromShapeArrows.length + 1;
-    const fromShapeIndex = _fromShapeArrows.findIndex((a) => a.arrowId === id);
+  const _fromShapeArrows = fromShapeArrows ?? [];
+  const fromShapeCount = _fromShapeArrows.length + 1;
+  const fromShapeIndex = _fromShapeArrows.findIndex(
+    (arrowId) => arrowId === id
+  );
 
-    if (from === 'left') {
-      x1 = r1.x - EDGE_MARGIN;
-      y1 = r1.y + getOffset(r1.height, fromShapeCount, fromShapeIndex);
-    } else if (from === 'right') {
-      x1 = r1.xEnd + EDGE_MARGIN;
-      y1 = r1.y + getOffset(r1.height, fromShapeCount, fromShapeIndex);
-    } else if (from === 'top') {
-      x1 = r1.x + getOffset(r1.width, fromShapeCount, fromShapeIndex);
-      y1 = r1.y - EDGE_MARGIN;
-    } else {
-      x1 = r1.x + getOffset(r1.width, fromShapeCount, fromShapeIndex);
-      y1 = r1.yEnd + EDGE_MARGIN;
+  if (from === 'left') {
+    x1 = r1.x - EDGE_MARGIN;
+    y1 = r1.y + getOffset(r1.height, fromShapeCount, fromShapeIndex);
+  } else if (from === 'right') {
+    x1 = r1.xEnd + EDGE_MARGIN;
+    y1 = r1.y + getOffset(r1.height, fromShapeCount, fromShapeIndex);
+  } else if (from === 'top') {
+    x1 = r1.x + getOffset(r1.width, fromShapeCount, fromShapeIndex);
+    y1 = r1.y - EDGE_MARGIN;
+  } else {
+    x1 = r1.x + getOffset(r1.width, fromShapeCount, fromShapeIndex);
+    y1 = r1.yEnd + EDGE_MARGIN;
+  }
+
+  const _toShapeArrows = toShapeArrows ?? [];
+  const toShapeCount = _toShapeArrows.length + 1;
+  const toShapeIndex = _toShapeArrows.findIndex((arrowId) => arrowId === id);
+
+  if (to === 'left') {
+    x2 = r2.x - EDGE_MARGIN;
+    y2 = r2.y + getOffset(r2.height, toShapeCount, toShapeIndex);
+  } else if (to === 'right') {
+    x2 = r2.xEnd + EDGE_MARGIN;
+    y2 = r2.y + getOffset(r2.height, toShapeCount, toShapeIndex);
+  } else if (to === 'top') {
+    x2 = r2.x + getOffset(r2.width, toShapeCount, toShapeIndex);
+    y2 = r2.y - EDGE_MARGIN;
+  } else {
+    x2 = r2.x + getOffset(r2.width, toShapeCount, toShapeIndex);
+    y2 = r2.yEnd + EDGE_MARGIN;
+  }
+
+  if (verticalOrientation(from)) {
+    if (horizontalOrientation(to)) {
+      path = `M ${x1} ${y1} C ${x1} ${y2} ${x1} ${y2}, ${x2} ${y2}`;
+    } else if (verticalOrientation(to)) {
+      path = `M ${x1} ${y1} C ${x1} ${y2} ${x2} ${y1}, ${x2} ${y2}`;
     }
-
-    const _toShapeArrows = toShapeArrows[to] ?? [];
-    const toShapeCount = _toShapeArrows.length + 1;
-    const toShapeIndex = _toShapeArrows.findIndex((a) => a.arrowId === id);
-
-    if (to === 'left') {
-      x2 = r2.x - EDGE_MARGIN;
-      y2 = r2.y + getOffset(r2.height, toShapeCount, toShapeIndex);
-    } else if (to === 'right') {
-      x2 = r2.xEnd + EDGE_MARGIN;
-      y2 = r2.y + getOffset(r2.height, toShapeCount, toShapeIndex);
-    } else if (to === 'top') {
-      x2 = r2.x + getOffset(r2.width, toShapeCount, toShapeIndex);
-      y2 = r2.y - EDGE_MARGIN;
-    } else {
-      x2 = r2.x + getOffset(r2.width, toShapeCount, toShapeIndex);
-      y2 = r2.yEnd + EDGE_MARGIN;
-    }
-
-    if (verticalOrientation(from)) {
-      if (horizontalOrientation(to)) {
-        path = `M ${x1} ${y1} C ${x1} ${y2} ${x1} ${y2}, ${x2} ${y2}`;
-      } else if (verticalOrientation(to)) {
-        path = `M ${x1} ${y1} C ${x1} ${y2} ${x2} ${y1}, ${x2} ${y2}`;
-      }
-    } else if (horizontalOrientation(from)) {
-      if (horizontalOrientation(to)) {
-        path = `M ${x1} ${y1} C ${x2} ${y1} ${x1} ${y2}, ${x2} ${y2}`;
-      } else if (verticalOrientation(to)) {
-        path = `M ${x1} ${y1} C ${x2} ${y1} ${x2} ${y1}, ${x2} ${y2}`;
-      }
+  } else if (horizontalOrientation(from)) {
+    if (horizontalOrientation(to)) {
+      path = `M ${x1} ${y1} C ${x2} ${y1} ${x1} ${y2}, ${x2} ${y2}`;
+    } else if (verticalOrientation(to)) {
+      path = `M ${x1} ${y1} C ${x2} ${y1} ${x2} ${y1}, ${x2} ${y2}`;
     }
   }
 

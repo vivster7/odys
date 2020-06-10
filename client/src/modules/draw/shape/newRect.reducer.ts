@@ -11,6 +11,7 @@ import { Arrow } from '../arrow/arrow.reducer';
 import { isOverlapping } from 'math/box';
 import { SHAPE_WIDTH, SHAPE_HEIGHT } from './type/BaseShape';
 import { applySelect } from '../mixins/multiSelect/multiSelect.reducer';
+import { positionArrowsFn } from '../arrowposition/arrowPosition.reducer';
 
 export interface NewRectState {
   clickX: number;
@@ -109,6 +110,10 @@ export const endNewRectByClickPending: DrawActionPending<NewRectWithArrow> = (
       };
       state.arrows[arrow.id] = arrow;
       reorder([arrow], state);
+      positionArrowsFn(state, {
+        type: 'draw/positionArrows',
+        payload: [arrow],
+      });
 
       undoArg.push(arrowId);
       redoArg.drawings.push(arrow);

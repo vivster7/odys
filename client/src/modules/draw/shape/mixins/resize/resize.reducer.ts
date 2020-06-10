@@ -4,6 +4,8 @@ import { save } from 'modules/draw/mixins/save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { getShape } from '../../shape.reducer';
 import { applySelect } from 'modules/draw/mixins/multiSelect/multiSelect.reducer';
+import { getConnectedArrows } from 'modules/draw/arrow/arrow.reducer';
+import { positionArrowsFn } from 'modules/draw/arrowposition/arrowPosition.reducer';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -184,6 +186,12 @@ export const resizeFn: DrawReducer<Resize> = (state, action) => {
   shape.translateY = translateY;
   shape.deltaWidth = deltaWidth;
   shape.deltaHeight = deltaHeight;
+
+  const connectedArrows = getConnectedArrows(state, [shape.id]);
+  positionArrowsFn(state, {
+    type: 'draw/positionArrows',
+    payload: connectedArrows,
+  });
 };
 
 interface EndResize {

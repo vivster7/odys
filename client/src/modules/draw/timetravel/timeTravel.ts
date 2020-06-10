@@ -13,6 +13,7 @@ import {
   isSelected,
 } from '../mixins/multiSelect/multiSelect.reducer';
 import { RootState } from 'App';
+import { positionArrowsFn } from '../arrowposition/arrowPosition.reducer';
 
 // TimeTravelSafeAction promise not to modify the undo or redo buffer.
 // This is not enforced by types, so pretty please just follow the rules.
@@ -50,7 +51,7 @@ export const safeUpdateDrawingsPending: DrawActionPending<SafeUpdateDrawings> = 
   action
 ) => {
   const updates: Drawing[] = action.meta.arg.drawings;
-  const drawings = updates.map((update) => {
+  const drawings: Drawing[] = updates.map((update) => {
     const existing: Drawing =
       state.shapes[update.id] ?? state.arrows[update.id] ?? {};
     return { ...existing, ...update };
@@ -66,6 +67,9 @@ export const safeUpdateDrawingsPending: DrawActionPending<SafeUpdateDrawings> = 
   reorder(drawings, state);
   applySelect(state, drawings);
   state.editText = null;
+
+  const arrows = drawings.filter(instanceOfArrow);
+  positionArrowsFn(state, { type: 'draw/positionArrows', payload: arrows });
 };
 
 // just like draw/deleteDrawing, except this will NEVER update the undo/redo buffer
@@ -90,6 +94,9 @@ export const safeDeleteDrawingsPending: DrawActionPending<string[]> = (
 
   drawings.forEach((d) => (d.isDeleted = true));
   reorder(drawings, state);
+
+  const arrows = drawings.filter(instanceOfArrow);
+  positionArrowsFn(state, { type: 'draw/positionArrows', payload: arrows });
 };
 
 export const actionCreatorMap: ActionCreatorsMapObject = {

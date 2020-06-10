@@ -1,14 +1,13 @@
 import React from 'react';
 import { useDispatch, shallowEqual } from 'react-redux';
 
-import { BaseDrawingProps } from '../DrawContainer';
+import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
 import { selectDrawing } from '../draw.reducer';
 import { useSelector } from 'global/redux';
 import { setCursorOver } from 'modules/canvas/canvas.reducer';
-import { computeCurve, ShapeArrows } from './path';
+import { computeCurve, computeOrientation, getShapeValues } from './path';
 import { Shape } from 'modules/draw/shape/shape.reducer';
-import TextBlock from 'modules/draw/mixins/editText/TextBlock';
 
 export interface ArrowTypeProps {
   id: string;
@@ -18,13 +17,8 @@ export interface ArrowTypeProps {
   color: string;
   shouldIgnorePointerOver: boolean;
   isSelected: boolean;
-  fromShapeArrows: ShapeArrows;
-  toShapeArrows: ShapeArrows;
-}
-
-export interface ArrowProps extends BaseDrawingProps {
-  fromShapeArrows: ShapeArrows;
-  toShapeArrows: ShapeArrows;
+  fromShapeArrows: string[];
+  toShapeArrows: string[];
 }
 
 export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
@@ -35,7 +29,6 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
     text,
     color,
     shouldIgnorePointerOver,
-    isSelected,
     fromShapeArrows,
     toShapeArrows,
   } = props;
@@ -120,13 +113,27 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
   );
 });
 
-const Arrow: React.FC<ArrowProps> = React.memo((props) => {
-  const { id, playerSelected, fromShapeArrows, toShapeArrows } = props;
+const Arrow: React.FC<DrawingProps> = React.memo((props) => {
+  const { id, playerSelected } = props;
   const arrow = useSelector((s) => s.draw.arrows[id]);
 
   // arrow goes FROM rect1 (r1)  TO rect2 (r)
   const r1 = useSelector((s) => s.draw.shapes[arrow.fromShapeId]);
   const r2 = useSelector((s) => s.draw.shapes[arrow.toShapeId]);
+
+  const { from, to } = computeOrientation(
+    getShapeValues(r1),
+    getShapeValues(r2)
+  );
+
+  const fromShapeArrows = useSelector(
+    (s) => s.draw.arrowPositions[arrow.fromShapeId][from],
+    shallowEqual
+  );
+  const toShapeArrows = useSelector(
+    (s) => s.draw.arrowPositions[arrow.toShapeId][to],
+    shallowEqual
+  );
 
   const isSelected = useSelector((s) => s.draw.select?.id === id);
   const isMultiSelected = useSelector(
@@ -174,6 +181,6 @@ const Arrow: React.FC<ArrowProps> = React.memo((props) => {
       }}
     />
   );
-}, shallowEqual);
+});
 
 export default Arrow;

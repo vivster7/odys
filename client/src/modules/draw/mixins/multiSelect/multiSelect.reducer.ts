@@ -255,6 +255,6 @@ function isIntersectingArrow(
 ): boolean {
   const fromShape = state.shapes[arrow.fromShapeId];
   const toShape = state.shapes[arrow.toShapeId];
-  const { path } = computeCurve(arrow.id, fromShape, toShape, {}, {});
+  const { path } = computeCurve(arrow.id, fromShape, toShape, [], []);
   return isIntersectingPath(rect, path ?? '');
 }

@@ -95,6 +95,10 @@ import {
 } from './shape/group.reducer';
 import { ActionPending, ActionFulfilled, ActionRejected } from 'global/redux';
 import { centerCanvas } from 'modules/canvas/canvas.reducer';
+import {
+  ArrowPositionState,
+  positionArrowsFn,
+} from './arrowposition/arrowPosition.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
 
@@ -124,6 +128,7 @@ type LoadStates = 'loading' | 'success' | 'failed';
 export interface DrawState {
   shapes: ShapeData;
   arrows: ArrowData;
+  arrowPositions: ArrowPositionState;
   drawOrder: string[];
   editText: EditTextState | null;
   select: SelectedState | null;
@@ -138,6 +143,7 @@ export interface DrawState {
 const initialState: DrawState = {
   shapes: {},
   arrows: {},
+  arrowPositions: {},
   drawOrder: [],
   editText: null,
   select: null,
@@ -198,7 +204,7 @@ export const updateDrawingsPending: DrawActionPending<Drawing[]> = (
   action
 ) => {
   const updates: Drawing[] = action.meta.arg;
-  const drawings = updates.map((update) => {
+  const drawings: Drawing[] = updates.map((update) => {
     const { id = '' } = update;
     const existing: Drawing = state.shapes[id] ?? state.arrows[id] ?? {};
     return { ...existing, ...update };
@@ -213,6 +219,9 @@ export const updateDrawingsPending: DrawActionPending<Drawing[]> = (
   });
   reorder(drawings, state);
   applySelect(state, drawings);
+
+  const arrows = drawings.filter(instanceOfArrow);
+  positionArrowsFn(state, { type: 'draw/positionArrows', payload: arrows });
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeDeleteDrawings',
@@ -230,6 +239,8 @@ const drawSlice = createSlice({
   name: 'draw',
   initialState: initialState,
   reducers: {
+    // arrowPosition
+    positionArrows: positionArrowsFn,
     // editText
     startEditText: startEditTextFn,
     // select
@@ -352,6 +363,7 @@ const drawSlice = createSlice({
 });
 
 export const {
+  positionArrows,
   startEditText,
   selectDrawing,
   cancelSelect,

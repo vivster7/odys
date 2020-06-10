@@ -5,6 +5,8 @@ import { save } from 'modules/draw/mixins/save/save.reducer';
 import { TimeTravelSafeAction } from 'modules/draw/timetravel/timeTravel';
 import { getShape, getShapes } from '../../shape.reducer';
 import { findChildrenRecursively } from '../../group.reducer';
+import { positionArrowsFn } from 'modules/draw/arrowposition/arrowPosition.reducer';
+import { getConnectedArrows } from 'modules/draw/arrow/arrow.reducer';
 
 export interface DragState {
   id: string;
@@ -57,6 +59,13 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
   shapes.forEach((s) => {
     s.translateX = (clickX - startX) / scale;
     s.translateY = (clickY - startY) / scale;
+  });
+
+  const ids = shapes.map((s) => s.id);
+  const connectedArrows = getConnectedArrows(state, ids);
+  positionArrowsFn(state, {
+    type: 'draw/positionArrows',
+    payload: connectedArrows,
   });
 };
 
