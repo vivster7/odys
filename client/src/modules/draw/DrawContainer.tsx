@@ -46,7 +46,7 @@ function computeArrowOrder(drawState: DrawState) {
 
         if (_aa < _bb) return -1;
         if (_aa > _bb) return 1;
-        if (a.direction === 'from') return -1;
+        if (a.direction === 'from') return 1;
         return 1;
       })
     );
