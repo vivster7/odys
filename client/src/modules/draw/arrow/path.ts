@@ -34,12 +34,14 @@ export interface ShapeValues {
   width: number;
 }
 
-export function horizontalOrientation(orientation: string) {
-  return orientation === 'left' || orientation === 'right';
+export type Orientation = 'top' | 'left' | 'bottom' | 'right';
+
+export function horizontalOrientation(o: Orientation) {
+  return o === 'left' || o === 'right';
 }
 
-export function verticalOrientation(orientation: string) {
-  return orientation === 'top' || orientation === 'bottom';
+export function verticalOrientation(o: Orientation) {
+  return o === 'top' || o === 'bottom';
 }
 
 function getShapeValues(shape: Shape): ShapeValues {
@@ -75,7 +77,10 @@ function getOffset(length: number, count: number, index: number) {
   return (length / Math.max(2, count)) * Math.max(1, index + 1);
 }
 
-function computeOrientation(r1: ShapeValues, r2: ShapeValues) {
+function computeOrientation(
+  r1: ShapeValues,
+  r2: ShapeValues
+): { from: Orientation; to: Orientation } {
   const xPos = r2.x - r1.xEnd;
   const xNeg = r1.x - r2.xEnd;
   const xDiff = Math.max(xPos, xNeg, 0);
@@ -83,8 +88,8 @@ function computeOrientation(r1: ShapeValues, r2: ShapeValues) {
   const yNeg = r1.y - r2.yEnd;
   const yDiff = Math.max(yPos, yNeg, 0);
 
-  let from;
-  let to;
+  let from: Orientation = 'left';
+  let to: Orientation = 'right';
   if (Math.abs(xDiff) > BOUNDING_BOX.x || Math.abs(yDiff) > BOUNDING_BOX.y) {
     const xyRatio = Math.abs(xDiff) / Math.abs(yDiff);
     if (r2.x > r1.xEnd && r2.yMid > r1.y && r2.yMid < r1.yEnd) {
