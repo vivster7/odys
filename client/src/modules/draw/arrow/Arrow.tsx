@@ -53,6 +53,7 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
   );
 
   const isGhost = id === '' && text === '';
+  const strokeColor = isGhost ? COLORS.arrowGhost : color;
 
   function handlePointerDown(e: React.PointerEvent) {
     e.stopPropagation();
@@ -77,11 +78,11 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
           refY="2"
           orient="auto"
         >
-          <path d="M0,0 V4 L2,2 Z" fill={color} />
+          <path d="M0,0 V4 L2,2 Z" fill={strokeColor} />
         </marker>
       </defs>
       <path
-        stroke={color}
+        stroke={strokeColor}
         strokeWidth={strokeWidth + 'px'}
         fill="transparent"
         d={path}

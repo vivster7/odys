@@ -20,6 +20,7 @@ export const COLORS = {
   rectBg: ANTI_FLASH_WHITE,
   rectDefault: MIDDLE_BLUE,
   arrowDefault: PEACE,
+  arrowGhost: `rgba(164, 176, 190, 0.6)`,
   canvas: TWINKLE_BLUE,
   appBg: PRESTIGE_BLUE,
   text: PRESTIGE_BLUE,
