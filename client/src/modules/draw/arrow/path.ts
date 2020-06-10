@@ -1,5 +1,4 @@
 import { Shape } from '../shape/shape.reducer';
-import { get, findIndex } from 'lodash';
 
 const EDGE_MARGIN = 5;
 const MIN_THRESHOLD = 20;
@@ -24,7 +23,7 @@ export interface ArrowOrientation {
   [id: string]: ShapeArrows;
 }
 
-interface ShapeValues {
+export interface ShapeValues {
   x: number;
   y: number;
   xEnd: number;
@@ -182,9 +181,9 @@ export function computeCurve(
   const { from, to } = computeOrientation(r1, r2);
 
   if (from && to) {
-    const _fromShapeArrows = get(fromShapeArrows, [from], []);
+    const _fromShapeArrows = fromShapeArrows[from] ?? [];
     const fromShapeCount = _fromShapeArrows.length + 1;
-    const fromShapeIndex = findIndex(_fromShapeArrows, (a) => a.arrowId === id);
+    const fromShapeIndex = _fromShapeArrows.findIndex((a) => a.arrowId === id);
 
     if (from === 'left') {
       x1 = r1.x - EDGE_MARGIN;
@@ -200,9 +199,9 @@ export function computeCurve(
       y1 = r1.yEnd + EDGE_MARGIN;
     }
 
-    const _toShapeArrows = get(toShapeArrows, [to], []);
+    const _toShapeArrows = toShapeArrows[to] ?? [];
     const toShapeCount = _toShapeArrows.length + 1;
-    const toShapeIndex = findIndex(_toShapeArrows, (a) => a.arrowId === id);
+    const toShapeIndex = _toShapeArrows.findIndex((a) => a.arrowId === id);
 
     if (to === 'left') {
       x2 = r2.x - EDGE_MARGIN;

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { shallowEqual, useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
-import { find, set, get, forEach } from 'lodash';
 
 import Arrow from './arrow/Arrow';
 import Shape from './shape/Shape';
@@ -13,6 +12,7 @@ import {
   horizontalOrientation,
   ArrowData,
   ArrowOrientation,
+  ShapeValues,
 } from 'modules/draw/arrow/path';
 
 export interface BaseDrawingProps {
@@ -25,34 +25,32 @@ export interface DrawingProps extends BaseDrawingProps {
 }
 
 function computeArrowOrder(drawState: DrawState) {
-  const order = {};
-  const _shapeValues = {};
+  const order: ArrowOrientation = {};
+  const _shapeValues: { [shapeId: string]: ShapeValues } = {};
 
   const sortArrowForOrientation = (
     shapeId: string,
     orientation: string,
     arrowData: ArrowData
   ) => {
-    const values: ArrowData[] = get(order, [shapeId, orientation], []);
+    const shapeArrows = order[shapeId] ?? {};
+    const values: ArrowData[] = shapeArrows[orientation] ?? [];
     const positionField = horizontalOrientation(orientation) ? 'yMid' : 'xMid';
 
     values.push(arrowData);
-    set(
-      order,
-      [shapeId, orientation],
-      values.sort((a, b) => {
-        const _aa = get(_shapeValues, [a.otherShapeId, positionField]);
-        const _bb = get(_shapeValues, [b.otherShapeId, positionField]);
+    shapeArrows[orientation] = values.sort((a, b) => {
+      const _aa = _shapeValues[a.otherShapeId][positionField];
+      const _bb = _shapeValues[b.otherShapeId][positionField];
 
-        if (_aa < _bb) return -1;
-        if (_aa > _bb) return 1;
-        if (a.direction === 'from') return 1;
-        return 1;
-      })
-    );
+      if (_aa < _bb) return -1;
+      if (_aa > _bb) return 1;
+      if (a.direction === 'from') return 1;
+      return 1;
+    });
+    order[shapeId] = shapeArrows;
   };
 
-  forEach(drawState.arrows, (arrow, id) => {
+  Object.values(drawState.arrows).forEach((arrow) => {
     const fromShape = drawState.shapes[arrow.fromShapeId];
     const toShape = drawState.shapes[arrow.toShapeId];
     const { from, to, r1, r2 } = computeOrientationFromShapes(
@@ -60,8 +58,8 @@ function computeArrowOrder(drawState: DrawState) {
       toShape
     );
 
-    set(_shapeValues, fromShape.id, r1);
-    set(_shapeValues, toShape.id, r2);
+    _shapeValues[fromShape.id] = r1;
+    _shapeValues[toShape.id] = r2;
 
     if (from) {
       sortArrowForOrientation(fromShape.id, from, {
@@ -88,7 +86,7 @@ const Drawing: React.FC<DrawingProps> = (props) => {
   const arrow = useSelector((s) => s.draw.arrows[id]);
 
   const playerSelected = useSelector((s) => {
-    const playerSelection = find(s.players.selections, (s) =>
+    const playerSelection = s.players.selections.find((s) =>
       s.select.includes(id)
     );
     return playerSelection ? s.players.players[playerSelection.id] : undefined;
