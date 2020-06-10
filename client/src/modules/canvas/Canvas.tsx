@@ -402,8 +402,8 @@ const Canvas: React.FC = () => {
               shouldIgnorePointerOver ? undefined : (e) => handlePointerOver(e)
             }
           >
-            {/* TODO: 2000 magic number should equal screen width/height on initial load */}
-            <rect height="2000" width="2000" opacity="0"></rect>
+            {/* TODO: 8000 magic number should equal screen width/height on initial load */}
+            <rect height="8000" width="8000" opacity="0"></rect>
           </g>
           <DrawContainer></DrawContainer>
           <MultiSelect></MultiSelect>
