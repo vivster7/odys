@@ -2,7 +2,6 @@ import {
   createSlice,
   CaseReducer,
   PayloadAction,
-  SerializedError,
   createAsyncThunk,
 } from '@reduxjs/toolkit';
 import * as jdp from 'jsondiffpatch';
@@ -94,24 +93,10 @@ import {
   ungroup,
   ungroupPending,
 } from './shape/group.reducer';
+import { ActionPending, ActionFulfilled, ActionRejected } from 'global/redux';
+import { centerCanvas } from 'modules/canvas/canvas.reducer';
 
 export type DrawReducer<T = void> = CaseReducer<DrawState, PayloadAction<T>>;
-export type ActionPending<T = void> = {
-  type: string;
-  payload: undefined;
-  meta: { requestId: string; arg: T };
-};
-export type ActionFulfilled<T = void, S = void> = {
-  type: string;
-  payload: Promise<S>;
-  meta: { requestId: string; arg: T };
-};
-export type ActionRejected<T = void> = {
-  type: string;
-  payload: undefined;
-  error: SerializedError | any;
-  meta: { requestId: string; arg: T };
-};
 
 export type DrawActionPending<T = void> = (
   state: DrawState,
@@ -183,6 +168,7 @@ export const fetchDrawings = createAsyncThunk(
   async (boardId: string, thunkAPI) => {
     await thunkAPI.dispatch(fetchShapes(boardId));
     await thunkAPI.dispatch(fetchArrows(boardId));
+    await thunkAPI.dispatch(centerCanvas());
   }
 );
 

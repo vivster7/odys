@@ -1,10 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { deleteDrawings } from 'modules/draw/mixins/delete/delete.reducer';
-import {
-  selectAll,
-  cancelSelect,
-  ActionPending,
-} from 'modules/draw/draw.reducer';
+import { selectAll, cancelSelect } from 'modules/draw/draw.reducer';
 import { undo } from 'modules/draw/timetravel/undo.reducer';
 import { redo } from 'modules/draw/timetravel/redo.reducer';
 import {
@@ -18,6 +14,7 @@ import uuid from 'uuid';
 import { allSelectedIds } from 'modules/draw/mixins/select/select.reducer';
 import { RootState } from 'App';
 import { debouncedOnWheelEnd } from 'modules/canvas/Canvas';
+import { ActionPending } from 'global/redux';
 
 // Only keys in this list will trigger the keydown condition.
 const SPACE = ' ';

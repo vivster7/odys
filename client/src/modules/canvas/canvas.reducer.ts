@@ -1,4 +1,9 @@
-import { createSlice, CaseReducer, PayloadAction } from '@reduxjs/toolkit';
+import {
+  createSlice,
+  CaseReducer,
+  PayloadAction,
+  createAsyncThunk,
+} from '@reduxjs/toolkit';
 import {
   zoomLeveltoScaleMap,
   changeZoomLevelFn,
@@ -6,6 +11,9 @@ import {
 } from './zoom/zoom.reducer';
 import { endPanFn } from './pan/pan.reducer';
 import { Cursor } from './cursor/cursor';
+import { DrawState } from 'modules/draw/draw.reducer';
+import { ActionFulfilled } from 'global/redux';
+import Point from 'math/point';
 
 export interface CanvasState {
   topLeftX: number;
@@ -51,6 +59,34 @@ const cleanCanvasFn: CaseReducer<CanvasState, PayloadAction> = (
   state.dirty = false;
 };
 
+export const centerCanvas = createAsyncThunk(
+  'canvas/centerCanvas',
+  async (arg: undefined, thunkAPI) => {
+    const state = thunkAPI.getState() as any;
+    const draw = state.draw as DrawState;
+    const shapes = Object.values(draw.shapes);
+
+    if (shapes.length === 0) return { x: 0, y: 0 };
+
+    let leftmost = shapes[0];
+    shapes.forEach((s) => {
+      if (s.x < leftmost.x) leftmost = s;
+    });
+    return { x: leftmost.x, y: leftmost.y };
+  }
+);
+
+const centerCanvasFulfilled = (
+  state: CanvasState,
+  action: ActionFulfilled<undefined, Point>
+) => {
+  const xOffset = 100;
+  const yOffset = 200;
+  state.topLeftX = (action.payload.x - xOffset) * -1;
+  state.topLeftY = (action.payload.y - yOffset) * -1;
+  dirtyCanvasFn(state, { type: 'canvas/dirtyCanvas', payload: undefined });
+};
+
 const initialState: CanvasState = {
   topLeftX: 0,
   topLeftY: 0,
@@ -79,6 +115,12 @@ const canvasSlice = createSlice({
     setCursorPosition: (state, action: PayloadAction<Cursor>) => {
       state.cursor = action.payload;
     },
+  },
+  extraReducers: {
+    // drawing
+    [centerCanvas.pending as any]: (state, action) => {},
+    [centerCanvas.fulfilled as any]: centerCanvasFulfilled,
+    [centerCanvas.rejected as any]: (state, action) => {},
   },
 });
 

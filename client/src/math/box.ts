@@ -1,4 +1,5 @@
 import { intersect, shape } from 'svg-intersections';
+import Point from './point';
 
 interface Box {
   x: number;
@@ -57,6 +58,25 @@ export function outline(...rects: Box[]): Box {
     width: maxX - minX,
     height: maxY - minY,
   };
+}
+
+// Find middle of all the boxes.
+export function midpoint(boxes: Box[]): Point {
+  if (boxes.length === 0) return { x: 0, y: 0 };
+  const box = boxes[0];
+  let [minX, maxX, minY, maxY] = [
+    box.x,
+    box.x + box.width,
+    box.y,
+    box.y + box.height,
+  ];
+  boxes.forEach((box) => {
+    minX = Math.min(minX, box.x);
+    maxX = Math.max(maxX, box.x + box.width);
+    minY = Math.min(minY, box.y);
+    maxY = Math.max(maxY, box.y + box.height);
+  });
+  return { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
 }
 
 export default Box;
