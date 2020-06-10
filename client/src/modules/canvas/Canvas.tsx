@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, useEffect } from 'react';
+import React, { useState, Dispatch, useEffect, useRef } from 'react';
 import debounce from 'lodash.debounce';
 import {
   cancelSelect,
@@ -127,6 +127,8 @@ const Canvas: React.FC = () => {
 
   const [pan, setPan] = useState<PanState | null>(null);
 
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
   const cursor = (() => {
     if (insertMode) return 'pointer';
     if (selectMode) return 'crosshair';
@@ -155,10 +157,18 @@ const Canvas: React.FC = () => {
     };
   });
 
+  function setPointerCaptureSVG(pointerId: number): void {
+    const el = svgRef.current;
+    if (!el) return;
+    if (el.hasPointerCapture(pointerId)) return;
+    el.setPointerCapture(pointerId);
+  }
+
   function handlePointerMove(e: React.PointerEvent) {
     e.preventDefault();
 
     if (dragState) {
+      setPointerCaptureSVG(e.pointerId);
       dispatch(
         drag({
           clickX: e.clientX,
@@ -169,6 +179,7 @@ const Canvas: React.FC = () => {
     }
 
     if (isMultiSelecting) {
+      setPointerCaptureSVG(e.pointerId);
       dispatch(
         resizeDragSelection({
           clickX: e.clientX,
@@ -181,6 +192,7 @@ const Canvas: React.FC = () => {
     }
 
     if (pan !== null) {
+      setPointerCaptureSVG(e.pointerId);
       const deltaX = e.clientX - pan.prevX;
       const deltaY = e.clientY - pan.prevY;
 
@@ -190,6 +202,7 @@ const Canvas: React.FC = () => {
     }
 
     if (resizingId) {
+      setPointerCaptureSVG(e.pointerId);
       dispatch(
         resize({
           clickX: e.clientX,
@@ -387,6 +400,7 @@ const Canvas: React.FC = () => {
         onPointerUp={(e) => handlePointerUp(e)}
         onPointerLeave={(e) => handlePointerLeave(e)}
         cursor={cursor}
+        ref={svgRef}
       >
         <g id="odys-zoomable-group" transform={transform}>
           {/* This canvas-background is a sibling to the drawings.
