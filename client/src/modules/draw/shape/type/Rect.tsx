@@ -10,7 +10,9 @@ const Rect: React.FC<ShapeTypeProps> = (props) => {
   const fillOpacity = 1;
   const strokeColor = COLORS.rectDefault;
   const strokeDasharray = 0;
-  const alignText = 'center';
+  const justifyContent = 'center';
+  const alignItems = 'center';
+  const textAlign = 'center' as const;
   const childProps = {
     ...props,
     cursor,
@@ -18,7 +20,9 @@ const Rect: React.FC<ShapeTypeProps> = (props) => {
     fillOpacity,
     strokeColor,
     strokeDasharray,
-    alignText,
+    justifyContent,
+    alignItems,
+    textAlign,
   };
   return <BaseShape {...childProps}></BaseShape>;
 };

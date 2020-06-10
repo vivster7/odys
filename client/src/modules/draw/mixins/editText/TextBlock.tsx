@@ -1,4 +1,5 @@
 import React from 'react';
+import CSS from 'csstype';
 import { useDispatch } from 'react-redux';
 import { COLORS } from 'global/colors';
 
@@ -11,13 +12,25 @@ interface TextBlockProps {
   text: string;
   isSelected: boolean;
   isEditing: boolean;
-  alignText: string;
+  justifyContent: string;
+  alignItems: string;
+  textAlign: CSS.TextAlignProperty;
 }
 
 const TextBlock: React.FC<TextBlockProps> = (props) => {
   const dispatch = useDispatch();
 
-  const { id, width, height, text, alignText, isSelected, isEditing } = props;
+  const {
+    id,
+    width,
+    height,
+    text,
+    isSelected,
+    isEditing,
+    justifyContent,
+    alignItems,
+    textAlign,
+  } = props;
 
   function onClick(e: React.MouseEvent) {
     dispatch(startEditText(id));
@@ -35,8 +48,8 @@ const TextBlock: React.FC<TextBlockProps> = (props) => {
           display: 'flex',
           height: 'calc(100% - 20px)',
           position: 'relative',
-          alignItems: alignText,
-          justifyContent: 'center',
+          alignItems: alignItems,
+          justifyContent: justifyContent,
           padding: '10px 20px',
         }}
       >
@@ -46,9 +59,9 @@ const TextBlock: React.FC<TextBlockProps> = (props) => {
             pointerEvents: 'all',
             color: COLORS.text,
             fontSize: '14px',
-            textAlign: 'center',
+            textAlign: textAlign,
             lineHeight: '1.25em',
-            whiteSpace: 'pre-line',
+            whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
             height: 'max-content',
             width: 'max-content',

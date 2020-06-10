@@ -12,7 +12,9 @@ const Text: React.FC<ShapeTypeProps> = (props) => {
   const fillOpacity = 0;
   const strokeColor = 'none';
   const strokeDasharray = 0;
-  const alignText = 'center';
+  const justifyContent = 'start';
+  const alignItems = 'start';
+  const textAlign = 'left' as const;
   const childProps = {
     ...props,
     cursor,
@@ -20,7 +22,9 @@ const Text: React.FC<ShapeTypeProps> = (props) => {
     fillOpacity,
     strokeColor,
     strokeDasharray,
-    alignText,
+    justifyContent,
+    alignItems,
+    textAlign,
   };
 
   // Text will delete itself if empty

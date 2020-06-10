@@ -29,7 +29,8 @@ const HiddenTextInput: React.FC<HiddenTextInputProps> = React.memo((props) => {
 
   if (!id || !shape) return <></>;
 
-  const alignItems = shape.type === 'grouping_rect' ? 'start' : 'center';
+  const justifyContent = shape.type === 'text' ? 'start' : 'center';
+  const alignItems = shape.type === 'rect' ? 'center' : 'start';
 
   const screenX = (shape?.x + shape?.translateX) * scale + topLeftX;
   const screenY = (shape?.y + shape?.translateY) * scale + topLeftY;
@@ -55,26 +56,33 @@ const HiddenTextInput: React.FC<HiddenTextInputProps> = React.memo((props) => {
           height: `${screenHeight - screenPaddingHeight * 2}px`,
           fontSize: `${screenFontSize}px`,
           alignItems: `${alignItems}`,
-          justifyContent: 'center',
+          justifyContent: `${justifyContent}`,
           padding: `${screenPaddingHeight}px ${screenPaddingWidth}px`,
         }}
       >
-        <OdysEditor id={id} initialText={shape.text}></OdysEditor>
+        <OdysEditor
+          id={id}
+          type={shape.type}
+          initialText={shape.text}
+        ></OdysEditor>
       </div>
     </div>
   );
 });
 
 interface OdysEditorProps {
-  initialText: string;
   id: string;
+  type: string;
+  initialText: string;
 }
 
 // React.memo ensure's component only renders when `id` changes (ignores initialText)
 const OdysEditor: React.FC<OdysEditorProps> = React.memo(
   (props) => {
     const dispatch = useDispatch();
-    const { id, initialText } = props;
+    const { id, type, initialText } = props;
+
+    const textAlignment = type === 'text' ? 'left' : 'center';
 
     const [editorState, setEditorState] = useState(
       EditorState.set(EditorState.createEmpty(), { allowUndo: false })
@@ -104,8 +112,8 @@ const OdysEditor: React.FC<OdysEditorProps> = React.memo(
     }, [dispatch, id, initialText]);
 
     useEffect(() => {
-      dispatch(setCursorOver({ type: 'rect', id }));
-    }, [dispatch, id]);
+      dispatch(setCursorOver({ type: type as any, id }));
+    }, [dispatch, id, type]);
 
     function onChange(state: EditorState) {
       if (!isInitialized) return;
@@ -132,7 +140,7 @@ const OdysEditor: React.FC<OdysEditorProps> = React.memo(
         <Editor
           ref={editor}
           editorState={editorState}
-          textAlignment="center"
+          textAlignment={textAlignment}
           onChange={(editorState) => onChange(editorState)}
         />
       </div>

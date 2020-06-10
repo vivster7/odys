@@ -1,4 +1,5 @@
 import React from 'react';
+import CSS from 'csstype';
 import { Shape } from '../shape.reducer';
 import { COLORS } from 'global/colors';
 import TextBlock from 'modules/draw/mixins/editText/TextBlock';
@@ -14,7 +15,9 @@ export interface BaseShapeProps {
   fillOpacity: number;
   strokeColor: string;
   strokeDasharray: number;
-  alignText: string;
+  justifyContent: string;
+  alignItems: string;
+  textAlign: CSS.TextAlignProperty;
   shape: Shape;
   isMultiSelected: boolean;
   isSelected: boolean;
@@ -33,7 +36,9 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     strokeColor,
     strokeDasharray,
     shape,
-    alignText,
+    justifyContent,
+    alignItems,
+    textAlign,
     isMultiSelected,
     isSelected,
     playerSelected,
@@ -113,7 +118,9 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         width={width + deltaWidth}
         height={height + deltaHeight}
         text={text}
-        alignText={alignText}
+        justifyContent={justifyContent}
+        alignItems={alignItems}
+        textAlign={textAlign}
       />
       {(isSelected || isMultiSelected || isGhost) && (
         <SelectionCircles
