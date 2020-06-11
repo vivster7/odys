@@ -3,7 +3,6 @@ import Rect from 'modules/draw/shape/type/Rect';
 import { useSelector } from 'global/redux';
 import { Shape, newShape } from 'modules/draw/shape/shape.reducer';
 import { Path, ArrowTypeProps } from 'modules/draw/arrow/Arrow';
-import { isOverlapping } from 'math/box';
 import { ShapeTypeProps } from 'modules/draw/shape/Shape';
 import { COLORS } from 'global/colors';
 import { SHAPE_WIDTH, SHAPE_HEIGHT } from 'modules/draw/shape/type/BaseShape';
@@ -22,36 +21,33 @@ const Ghosts: React.FC = () => {
   const isResizing = useSelector((s) => s.draw.resize !== null);
 
   function getGhost() {
-    if (!isCmdPressed || isResizing || isDragging || !cursorPosition) {
+    if (!isCmdPressed || isResizing || isDragging) {
       return <></>;
     }
 
     if (
-      ['rect', 'grouping_rect', 'text'].includes(cursorOver.type) &&
       selectedShape &&
       cursorOverShape &&
       selectedShape.id !== cursorOver.id &&
-      !isOverlapping(selectedShape, cursorOverShape)
+      selectedShape.id !== cursorOverShape.parentId &&
+      selectedShape.parentId !== cursorOverShape.id &&
+      ['rect', 'grouping_rect', 'text'].includes(cursorOver.type)
     ) {
       const props = ghostArrowProps(selectedShape, cursorOverShape);
       return <Path {...props}></Path>;
     }
 
     const rectProps = ghostRectProps(cursorPosition.x, cursorPosition.y);
-    if (
-      (cursorOver.type === 'background' ||
-        cursorOver.type === 'grouping_rect') &&
-      (!selectedShape ||
-        (selectedShape && isOverlapping(selectedShape, rectProps.shape)))
-    ) {
+    if (['background'].includes(cursorOver.type) && !selectedShape) {
       return <Rect {...rectProps}></Rect>;
     }
 
-    if (selectedShape && selectedShape.id !== cursorOver.id) {
+    if (selectedShape && ['background'].includes(cursorOver.type)) {
       const arrowProps = ghostArrowProps(selectedShape, rectProps.shape);
       return (
         <>
-          <Rect {...rectProps}></Rect>;<Path {...arrowProps}></Path>
+          {' '}
+          <Rect {...rectProps}></Rect>;<Path {...arrowProps}></Path>{' '}
         </>
       );
     }

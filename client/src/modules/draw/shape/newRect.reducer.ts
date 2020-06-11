@@ -8,7 +8,6 @@ import { newShape, Shape } from './shape.reducer';
 import { save } from '../mixins/save/save.reducer';
 import { TimeTravelSafeAction } from '../timetravel/timeTravel';
 import { Arrow } from '../arrow/arrow.reducer';
-import { isOverlapping } from 'math/box';
 import { SHAPE_WIDTH, SHAPE_HEIGHT } from './type/BaseShape';
 import { applySelect } from '../mixins/multiSelect/multiSelect.reducer';
 import { positionArrowsFn } from '../arrowposition/arrowPosition.reducer';
@@ -95,29 +94,26 @@ export const endNewRectByClickPending: DrawActionPending<NewRectWithArrow> = (
   let redoArg: { drawings: Drawing[] } = { drawings: [rect] };
 
   if (selectedShapeId) {
-    const selectedShape = state.shapes[selectedShapeId];
-    if (!isOverlapping(selectedShape, rect)) {
-      const arrow: Arrow = {
-        id: arrowId,
-        fromShapeId: selectedShapeId,
-        toShapeId: id,
-        text: '',
-        isSavedInDB: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        boardId: boardId,
-        isDeleted: false,
-      };
-      state.arrows[arrow.id] = arrow;
-      reorder([arrow], state);
-      positionArrowsFn(state, {
-        type: 'draw/positionArrows',
-        payload: [arrow],
-      });
+    const arrow: Arrow = {
+      id: arrowId,
+      fromShapeId: selectedShapeId,
+      toShapeId: id,
+      text: '',
+      isSavedInDB: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      boardId: boardId,
+      isDeleted: false,
+    };
+    state.arrows[arrow.id] = arrow;
+    reorder([arrow], state);
+    positionArrowsFn(state, {
+      type: 'draw/positionArrows',
+      payload: [arrow],
+    });
 
-      undoArg.push(arrowId);
-      redoArg.drawings.push(arrow);
-    }
+    undoArg.push(arrowId);
+    redoArg.drawings.push(arrow);
   }
 
   const undo: TimeTravelSafeAction = {

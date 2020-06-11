@@ -6,13 +6,11 @@ import { addError } from 'modules/errors/errors.reducer';
 import Text from './type/Text';
 import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
-import { isOverlapping } from 'math/box';
-import { startDrag, startNewRect, selectDrawing } from '../draw.reducer';
+import { startDrag, selectDrawing } from '../draw.reducer';
 import { Shape as ShapeType } from './shape.reducer';
 import { Player } from 'modules/players/players.reducer';
 import { drawArrow } from '../arrow/arrow.reducer';
 import * as uuid from 'uuid';
-import { AnyAction } from 'redux';
 import { setCursorOver } from 'modules/canvas/canvas.reducer';
 
 // ShapeTypeProps are passed to shape types: rect, text, grouping_rect
@@ -52,20 +50,17 @@ export const Shape: React.FC<ShapeProps> = (props) => {
   } = props;
   const { id } = shape;
   const dispatch = useDispatch();
-  const selectedShapeId = selectedShape && selectedShape.id;
 
-  function sharedOnPointerDown(
-    e: React.PointerEvent,
-    onCmdClick?: (a: any) => AnyAction
-  ) {
+  function onPointerDown(e: React.PointerEvent) {
     e.stopPropagation();
     e.preventDefault();
 
     if (
       e.metaKey &&
-      !!selectedShape &&
-      !isOverlapping(shape, selectedShape) &&
-      !isSelected
+      selectedShape &&
+      !isSelected &&
+      selectedShape.id !== shape.parentId &&
+      selectedShape.parentId !== shape.id
     ) {
       dispatch(
         drawArrow({
@@ -75,8 +70,6 @@ export const Shape: React.FC<ShapeProps> = (props) => {
           boardId: shape.boardId,
         })
       );
-    } else if (e.metaKey && onCmdClick) {
-      dispatch(onCmdClick({ clickX: e.clientX, clickY: e.clientY }));
     } else {
       dispatch(selectDrawing({ id, shiftKey: e.shiftKey }));
       dispatch(
@@ -87,16 +80,6 @@ export const Shape: React.FC<ShapeProps> = (props) => {
         })
       );
     }
-  }
-
-  function onPointerDown(e: React.PointerEvent) {
-    sharedOnPointerDown(e);
-  }
-
-  function handlePointerDownInGroupingRect(e: React.PointerEvent) {
-    sharedOnPointerDown(e, () =>
-      startNewRect({ clickX: e.clientX, clickY: e.clientY, selectedShapeId })
-    );
   }
 
   function onPointerOver(e: React.PointerEvent) {
@@ -120,12 +103,8 @@ export const Shape: React.FC<ShapeProps> = (props) => {
   if (shape?.isDeleted) return <></>;
   if (shape?.type === 'rect') return <Rect {...childProps}></Rect>;
   if (shape?.type === 'text') return <Text {...childProps}></Text>;
-  if (shape?.type === 'grouping_rect') {
-    const groupingChildProps = Object.assign({}, childProps, {
-      onPointerDown: handlePointerDownInGroupingRect,
-    });
-    return <GroupingRect {...groupingChildProps}></GroupingRect>;
-  }
+  if (shape?.type === 'grouping_rect')
+    return <GroupingRect {...childProps}></GroupingRect>;
 
   console.error(`unknown shape ${id}`);
   dispatch(
