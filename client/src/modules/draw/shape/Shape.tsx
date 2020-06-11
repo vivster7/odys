@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useSelector } from 'global/redux';
 
 import { addError } from 'modules/errors/errors.reducer';
 
@@ -9,7 +8,6 @@ import Rect from './type/Rect';
 import GroupingRect from './type/GroupingRect';
 import { isOverlapping } from 'math/box';
 import { startDrag, startNewRect, selectDrawing } from '../draw.reducer';
-import { DrawingProps } from '../DrawContainer';
 import { Shape as ShapeType } from './shape.reducer';
 import { Player } from 'modules/players/players.reducer';
 import { drawArrow } from '../arrow/arrow.reducer';
@@ -30,25 +28,31 @@ export interface ShapeTypeProps {
   shouldIgnorePointerOver: boolean;
 }
 
-export const Shape: React.FC<DrawingProps> = (props) => {
-  const { id, playerSelected } = props;
-  const dispatch = useDispatch();
+interface ShapeProps {
+  shape: ShapeType;
+  playerSelected?: Player;
+  isDragging: boolean;
+  isEditing: boolean;
+  isSelected: boolean;
+  isMultiSelected: boolean;
+  selectedShape?: ShapeType;
+  shouldIgnorePointerOver: boolean;
+}
 
-  const board = useSelector((s) => s.board);
-  const shape = useSelector((s) => s.draw.shapes[id]);
-  const isDragging = useSelector((s) => s.draw.drag?.id === id);
-  const isEditing = useSelector((s) => s.draw.editText?.id === id);
-  const isMultiSelected = useSelector(
-    (s) => !!s.draw.multiSelect?.selectedIds[id]
-  );
-  const selectedShapeId = useSelector((s) => s.draw.select?.id);
-  const selectedShape = useSelector(
-    (s) => selectedShapeId && s.draw.shapes[selectedShapeId]
-  );
-  const isSelected = selectedShapeId === id;
-  const shouldIgnorePointerOver = useSelector(
-    (s) => !!s.draw.drag || !!s.draw.resize
-  );
+export const Shape: React.FC<ShapeProps> = (props) => {
+  const {
+    shape,
+    playerSelected,
+    isDragging,
+    isEditing,
+    isSelected,
+    isMultiSelected,
+    selectedShape,
+    shouldIgnorePointerOver,
+  } = props;
+  const { id } = shape;
+  const dispatch = useDispatch();
+  const selectedShapeId = selectedShape && selectedShape.id;
 
   function sharedOnPointerDown(
     e: React.PointerEvent,
@@ -68,7 +72,7 @@ export const Shape: React.FC<DrawingProps> = (props) => {
           id: uuid.v4(),
           fromShapeId: selectedShape.id,
           toShapeId: id,
-          boardId: board.id,
+          boardId: shape.boardId,
         })
       );
     } else if (e.metaKey && onCmdClick) {

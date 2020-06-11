@@ -1,13 +1,13 @@
 import React from 'react';
-import { useDispatch, shallowEqual } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
-import { DrawingProps } from '../DrawContainer';
 import { COLORS } from 'global/colors';
 import { selectDrawing } from '../draw.reducer';
-import { useSelector } from 'global/redux';
 import { setCursorOver } from 'modules/canvas/canvas.reducer';
-import { computeCurve, computeOrientation, getShapeValues } from './path';
+import { computeCurve } from './path';
 import { Shape } from 'modules/draw/shape/shape.reducer';
+import { Player } from 'modules/players/players.reducer';
+import { Arrow as ArrowT } from './arrow.reducer';
 
 export interface ArrowTypeProps {
   id: string;
@@ -21,7 +21,7 @@ export interface ArrowTypeProps {
   toShapeArrows: string[];
 }
 
-export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
+export const Path: React.FC<ArrowTypeProps> = (props) => {
   const {
     id,
     fromShape,
@@ -111,37 +111,33 @@ export const Path: React.FC<ArrowTypeProps> = React.memo((props) => {
       )}
     </g>
   );
-});
+};
 
-const Arrow: React.FC<DrawingProps> = React.memo((props) => {
-  const { id, playerSelected } = props;
-  const arrow = useSelector((s) => s.draw.arrows[id]);
+interface ArrowProps {
+  arrow: ArrowT;
+  playerSelected?: Player;
+  isSelected: boolean;
+  isMultiSelected: boolean;
+  shouldIgnorePointerOver: boolean;
+  fromShape: Shape;
+  toShape: Shape;
+  fromShapeArrows: string[];
+  toShapeArrows: string[];
+}
 
-  // arrow goes FROM rect1 (r1)  TO rect2 (r)
-  const r1 = useSelector((s) => s.draw.shapes[arrow.fromShapeId]);
-  const r2 = useSelector((s) => s.draw.shapes[arrow.toShapeId]);
-
-  const { from, to } = computeOrientation(
-    getShapeValues(r1),
-    getShapeValues(r2)
-  );
-
-  const fromShapeArrows = useSelector(
-    (s) => s.draw.arrowPositions[arrow.fromShapeId][from],
-    shallowEqual
-  );
-  const toShapeArrows = useSelector(
-    (s) => s.draw.arrowPositions[arrow.toShapeId][to],
-    shallowEqual
-  );
-
-  const isSelected = useSelector((s) => s.draw.select?.id === id);
-  const isMultiSelected = useSelector(
-    (s) => !!s.draw.multiSelect?.selectedIds[id]
-  );
-  const shouldIgnorePointerOver = useSelector(
-    (s) => !!s.draw.drag || !!s.draw.resize
-  );
+const Arrow: React.FC<ArrowProps> = (props) => {
+  const {
+    arrow,
+    playerSelected,
+    isSelected,
+    isMultiSelected,
+    shouldIgnorePointerOver,
+    fromShape,
+    toShape,
+    fromShapeArrows,
+    toShapeArrows,
+  } = props;
+  const { id } = arrow;
 
   const color =
     isSelected || isMultiSelected
@@ -150,10 +146,10 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
       ? playerSelected.color
       : COLORS.arrowDefault;
 
-  if (!r1 || !r2) {
-    if (!r1)
+  if (!fromShape || !toShape) {
+    if (!fromShape)
       console.error(`[r1Arrow] Could not find shape$ ${arrow.fromShapeId}`);
-    if (!r2)
+    if (!toShape)
       console.error(`[r2Arrow] Could not find shape$ ${arrow.toShapeId}`);
 
     // If you undo to delete a shape, but its got new arrow attached,
@@ -173,14 +169,14 @@ const Arrow: React.FC<DrawingProps> = React.memo((props) => {
         shouldIgnorePointerOver,
         color,
         text: arrow.text,
-        fromShape: r1,
-        toShape: r2,
+        fromShape: fromShape,
+        toShape: toShape,
         isSelected: isSelected,
         fromShapeArrows: fromShapeArrows,
         toShapeArrows: toShapeArrows,
       }}
     />
   );
-});
+};
 
 export default Arrow;

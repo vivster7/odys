@@ -1,33 +1,84 @@
 import React, { useEffect } from 'react';
-import { shallowEqual, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'global/redux';
 
 import Arrow from './arrow/Arrow';
 import Shape from './shape/Shape';
 import { addError } from 'modules/errors/errors.reducer';
 import { Player } from 'modules/players/players.reducer';
-import { fetchDrawings } from './draw.reducer';
+import { fetchDrawings, Drawing as DrawingT } from './draw.reducer';
+import { isEmpty } from 'lodash';
+import { instanceOfShape, Shape as ShapeT } from './shape/shape.reducer';
+import { instanceOfArrow } from './arrow/arrow.reducer';
+import { computeOrientation, getShapeValues } from './arrow/path';
 
 export interface DrawingProps {
-  id: string;
+  drawing: DrawingT;
+  isDragging: boolean;
+  isEditing: boolean;
+  isSelected: boolean;
+  isMultiSelected: boolean;
+  shouldIgnorePointerOver: boolean;
   playerSelected?: Player;
+  selectedShape?: ShapeT;
+  fromShape?: ShapeT;
+  toShape?: ShapeT;
+  fromShapeArrows?: string[];
+  toShapeArrows?: string[];
 }
 
-const Drawing: React.FC<DrawingProps> = (props) => {
-  const { id } = props;
+const Drawing: React.FC<DrawingProps> = React.memo((props) => {
+  const {
+    drawing,
+    isDragging,
+    isEditing,
+    isSelected,
+    isMultiSelected,
+    shouldIgnorePointerOver,
+    playerSelected,
+    selectedShape,
+    fromShape,
+    toShape,
+    fromShapeArrows,
+    toShapeArrows,
+  } = props;
+  const { id } = drawing;
   const dispatch = useDispatch();
-  const shape = useSelector((s) => s.draw.shapes[id]);
-  const arrow = useSelector((s) => s.draw.arrows[id]);
-
-  const playerSelected = useSelector((s) => {
-    const playerSelection = s.players.selections.find((s) =>
-      s.select.includes(id)
+  if (instanceOfShape(drawing)) {
+    return (
+      <Shape
+        shape={drawing}
+        playerSelected={playerSelected}
+        isDragging={isDragging}
+        isEditing={isEditing}
+        isSelected={isSelected}
+        isMultiSelected={isMultiSelected}
+        selectedShape={selectedShape}
+        shouldIgnorePointerOver={shouldIgnorePointerOver}
+      ></Shape>
     );
-    return playerSelection ? s.players.players[playerSelection.id] : undefined;
-  }, shallowEqual);
-
-  if (shape) return <Shape id={id} playerSelected={playerSelected}></Shape>;
-  if (arrow) return <Arrow id={id} playerSelected={playerSelected}></Arrow>;
+  }
+  if (
+    instanceOfArrow(drawing) &&
+    fromShape &&
+    toShape &&
+    fromShapeArrows &&
+    toShapeArrows
+  ) {
+    return (
+      <Arrow
+        arrow={drawing}
+        fromShape={fromShape}
+        toShape={toShape}
+        fromShapeArrows={fromShapeArrows}
+        toShapeArrows={toShapeArrows}
+        playerSelected={playerSelected}
+        isSelected={isSelected}
+        isMultiSelected={isMultiSelected}
+        shouldIgnorePointerOver={shouldIgnorePointerOver}
+      ></Arrow>
+    );
+  }
 
   console.error(`Cannot draw ${id}`);
   dispatch(
@@ -36,12 +87,42 @@ const Drawing: React.FC<DrawingProps> = (props) => {
     )
   );
   return <></>;
-};
+});
 
 const DrawContainer: React.FC = React.memo(() => {
   const dispatch = useDispatch();
   const drawOrder = useSelector((s) => s.draw.drawOrder);
   const board = useSelector((s) => s.board);
+  const shapes = useSelector((s) => s.draw.shapes);
+  const arrows = useSelector((s) => s.draw.arrows);
+
+  const playerSelectedMap: { [shapeId: string]: Player } = useSelector((s) => {
+    let selectionMap = {};
+    s.players.selections.forEach((selections) => {
+      const pairs = selections.select.map((shapeId) => [
+        shapeId,
+        s.players.players[selections.id],
+      ]);
+      selectionMap = Object.assign({}, selectionMap, Object.fromEntries(pairs));
+    });
+    return selectionMap;
+  });
+
+  const multiSelectMap: { [shapeId: string]: boolean } = useSelector((s) => {
+    return s.draw.multiSelect?.selectedIds ?? {};
+  });
+
+  const draggingId = useSelector((s) => s.draw.drag?.id);
+  const editingId = useSelector((s) => s.draw.editText?.id);
+  const selectedId = useSelector((s) => s.draw.select?.id);
+  const selectedShape = useSelector(
+    (s) => (selectedId && s.draw.shapes[selectedId]) || undefined
+  );
+  const shouldIgnorePointerOver = useSelector(
+    (s) => !!s.draw.drag || !!s.draw.resize
+  );
+
+  const arrowPositions = useSelector((s) => s.draw.arrowPositions);
 
   useEffect(() => {
     if (board.loaded !== 'success') return;
@@ -50,9 +131,42 @@ const DrawContainer: React.FC = React.memo(() => {
 
   return (
     <>
-      {drawOrder.map((id) => (
-        <Drawing key={id} id={id}></Drawing>
-      ))}
+      {drawOrder.map((id) => {
+        const drawing = shapes[id] ?? arrows[id] ?? {};
+        if (isEmpty(drawing)) return <></>;
+
+        let fromShape: ShapeT | undefined;
+        let toShape: ShapeT | undefined;
+        let fromShapeArrows: string[] | undefined;
+        let toShapeArrows: string[] | undefined;
+        if (instanceOfArrow(drawing)) {
+          fromShape = shapes[drawing.fromShapeId];
+          toShape = shapes[drawing.toShapeId];
+          const { from, to } = computeOrientation(
+            getShapeValues(fromShape),
+            getShapeValues(toShape)
+          );
+          fromShapeArrows = arrowPositions[fromShape.id][from];
+          toShapeArrows = arrowPositions[toShape.id][to];
+        }
+        return (
+          <Drawing
+            key={id}
+            drawing={drawing}
+            playerSelected={playerSelectedMap[drawing.id]}
+            isDragging={drawing.id === draggingId}
+            isEditing={drawing.id === editingId}
+            isSelected={drawing.id === selectedId}
+            isMultiSelected={multiSelectMap[drawing.id] || false}
+            selectedShape={selectedShape}
+            shouldIgnorePointerOver={shouldIgnorePointerOver}
+            fromShape={fromShape}
+            toShape={toShape}
+            fromShapeArrows={fromShapeArrows}
+            toShapeArrows={toShapeArrows}
+          ></Drawing>
+        );
+      })}
     </>
   );
 });
