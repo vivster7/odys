@@ -10,7 +10,7 @@ import { fetchDrawings, Drawing as DrawingT } from './draw.reducer';
 import { isEmpty } from 'lodash';
 import { instanceOfShape, Shape as ShapeT } from './shape/shape.reducer';
 import { instanceOfArrow } from './arrow/arrow.reducer';
-import { computeOrientation, getShapeValues } from './arrow/path';
+import { computeOrientation } from './arrow/path';
 
 export interface DrawingProps {
   drawing: DrawingT;
@@ -142,10 +142,7 @@ const DrawContainer: React.FC = React.memo(() => {
         if (instanceOfArrow(drawing)) {
           fromShape = shapes[drawing.fromShapeId];
           toShape = shapes[drawing.toShapeId];
-          const { from, to } = computeOrientation(
-            getShapeValues(fromShape),
-            getShapeValues(toShape)
-          );
+          const { from, to } = computeOrientation(fromShape, toShape);
           fromShapeArrows = arrowPositions[fromShape.id][from];
           toShapeArrows = arrowPositions[toShape.id][to];
         }

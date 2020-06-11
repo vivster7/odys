@@ -57,9 +57,13 @@ function getOffset(length: number, count: number, index: number) {
 }
 
 export function computeOrientation(
-  r1: ShapeValues,
-  r2: ShapeValues
+  fromShape: Shape,
+  toShape: Shape
 ): { from: Orientation; to: Orientation } {
+  // arrow goes FROM rect1 (r1)  TO rect2 (r)
+  const r1 = getShapeValues(fromShape);
+  const r2 = getShapeValues(toShape);
+
   const xPos = r2.x - r1.xEnd;
   const xNeg = r1.x - r2.xEnd;
   const xDiff = Math.max(xPos, xNeg, 0);
@@ -162,7 +166,7 @@ export function computeCurve(
   let y1: number;
   let y2: number;
 
-  const { from, to } = computeOrientation(r1, r2);
+  const { from, to } = computeOrientation(fromShape, toShape);
 
   const _fromShapeArrows = fromShapeArrows ?? [];
   const fromShapeCount = _fromShapeArrows.length + 1;

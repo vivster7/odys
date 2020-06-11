@@ -8,6 +8,19 @@ interface Box {
   height: number;
 }
 
+export function xEnd(b: Box) {
+  return b.x + b.width;
+}
+export function yEnd(b: Box) {
+  return b.y + b.height;
+}
+export function xMid(b: Box) {
+  return b.x + xEnd(b) / 2;
+}
+export function yMid(b: Box) {
+  return b.y + yEnd(b) / 2;
+}
+
 export function isOverlapping(r1: Box, r2: Box): boolean {
   return (
     ((r1.x < r2.x && r1.x + r1.width >= r2.x) ||
