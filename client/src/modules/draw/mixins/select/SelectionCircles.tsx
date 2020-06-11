@@ -22,8 +22,8 @@ const SelectionCircles: React.FC<SelectionCirclesProps> = (props) => {
       startResize({
         id: props.id,
         anchor,
-        originalX: e.clientX,
-        originalY: e.clientY,
+        prevX: e.clientX,
+        prevY: e.clientY,
       })
     );
   }

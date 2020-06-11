@@ -34,8 +34,8 @@ const HiddenTextInput: React.FC<HiddenTextInputProps> = React.memo((props) => {
 
   const screenX = (shape?.x + shape?.translateX) * scale + topLeftX;
   const screenY = (shape?.y + shape?.translateY) * scale + topLeftY;
-  const screenWidth = (shape?.width + shape?.deltaWidth) * scale;
-  const screenHeight = (shape?.height + shape?.deltaHeight) * scale;
+  const screenWidth = shape?.width * scale;
+  const screenHeight = shape?.height * scale;
   const screenFontSize = 14 * scale;
   const screenPaddingHeight = 10 * scale;
   const screenPaddingWidth = 20 * scale;

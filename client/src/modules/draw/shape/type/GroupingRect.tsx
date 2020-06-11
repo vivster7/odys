@@ -88,7 +88,7 @@ interface UngroupProps {
 }
 
 export const Ungroup: React.FC<UngroupProps> = (props) => {
-  const { id, width, height, deltaWidth, deltaHeight } = props.shape;
+  const { id, width, height } = props.shape;
   const dispatch = useDispatch();
   const [isPushed, setIsPushed] = useState(false);
 
@@ -118,8 +118,8 @@ export const Ungroup: React.FC<UngroupProps> = (props) => {
 
   return (
     <text
-      x={width + deltaWidth + xOffset}
-      y={height + deltaHeight + yOffset}
+      x={width + xOffset}
+      y={height + yOffset}
       cursor="pointer"
       onPointerDown={(e) => handlePointerDown(e)}
       onPointerUp={(e) => handlePointerUp(e)}

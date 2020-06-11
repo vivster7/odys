@@ -56,8 +56,6 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     translateY,
     width,
     height,
-    deltaWidth,
-    deltaHeight,
     createdAtZoomLevel,
     text,
     isSavedInDB,
@@ -101,8 +99,8 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
       }
     >
       <rect
-        width={width + deltaWidth}
-        height={height + deltaHeight}
+        width={width}
+        height={height}
         rx={radiusSize + 'px'}
         ry={radiusSize + 'px'}
         fill={fill}
@@ -115,8 +113,8 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         id={id}
         isEditing={isEditing}
         isSelected={isSelected}
-        width={width + deltaWidth}
-        height={height + deltaHeight}
+        width={width}
+        height={height}
         text={text}
         justifyContent={justifyContent}
         alignItems={alignItems}
@@ -126,8 +124,8 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
         <SelectionCircles
           id={id}
           createdAtZoomLevel={createdAtZoomLevel}
-          width={width + deltaWidth}
-          height={height + deltaHeight}
+          width={width}
+          height={height}
         ></SelectionCircles>
       )}
       {isSelected && shape.type === 'grouping_rect' && (
