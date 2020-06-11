@@ -18,8 +18,6 @@ import Point from 'math/point';
 export interface CanvasState {
   topLeftX: number;
   topLeftY: number;
-  translateX: number;
-  translateY: number;
   scale: number;
   zoomLevel: number;
   pan: PanState | null;
@@ -90,8 +88,6 @@ const centerCanvasFulfilled = (
 const initialState: CanvasState = {
   topLeftX: 0,
   topLeftY: 0,
-  translateX: 0,
-  translateY: 0,
   scale: zoomLeveltoScaleMap[5],
   zoomLevel: 5,
   pan: null,
