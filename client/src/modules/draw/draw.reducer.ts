@@ -348,6 +348,9 @@ const drawSlice = createSlice({
         if (drawDiff.arrows) {
           jdp.patch(state.arrows, drawDiff.arrows);
         }
+        if (drawDiff.arrowPositions) {
+          jdp.patch(state.arrowPositions, drawDiff.arrowPositions);
+        }
         if (drawDiff.shapes) {
           jdp.patch(state.shapes, drawDiff.shapes);
         }
