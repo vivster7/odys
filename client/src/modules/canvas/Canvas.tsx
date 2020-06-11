@@ -271,8 +271,8 @@ const Canvas: React.FC = () => {
       dispatch(
         endDrag({
           ids: dragState.encompassedIds.concat([dragState.id]),
-          translateX: (e.clientX - dragState.clickX) / canvasState.scale,
-          translateY: (e.clientY - dragState.clickY) / canvasState.scale,
+          translateX: (e.clientX - dragState.startX) / canvasState.scale,
+          translateY: (e.clientY - dragState.startY) / canvasState.scale,
         })
       );
     }

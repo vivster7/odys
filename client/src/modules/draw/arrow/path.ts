@@ -30,8 +30,8 @@ export function verticalOrientation(o: Orientation) {
 }
 
 export function getShapeValues(shape: Shape): ShapeValues {
-  const x = shape.x + shape.translateX;
-  const y = shape.y + shape.translateY;
+  const x = shape.x;
+  const y = shape.y;
   const height = shape.height;
   const width = shape.width;
   const xEnd = x + width;

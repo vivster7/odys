@@ -13,23 +13,23 @@ export interface DragState {
   encompassedIds: string[];
   clickX: number;
   clickY: number;
+  startX: number;
+  startY: number;
 }
 
 export interface Draggable {
   id: string;
   x: number;
   y: number;
-  translateX: number;
-  translateY: number;
 }
 
-interface Drag {
+interface StartDrag {
+  id: string;
   clickX: number;
   clickY: number;
-  scale: number;
 }
 
-export const startDragFn: DrawReducer<DragState> = (state, action) => {
+export const startDragFn: DrawReducer<StartDrag> = (state, action) => {
   const { id, clickX, clickY } = action.payload;
   const shape = getShape(state, id);
   const children = findChildrenRecursively(state, [shape]);
@@ -39,8 +39,16 @@ export const startDragFn: DrawReducer<DragState> = (state, action) => {
     encompassedIds: children.map((c) => c.id),
     clickX: clickX,
     clickY: clickY,
+    startX: clickX,
+    startY: clickY,
   };
 };
+
+interface Drag {
+  clickX: number;
+  clickY: number;
+  scale: number;
+}
 
 export const dragFn: DrawReducer<Drag> = (state, action) => {
   if (!state.drag) {
@@ -55,11 +63,16 @@ export const dragFn: DrawReducer<Drag> = (state, action) => {
   const shapes = getShapes(state, encompassedIds.concat([id]));
 
   const { clickX, clickY, scale } = action.payload;
+  const deltaX = (clickX - startX) / scale;
+  const deltaY = (clickY - startY) / scale;
 
   shapes.forEach((s) => {
-    s.translateX = (clickX - startX) / scale;
-    s.translateY = (clickY - startY) / scale;
+    s.x += deltaX;
+    s.y += deltaY;
   });
+
+  state.drag.clickX = clickX;
+  state.drag.clickY = clickY;
 
   const ids = shapes.map((s) => s.id);
   const connectedArrows = getConnectedArrows(state, ids);
@@ -98,28 +111,24 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   }
 
   const shapes = getShapes(state, ids);
-  const shapeSnapshots = shapes.map((s) => {
-    return {
-      ...s,
-      translateX: 0,
-      translateY: 0,
-      isSavedInDB: true,
-    };
-  });
-
-  shapes.forEach((s) => {
-    s.x += translateX;
-    s.y += translateY;
-    s.translateX = 0;
-    s.translateY = 0;
-    s.isSavedInDB = true;
-  });
-  reorder(shapes, state);
-
   if (state.multiSelect) {
+    shapes.forEach((s) => {
+      s.x += translateX;
+      s.y += translateY;
+    });
     state.multiSelect.outline.x += translateX;
     state.multiSelect.outline.y += translateY;
   }
+  reorder(shapes, state);
+
+  const shapeSnapshots = shapes.map((s) => {
+    return {
+      ...s,
+      x: s.x - translateX,
+      y: s.y - translateY,
+      isSavedInDB: true,
+    };
+  });
 
   const undo: TimeTravelSafeAction = {
     actionCreatorName: 'safeUpdateDrawings',

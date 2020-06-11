@@ -78,7 +78,6 @@ export const Shape: React.FC<DrawingProps> = (props) => {
       dispatch(
         startDrag({
           id: id,
-          encompassedIds: [],
           clickX: e.clientX,
           clickY: e.clientY,
         })

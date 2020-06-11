@@ -32,8 +32,8 @@ const HiddenTextInput: React.FC<HiddenTextInputProps> = React.memo((props) => {
   const justifyContent = shape.type === 'text' ? 'start' : 'center';
   const alignItems = shape.type === 'rect' ? 'center' : 'start';
 
-  const screenX = (shape?.x + shape?.translateX) * scale + topLeftX;
-  const screenY = (shape?.y + shape?.translateY) * scale + topLeftY;
+  const screenX = shape?.x * scale + topLeftX;
+  const screenY = shape?.y * scale + topLeftY;
   const screenWidth = shape?.width * scale;
   const screenHeight = shape?.height * scale;
   const screenFontSize = 14 * scale;

@@ -52,8 +52,6 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     id,
     x,
     y,
-    translateX,
-    translateY,
     width,
     height,
     createdAtZoomLevel,
@@ -61,7 +59,7 @@ const BaseShape: React.FC<BaseShapeProps> = (props) => {
     isSavedInDB,
   } = shape;
 
-  const transform = `translate(${x + translateX}, ${y + translateY})`;
+  const transform = `translate(${x}, ${y})`;
 
   const radiusSize = 2;
   const strokeWidth = 4;

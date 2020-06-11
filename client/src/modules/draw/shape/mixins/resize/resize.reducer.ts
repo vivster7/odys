@@ -6,6 +6,7 @@ import { getShape } from '../../shape.reducer';
 import { applySelect } from 'modules/draw/mixins/multiSelect/multiSelect.reducer';
 import { getConnectedArrows } from 'modules/draw/arrow/arrow.reducer';
 import { positionArrowsFn } from 'modules/draw/arrowposition/arrowPosition.reducer';
+import Box from 'math/box';
 
 export type NEAnchor = 'NEAnchor';
 export type NWAnchor = 'NWAnchor';
@@ -18,8 +19,7 @@ export interface ResizeState {
   anchor: Anchor;
   prevX: number;
   prevY: number;
-  clickX: number;
-  clickY: number;
+  start: Box;
   // isNewRect is true when we create a new rect by drag
   isNewRect: boolean;
 }
@@ -30,8 +30,6 @@ export interface Resizable {
   height: number;
   x: number;
   y: number;
-  translateX: number;
-  translateY: number;
 }
 
 interface StartResize {
@@ -43,14 +41,19 @@ interface StartResize {
 
 export const startResizeFn: DrawReducer<StartResize> = (state, action) => {
   const { id, anchor, prevX, prevY } = action.payload;
+  const shape = getShape(state, id);
   state.resize = {
     id: id,
     anchor: anchor,
     prevX: prevX,
     prevY: prevY,
-    clickX: 0,
-    clickY: 0,
     isNewRect: false,
+    start: {
+      x: shape.x,
+      y: shape.y,
+      width: shape.width,
+      height: shape.height,
+    },
   };
 };
 
@@ -213,18 +216,14 @@ export const endResizePending: DrawActionPending<EndResize> = (
   }
 
   const snapshot = Object.assign({}, state.shapes[id], {
-    translateX: 0,
-    translateY: 0,
-    deltaWidth: 0,
-    deltaHeight: 0,
+    x: state.resize.start.x,
+    y: state.resize.start.y,
+    width: state.resize.start.width,
+    height: state.resize.start.height,
     isSavedInDB: true,
   });
 
   const shape = state.shapes[id];
-  shape.x = shape.x + shape.translateX;
-  shape.y = shape.y + shape.translateY;
-  shape.translateX = 0;
-  shape.translateY = 0;
   shape.isSavedInDB = true;
 
   state.drag = null;

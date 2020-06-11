@@ -74,8 +74,6 @@ export const fetchShapesFulfilled = (
       type: type,
       isSavedInDB: true,
       isDeleted: false,
-      translateX: 0,
-      translateY: 0,
     };
     state.shapes[s.id] = shape;
     //TODO: order should be saved on server.
@@ -97,8 +95,6 @@ export const newShape = (boardId: string, shape: Partial<Shape>): Shape => {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     isDeleted: false,
-    translateX: 0,
-    translateY: 0,
     isSavedInDB: true,
     parentId: '',
   };
