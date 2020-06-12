@@ -121,6 +121,12 @@ export const endDragPending: DrawActionPending<EndDrag> = (state, action) => {
   }
   reorder(shapes, state);
 
+  const connectedArrows = getConnectedArrows(state, ids);
+  positionArrowsFn(state, {
+    type: 'draw/positionArrows',
+    payload: connectedArrows,
+  });
+
   const shapeSnapshots = shapes.map((s) => {
     return {
       ...s,
