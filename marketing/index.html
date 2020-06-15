@@ -15,7 +15,8 @@
 
 <body>
   <div class="bg-light">
-    <div class="container">
+    <!-- Start Large Landing Page -->
+    <div class="container d-none d-lg-block">
 
       <!-- NavBar -->
       <nav class="navbar sticky-top navbar-light bg-light px-0">
@@ -32,30 +33,20 @@
           <!-- Jumbotron -->
           <div class="jumbotron bg-light" style="background-image: linear-gradient(to right, #f8f9fa, #ced6e0); 
                        border-radius: 0.3rem 0rem 0rem .3rem;">
-            <h1 class="display-3 d-none d-lg-block">Communicate</h1>
-            <h1 class="display-4 d-lg-none">Communicate</h1>
+            <h1 class="display-3">Communicate</h1>
             <h1 class="display-1">Better</h1>
             <p class="lead">Create visuals while speaking.</p>
             <hr class="my-4">
             <a class="btn btn-primary btn-lg" href="https://whiteboard.systems" role="button">Try It Now</a>
           </div>
         </div>
-        <div class="col d-none d-lg-flex align-self-stretch rounded-right"
-          style="margin-bottom: 2rem; background-color: #ced6e0;">
+        <div class="col align-self-stretch rounded-right" style="margin-bottom: 2rem; background-color: #ced6e0;">
           <video muted autoplay loop playsinline class="img-fluid align-self-center rounded"
             src="https://storage.googleapis.com/hello.whiteboard.systems/Optimistic%20Updates%20With%20Subtitles%20v2.mp4"
             alt="Optimistic Update Image">
         </div>
       </div>
 
-      <!-- up-down optimistic-update-image -->
-      <div class="row d-lg-none">
-        <div class="m-3 rounded">
-          <video muted autoplay loop playsinline class="img-fluid align-self-center img-thumbnail"
-            src="https://storage.googleapis.com/hello.whiteboard.systems/Optimistic%20Updates%20With%20Subtitles%20v2.mp4"
-            alt="Optimistic Update Image">
-        </div>
-      </div>
 
       <!-- Quote1 -->
       <hr class="my-4">
@@ -69,14 +60,16 @@
       <!-- Keeping It Simple Cards -->
       <div class="row no-gutters rounded my-5">
         <div class="col">
-          <div class="row no-gutters mb-3">
-            <h1>Keeping It Simple</h1>
+          <div class="row no-gutters mb-5">
+            <div class="col">
+              <h1>Keeping It Simple</h1>
+            </div>
           </div>
 
           <div class="row">
 
             <div class="col">
-              <div class="card">
+              <div class="card mb-5">
                 <video muted autoplay loop playsinline class="card-img-top"
                   src="https://storage.googleapis.com/hello.whiteboard.systems/Box.v2.mp4"></video>
                 <div class="card-body">
@@ -88,7 +81,7 @@
             </div>
 
             <div class="col">
-              <div class="card">
+              <div class="card mb-5">
                 <video muted autoplay loop playsinline class="card-img-top"
                   src="https://storage.googleapis.com/hello.whiteboard.systems/Arrow.v2.mp4"></video>
                 <div class="card-body">
@@ -100,7 +93,7 @@
             </div>
 
             <div class="col">
-              <div class="card">
+              <div class="card mb-5">
                 <video muted autoplay loop playsinline class="card-img-top"
                   src="https://storage.googleapis.com/hello.whiteboard.systems/Text.v2.mp4"></video>
                 <div class="card-body">
@@ -209,8 +202,218 @@
       <div class="row no-gutters rounded py-5"> </div>
 
 
-    </div> <!-- End container -->
+    </div>
+    <!-- End Large Landing Page -->
 
+    <!-- Start Mobile Landing Page -->
+    <div class="container d-lg-none">
+
+      <!-- NavBar -->
+      <nav class="navbar sticky-top navbar-light bg-light px-0">
+        <a class="navbar-brand border border-dark rounded-circle" style="padding: 5px"
+          href=" https://hello.whiteboard.systems">WS</a>
+        <a class="btn btn-primary btn bg-light text-primary" href="https://whiteboard.systems" role="button">Try It
+          Now</a>
+
+      </nav>
+
+      <!-- Jumbotron -->
+      <div class="row no-gutters">
+        <div class="col rounded-left">
+          <div class="jumbotron bg-light" style="background-image: linear-gradient(to right, #f8f9fa, #ced6e0); 
+                       border-radius: 0.3rem 0rem 0rem .3rem;">
+            <h1 class="display-4">Communicate</h1>
+            <h1 class="display-1">Better</h1>
+            <p class="lead">Create visuals while speaking.</p>
+            <hr class="my-4">
+            <a class="btn btn-primary btn-lg" href="https://whiteboard.systems" role="button">Try It Now</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- demo video -->
+      <div class="row d-lg-none">
+        <div class="m-3 rounded">
+          <video muted autoplay loop playsinline class="img-fluid align-self-center img-thumbnail"
+            src="https://storage.googleapis.com/hello.whiteboard.systems/Optimistic%20Updates%20With%20Subtitles%20v2.mp4"
+            alt="Optimistic Update Image">
+        </div>
+      </div>
+
+      <!-- Quote1 -->
+      <hr class="my-4">
+      <div class="text-center">
+        <blockquote class="blockquote">
+          <p class="mb">Stop describing complex systems in long slack threads.</p>
+        </blockquote>
+      </div>
+      <hr class="my-4">
+
+      <!-- Keeping It Simple Cards -->
+      <div class="row no-gutters rounded my-5">
+        <div class="col">
+          <div class="row no-gutters mb-5">
+            <div class="col">
+              <h1>Keeping It Simple</h1>
+            </div>
+          </div>
+
+          <div class="row no-gutters">
+            <div class="col">
+              <div class="card mb-5 mx-auto" style="max-width: 450px;">
+                <video muted autoplay loop playsinline class="card-img-top"
+                  src="https://storage.googleapis.com/hello.whiteboard.systems/Box.v2.mp4"></video>
+                <div class="card-body">
+                  <h5 class="card-title">Boxes</h5>
+                  <p class="card-text">Command (⌘) + click to add a box.</p>
+                  <p class="card-text text-muted">(Ctrl on Windows)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row no-gutters">
+            <div class="col justify-content-center">
+              <div class="card mb-5 mx-auto" style="max-width: 450px;">
+                <video muted autoplay loop playsinline class="card-img-top"
+                  src="https://storage.googleapis.com/hello.whiteboard.systems/Arrow.v2.mp4"></video>
+                <div class="card-body">
+                  <h5 class="card-title">Arrows</h5>
+                  <p class="card-text">Select a box, then command (⌘) + click another.</p>
+                  <p class="card-text text-muted">(Ctrl on Windows)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row no-gutters">
+            <div class="col">
+              <div class="card mb-5 mx-auto" style="max-width: 450px;">
+                <video muted autoplay loop playsinline class="card-img-top"
+                  src="https://storage.googleapis.com/hello.whiteboard.systems/Text.v2.mp4"></video>
+                <div class="card-body">
+                  <h5 class="card-title">Text</h5>
+                  <p class="card-text">Double click to add text.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Quote2 -->
+      <hr class="my-4">
+      <div class="text-center">
+        <blockquote class="blockquote">
+          <p class="mb">Don't work in isolation. Keep knowledge accessible to your entire team.</p>
+        </blockquote>
+      </div>
+      <hr class="my-4">
+
+      <!--  -->
+      <div class="row no-gutters rounded mb-5">
+        <div class="col">
+
+          <!-- Tangible Abstractions -->
+          <div class="row my-4">
+            <div class="col-7">
+              <h2>Tangible Abstractions</h2>
+              <p class="mb-3" style="max-width: 350px;">Engineers <span class="font-italic">love</span>
+                abstractions.
+                But
+                they
+                incur a heavy congnitive tax. Visuals make invented concepts like
+                <span class="text-monospace">UserAccessScopes</span>
+                more accessible.</p>
+            </div>
+            <div class="col align-self-center ml-5">
+              <svg class="bi bi-bounding-box-circles mb-3" width="4em" height="4em" viewBox="0 0 16 16" fill="#007bff"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M12.5 2h-9V1h9v1zm-10 1.5v9h-1v-9h1zm11 9v-9h1v9h-1zM3.5 14h9v1h-9v-1z" />
+                <path fill-rule="evenodd"
+                  d="M14 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+              </svg>
+            </div>
+          </div>
+
+
+          <!-- Highlight spatial relationships -->
+          <div class="row my-4">
+            <div class="col align-self-center ml-5">
+              <svg class="bi bi-layout-wtf mb-3" width="4em" height="4em" viewBox="0 0 16 16" fill="#007bff"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                  d="M5 1H1v8h4V1zM1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm13 2H9v5h5V2zM9 1a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9zM5 13H3v2h2v-2zm-2-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3zm12-1H9v2h6v-2zm-6-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H9z" />
+              </svg>
+            </div>
+            <div class="col-7">
+              <h2>Spatial Relationships</h2>
+              <p class="mb-3" style="max-width: 350px;">Systems are dynamic. It's difficult to keep track of all
+                the
+                moving pieces. Diagrams keep
+                you organized.</p>
+            </div>
+          </div>
+
+
+          <!-- Shared Mental Model -->
+          <div class="row my-4">
+            <div class="col-7">
+              <h2>Shared Mental Model</h2>
+              <p class="mb-3" style="max-width: 350px;">It takes months to ramp up on a new codebase. Reading
+                source
+                code
+                to build a mental model
+                is
+                slow and error prone. Share crucial concepts to onboard new teammates quickly.</p>
+            </div>
+            <div class="col align-self-center ml-5">
+              <svg class="bi bi-intersect mb-3" width="4em" height="4em" viewBox="0 0 16 16" fill="#007bff"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M12 4v6.5a1.5 1.5 0 0 1-1.5 1.5H4V5.5A1.5 1.5 0 0 1 5.5 4H12z" />
+                <path fill-rule="evenodd"
+                  d="M14.5 5h-9a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-9-1A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 4h-9z" />
+                <path fill-rule="evenodd"
+                  d="M10.5 1h-9a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-9-1A1.5 1.5 0 0 0 0 1.5v9A1.5 1.5 0 0 0 1.5 12h9a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 10.5 0h-9z" />
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="row no-gutters rounded py-3"> </div>
+
+
+      <!-- Quote3 -->
+      <hr class="my-4">
+      <div class="text-center">
+        <blockquote class="blockquote">
+          <p class="mb">Poor communication bottlenecks an entire organization.</p>
+        </blockquote>
+      </div>
+      <hr class="my-4">
+
+      <!-- Updates -->
+      <div class="row no-gutters rounded mt-5 py-5"
+        style="background-image: linear-gradient(to bottom, #f8f9fa, #ced6e0);">
+        <div class="col text-center">
+          <h1 class="display-4">Start speaking</h1>
+          <h1 class="display-4">with clarity.</h1>
+        </div>
+        <div class="col text-center align-self-center">
+          <a class="btn btn-primary btn-lg" href="https://whiteboard.systems" role="button">Get Started</a>
+        </div>
+      </div>
+      <div class="row no-gutters rounded py-5" style="background-color: #ced6e0;"> </div>
+
+      <!-- Footer -->
+      <div class="row no-gutters rounded py-5"> </div>
+
+    </div>
+    <!-- End Mobile Landing Page -->
 
   </div>
 
