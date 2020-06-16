@@ -29,7 +29,7 @@
 
       <!-- Jumbotron + side-by-side -->
       <div class="row no-gutters">
-        <div class="col rounded-left">
+        <div class="col-6 rounded-left" style="background-image: linear-gradient(to right, #f8f9fa, #ced6e0);">
           <!-- Jumbotron -->
           <div class="jumbotron bg-light" style="background-image: linear-gradient(to right, #f8f9fa, #ced6e0); 
                        border-radius: 0.3rem 0rem 0rem .3rem;">
@@ -40,16 +40,18 @@
             <a class="btn btn-primary btn-lg" href="https://whiteboard.systems" role="button">Try It Now</a>
           </div>
         </div>
-        <div class="col align-self-stretch rounded-right" style="margin-bottom: 2rem; background-color: #ced6e0;">
-          <video muted autoplay loop playsinline class="img-fluid align-self-center rounded"
-            src="https://storage.googleapis.com/hello.whiteboard.systems/Optimistic%20Updates%20With%20Subtitles%20v2.mp4"
-            alt="Optimistic Update Image">
+        <div class="col-6 rounded-right" style="background-color: #ced6e0;">
+          <div class="jumbotron" style="background-color: #ced6e0; border-radius: 0rem 0.3rem 0.3rem 0rem;">
+            <video muted autoplay loop playsinline class="img-fluid align-self-center rounded"
+              src="https://storage.googleapis.com/hello.whiteboard.systems/Optimistic%20Updates%20With%20Subtitles%20v2.mp4"
+              alt="Optimistic Update Image">
+          </div>
         </div>
       </div>
 
 
       <!-- Quote1 -->
-      <div class="text-center text-white font-weight-light py-5 my-5 rounded-pill" style="background-color: #117a8bd9;">
+      <div class="text-center text-white font-weight-light py-5 my-5" style="background-color: #17a2b8;">
         <blockquote class="blockquote">
           <p class="mb">Stop describing complex systems in long slack threads.</p>
         </blockquote>
@@ -71,7 +73,7 @@
               <div class="card mb-5">
                 <video muted autoplay loop playsinline class="card-img-top"
                   src="https://storage.googleapis.com/hello.whiteboard.systems/Box.v2.mp4"></video>
-                <div class="card-body">
+                <div class="card-body border border-info rounded-top">
                   <h5 class="card-title">Boxes</h5>
                   <p class="card-text">Command (⌘) + click to add a box.</p>
                   <p class="card-text text-muted">(Ctrl on Windows)</p>
@@ -83,7 +85,7 @@
               <div class="card mb-5">
                 <video muted autoplay loop playsinline class="card-img-top"
                   src="https://storage.googleapis.com/hello.whiteboard.systems/Arrow.v2.mp4"></video>
-                <div class="card-body">
+                <div class="card-body border border-info rounded-top">
                   <h5 class="card-title">Arrows</h5>
                   <p class="card-text">Select a box, then command (⌘) + click another.</p>
                   <p class="card-text text-muted">(Ctrl on Windows)</p>
@@ -95,7 +97,7 @@
               <div class="card mb-5">
                 <video muted autoplay loop playsinline class="card-img-top"
                   src="https://storage.googleapis.com/hello.whiteboard.systems/Text.v2.mp4"></video>
-                <div class="card-body">
+                <div class="card-body border border-info rounded-top">
                   <h5 class="card-title">Text</h5>
                   <p class="card-text">Double click to add text.</p>
                 </div>
@@ -107,7 +109,7 @@
 
 
       <!-- Quote2 -->
-      <div class="text-center text-white font-weight-light py-5 my-5 rounded-pill" style="background-color: #117a8bd9;">
+      <div class="text-center text-white font-weight-light py-5 my-5 rounded" style="background-color: #17a2b8;">
         <blockquote class="blockquote">
           <p class="mb">Don't work in isolation. Keep knowledge accessible to your entire team.</p>
         </blockquote>
@@ -117,32 +119,35 @@
       <div class="row no-gutters rounded mb-5">
         <!-- Tangible Abstractions -->
         <div class="col my-5 ml-3 mr-5">
-          <div class="row justify-content-center align-items-center">
-            <svg class="bi bi-bounding-box-circles my-5" width="4em" height="4em" viewBox="0 0 16 16" fill="#007bff"
+          <div class="d-flex justify-content-center align-items-center">
+            <svg class="bi bi-bounding-box-circles my-5" width="4em" height="4em" viewBox="0 0 16 16" fill="#17a2b8"
               xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M12.5 2h-9V1h9v1zm-10 1.5v9h-1v-9h1zm11 9v-9h1v9h-1zM3.5 14h9v1h-9v-1z" />
               <path fill-rule="evenodd"
                 d="M14 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 11a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 1a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
             </svg>
           </div>
-          <div class="row">
+          <div class="d-flex flex-column">
             <h2>Tangible Abstractions</h2>
-            <p class="ml-2">Engineers <span class="font-italic">love</span> abstractions. But they
+            <p>Engineers <span class="font-italic">love</span> abstractions. But they
               incur a heavy congnitive tax. Visuals make invented concepts like
               <span class="text-monospace">UserAccessScopes</span>
               more accessible.</p>
           </div>
         </div>
 
+        <div class="border-right"></div>
+
         <!-- Highlight spatial relationships -->
         <div class="col mt-5 ml-3 mr-5">
-          <div class="row">
+          <div class="mt-5"></div>
+          <div class="d-flex flex-column">
             <h2>Spatial Relationships</h2>
-            <p class="ml-2">Systems are dynamic. It's difficult to keep track of all the moving pieces. Diagrams keep
+            <p>Systems are dynamic. It's difficult to keep track of all the moving pieces. Diagrams keep
               you organized.</p>
           </div>
-          <div class="row justify-content-center align-items-center">
-            <svg class="bi bi-layout-wtf mt-5" width="4em" height="4em" viewBox="0 0 16 16" fill="#007bff"
+          <div class="d-flex justify-content-center align-items-center">
+            <svg class="bi bi-layout-wtf mt-5" width="4em" height="4em" viewBox="0 0 16 16" fill="#17a2b8"
               xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd"
                 d="M5 1H1v8h4V1zM1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm13 2H9v5h5V2zM9 1a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9zM5 13H3v2h2v-2zm-2-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3zm12-1H9v2h6v-2zm-6-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H9z" />
@@ -150,10 +155,12 @@
           </div>
         </div>
 
+        <div class="border-right"></div>
+
         <!-- Shared Mental Model -->
         <div class="col mt-5 ml-3 mr-5">
-          <div class="row justify-content-center align-items-center">
-            <svg class="bi bi-intersect my-5" width="4em" height="4em" viewBox="0 0 16 16" fill="#007bff"
+          <div class="d-flex justify-content-center align-items-center">
+            <svg class="bi bi-intersect my-5" width="4em" height="4em" viewBox="0 0 16 16" fill="#17a2b8"
               xmlns="http://www.w3.org/2000/svg">
               <path fill-rule="evenodd" d="M12 4v6.5a1.5 1.5 0 0 1-1.5 1.5H4V5.5A1.5 1.5 0 0 1 5.5 4H12z" />
               <path fill-rule="evenodd"
@@ -162,9 +169,9 @@
                 d="M10.5 1h-9a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-9-1A1.5 1.5 0 0 0 0 1.5v9A1.5 1.5 0 0 0 1.5 12h9a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 10.5 0h-9z" />
             </svg>
           </div>
-          <div class="row">
+          <div class="d-flex flex-column">
             <h2>Shared Mental Model</h2>
-            <p class="ml-2">It takes months to ramp up on a new codebase. Reading source code to build a mental model
+            <p>It takes months to ramp up on a new codebase. Reading source code to build a mental model
               is
               slow and error prone. Share crucial concepts to onboard new teammates quickly.</p>
           </div>
@@ -174,13 +181,15 @@
 
 
       <!-- Quote3 -->
-      <div class="text-center text-white font-weight-light py-5 my-5 rounded-pill" style="background-color: #117a8bd9;">
+      <div class="text-center text-white font-weight-light py-5 my-5 rounded" style="background-color: #17a2b8;">
         <blockquote class="blockquote">
           <p class="mb">Poor communication bottlenecks an entire organization.</p>
         </blockquote>
       </div>
 
       <!-- Updates -->
+      <div class="row no-gutters rounded my-5"></div>
+      <div class="row no-gutters rounded my-5"></div>
       <div class="row no-gutters rounded mt-5 py-5"
         style="background-image: linear-gradient(to bottom, #f8f9fa, #ced6e0);">
         <div class="col align-self-center text-center" style="min-height: 200px;">
