@@ -157,16 +157,19 @@ const initialState: DrawState = {
 
 export type Drawing = Arrow | Shape;
 
-export function getDrawing(state: DrawState, id: string): Drawing {
+export function getDrawing(state: DrawState, id: string): Drawing | null {
   const drawing = state.shapes[id] ?? state.arrows[id];
   if (!drawing) {
-    throw new Error(`Cannot find drawing with ${id}`);
+    console.error(`Cannot find drawing with ${id}`);
+    return null;
   }
   return drawing;
 }
 
 export function getDrawings(state: DrawState, ids: string[]): Drawing[] {
-  return ids.map((id) => getDrawing(state, id));
+  return ids
+    .map((id) => getDrawing(state, id))
+    .filter((d): d is Drawing => d !== null);
 }
 
 export const fetchDrawings = createAsyncThunk(

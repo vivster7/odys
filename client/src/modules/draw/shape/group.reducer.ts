@@ -1,4 +1,4 @@
-import { getDrawing, DrawActionPending, DrawState } from '../draw.reducer';
+import { DrawActionPending, DrawState, getDrawings } from '../draw.reducer';
 import { reorder } from 'modules/draw/mixins/drawOrder/drawOrder';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { save } from '../mixins/save/save.reducer';
@@ -33,9 +33,9 @@ export const createGroupPending: DrawActionPending<string> = (
   const { outline, selectedIds } = state.multiSelect;
   const { x, y, width, height } = outline;
 
-  const first = Object.keys(selectedIds)[0];
-  const drawing = getDrawing(state, first);
-  const { boardId } = drawing;
+  const drawings = getDrawings(state, Object.keys(selectedIds));
+  if (drawings.length === 0) return;
+  const { boardId } = drawings[0];
 
   const outlineMarginTop = 40;
   const outlineMargin = 20;

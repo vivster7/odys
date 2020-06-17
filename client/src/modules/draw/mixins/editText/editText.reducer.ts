@@ -22,6 +22,7 @@ export const startEditTextFn: DrawReducer<string> = (state, action) => {
   const id = action.payload;
 
   const drawing = getDrawing(state, id);
+  if (!drawing) return;
   state.editText = {
     id: id,
     startingText: drawing.text,
@@ -44,6 +45,7 @@ export const editText = createAsyncThunk(
 export const editTextPending: DrawActionPending<EditText> = (state, action) => {
   const { id, text } = action.meta.arg;
   const drawing = getDrawing(state, id);
+  if (!drawing) return;
   drawing.text = text;
   if (state.editText) state.editText.hasTyped = true;
   // NOTE: intentionally skipping undo/redo
@@ -69,7 +71,7 @@ export const endEditTextPending: DrawActionPending<string> = (
   state.editText = null;
 
   const drawing = getDrawing(state, id);
-
+  if (!drawing) return;
   if (drawing.text === startingText) return;
 
   const snapshot = { ...drawing, text: startingText };

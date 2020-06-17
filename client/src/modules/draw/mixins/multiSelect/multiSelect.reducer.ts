@@ -194,12 +194,16 @@ export const applySelect = (state: DrawState, drawings: Drawing[]) => {
   } else {
     state.select = null;
     const shapes = drawings.filter((d) => instanceOfShape(d)) as Shape[];
-    state.multiSelect = {
-      origin: null,
-      selectionRect: null,
-      selectedIds: Object.fromEntries(drawings.map((d) => [d.id, true])),
-      outline: outline(...shapes),
-    };
+    if (shapes.length === 0) {
+      state.multiSelect = null;
+    } else {
+      state.multiSelect = {
+        origin: null,
+        selectionRect: null,
+        selectedIds: Object.fromEntries(drawings.map((d) => [d.id, true])),
+        outline: outline(...shapes),
+      };
+    }
   }
 };
 
