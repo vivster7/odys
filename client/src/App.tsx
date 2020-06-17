@@ -10,6 +10,7 @@ import {
 import { Provider } from 'react-redux';
 import * as uuid from 'uuid';
 import * as jdp from 'jsondiffpatch';
+import produce from 'immer';
 
 import Room from './modules/room/Room';
 
@@ -79,11 +80,32 @@ const syncEnhancer: StoreEnhancer = (createStore) => (
   return createStore(syncedRootReducer, initialState);
 };
 
+const errorEnhancer: StoreEnhancer = (createStore) => (
+  reducer,
+  initialState
+) => {
+  const errorReducer = (state: any, action: any) => {
+    try {
+      return reducer(state, action) as any;
+    } catch (e) {
+      console.error(e);
+      // try to clean up bad state
+      // TODO: flesh out removeDrawing()
+      return produce(state, (draft: any) => {
+        draft.draw.select = null;
+        draft.draw.multiSelect = null;
+        draft.draw.editText = null;
+      });
+    }
+  };
+  return createStore(errorReducer, initialState);
+};
+
 export const syncState = createAction<SocketEvent>('global/syncState');
 
 const store = configureStore({
   reducer: rootReducer,
-  enhancers: [syncEnhancer],
+  enhancers: [errorEnhancer, syncEnhancer],
 });
 
 export type OdysDispatch = typeof store.dispatch;
