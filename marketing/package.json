@@ -1,11 +1,13 @@
 {
   "private": true,
-  "name": "Whiteboard Systems",
+  "name": "whiteboard-systems",
   "version": "2.0.0",
   "description": "",
   "main": "gulpfile.js",
   "author": "Good Themes",
   "scripts": {
+    "build": "gulp build",
+    "deploy": "yarn build && gsutil -m rsync -r dist/assets gs://hello.whiteboard.systems/assets && gsutil cp dist/index.html gs://hello.whiteboard.systems/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
