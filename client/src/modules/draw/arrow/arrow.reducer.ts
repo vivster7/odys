@@ -38,14 +38,17 @@ export const fetchArrowsFulfilled = (
   action: PayloadAction<OdysArrow[]>
 ) => {
   const odysArrows = action.payload;
-  const arrows = odysArrows.map((a) => {
-    const arrow: Arrow = {
-      ...a,
-      isSavedInDB: true,
-      isDeleted: false,
-    };
-    return arrow;
-  });
+  const arrows = odysArrows
+    .filter((a) => state.shapes[a.fromShapeId] && state.shapes[a.fromShapeId])
+    .map((a) => {
+      const arrow: Arrow = {
+        ...a,
+        isSavedInDB: true,
+        isDeleted: false,
+      };
+      return arrow;
+    });
+
   arrows.forEach((a) => (state.arrows[a.id] = a));
   reorder(arrows, state);
   positionArrowsFn(state, { type: 'draw/positionArrows', payload: arrows });
