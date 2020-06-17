@@ -94,26 +94,33 @@ export const endNewRectByClickPending: DrawActionPending<NewRectWithArrow> = (
   let redoArg: { drawings: Drawing[] } = { drawings: [rect] };
 
   if (selectedShapeId) {
-    const arrow: Arrow = {
-      id: arrowId,
-      fromShapeId: selectedShapeId,
-      toShapeId: id,
-      text: '',
-      isSavedInDB: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      boardId: boardId,
-      isDeleted: false,
-    };
-    state.arrows[arrow.id] = arrow;
-    reorder([arrow], state);
-    positionArrowsFn(state, {
-      type: 'draw/positionArrows',
-      payload: [arrow],
-    });
+    const selectdShape = state.shapes[selectedShapeId];
+    if (!selectdShape) {
+      console.error(
+        `cannot find selectedShape (${selectedShapeId}). Not drawing arrow.`
+      );
+    } else {
+      const arrow: Arrow = {
+        id: arrowId,
+        fromShapeId: selectedShapeId,
+        toShapeId: id,
+        text: '',
+        isSavedInDB: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        boardId: boardId,
+        isDeleted: false,
+      };
+      state.arrows[arrow.id] = arrow;
+      reorder([arrow], state);
+      positionArrowsFn(state, {
+        type: 'draw/positionArrows',
+        payload: [arrow],
+      });
 
-    undoArg.push(arrowId);
-    redoArg.drawings.push(arrow);
+      undoArg.push(arrowId);
+      redoArg.drawings.push(arrow);
+    }
   }
 
   const undo: TimeTravelSafeAction = {

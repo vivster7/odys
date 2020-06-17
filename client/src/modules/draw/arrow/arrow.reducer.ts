@@ -98,8 +98,15 @@ export const drawArrowPending: DrawActionPending<DrawArrow> = (
   const fromShape = state.shapes[fromShapeId];
   const toShape = state.shapes[toShapeId];
 
-  if (!fromShape) throw new Error(`Cannot find shape (${fromShapeId})`);
-  if (!toShape) throw new Error(`Cannot find shape (${toShapeId})`);
+  if (!fromShape) {
+    console.error(`cannot find fromShape (${fromShapeId}). Not drawing arrow.`);
+    return;
+  }
+
+  if (!toShape) {
+    console.error(`cannot find toShape (${toShapeId}). Not drawing arrow.`);
+    return;
+  }
 
   const arrow: Arrow = {
     id: id,

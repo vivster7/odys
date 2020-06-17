@@ -6,6 +6,7 @@ import {
 } from '../arrow/path';
 import { Arrow } from '../arrow/arrow.reducer';
 import { yMid, xMid } from 'math/box';
+import { Shape } from '../shape/shape.reducer';
 
 export interface ArrowPositionState {
   [shapeId: string]: {
@@ -19,8 +20,13 @@ export const positionArrowsFn: DrawReducer<Arrow[]> = (state, action) => {
 };
 
 function positionArrow(state: DrawState, arrow: Arrow) {
-  const fromShape = state.shapes[arrow.fromShapeId];
-  const toShape = state.shapes[arrow.toShapeId];
+  const fromShape: Shape = state.shapes[arrow.fromShapeId];
+  const toShape: Shape = state.shapes[arrow.toShapeId];
+
+  if (!fromShape || !toShape) {
+    console.error(`Cannot position arrow ${arrow.id}. Missing from/to.`);
+    return;
+  }
 
   const { from, to } = computeOrientation(fromShape, toShape);
 
