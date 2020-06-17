@@ -142,9 +142,11 @@ const DrawContainer: React.FC = React.memo(() => {
         if (instanceOfArrow(drawing)) {
           fromShape = shapes[drawing.fromShapeId];
           toShape = shapes[drawing.toShapeId];
-          const { from, to } = computeOrientation(fromShape, toShape);
-          fromShapeArrows = arrowPositions[fromShape.id][from];
-          toShapeArrows = arrowPositions[toShape.id][to];
+          if (fromShape && toShape) {
+            const { from, to } = computeOrientation(fromShape, toShape);
+            fromShapeArrows = arrowPositions[fromShape.id][from];
+            toShapeArrows = arrowPositions[toShape.id][to];
+          }
         }
         return (
           <Drawing
