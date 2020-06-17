@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  @@include("partials/head.html", {
+  "pageTitle": "Whiteboard Systems | Hello"
+  })
+</head>
+
+<body>
+
+  <!-- NAVBAR
+    ================================================== -->
+  @@include("partials/navbar.html", {
+  "classList": "navbar-light bg-white",
+  "container": "container"
+  })
+
+  <!-- WELCOME
+    ================================================== -->
+  <section class="pt-4 pt-md-11">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-12 col-md-6 col-lg-7 order-md-2">
+
+          <!-- Image -->
+          <video muted autoplay loop playsinline class="img-fluid" data-aos="fade-up" data-aos-delay="100"
+            src="https://storage.cloud.google.com/hello.whiteboard.systems/white-background.mp4?cloudshell=false&organizationId=0"
+            alt="Drawing Example"></video>
+
+        </div>
+        <div class="col-12 col-md-6 col-lg-5 order-md-1" data-aos="fade-up">
+
+          <!-- Heading -->
+          <h1 class="display-3 text-center text-md-left">
+            Share Your <br>
+            <span class="text-primary">Mental Model.</span>
+          </h1>
+
+          <!-- Text -->
+          <p class="lead text-center text-md-left text-muted mb-6 mb-lg-8">
+            Create visuals while speaking.
+          </p>
+
+          <!-- Buttons -->
+          <div class="text-center text-md-left">
+            <a href="https://whiteboard.systems" class="btn btn-primary shadow lift mr-1">
+              Try It Now <i class="fe fe-arrow-right d-none d-md-inline ml-3"></i>
+            </a>
+          </div>
+
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .container -->
+  </section>
+
+  <!-- FEATURES
+    ================================================== -->
+  <section class="py-8 py-md-11 border-bottom">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-md-4" data-aos="fade-up" data-aos-delay="50">
+
+          <!-- Icon -->
+          <div class="icon text-primary mb-3">
+            @@include("assets/img/icons/duotone-icons/Code/Thunder-circle.svg")
+          </div>
+
+          <!-- Heading -->
+          <h3>
+            Onboard Quickly
+          </h3>
+
+          <!-- Text -->
+          <p class="text-muted mb-6 mb-md-0">
+            Reading source code to build a mental model
+            is
+            slow and error prone. Share crucial concepts to onboard new teammates quickly.
+
+          </p>
+
+        </div>
+        <div class="col-12 col-md-4" data-aos="fade-up" data-aos-delay="100">
+
+          <!-- Icon -->
+          <div class="icon text-primary mb-3">
+            @@include("assets/img/icons/duotone-icons/General/Update.svg")
+          </div>
+
+          <!-- Heading -->
+          <h3>
+            Stay Synchronized
+          </h3>
+
+          <!-- Text -->
+          <p class="text-muted mb-0">
+            Incompatible systems arise from mild misunderstandings.
+            Keep everyone on the same page by explicitly detailing your mental model.
+          </p>
+
+        </div>
+        <div class="col-12 col-md-4" data-aos="fade-up">
+
+          <!-- Icon -->
+          <div class="icon text-primary mb-3">
+            @@include("assets/img/icons/duotone-icons/General/Duplicate.svg")
+          </div>
+
+          <!-- Heading -->
+          <h3>
+            Tangible Abstractions
+          </h3>
+
+          <!-- Text -->
+          <p class="text-muted mb-6 mb-md-0">
+            Abstract ideas are powerful, but they incur a cognitive tax. Make invented concepts
+            accessible with visuals.</p>
+          </p>
+
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .container -->
+  </section>
+
+  <!-- ABOUT
+    ================================================== -->
+  <section class="pt-8 pt-md-11 bg-gradient-light">
+    <div class="container">
+      <div class="row align-items-center justify-content-between pb-12 mb-8 mb-md-11">
+        <div class="col-12 col-md-6 col-lg-5 order-md-1" data-aos="fade-right">
+
+          <!-- Card -->
+          <div class="card shadow-light-lg lift lift-lg">
+
+            <!-- Image -->
+            <img src="assets/img/photos/photo-2.jpg" alt="..." class="card-img-top">
+
+            <!-- Shape -->
+            <div class="position-relative">
+              <div class="shape shape-bottom shape-fluid-x svg-shim text-white">
+                @@include("assets/img/shapes/curves/curve-1.svg")
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+
+        <div class="col-12 col-md-6 order-md-2" data-aos="fade-left">
+
+          <!-- Heading -->
+          <h2>
+            <span class="text-primary">Explain Anything.</span>
+          </h2>
+
+          <!-- Text -->
+          <p class="font-size-lg text-muted mb-6">
+            Stop describing complex systems in long slack threads.
+            Use the right tool to communicate effectively.
+          </p>
+
+          <div class="text-center text-md-left">
+            <a href="https://blog.whiteboard.systems" class="btn btn-primary shadow lift mr-1">
+              More Explanations <i class="fe fe-arrow-right d-none d-md-inline ml-3"></i>
+            </a>
+          </div>
+
+        </div>
+      </div> <!-- / .row -->
+
+    </div> <!-- / .container -->
+  </section>
+
+  <!-- SHAPE
+    ================================================== -->
+  <div class="position-relative mt-n8">
+    <div class="shape shape-bottom shape-fluid-x svg-shim text-gray-200">
+      @@include("assets/img/shapes/curves/curve-1.svg")
+    </div>
+  </div>
+
+  <!-- STATS
+    ================================================== -->
+  <section class="pt-12 pd-14 py-md-13 bg-gray-200">
+    <div class="container">
+      <div class="row align-items-center">
+
+        <!-- Shape -->
+        <div class="shape shape-blur-2 svg-shim text-gray-100"
+          style="z-index: -10; transform: scale(1.25) translateX(-105px)">
+          @@include("assets/img/shapes/blurs/blur-1.svg")
+        </div>
+
+        <div class="col-12 col-md-7 col-lg-6" data-aos="fade-right">
+
+          <!-- Heading -->
+          <h2>
+            <span class="text-primary">Simplicity First.</span>
+          </h2>
+
+          <!-- Text -->
+          <p class="font-size-lg text-gray-700 mb-6">
+            Only three things to master.
+          </p>
+
+          <!-- List -->
+          <div class="d-flex">
+
+            <!-- Icon -->
+            <div class="icon text-primary">
+              @@include("assets/img/icons/duotone-icons/General/Duplicate.svg")
+            </div>
+
+            <div class="ml-5">
+
+              <!-- Heading -->
+              <h4 class="mb-1">
+                Boxes
+              </h4>
+
+              <!-- Text -->
+              <p class="text-gray-700 mb-6">
+                Command+click on the canvas to create a new box.
+              </p>
+
+            </div>
+
+          </div>
+          <div class="d-flex">
+
+            <!-- Icon -->
+            <div class="icon text-primary">
+              @@include("assets/img/icons/duotone-icons/Navigation/Right-3.svg")
+            </div>
+
+            <div class="ml-5">
+
+              <!-- Heading -->
+              <h4 class="mb-1">
+                Arrows
+              </h4>
+
+              <!-- Text -->
+              <p class="text-gray-700 mb-6">
+                Command+click two boxes to draw an arrow between them.
+              </p>
+
+            </div>
+
+          </div>
+          <div class="d-flex">
+
+            <!-- Icon -->
+            <div class="icon text-primary">
+              @@include("assets/img/icons/duotone-icons/Text/Font.svg")
+            </div>
+
+            <div class="ml-5">
+
+              <!-- Heading -->
+              <h4 class="mb-1">
+                Text
+              </h4>
+
+              <!-- Text -->
+              <p class="text-gray-700 mb-6 mb-md-0">
+                Double click on the canvas to create a text box.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+        <div class="col-12 col-md-5 col-lg-6">
+
+          <div class="w-md-150 w-lg-130 position-relative" data-aos="fade-left">
+
+            <!-- Image -->
+            <div>
+              <!-- Image -->
+              <video muted autoplay loop playsinline class="img-fluid" data-aos="fade-up" data-aos-delay="100"
+                src="https://storage.googleapis.com/hello.whiteboard.systems/gray-background.mp4"
+                alt="Drawing Instructions"></video>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .container -->
+  </section>
+
+  <!-- SHAPE
+    ================================================== -->
+  <div class="position-relative mt-n6">
+    <div class="shape shape-bottom shape-fluid-x svg-shim text-dark">
+      @@include("assets/img/shapes/curves/curve-1.svg")
+    </div>
+  </div>
+
+  <!-- FAQ
+    ================================================== -->
+  <section class="pt-10 bg-dark">
+    <div class="container pt-8 pt-md-11">
+      <div class="row">
+        <div class="col-12 col-md-6">
+
+          <!-- Item -->
+          <div class="d-flex">
+
+            <!-- Badge -->
+            <div class="badge badge-lg badge-rounded-circle badge-success">
+              <span>?</span>
+            </div>
+
+            <div class="ml-5">
+
+              <!-- Heading -->
+              <h4 class="text-white">
+                When should I use this?
+              </h4>
+
+              <!-- Text -->
+              <p class="text-muted mb-6 mb-md-8">
+                If you're collaborating remotely and find yourself reaching for a whiteboard, this tool is perfect.
+                Common usecases include onboarding a new hire, conducting a remote interview, or giving a brownbag
+                talk.
+              </p>
+
+            </div>
+
+          </div>
+
+          <!-- Item -->
+          <div class="d-flex">
+
+            <!-- Badge -->
+            <div class="badge badge-lg badge-rounded-circle badge-success">
+              <span>?</span>
+            </div>
+
+            <div class="ml-5">
+
+              <!-- Heading -->
+              <h4 class="text-white">
+                Is this a documentation tool?
+              </h4>
+
+              <!-- Text -->
+              <p class="text-muted mb-6 mb-md-0">
+                You're welcome to save a screenshot, but there are better tools if you're just looking to make a
+                static image to save as canonical documentation.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+        <div class="col-12 col-md-6">
+
+          <!-- Item -->
+          <div class="d-flex">
+
+            <!-- Badge -->
+            <div class="badge badge-lg badge-rounded-circle badge-success">
+              <span>?</span>
+            </div>
+
+            <div class="ml-5">
+
+              <!-- Heading -->
+              <h4 class="text-white">
+                Is this a presentation tool?
+              </h4>
+
+              <!-- Text -->
+              <p class="text-muted mb-6 mb-md-8">
+                It's perfect for an ad-hoc presentation to share knowledge with your team.
+                But if you're preparing for a presentation in front of 1000 people, you might
+                want to stick to Powerpoint
+                <a href="https://www.youtube.com/watch?v=MCs5OvhV9S4">
+                  (unless you're David Beazley)
+                </a>.
+              </p>
+
+            </div>
+
+          </div>
+
+          <!-- Item -->
+          <div class="d-flex">
+
+            <!-- Badge -->
+            <div class="badge badge-lg badge-rounded-circle badge-success">
+              <span>?</span>
+            </div>
+
+            <div class="ml-5">
+
+              <!-- Heading -->
+              <h4 class="text-white">
+                Are there other features?
+              </h4>
+
+              <!-- Text -->
+              <p class="text-muted mb-6 mb-md-0">
+                We'd love to hear about any features you think are missing at feedback@whiteboard.systems.
+                However, our primary goal is to keep the tool simple enough that a new user can be productive in
+                seconds.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .container -->
+  </section>
+
+  <!-- CTA
+    ================================================== -->
+  <section class="py-8 py-md-11 bg-dark">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8 text-center">
+
+          <!-- Heading -->
+          <h1 class="display-4 text-white">
+            Ready to get started?
+          </h1>
+
+          <!-- Button -->
+          <a href="https://whiteboard.systems" target="_blank" class="btn btn-success lift">
+            Try it now <i class="fe fe-arrow-right"></i>
+          </a>
+
+        </div>
+      </div> <!-- / .row -->
+    </div> <!-- / .container -->
+  </section>
+
+  <!-- SHAPE
+    ================================================== -->
+  <div class="position-relative">
+    <div class="shape shape-bottom shape-fluid-x svg-shim text-gray-200">
+      @@include("assets/img/shapes/curves/curve-1.svg")
+    </div>
+  </div>
+
+  <!-- FOOTER
+    ================================================== -->
+  @@include("partials/footer.html", {
+  "classList": "bg-gray-200"
+  })
+
+  <!-- JAVASCRIPT
+    ================================================== -->
+  @@include("partials/scripts.html")
+
+</body>
+
+</html>
