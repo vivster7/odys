@@ -5,6 +5,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import socket from 'socket.io';
 import path from 'path';
+import helmet from 'helmet';
 import players from './players';
 
 const { PORT } = process.env;
@@ -14,6 +15,7 @@ const status = require('./routes/status');
 const app: express.Application = express();
 
 app.use(cors());
+app.use(helmet()); // add some HTTP headers for security
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, './../build/client')));
