@@ -15,6 +15,7 @@ import { allSelectedIds } from 'modules/draw/mixins/select/select.reducer';
 import { RootState } from 'App';
 import { debouncedOnWheelEnd } from 'modules/canvas/Canvas';
 import { ActionPending } from 'global/redux';
+import { closeFeedback } from 'modules/board/board.reducer';
 
 // Only keys in this list will trigger the keydown condition.
 const SPACE = ' ';
@@ -39,6 +40,15 @@ export const keydown: any = createAsyncThunk(
   async (e: KeyEvent, thunkAPI) => {
     const state = thunkAPI.getState() as RootState;
     const dispatch = thunkAPI.dispatch;
+
+    // If feedback is open, ignore everything except Escape
+    if (state.board.isFeedbackOpen) {
+      if (e.key === 'Escape') {
+        return dispatch(closeFeedback());
+      }
+      return;
+    }
+
     // flush wheel end so paste has up-to-date cursor
     debouncedOnWheelEnd.flush();
 

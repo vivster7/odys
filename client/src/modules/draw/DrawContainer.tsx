@@ -125,9 +125,10 @@ const DrawContainer: React.FC = React.memo(() => {
   const arrowPositions = useSelector((s) => s.draw.arrowPositions);
 
   useEffect(() => {
-    if (board.loaded !== 'success') return;
-    dispatch(fetchDrawings(board.id));
-  }, [board, dispatch]);
+    if (board.id) {
+      dispatch(fetchDrawings(board.id));
+    }
+  }, [board.id, dispatch]);
 
   return (
     <>

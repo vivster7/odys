@@ -5,7 +5,7 @@ import { useSelector } from 'global/redux';
 import ToastContainer from 'modules/errors/ToastContainer';
 import Canvas from 'modules/canvas/Canvas';
 import LandingPage from './landing/LandingPage';
-import KeyTooltips from './tooltip/KeyTooltips';
+import ToolTips from './tooltip/ToolTips';
 import { COLORS } from 'global/colors';
 
 import Cockpit from './cockpit/Cockpit';
@@ -40,9 +40,10 @@ const DrawingBoard: React.FC = () => {
   const room = useSelector((s) => s.room);
 
   useEffect(() => {
-    if (room.loaded !== 'success') return;
-    dispatch(getOrCreateBoard(room.id));
-  }, [room, dispatch]);
+    if (room.id) {
+      dispatch(getOrCreateBoard(room.id));
+    }
+  }, [room.id, dispatch]);
 
   if (board.loaded === 'failed' || room.loaded === 'failed')
     return <BoardFailed></BoardFailed>;
@@ -69,7 +70,7 @@ const DrawingBoard: React.FC = () => {
           pointerEvents: 'none',
         }}
       >
-        <KeyTooltips />
+        <ToolTips />
       </div>
       <div
         style={{

@@ -7,7 +7,7 @@ const CITY_LIGHTS = '#dfe4ea';
 const TWINKLE_BLUE = '#ced6e0';
 const HINT_OF_ICE_PACK = '#c7ecee';
 const BLURPLE = '#4834d4';
-const MIDDLE_BLUE = '#7ed6df';
+const MIDDLE_BLUE = '#17a2b8';
 const PRESTIGE_BLUE = '#2f3542';
 const PEACE = '#a4b0be';
 const STORM_PETREL = '#8395a7';
@@ -34,6 +34,8 @@ export const COLORS = {
   cockpitSelectedBg: PEACE,
   dropShadow: PEACE,
   ghost: PEACE,
+  feedbackBg: WHITE_WHITE_WHITE,
+  feedbackSubmit: MIDDLE_BLUE,
 };
 
 const BRUSCHETTA_TOMATO = '#ff6348';
