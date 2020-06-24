@@ -21,3 +21,20 @@ For a UI of available endpoints:
 ## Development
 If you make schema changes, update the `schema.ddl` file and run `./setup.sh` again.
 You can dump the existing schema file with `pg_dump -U postgres -h localhost odys_dev -s > schema.ddl`
+
+## Migrations
+Log on to SQL instance with Gcloud terminal
+Switch to odys_production database:
+`\c odys_production`
+
+Add API schema to search_path:
+`SET search_path to api, public;`
+
+Run migration code:
+`ALTER TABLE...`
+
+Update any grants if necessary:
+`GRANT * TO...`
+
+Redeploy postgrest
+`./scripts/deploy_production.sh`
