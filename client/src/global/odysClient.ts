@@ -5,6 +5,9 @@ import {
   OdysBoard,
   OdysBoardFromJSON,
   OdysBoardToJSON,
+  OdysFeedback,
+  OdysFeedbackFromJSON,
+  OdysFeedbackToJSON,
   OdysRoom,
   OdysRoomFromJSON,
   OdysRoomToJSON,
@@ -26,6 +29,7 @@ const POSTGREST_API_URL = (
 type OdysModel =
   | OdysArrow
   | OdysBoard
+  | OdysFeedback
   | OdysRoom
   | OdysRoomUser
   | OdysShape
@@ -33,6 +37,7 @@ type OdysModel =
 type OdysModelString =
   | 'OdysArrow'
   | 'OdysBoard'
+  | 'OdysFeedback'
   | 'OdysRoom'
   | 'OdysRoomUser'
   | 'OdysShape'
@@ -61,6 +66,11 @@ const lookup: { [key in OdysModelString]: LookupResult } = {
     path: '/board',
     serializer: OdysBoardToJSON,
     deserializer: OdysBoardFromJSON,
+  },
+  OdysFeedback: {
+    path: '/feedback',
+    serializer: OdysFeedbackToJSON,
+    deserializer: OdysFeedbackFromJSON,
   },
   OdysRoom: {
     path: '/room',

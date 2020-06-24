@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { OdysBoard } from 'generated';
 import odysClient from 'global/odysClient';
+import { RootState } from 'App';
 
 type LoadStates = 'loading' | 'success' | 'failed';
 
@@ -36,21 +37,11 @@ export const getOrCreateBoard = createAsyncThunk(
 export const saveFeedback = createAsyncThunk(
   'board/saveFeedback',
   async (feedback: string, thunkAPI) => {
-    // const response = await odysClient.request('POST', 'OdysBoard', {
-    //   queryOpts: {
-    //     onConflict: ['room_id'],
-    //     select: ['id', 'room_id'],
-    //   },
-    //   headerOpts: {
-    //     mergeDuplicates: true,
-    //     returnRepresentation: true,
-    //   },
-    //   body: [{ roomId: roomId }],
-    // });
-    // if (response.length !== 1) {
-    //   throw new Error(`Could not getOrCreate one board. roomId: ${roomId}`);
-    // }
-    // return response[0];
+    const state = thunkAPI.getState() as RootState;
+
+    await odysClient.request('POST', 'OdysFeedback', {
+      body: [{ text: feedback, roomId: state.room.id }],
+    });
   }
 );
 

@@ -90,6 +90,47 @@ COMMENT ON TABLE api.board IS 'A board can be drawn on. Belongs to a room';
 
 
 --
+-- Name: feedback; Type: TABLE; Schema: api; Owner: postgres
+--
+
+CREATE TABLE api.feedback (
+    id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    text text DEFAULT ''::text NOT NULL,
+    room_id uuid
+);
+
+
+ALTER TABLE api.feedback OWNER TO postgres;
+
+--
+-- Name: TABLE feedback; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON TABLE api.feedback IS 'Feedback about the app';
+
+
+--
+-- Name: COLUMN feedback.id; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON COLUMN api.feedback.id IS 'Unique ID';
+
+
+--
+-- Name: COLUMN feedback.text; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON COLUMN api.feedback.text IS 'feedback content';
+
+
+--
+-- Name: COLUMN feedback.room_id; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON COLUMN api.feedback.room_id IS 'room where feedback was given (debugging info)';
+
+
+--
 -- Name: room; Type: TABLE; Schema: api; Owner: postgres
 --
 
@@ -230,6 +271,14 @@ ALTER TABLE ONLY api.arrow
 
 ALTER TABLE ONLY api.board
     ADD CONSTRAINT boards_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: feedback feedback_pkey; Type: CONSTRAINT; Schema: api; Owner: postgres
+--
+
+ALTER TABLE ONLY api.feedback
+    ADD CONSTRAINT feedback_pkey PRIMARY KEY (id);
 
 
 --
@@ -434,6 +483,21 @@ ALTER TABLE ONLY api.board
 --
 
 COMMENT ON CONSTRAINT boards_room_id_fkey ON api.board IS 'Board belongs to a room';
+
+
+--
+-- Name: feedback feedback_room_id_fkey; Type: FK CONSTRAINT; Schema: api; Owner: postgres
+--
+
+ALTER TABLE ONLY api.feedback
+    ADD CONSTRAINT feedback_room_id_fkey FOREIGN KEY (room_id) REFERENCES api.room(id) ON DELETE SET NULL;
+
+
+--
+-- Name: CONSTRAINT feedback_room_id_fkey ON feedback; Type: COMMENT; Schema: api; Owner: postgres
+--
+
+COMMENT ON CONSTRAINT feedback_room_id_fkey ON api.feedback IS 'comment made in room';
 
 
 --
