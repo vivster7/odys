@@ -75,12 +75,12 @@
 
             <!-- Heading -->
             <h1 class="display-4 text-center text-light">
-              Improving Software Collaboration
+              "No one really knows how that works anymore"
             </h1>
 
             <!-- Text -->
             <p class="lead mb-7 text-center text-muted">
-              Write better software by sharing mental models.
+              An experiment to improve software collboration
             </p>
 
             <!-- Meta -->
@@ -102,7 +102,7 @@
 
                 <!-- Date -->
                 <time class="font-size-sm text-muted" datetime="2020-06-25">
-                  Published on June 25, 2020
+                  Published on June 27, 2020
                 </time>
 
               </div>
@@ -124,7 +124,7 @@
 
           <!-- Heading -->
           <h2 class="font-weight-bold">
-            Software degrades over time
+            Software degrades across engineering generations
           </h2>
 
           <!-- Blockquote -->
@@ -148,7 +148,7 @@
             Here's a brief story about software development.
           </p>
           <p class="ml-5 text-gray-600">
-            It always starts with a problem. Something that needs fixing. A small, ragtag team of software engineers is
+            It starts with a problem. Something that needs fixing. A small, ragtag team of software engineers is
             brought on board to build a solution. The solution works and needs to scale. More engineers are brought on.
             Customers start asking for new features. The surface area of the product grows. The founding engineers leave
             to start something else. More engineers are brought on. The product continues to grow.
@@ -161,8 +161,19 @@
           </p>
           <p>
             Degradation is not inevitable. Time will not erode away the bits that compose our systems. But most software
-            that you or I are working on today will be in worse shape a decade from now. There are many contributing
-            factors but I want to talk about one: imperfect communication.
+            systems that you or I are building today will be in worse shape a decade from now. In my experience, this
+            has less to do with the passing of time and more to do with the passing of engineering generations. I think
+            I just made up the phrase "engineering generation", so let me define it. An engineering generation is a
+            group of people working on a project at the same time. If enough members of a team change, then an
+            engineering generation passes. I think you see where this analogy originates.
+          </p>
+          <p>
+            Software rot is a complex phenomenon and changing ownership is just one contributing factor. But its an
+            important one. A key reason why software like Python or Linux has been successfully developed
+            across decades is because their founding engineers — Guido van Rossum and Linus Torvalds — are still
+            guiding those projects. Those teams haven't churned through many engineering generations. On the other hand,
+            if you've worked on a team with high churn, you're probably familiar with the phrase "no one really knows
+            how that works anymore".
           </p>
 
 
@@ -186,14 +197,14 @@
           <!-- Blockquote -->
           <blockquote class="blockquote my-7">
             <p class="text-center text-primary font-italic">
-              "Software should be treated not as a static product, but as a living manifestation of the development
-              team’s collective understanding."
+              "The inaccuracy or incompleteness of these various mental models generally (and perhaps surprisingly) does
+              not cause significant problems."
             </p>
             <footer class="blockquote-footer text-right">
-              <span class="h6 text-uppercase">Li Hongyi</span>
+              <span class="h6 text-uppercase">John Allspaw</span>
               <span class="h6">
-                <a href="https://www.csc.gov.sg/articles/how-to-build-good-software">
-                  How to Build Good Software
+                <a href="https://www.infoq.com/minibooks/emag-chaos-engineering">
+                  Recalibrating Mental Models Through Design of Chaos Experiments
                 </a>
               </span>
             </footer>
@@ -204,15 +215,35 @@
             As engineers work, they build an understanding of the system -- a mental model of sorts. Onboarding new
             teammates involves sharing this mental model. In practice, only the outline of this model is shared. Its too
             detailed and nuanced to share completely. Individuals are responsible for filling in the gaps. As a
-            result, team members are unlikely to have the same mental model.
+            result, team members are unlikely to have the exact same mental model. Suprisingly, it turns out that this
+            is mostly okay. At least in the short term.
           </p>
 
           <p>
-            Ocassionally, parts of these models will synchronize. Sometimes it happens while reading documentation and
-            it clicks. More often, it happens because a bug or an outage forces a team to reevaluate their understanding
-            of the system. But as more code is written and the system grows, these models will inevitably diverge again.
+            These gaps tend to live in two places. The obvious place to find them is at the fringes of the system. This
+            could be a part of the system where data doesn't travel frequently — an edge case. Or it could be a new
+            part of the system that's still being built. Either way, the behavior might only be understood by one or two
+            people or maybe no one at all. It doesn't matter too much. Ocassionally, these fringe parts resynchronize.
+            It often happens because a bug or an outage forces a team to reevaluate their understanding.
           </p>
 
+          <p>
+            The less obvious place to find gaps across mental models is at the core of the system. This part of the
+            system does a lot of the heavy lifting. Most of the data flowing through the system will touch this code.
+            And it works. It works really well. So well, in fact, that no one really has to touch it anymore. The
+            founding generation knows this code intimately; they built it. The next generation knows this code in
+            theory. Its been described to them. They've fixed a couple bugs. The following generations know this code in
+            lore. They see it deep in their stack traces but know its not causing their issues. That code has been
+            around forever.
+          </p>
+
+          <p>
+            As the generations pass, people take exisitng code for granted. They lose the deep understanding necessary
+            to modify it. Rather than extending the core's functionality, new teams append functionality on to the
+            system in an adhoc fashion. Why bother changing the core? Even with blameless postmortems, you wouldn't want
+            to be responsble for causing an outage. The result is skyrocketing complexity, a system that begins to
+            collapse under its own weight, and engineers saying "no one really knows how that works anymore".
+          </p>
         </div>
       </div> <!-- / .row -->
 
@@ -236,29 +267,58 @@
           <!-- Blockquote -->
           <blockquote class="blockquote my-7">
             <p class="text-center text-primary font-italic">
-              "These mental models are never accurate, comprehensive, or complete, and different individuals have
-              potentially overlapping but different models of the same areas of their systems."
+              "Software Is about Developing Knowledge More than Writing Code."
             </p>
             <footer class="blockquote-footer text-right">
-              <span class="h6 text-uppercase">John Allspaw</span>
+              <span class="h6 text-uppercase">Li Hongyi</span>
               <span class="h6">
-                <a href="https://www.infoq.com/minibooks/emag-chaos-engineering">
-                  Recalibrating Mental Models Through Design of Chaos Experiments
+                <a href="https://www.csc.gov.sg/articles/how-to-build-good-software">
+                  How to Build Good Software
                 </a>
               </span>
             </footer>
           </blockquote>
 
+
           <!-- Text -->
           <p>
-            Teams with closely aligned mental models will develop better software. The software will have fewer bugs and
-            be more resilient to changes. So its worth asking: How can we better keep our mental models synchronized?
-            How can we detect discrepencies quicker?
+            Teams with closely aligned mental models will develop better software. The software will have fewer bugs
+            and be more resilient to changes. Fewer discrepencies across mental models means future generations are less
+            likely to sigh that well-worn phrase. So its worth asking: How can we better keep our mental models
+            synchronized?
           </p>
+
+          <p>
+            I'll say up front that I don't know. Perhaps, we'll need Neuralink interfaces to seamlessly share thoughts
+            without miscommunication. In the meantime, I have a simpler idea I'd like to try. Let's take our mental
+            models out of our heads.
+          </p>
+
+          <p>
+            I'll admit it sounds ridiculous, but hear me out. Some benefits of bringing these models to life include the
+            following.
+          </p>
+          <ol>
+            <li>
+              Explanations must be precise. Using concrete examples to explain abstractions makes it much more
+              difficult to handwave away the complex parts. Its possible you might find that you didn't understand
+              the system as well as you thought.
+            </li>
+            <li>
+              Confidence everyone is on the same page. A visualized mental model leaves no room for ambiguity. You're
+              not left wondering if your audience understood your explanation.
+            </li>
+            <li>
+              Drawn out mental models are more accessible to both junior engineers and non-technical teammates. Product
+              managers, designers, and the customer success team all rely on a solid technical understanding of the
+              product.
+            </li>
+          </ol>
+
           <p class="mb-7">
-            The whiteboard.systems app is an attempt to answer these question. It offers an alternative to keeping these
-            models hidden away in our heads. It's a tool intended to bring these models to life. The app
-            takes an opinionated approach about what details are necessary when describing a mental model (just boxes
+            The whiteboard.systems app is a tool that attempts to help engineers visualize their mental models in a
+            remote-first world. It offers an alternative to keeping these models hidden away in our heads. The app takes
+            an opinionated approach about what details are necessary when describing a mental model (just boxes
             and arrows). This enables an extremely simple interface. Users can learn the tool in seconds and
             simultanesouly describe their model as their building it. Give it a try and let me know how it goes!
           </p>
