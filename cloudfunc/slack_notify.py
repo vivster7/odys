@@ -4,11 +4,11 @@ import os
 import requests
 import sqlalchemy
 
-slack_feedback_url = os.environ["SLACK_FEEDBACK_WEBHOOK_URL"]
-slack_boxes_url = os.environ["SLACK_BOXES_WEBHOOK_URL"]
+slack_feedback_url = os.getenv("SLACK_FEEDBACK_WEBHOOK_URL")
+slack_boxes_url = os.getenv("SLACK_BOXES_WEBHOOK_URL")
 
-connection_name = os.environ["DB_CONNECTION_NAME"]
-db_password = os.environ["DB_CONNECTION_PASSWORD"]
+connection_name = os.getenv("DB_CONNECTION_NAME")
+db_password = os.getenv("DB_CONNECTION_PASSWORD")
 db_name = "odys_production"
 db_user = "postgres"
 driver_name = "postgres+pg8000"
@@ -37,28 +37,35 @@ def execute(stmt):
         return "Error: {}".format(str(e))
 
 
-eleven_minutes_ago = datetime.datetime.now() - datetime.timedelta(minutes=11)
-
-
 def feedback_query():
-    stmt = sqlalchemy.text('SELECT text from api."feedback"')
+    now = datetime.datetime.now(datetime.timezone.utc)
+    eleven_minutes_ago = now - datetime.timedelta(minutes=11)
+    formatted = eleven_minutes_ago.replace(microsecond=0, tzinfo=None)
+
+    stmt = sqlalchemy.text(
+        f"SELECT text from api.\"feedback\" where created_at > '{formatted}';"
+    )
     return execute(stmt)
 
 
 def new_shapes_query():
+    now = datetime.datetime.now(datetime.timezone.utc)
+    eleven_minutes_ago = now - datetime.timedelta(minutes=11)
+    formatted = eleven_minutes_ago.replace(microsecond=0, tzinfo=None)
+
     stmt = sqlalchemy.text(
-        f'SELECT count(*) from api."shape" where created_at > {eleven_minutes_ago}'
+        f"SELECT count(*) from api.\"shape\" where created_at > '{formatted}';"
     )
     return execute(stmt)
 
 
 def message(url, payload):
     requests.post(
-        url, data={"text": payload}, headers={"Content-type": "application/json"}
+        url, json={"text": payload}, headers={"Content-type": "application/json"}
     )
 
 
-def notify(event, context):
+def hello_pubsub(event, context):
     """Triggered from a message on a Cloud Pub/Sub topic.
     Args:
          event (dict): Event payload.
@@ -68,7 +75,6 @@ def notify(event, context):
         message(slack_feedback_url, row["text"])
 
     for row in new_shapes_query():
-        message(slack_boxes_url, row["count"])
-
-    # pubsub_message = base64.b64decode(event['data']).decode('utf-8')
-    # print(pubsub_message)
+        count = row["count"]
+        if count != 0:
+            message(slack_boxes_url, f"new shapes in last 10min: {count}")
