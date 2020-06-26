@@ -43,6 +43,18 @@ export interface OdysFeedback {
    * @memberof OdysFeedback
    */
   roomId?: string;
+  /**
+   *
+   * @type {string}
+   * @memberof OdysFeedback
+   */
+  createdAt: string;
+  /**
+   *
+   * @type {string}
+   * @memberof OdysFeedback
+   */
+  updatedAt: string;
 }
 
 export function OdysFeedbackFromJSON(json: any): OdysFeedback {
@@ -60,6 +72,8 @@ export function OdysFeedbackFromJSONTyped(
     id: json['id'],
     text: json['text'],
     roomId: !exists(json, 'room_id') ? undefined : json['room_id'],
+    createdAt: json['created_at'],
+    updatedAt: json['updated_at'],
   };
 }
 
@@ -74,5 +88,7 @@ export function OdysFeedbackToJSON(value?: OdysFeedback | null): any {
     id: value.id,
     text: value.text,
     room_id: value.roomId,
+    created_at: value.createdAt,
+    updated_at: value.updatedAt,
   };
 }

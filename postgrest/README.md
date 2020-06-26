@@ -19,8 +19,8 @@ For a UI of available endpoints:
 `open index.html`
 
 ## Development
-If you make schema changes, update the `schema.ddl` file and run `./setup.sh` again.
 You can dump the existing schema file with `pg_dump -U postgres -h localhost odys_dev -s > schema.ddl`
+If you make schema changes, update the `schema.ddl` file and run `./setup.sh` again.
 
 ## Migrations
 Log on to SQL instance with Gcloud terminal

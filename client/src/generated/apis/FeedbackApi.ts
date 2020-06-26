@@ -23,6 +23,8 @@ export interface FeedbackDeleteRequest {
   id?: string;
   text?: string;
   roomId?: string;
+  createdAt?: string;
+  updatedAt?: string;
   prefer?: FeedbackDeletePreferEnum;
 }
 
@@ -30,6 +32,8 @@ export interface FeedbackGetRequest {
   id?: string;
   text?: string;
   roomId?: string;
+  createdAt?: string;
+  updatedAt?: string;
   select?: string;
   order?: string;
   range?: string;
@@ -43,6 +47,8 @@ export interface FeedbackPatchRequest {
   id?: string;
   text?: string;
   roomId?: string;
+  createdAt?: string;
+  updatedAt?: string;
   prefer?: FeedbackPatchPreferEnum;
   feedback?: OdysFeedback;
 }
@@ -75,6 +81,14 @@ export class FeedbackApi extends runtime.BaseAPI {
 
     if (requestParameters.roomId !== undefined) {
       queryParameters['room_id'] = requestParameters.roomId;
+    }
+
+    if (requestParameters.createdAt !== undefined) {
+      queryParameters['created_at'] = requestParameters.createdAt;
+    }
+
+    if (requestParameters.updatedAt !== undefined) {
+      queryParameters['updated_at'] = requestParameters.updatedAt;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -123,6 +137,14 @@ export class FeedbackApi extends runtime.BaseAPI {
 
     if (requestParameters.roomId !== undefined) {
       queryParameters['room_id'] = requestParameters.roomId;
+    }
+
+    if (requestParameters.createdAt !== undefined) {
+      queryParameters['created_at'] = requestParameters.createdAt;
+    }
+
+    if (requestParameters.updatedAt !== undefined) {
+      queryParameters['updated_at'] = requestParameters.updatedAt;
     }
 
     if (requestParameters.select !== undefined) {
@@ -204,6 +226,14 @@ export class FeedbackApi extends runtime.BaseAPI {
 
     if (requestParameters.roomId !== undefined) {
       queryParameters['room_id'] = requestParameters.roomId;
+    }
+
+    if (requestParameters.createdAt !== undefined) {
+      queryParameters['created_at'] = requestParameters.createdAt;
+    }
+
+    if (requestParameters.updatedAt !== undefined) {
+      queryParameters['updated_at'] = requestParameters.updatedAt;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};

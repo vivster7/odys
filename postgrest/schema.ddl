@@ -96,7 +96,9 @@ COMMENT ON TABLE api.board IS 'A board can be drawn on. Belongs to a room';
 CREATE TABLE api.feedback (
     id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     text text DEFAULT ''::text NOT NULL,
-    room_id uuid
+    room_id uuid,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
 );
 
 
@@ -363,6 +365,20 @@ CREATE INDEX boards_updated_at_idx ON api.board USING btree (updated_at);
 
 
 --
+-- Name: feedback_created_at_idx; Type: INDEX; Schema: api; Owner: postgres
+--
+
+CREATE INDEX feedback_created_at_idx ON api.feedback USING btree (created_at);
+
+
+--
+-- Name: feedback_updated_at_idx; Type: INDEX; Schema: api; Owner: postgres
+--
+
+CREATE INDEX feedback_updated_at_idx ON api.feedback USING btree (updated_at);
+
+
+--
 -- Name: rooms_created_at_idx; Type: INDEX; Schema: api; Owner: postgres
 --
 
@@ -564,6 +580,13 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.arrow TO anon;
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.board TO anon;
+
+
+--
+-- Name: TABLE feedback; Type: ACL; Schema: api; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE api.feedback TO anon;
 
 
 --
