@@ -13,6 +13,7 @@
   "scripts": {
     "start": "concurrently --kill-others \"yarn start-client\" \"yarn start-server\"",
     "start-client": "cd client && yarn start",
+    "build-server": "cd server && yarn build-production",
     "start-server": "cd server && yarn start"
   },
   "license": "MIT",
