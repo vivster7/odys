@@ -1,2 +1,0 @@
-- [ ] Clicks on Board should make boxes
-- [ ] Clicks on Boxes should select it

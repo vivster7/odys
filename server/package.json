@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "build-client": "cd ../client && yarn && yarn build && mv -f build ../server/build/client",
-    "build-production": "rm -rf build && tsc && yarn build-client",
+    "build-production": "rm -rf build && yarn && tsc && yarn build-client",
     "deploy-production": "yarn build-production && gcloud app deploy --quiet",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "start": "node ./build/app.js"
