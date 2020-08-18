@@ -6,7 +6,7 @@
   "main": "gulpfile.js",
   "author": "Good Themes",
   "scripts": {
-    "build": "gulp build",
+    "build": "yarn && gulp build",
     "deploy": "yarn build && gsutil -m rsync -r dist/assets gs://hello.whiteboard.systems/assets && gsutil cp dist/index.html gs://hello.whiteboard.systems/index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
