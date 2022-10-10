@@ -1,5 +1,19 @@
 ## Big picture(s)
-<img here>
+### Server diagram.
+- Node.js server uses Express framework and socket.io. Also used to serve static assets if not cached on a CDN. This is hosted by Render becacuse Google Cloud Run did not support sockets well ([but that no longer seems true](https://cloud.google.com/run))
+- Caddy is being used as a reverse proxy to add a bit more security to the postgrest API server.
+- The Caddy+Postgrest Dockerfile is deployed on Google Cloud Run.
+- The Postgres server is run in Google Cloud SQL.
+
+<img width="749" alt="image" src="https://user-images.githubusercontent.com/1903527/194800238-567ac336-f3e3-42b2-a504-bc7c255fe440.png">
+
+### Simplified React component tree hierarchy.
+- `<App />` is the entrypoint.
+- `<Room />` is where most of the socket syncing logic lives.
+- `<Canvas />` is where most of the drawing happens.
+- A `<Drawing />` can be: dragged, resized, saved, deleted, selected, copy-pasted, moved-to-front, and captioned. See the corresponding folders (`mixins/drag`, `mixins/resize`, etc..) for underlying functionality. 
+- 
+<img width="900" alt="image" src="https://user-images.githubusercontent.com/1903527/194800687-845d961c-ab11-42e5-a14c-2fccc8e94a8d.png">
 
 
 ## Request Lifecycle #1: Initial Request
@@ -42,3 +56,4 @@ At step #3 above, we finish computing the new global state that contains the new
 Finally, we are done. We have drawn a rectangle, added it to the global state, saved it to the database, and synced it to other **Players** in the **Room**.
 
 ## Data Model
+TODO
