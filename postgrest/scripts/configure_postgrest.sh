@@ -14,7 +14,7 @@ psql -U postgres -c "create role $PG_ANON_USER nologin";
 psql -U postgres -c "create role $PG_USER noinherit login password '$PG_PASSWORD';";
 
 # make database
-createdb "$DATABASE"
+createdb -U postgres "$DATABASE"
 
 # create api schema + tables
 psql -U postgres -d "$DATABASE" < "$DIR"/../schema.ddl

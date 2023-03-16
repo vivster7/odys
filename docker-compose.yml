@@ -1,0 +1,28 @@
+# docker-compose.yml
+
+version: '3'
+services:
+  postgrest:
+    image: postgrest/postgrest
+    ports:
+      - "3000:3000"
+    environment:
+      PGRST_DB_URI: postgres://postgres:password@localhost:5432/odys_dev
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
+    depends_on:
+      - db
+    network_mode: host
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: odys_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ".:/src"
+      - "pgdata:/var/lib/postgresql/data"
+    network_mode: host
+volumes:
+  pgdata:

@@ -1,4 +1,4 @@
 #!/bin/bash
-dropdb odys_dev
-dropuser anon
-dropuser authenticator
+dropdb -U postgres odys_dev --force
+dropuser -U postgres anon
+dropuser -U postgres authenticator
