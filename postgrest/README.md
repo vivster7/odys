@@ -1,5 +1,11 @@
 Postgrest is used to host a REST API on top of a DB.
 
+## New Installation
+`docker compose up`
+`docker compose exec db bash`
+`/src/postgrest/setup.sh`
+# TODO: Fix /src/postgrest/scripts/generate_client.sh
+
 ## Installation
 `brew install postgrest`
 `brew install openapi-generator` (used to generate clients)
