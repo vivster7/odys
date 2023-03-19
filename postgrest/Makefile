@@ -1,10 +1,11 @@
 # Define variables
+.DEFAULT_GOAL := start
 APP_NAME := odys
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 
 
 # Define targets
-.PHONY: setup
+.PHONY: setup start
 
 setup:
 	docker compose up --detach db
@@ -13,6 +14,11 @@ setup:
 	$(ROOT_DIR)/postgrest/scripts/create_postgrest_dev_conf.sh
 	docker compose up --detach postgrest
 	$(ROOT_DIR)/postgrest/scripts/generate_client.sh
+	docker compose down
+
+start:
+	docker compose up
+
 
 # all: clean install lint test build
 
