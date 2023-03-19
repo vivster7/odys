@@ -8,4 +8,4 @@ set -a
 [ -f "$ROOT_DIR/postgrest/.env.local" ] && source "$ROOT_DIR/postgrest/.env.local"
 set +a
 
-docker run --rm --network=host -v "$ROOT_DIR":/src openapitools/openapi-generator-cli generate -i http://localhost:3001 -g typescript-fetch -p typescriptThreePlus --model-name-prefix Odys -o /src/client/src/generated
+docker run --rm --network=host -v "$ROOT_DIR":/src openapitools/openapi-generator-cli:v4.3.1 generate -i http://localhost:3001 -g typescript-fetch -p typescriptThreePlus --model-name-prefix Odys -o /src/client/src/generated
