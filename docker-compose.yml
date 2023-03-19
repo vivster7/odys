@@ -27,5 +27,19 @@ services:
       - ".:/src"
       - "pgdata:/var/lib/postgresql/data"
     network_mode: host
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "8080:8080"
+    network_mode: host
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    network_mode: host
+    # Keeps docker container alive
+    stdin_open: true
 volumes:
   pgdata:
