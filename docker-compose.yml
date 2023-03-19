@@ -34,6 +34,8 @@ services:
     ports:
       - "8080:8080"
     network_mode: host
+    volumes:
+      - ".:/src"
   client:
     build:
       context: .
@@ -41,5 +43,7 @@ services:
     network_mode: host
     # Keeps docker container alive
     stdin_open: true
+    volumes:
+      - ".:/src"
 volumes:
   pgdata:

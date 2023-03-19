@@ -14,6 +14,9 @@ setup:
 	docker compose up --detach postgrest
 	$(ROOT_DIR)/postgrest/scripts/generate_client.sh
 	docker compose down
+	cd $(ROOT_DIR)/client && yarn install
+	cd $(ROOT_DIR)/server && yarn install
+	
 
 start:
 	docker compose up
