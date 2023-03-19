@@ -1,28 +1,11 @@
 #!/bin/bash
 
-# Current directory of script
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+ROOT_DIR="$(git rev-parse --show-toplevel)"
 
 # Import .env variables
 set -a
-[ -f "$DIR"/../.env ] && source "$DIR"/../.env
-[ -f "$DIR"/../.env.local ] && source "$DIR"/../.env.local
+[ -f "$ROOT_DIR/postgrest/.env" ] && source "$ROOT_DIR/postgrest/.env"
+[ -f "$ROOT_DIR/postgrest/.env.local" ] && source "$ROOT_DIR/postgrest/.env.local"
 set +a
 
-# start postgreset
-postgrest "$DIR"/../postgrest.dev.conf &
-POSTGREST_PID=$!
-
-# wait for postgrest to start
-sleep 1
-
-# Read openapi schema hosted by postgrest server
-FILENAME="openapi-odys-spec.json"
-curl "$HOST:$PORT" > $FILENAME
-
-# generate client
-openapi-generator generate -i $FILENAME -g typescript-fetch -p typescriptThreePlus --model-name-prefix Odys -o "$DIR"/../../client/src/generated
-
-# cleanup
-kill $POSTGREST_PID
-rm $FILENAME
+docker run --rm --network=host -v "$ROOT_DIR":/src openapitools/openapi-generator-cli generate -i http://localhost:3001 -g typescript-fetch -p typescriptThreePlus --model-name-prefix Odys -o /src/client/src/generated
