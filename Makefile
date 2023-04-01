@@ -4,7 +4,7 @@ APP_NAME := odys
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 
 # Define targets
-.PHONY: setup start
+.PHONY: setup start deploy-server
 
 setup:
 	docker compose up --detach db
@@ -16,8 +16,9 @@ setup:
 	docker compose down
 	cd $(ROOT_DIR)/client && yarn install
 	cd $(ROOT_DIR)/server && yarn install
-	
 
 start:
 	docker compose up
 
+deploy-server:
+	fly deploy
