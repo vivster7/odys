@@ -1,3 +1,5 @@
+FROM postgrest/postgrest:v9.0.1 as postgrest
+
 FROM debian:bullseye as builder
 
 ARG NODE_VERSION=16.19.1
@@ -23,6 +25,8 @@ RUN cd /build/server && yarn build-production
 FROM debian:bullseye
 
 LABEL fly_launch_runtime="nodejs"
+
+COPY --from=postgrest /bin/postgrest /bin/postgrest
 
 COPY --from=builder /root/.volta /root/.volta
 COPY --from=builder /build/server /app

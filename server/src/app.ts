@@ -11,6 +11,7 @@ import players from './players';
 const { PORT } = process.env;
 const index = require('./routes/index');
 const status = require('./routes/status');
+const api = require('./routes/api');
 
 const app: express.Application = express();
 
@@ -22,6 +23,7 @@ app.use(express.static(path.join(__dirname, './../build/client')));
 
 app.use(index);
 app.use(status);
+app.use(api);
 
 // catch all
 app.get('*', (req, res) => {
