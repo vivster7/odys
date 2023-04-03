@@ -14,7 +14,7 @@ https://user-images.githubusercontent.com/1903527/194801526-894b7844-ab1b-4fdf-9
 
 
 ## TODOS
-- [ ] Move to free hosting provider (https://fly.io)
 - [ ] Fix initial page log bug from server cold start
-- [ ] Text editing broken in Safari?
+- [ ] Text editing broken in Safari
+- [ ] Clean up postgrest/ folder (its incorporated into server/) + + marketing/ + cloudfunc/
 

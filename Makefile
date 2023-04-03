@@ -8,11 +8,11 @@ ROOT_DIR := $(shell git rev-parse --show-toplevel)
 
 setup:
 	docker compose up --detach db
-	docker compose exec db /src/postgrest/scripts/teardown.sh
-	docker compose exec db /src/postgrest/scripts/configure_postgrest.sh
-	$(ROOT_DIR)/postgrest/scripts/create_postgrest_dev_conf.sh
+	docker compose exec db /src/server/scripts/teardown.sh
+	docker compose exec db /src/server/scripts/configure_postgrest.sh
+	# $(ROOT_DIR)/server/scripts/create_postgrest_dev_conf.sh
 	docker compose up --detach server
-	$(ROOT_DIR)/postgrest/scripts/generate_client.sh
+	$(ROOT_DIR)/server/scripts/generate_client.sh
 	docker compose down
 	cd $(ROOT_DIR)/client && yarn install
 	cd $(ROOT_DIR)/server && yarn install
